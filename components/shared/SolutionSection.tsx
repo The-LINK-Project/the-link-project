@@ -15,59 +15,61 @@ const SolutionSection = () => {
                 {/* #lefft side */}
                 <div className='flex flex-col gap-6'>
                     {/* left top 2 orizontally placed */}
-                    <div className='flex flex-row gap-6 bg-red-50 w-[750px]'>
-                        <Card>
+                    <div className='flex flex-row gap-6  w-[750px]'>
+                        <Card className='bg-gray-50 h-90 gap-3'>
                             <CardHeader>
                                 <CardTitle className='text-red-500'>
-                                    OINK Card 1
+                                    Leverage Point 1
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className='flex flex-col gap-8 items-center'>
-                                    <h1>The world is blue and green, sky are blue and the grass is green just like the wispy meadow breeze by the seas</h1>
-                                    <img className="w-72 h-44" src='/assets/giftemp.gif'></img>
+                                    <h1 className='bg-red-50'>The world is blue and green, sky are blue and the grass is green just like the wispy meadow breeze by the seas</h1>
+                                    <img className="w-72 h-40" src='/assets/giftemp.gif'></img>
                                 </div>
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className='bg-gray-50 h-90 gap-3'>
                             <CardHeader>
                                 <CardTitle className='text-red-500'>
-                                    OINK Card 2
+                                    Leverage Point 2
                                 </CardTitle>
                             </CardHeader>
                             <CardContent >
                                 <div className='flex flex-col gap-8 items-center'>
                                     <h1>The world is blue and green, sky are blue and the grass is green just like the wispy meadow breeze by the seas</h1>
-                                    <img className="w-72 h-44" src='/assets/giftemp.gif'></img>
+                                    <img className="w-72 h-40" src='/assets/giftemp.gif'></img>
                                 </div>
                             </CardContent>
                         </Card>
                     </div>
                     <div className='flex flex-row w-[750px]'>
-                        <Card className='flex flex-col  bg-red-50'>
+                        <Card className='flex flex-col bg-gray-50 h-[366px] gap-3'>
                             <CardHeader>
                                 <CardTitle className='text-red-500'>
-                                    Oink Card 3
+                                    Leverage Point 3
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent>
-                                <h1>Feathery Entanglements of weightless clouds levitate magestically, stringing together the sky line like silk of a scarf</h1>
-                                <img src='/assets/giftemp.gif'></img>
+                            <CardContent className='flex flex-col gap-6'>
+                                <h1 className='bg-red-50'>Feathery Entanglements of weightless clouds levitate magestically, stringing together the sky line like silk of a scarf</h1>
+                                <div className='flex flex-row justify-center'>
+                                    <img src='/assets/giftemp.gif' className='h-52 w-md '></img>
+                                </div>
                             </CardContent>
                         </Card>
                     </div>
 
                 </div>
-                <div className=' w-[375px] h-[750px] bg-amber-400 gap-6'>
-                    <Card className='w-[375px] h-[750px]gap-6'>
+                <div className=' w-[375px] h-[750px] gap-6'>
+                    <Card className='w-[375px] h-[750px] gap-3 bg-gray-50 overflow-hidden'>
                         <CardHeader>
                             <CardTitle className='text-red-500'>
-                                Oink Card 4
+                                Leverage Point 4
                             </CardTitle>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className='flex flex-col gap-6 relative'>
                             <h1>Amongst the wisps of sparkling confetti turbulent in the atmosphere, gentle whispering willows echo through the dismissive chambers of scintillating darkness</h1>
-                            <img src='/assets/giftemp.gif'></img>
+                            <img src='/assets/giftemp.gif' className="absolute pt-40 pl-20 hover:pl-14 transition-all duration-300 h-[600px] w-[1800px]"></img>
                         </CardContent>
                     </Card>
                 </div>

@@ -4,6 +4,7 @@ import HeroSection from "@/components/shared/HeroSection";
 import ProblemSection from "@/components/shared/ProblemSection";
 import VideoDisplay from "@/components/shared/VideoDisplay";
 import SolutionSection from "@/components/shared/SolutionSection";
+import FAQ from "@/components/shared/FAQ";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <VideoDisplay></VideoDisplay>
       <ProblemSection></ProblemSection>
       <SolutionSection></SolutionSection>
+      <FAQ></FAQ>
     </div>
   );
 }
