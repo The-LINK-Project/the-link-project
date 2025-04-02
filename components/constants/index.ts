@@ -10,10 +10,6 @@ export const navLinks = [
     {
         name: "Contact",
         route: "/contact"
-    },
-    {
-        name: "Waitlist", 
-        route: "/waitlist"
     }
 ]
 

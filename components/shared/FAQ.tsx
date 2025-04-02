@@ -5,7 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '..
 
 const FAQ = () => {
   return (
-    <div className='py-16'>
+    <div className='py-20'>
         <div className="text-center mb-16">
             <p className="text-red-500 uppercase tracking-wide mb-4">FAQ</p>
             <h2 className="text-5xl font-semibold tracking-tight mb-12">

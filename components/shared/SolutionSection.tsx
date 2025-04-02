@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 const SolutionSection = () => {
     return (
         <div className='bg-gray-100 w-full'>
-            <div className="container mx-auto py-16 px-4">
+            <div className="container mx-auto py-20 px-4">
             <div className="text-center mb-16">
                 <p className="text-red-500 uppercase tracking-wide mb-4">THE SOLUTION</p>
                 <h2 className="text-5xl font-semibold tracking-tight mb-12">
