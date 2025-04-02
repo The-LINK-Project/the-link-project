@@ -3,12 +3,9 @@ import React from 'react'
 import { Button } from '../ui/button'
 import { AlertCircleIcon, ArrowRight, Bell, Lightbulb } from 'lucide-react'
 import { Badge } from '../ui/badge'
-
+import { redirectToForm } from '@/lib/clientUtils'
 const HeroSection = () => {
 
-  const redirectToForm = () => {
-    window.open('https://www.chess.com', '_blank');
-  }
   return (
     <div className='flex flex-col items-center gap-7'>
       <div>
@@ -31,10 +28,10 @@ const HeroSection = () => {
           <h1 className='text-gray-500 text-xl'>AI-powered lessons built for the real world.</h1>
         </div>
         <div>
-          <Button className='cursor-pointer bg-red-500 w-48 h-10 mt-3' onClick={redirectToForm}>
+          <Button className='cursor-pointer bg-red-500 w-48 h-10 mt-3 hover:bg-red-600 transition-transform duration-500 transform hover:scale-105' onClick={redirectToForm}>
             <Lightbulb className="!w-6 !h-5" strokeWidth={2} />
             <h1 className=' pr-1'>Share Your Ideas</h1>
-            </Button>
+          </Button>
         </div>
         <div>
           <h1 className='text-gray-500'>Completely Free. No Credit Card Required.</h1>
