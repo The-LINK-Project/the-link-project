@@ -13,7 +13,7 @@ const FAQ = () => {
             </h2>
         </div>
         <div className='flex flex-col gap-2 items-center'>
-            <Accordion type='single' collapsible className='w-3xl space-y-2'>
+            <Accordion type='single' collapsible className='lg:w-3xl space-y-2 px-5 sm:w-lg'>
                 {frequentlyAskedQuestions.map((question) => (
                     <AccordionItem className="  border border-solid border-gray-200 rounded-md px-3" value={question.question} key={question.question}>
                         <AccordionTrigger>

@@ -12,8 +12,11 @@ import { redirectToForm } from '@/lib/clientUtils'
 const Header = () => {
   return (
     <div className='flex flex-row mx-24 justify-between h-18 items-center'>
-        <img src='/assets/link.jpeg' className='w-5'></img>
-        <h1 className='font-semibold text-lg'>The LINK Project</h1>
+        <div className='flex flex-row gap-1'>
+            <img src='/assets/link.png' className='w-8 h-8'></img>
+            <h1 className='font-semibold text-lg'>The LINK Project</h1>
+
+        </div>
         <div className='flex flex-row justify-center items-center gap-10'>
             <NavItems className="hidden md:block" />
             <div className='hidden md:block'>
