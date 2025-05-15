@@ -12,6 +12,7 @@ import { redirectToForm } from '@/lib/clientUtils'
 const Header = () => {
   return (
     <div className='flex flex-row mx-24 justify-between h-18 items-center'>
+        <img src='/assets/link.jpeg' className='w-5'></img>
         <h1 className='font-semibold text-lg'>The LINK Project</h1>
         <div className='flex flex-row justify-center items-center gap-10'>
             <NavItems className="hidden md:block" />
@@ -34,7 +35,7 @@ const Header = () => {
                     </DropdownMenuItem>
                 ))}
                 <DropdownMenuItem>
-                    <Button className='mb-3 cursor-pointer bg-red-500 w-48 h-10 mt-3 hover:bg-red-600 transition-transform duration-500 transform hover:scale-105 flex items- justify-center' onClick={redirectToForm}>
+                    <Button className='mb-3 cursor-pointer bg-main-blue w-48 h-10 mt-3 hover:bg-main-blue-hover transition-transform duration-500 transform hover:scale-105 flex items- justify-center' onClick={redirectToForm}>
                         <Lightbulb className="!w-6 !h-5 text-white" strokeWidth={2} />
                         <h1 className=' pr-1'>Share Your Ideas</h1>
                     </Button>

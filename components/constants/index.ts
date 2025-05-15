@@ -4,10 +4,6 @@ export const navLinks = [
         route: "/"
     },
     {
-        name: "About",
-        route: "/about"
-    },
-    {
         name: "Contact",
         route: "/contact"
     }
@@ -16,15 +12,15 @@ export const navLinks = [
 export const frequentlyAskedQuestions = [
     {
         question: "What is the LINK Project?",
-        answer: "The LINK Project is The LINK Project is The LINK Project is. The LINK Project is The LINK Project is The LINK Project is."
+        answer: "The LINK Project supports English learning for migrant workers in Singapore through a personalized AI voice assistant, helping improve daily communication and confidence."
     },
     {
         question: "When will the LINK Project launch",
-        answer: "The LINK Project is... The LINK Project is The LINK Project is. The LINK Project is The LINK Project is."
+        answer: "The core features will be launched in July."
     },
     {
         question: "How can I contribute towards the LINK Project",
-        answer: "Share your ideas. Share your ideas. Share your ideas on the form linked."
+        answer: "You can share your ideas on the google form linked to the website to inform us of what you would like to see and any suggestions you have."
     },
     {
         question: "Will the LINK Project be free?",
@@ -32,6 +28,6 @@ export const frequentlyAskedQuestions = [
     },
     {
         question: "What kind of support does the LINK Project provide?",
-        answer: "The LINK Project provides learning that adapts to the level of the user in different ways oink test. and a sous chef."
+        answer: "The Link Project gives you a free AI voice assistant to help improve your English anytime, anywhere. It helps you learn words, speak clearly, and feel more confident talking to your boss or in daily life."
     }
 ]
