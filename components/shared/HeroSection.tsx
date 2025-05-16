@@ -22,7 +22,7 @@ const HeroSection = () => {
           </ArrowRight>
         </Badge>
       </div>
-        <h1 className='text-6xl font-semibold pt-3'>The LINK Project</h1>
+        <h1 className='text-6xl font-semibold pt-3 text-center'>The LINK Project</h1>
         <div className='text-center flex flex-col gap-4'>
           <h1 className='text-gray-500 text-xl'>Learn English with personalized, </h1>
           <h1 className='text-gray-500 text-xl'>AI-powered lessons built for the real world.</h1>
