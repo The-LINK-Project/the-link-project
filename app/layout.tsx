@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Open_Sans  } from "next/font/google";
 import "./globals.css";
 import Head from "next/head";
 import Header from "@/components/shared/Header";
+import { Analytics } from '@vercel/analytics/react';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -72,6 +73,7 @@ export default function RootLayout({
         className={`${openSans.variable} antialiased`}
         >
         {children}
+        <Analytics/>
       </body>
     </html>
     </div>
