@@ -1,4 +1,3 @@
-import React from 'react'
 import { ConsolePage } from '@/components/ConsolePage'
 const Dashboard = () => {
   return (
