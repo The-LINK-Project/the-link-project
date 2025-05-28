@@ -1,6 +1,6 @@
 import { RealtimeRelay } from './lib/relay.js';
 import dotenv from 'dotenv';
-dotenv.config({ override: true });
+dotenv.config({ path: '.env.local' });
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 console.log("OINK")
