@@ -1,4 +1,8 @@
-import { ConsolePage } from '@/components/ConsolePage'
+import dynamic from 'next/dynamic';
+const ConsolePage = dynamic(() => import('@/components/ConsolePage'), {
+    ssr: false,
+  });
+  
 const Dashboard = () => {
   return (
     <div>
