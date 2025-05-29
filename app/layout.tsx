@@ -4,6 +4,12 @@ import "./globals.css";
 import Head from "next/head";
 import Header from "@/components/shared/Header";
 import { Analytics } from '@vercel/analytics/react';
+import { 
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton } from "@clerk/nextjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -67,15 +73,17 @@ export default function RootLayout({
 }>) {
   return (
   <div>
-    <Header></Header>
-    <html lang="en">
-      <body
-        className={`${openSans.variable} antialiased`}
-        >
-        {children}
-        <Analytics/>
-      </body>
-    </html>
-    </div>
+    <ClerkProvider>
+      <Header></Header>
+      <html lang="en">
+        <body
+          className={`${openSans.variable} antialiased`}
+          >
+          {children}
+          <Analytics/>
+        </body>
+      </html>
+    </ClerkProvider>
+  </div>
   );
 }

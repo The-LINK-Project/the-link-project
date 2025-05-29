@@ -8,6 +8,8 @@ import Link from 'next/link'
 import { Button } from '../ui/button'
 import { Lightbulb } from 'lucide-react'
 import { redirectToForm } from '@/lib/clientUtils'
+import { UserButton } from '@clerk/nextjs'
+import { SignedOut } from '@clerk/clerk-react'
 
 const Header = () => {
   return (
@@ -25,6 +27,14 @@ const Header = () => {
                     <h1 className=' pr-1'>Share Your Ideas</h1>
                 </Button>
             </div>
+            <UserButton />
+            <SignedOut>
+                <Button asChild>
+                    <Link href="/sign-in">
+                        Log in
+                    </Link>
+                </Button>
+            </SignedOut>
         </div> 
     <div className='relative md:hidden'>
         <DropdownMenu>
