@@ -1,12 +1,9 @@
-import dynamic from 'next/dynamic';
-const ConsolePage = dynamic(() => import('@/components/ConsolePage'), {
-    ssr: false,
-  });
-  
+// import { ConsolePage } from '@/components/ConsolePage'
+import ClientDashboard from "./ClientWrapper"
 const Dashboard = () => {
   return (
     <div>
-        <ConsolePage></ConsolePage>
+        <ClientDashboard></ClientDashboard>
     </div>
   )
 }
