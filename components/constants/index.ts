@@ -119,3 +119,5 @@ export const lessons: LessonData[] = [
         ]
     }
 ]
+
+// lessonProgress -> userId, lessonIndex, objectivesMet: [true, false, false, true], convoHistory: [{role, message}]
