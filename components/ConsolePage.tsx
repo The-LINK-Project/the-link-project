@@ -41,7 +41,11 @@ interface RealtimeEvent {
   event: { [key: string]: any };
 }
 
-export function ConsolePage() {
+type Props = {
+  instructions: string;
+}
+
+export function ConsolePage({ instructions }: Props) {
   /**
    * Ask user for API Key
    * If we're using the local relay server, we don't need this

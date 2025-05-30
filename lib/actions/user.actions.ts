@@ -87,3 +87,19 @@ export async function deleteUser(clerkId: string) {
         throw error;
     }
 }
+
+export async function getCurrentUser() {
+    const { sessionClaims } = await auth();
+
+    const userId = sessionClaims?.userId as string;
+
+    if (!userId) {
+        throw new Error("User not found");
+    }
+
+    return getUserById(userId);
+}
+
+
+
+                      

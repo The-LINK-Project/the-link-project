@@ -1,5 +1,8 @@
 import React from 'react'
 import { lessons } from '@/components/constants'
+import { instructions } from '@/utils/conversation_config'
+import { getCurrentUser } from '@/lib/actions/user.actions'
+import ConsolePage from '@/components/ConsolePage'
 
 type LessonPageProps = {
   params: {
@@ -7,7 +10,13 @@ type LessonPageProps = {
   }
 }
 
-const LessonPage = ({ params }: LessonPageProps) => {
+const LessonPage = async ({ params }: LessonPageProps) => {
+  const user = await getCurrentUser();
+  const nameInstructions = instructions.replace('<<NAME>>', user?.firstName);
+  console.log("OINK");
+  console.log(user.firstName);
+  console.log(nameInstructions);
+
   const index = parseInt(params.lessonIndex, 10)
   const lesson = lessons[index]
 
@@ -25,6 +34,7 @@ const LessonPage = ({ params }: LessonPageProps) => {
           <li key={i} className="text-gray-800 text-base">{objective}</li>
         ))}
       </ul>
+      <ConsolePage instructions={nameInstructions}/>
     </section>
   )
 }
