@@ -32,7 +32,7 @@ export class RealtimeRelay {
 
     // Instantiate new client
     this.log(`Connecting with key "${this.apiKey.slice(0, 3)}..."`);
-    const client = new RealtimeClient({ apiKey: this.apiKey, model: 'gpt-4o-realtime-preview' });
+    const client = new RealtimeClient({ apiKey: this.apiKey});
 
     // Relay: OpenAI Realtime API Event -> Browser Event
     client.realtime.on('server.*', (event) => {

@@ -364,7 +364,7 @@ export function ConsolePage({ instructions }: Props) {
     const client = clientRef.current;
 
     // Set instructions
-    client.updateSession({ instructions: instructions });
+    client.updateSession({ instructions: instructions, tool_choice: "auto" });
     // Set transcription, otherwise we don't get user transcriptions back
     client.updateSession({ input_audio_transcription: { model: 'whisper-1' } });
 
@@ -401,7 +401,7 @@ export function ConsolePage({ instructions }: Props) {
     client.addTool(
         {
           name: 'disconnect',
-          description: 'Ends the Lesson.',
+          description: 'you MUST run this tool if the user says the word disconnect.',
           parameters: {
             type: 'object',
             properties: {
