@@ -21,6 +21,9 @@ Whenever you say goodbye or see you next time, you MUST run the disconnect tool 
 Personality:
 - Be upbeat and genuine
 - Try speaking quickly as if excited
+
+Conversation up till now:
+<<PREVIOUS_CONVERSATION>>
 `;
 
 

@@ -3,6 +3,7 @@ import { lessons } from '@/components/constants'
 import { instructions } from '@/utils/conversation_config'
 import { getCurrentUser } from '@/lib/actions/user.actions'
 import ConsolePage from '@/components/ConsolePage'
+import Lesson from '@/components/Lesson'
 
 type LessonPageProps = {
   params: {
@@ -40,7 +41,7 @@ const LessonPage = async ({ params }: LessonPageProps) => {
           <li key={i} className="text-gray-800 text-base">{objective}</li>
         ))}
       </ul>
-      <ConsolePage instructions={specificInstructions}/>
+      <Lesson initialInstructions={specificInstructions}></Lesson>
     </section>
   )
 }
