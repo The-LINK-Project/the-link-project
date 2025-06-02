@@ -1,7 +1,7 @@
 "use client"; 
 
 import React, { useRef, useState, useEffect } from 'react';
-import { getResponse } from '@/lib/actions/playground.actions';
+import { getResponse } from '@/lib/actions/conversation.actions';
 
 const PlaygroundPage = () => {
   const [recording, setRecording] = useState(false);

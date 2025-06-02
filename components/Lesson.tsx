@@ -1,7 +1,7 @@
 "use client"; 
 
 import React, { useRef, useState, useEffect } from 'react';
-import { getResponse, getUserTranscription } from '@/lib/actions/playground.actions';
+import { getResponse, getUserTranscription } from '@/lib/actions/conversation.actions';
 
 type Props = {
     initialInstructions: string;
@@ -17,6 +17,7 @@ const Lesson = ({initialInstructions}: Props) => {
   type Message = {
     role: string;
     message: string;
+    audioURL: string;
   }
   const [conversation, setConversation] = useState<Message[] | []>([]);
   useEffect(() => {
@@ -31,7 +32,7 @@ const Lesson = ({initialInstructions}: Props) => {
         const userTranscription = transcriptionUser.userTranscription;
         
         console.log(userTranscription)
-        setConversation(prevConversation => [...(prevConversation ?? []), {role: "user", message: userTranscription?? ""}])
+        setConversation(prevConversation => [...(prevConversation ?? []), {role: "user", message: userTranscription?? "", audioURL: audioURL}])
 
         const updatedUserInstructions = (instructionsRef.current ?? "") + "\nUser: " + userTranscription;
         setInstructions(updatedUserInstructions);
@@ -49,7 +50,7 @@ const Lesson = ({initialInstructions}: Props) => {
         const audio = new Audio(audioSrc);
         audio.play();
         const systemTranscription = audioResponse.systemTranscription;
-        setConversation(prevConversation => [...(prevConversation ?? []), {role: "system", message: systemTranscription ?? ""}])
+        setConversation(prevConversation => [...(prevConversation ?? []), {role: "system", message: systemTranscription ?? "", audioURL: audioSrc}])
 
         const updatedSystemInstructions = instructionsRef.current + "\nSystem: " + systemTranscription;
         setInstructions(updatedSystemInstructions);
@@ -138,9 +139,14 @@ return new Promise((resolve, reject) => {
       <div>
         <h1>Conversation</h1>
         {conversation.map((message, index) => (
-            <p key={index}>
-                <strong>{message.role}: </strong> {message.message}
-            </p>
+            <div key={index}>
+                <p key={index}>
+                    <strong>{message.role}: </strong> {message.message}
+                </p>
+                <audio src={message.audioURL?? ""} controls></audio>
+            </div>
+                
+
         ))}
       </div>
     </div>
