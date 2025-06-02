@@ -9,12 +9,17 @@ import { auth } from "@clerk/nextjs/server";
 interface Message {
     role: string;
     message: string;
+    audioURL?: string;
   }
-export async function createLessonProgress(lessonProgress: {
-    lessonIndex: Number;
-    objectivesMet: Boolean[];
-    convoHistory: Message[]
-}) {
+  export async function createLessonProgress({
+    lessonIndex,
+    objectivesMet,
+    convoHistory,
+  }: {
+    lessonIndex: number;
+    objectivesMet: boolean[];
+    convoHistory: Message[];
+  }){
     try {
         await connectToDatabase();
 
@@ -28,9 +33,9 @@ export async function createLessonProgress(lessonProgress: {
 
         const payload = {
             userId: userId,
-            lessonIndex: lessonProgress.lessonIndex,
-            objectivesMet: lessonProgress.objectivesMet,
-            convoHistory: lessonProgress.convoHistory
+            lessonIndex: lessonIndex,
+            objectivesMet: objectivesMet,
+            convoHistory: convoHistory
         }
 
         const newLessonProgress = await LessonProgress.create(payload);

@@ -41,7 +41,7 @@ const LessonPage = async ({ params }: LessonPageProps) => {
           <li key={i} className="text-gray-800 text-base">{objective}</li>
         ))}
       </ul>
-      <Lesson initialInstructions={specificInstructions}></Lesson>
+      <Lesson initialInstructions={specificInstructions} lessonIndex={index}></Lesson>
     </section>
   )
 }

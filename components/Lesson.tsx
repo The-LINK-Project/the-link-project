@@ -2,24 +2,27 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { getResponse, getUserTranscription } from '@/lib/actions/conversation.actions';
-
+import { createLessonProgress } from '@/lib/actions/LessonProgress.actions';
+import { Button } from './ui/button';
 type Props = {
     initialInstructions: string;
+    lessonIndex: number
 }
-const Lesson = ({initialInstructions}: Props) => {
+const Lesson = ({initialInstructions, lessonIndex}: Props) => {
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
   const [instructions, setInstructions] = useState<string | null>(initialInstructions);
   const instructionsRef = useRef<string>(initialInstructions);
+  const [objectivesMet, setObjectivesMet] = useState<boolean[]>([]);
 
   type Message = {
     role: string;
     message: string;
-    audioURL: string;
+    audioURL?: string;
   }
-  const [conversation, setConversation] = useState<Message[] | []>([]);
+  const [convoHistory, setConvoHistory] = useState<Message[] | []>([]);
   useEffect(() => {
     if (!audioURL) return; // exit early if not set
   
@@ -32,7 +35,7 @@ const Lesson = ({initialInstructions}: Props) => {
         const userTranscription = transcriptionUser.userTranscription;
         
         console.log(userTranscription)
-        setConversation(prevConversation => [...(prevConversation ?? []), {role: "user", message: userTranscription?? "", audioURL: audioURL}])
+        setConvoHistory(prevConversation => [...(prevConversation ?? []), {role: "user", message: userTranscription?? "", audioURL: audioURL}])
 
         const updatedUserInstructions = (instructionsRef.current ?? "") + "\nUser: " + userTranscription;
         setInstructions(updatedUserInstructions);
@@ -50,7 +53,7 @@ const Lesson = ({initialInstructions}: Props) => {
         const audio = new Audio(audioSrc);
         audio.play();
         const systemTranscription = audioResponse.systemTranscription;
-        setConversation(prevConversation => [...(prevConversation ?? []), {role: "system", message: systemTranscription ?? "", audioURL: audioSrc}])
+        setConvoHistory(prevConversation => [...(prevConversation ?? []), {role: "system", message: systemTranscription ?? "", audioURL: audioSrc}])
 
         const updatedSystemInstructions = instructionsRef.current + "\nSystem: " + systemTranscription;
         setInstructions(updatedSystemInstructions);
@@ -110,6 +113,16 @@ return new Promise((resolve, reject) => {
     setRecording(false);
   };
 
+  const disconnect = async() => {
+    console.log("GONNA DISCONNECT")
+
+    const newLessonProgress = await createLessonProgress({
+        lessonIndex,
+        objectivesMet,
+        convoHistory
+    })
+  }
+
   return (
     <div style={{ textAlign: 'center', marginTop: 40 }}>
       <h2>Audio Recorder Playground</h2>
@@ -138,7 +151,7 @@ return new Promise((resolve, reject) => {
       </div>
       <div>
         <h1>Conversation</h1>
-        {conversation.map((message, index) => (
+        {convoHistory.map((message, index) => (
             <div key={index}>
                 <p key={index}>
                     <strong>{message.role}: </strong> {message.message}
@@ -148,6 +161,11 @@ return new Promise((resolve, reject) => {
                 
 
         ))}
+      </div>
+      <div className='pt-10'>
+        <Button onClick={disconnect}>
+            Exit Lesson
+        </Button>
       </div>
     </div>
   );
