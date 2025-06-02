@@ -12,7 +12,13 @@ const Lesson = ({initialInstructions}: Props) => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
   const [instructions, setInstructions] = useState<string | null>(initialInstructions);
-  const [conversation, setConversation] = useState<string[] | []>([]);
+  const instructionsRef = useRef<string>(initialInstructions);
+
+  type Message = {
+    role: string;
+    message: string;
+  }
+  const [conversation, setConversation] = useState<Message[] | []>([]);
   useEffect(() => {
     if (!audioURL) return; // exit early if not set
   
@@ -23,14 +29,18 @@ const Lesson = ({initialInstructions}: Props) => {
       const transcriptionUser = await getUserTranscription(base64 || "null")
       if (transcriptionUser.success) {
         const userTranscription = transcriptionUser.userTranscription;
+        
         console.log(userTranscription)
-        setConversation(prevConversation => [...(prevConversation ?? []), userTranscription ?? ""])
-        setInstructions(prev => (prev ?? "") + "\nUser: " + userTranscription);
+        setConversation(prevConversation => [...(prevConversation ?? []), {role: "user", message: userTranscription?? ""}])
+
+        const updatedUserInstructions = (instructionsRef.current ?? "") + "\nUser: " + userTranscription;
+        setInstructions(updatedUserInstructions);
         console.log("TEST")
         console.log(instructions)
+        instructionsRef.current = updatedUserInstructions;
       }
       // 2. Send to OpenAI/Gemini or whatever your `getResponse` is
-      const audioResponse = await getResponse(base64 || "null", instructions || "");
+      const audioResponse = await getResponse(base64 || "null", instructionsRef.current || "");
   
       // 3. If it returns a successful response, play the result
       if (audioResponse.success) {
@@ -39,8 +49,11 @@ const Lesson = ({initialInstructions}: Props) => {
         const audio = new Audio(audioSrc);
         audio.play();
         const systemTranscription = audioResponse.systemTranscription;
-        setConversation(prevConversation => [...(prevConversation ?? []), systemTranscription ?? ""])
-        setInstructions(prev => (prev ?? "") + "\nSystem: " + systemTranscription);
+        setConversation(prevConversation => [...(prevConversation ?? []), {role: "system", message: systemTranscription ?? ""}])
+
+        const updatedSystemInstructions = instructionsRef.current + "\nSystem: " + systemTranscription;
+        setInstructions(updatedSystemInstructions);
+        instructionsRef.current = updatedSystemInstructions;
         console.log("Instructions: ")
         console.log(instructions)
       }
@@ -124,7 +137,11 @@ return new Promise((resolve, reject) => {
       </div>
       <div>
         <h1>Conversation</h1>
-        <h1>{conversation}</h1>
+        {conversation.map((message, index) => (
+            <p key={index}>
+                <strong>{message.role}: </strong> {message.message}
+            </p>
+        ))}
       </div>
     </div>
   );
