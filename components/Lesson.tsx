@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { getResponse, getUserTranscription } from '@/lib/actions/conversation.actions';
 import { createLessonProgress } from '@/lib/actions/LessonProgress.actions';
 import { Button } from './ui/button';
+import { lessons } from './constants';
 type Props = {
     initialInstructions: string;
     lessonIndex: number
@@ -115,6 +116,9 @@ return new Promise((resolve, reject) => {
 
   const disconnect = async() => {
     console.log("GONNA DISCONNECT")
+
+    const lessonObj = lessons[lessonIndex]; 
+    const objectivesMet = Array(lessonObj.objectives.length).fill(false);
 
     const newLessonProgress = await createLessonProgress({
         lessonIndex,

@@ -4,6 +4,8 @@ import { instructions } from '@/utils/conversation_config'
 import { getCurrentUser } from '@/lib/actions/user.actions'
 import ConsolePage from '@/components/ConsolePage'
 import Lesson from '@/components/Lesson'
+import { getLessonProgress } from '@/lib/actions/LessonProgress.actions'
+import { formatConvoHistory } from '@/lib/utils'
 
 type LessonPageProps = {
   params: {
@@ -24,12 +26,30 @@ const LessonPage = async ({ params }: LessonPageProps) => {
   const lessonTitle = lesson.title;
   const lessonDescription = lesson.description;
   const lessonObjectives = lesson.objectives;
-  const specificInstructions = instructions
+  let specificInstructions = instructions
     .replace('<<NAME>>', user?.firstName)
     .replace('<<LESSON_TITLE>>', lessonTitle)
     .replace('<<LESSON_DESCRIPTION>>', lessonDescription)
     .replace('<<LEARNING_OBJECTIVES>>', lessonObjectives.join(', '));
   console.log(specificInstructions);
+
+  const lessonProgress = await getLessonProgress({ lessonIndex: index });
+  if (lessonProgress) {
+    const lessonObjectivesProgress = lessonProgress.lessonObjectives;
+    const lessonConvoHistory = lessonProgress.convoHistory;
+    
+    let formattedConvoHistory: string | null = null;
+
+    if (lessonConvoHistory && lessonConvoHistory.length > 0) {
+      formattedConvoHistory = formatConvoHistory(lessonConvoHistory);
+    }
+    specificInstructions = specificInstructions.replace(
+      '<<PREVIOUS_CONVERSATION>>',
+      formattedConvoHistory ?? ''
+    );
+  }
+
+
 
   return (
     <section className="max-w-2xl mx-auto mt-10 bg-white rounded-xl shadow-lg p-8">

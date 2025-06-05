@@ -51,11 +51,31 @@ interface Message {
     }
 }
 
+export async function getLessonProgress({
+    lessonIndex,
+}: {
+    lessonIndex: number
+}){
+    try {
+        await connectToDatabase()
 
+        const {sessionClaims} = await auth();
 
-// const LessonProgressSchema = new Schema({
-//     userId: {type: Schema.Types.ObjectId, ref: "User", required: true, unique: false },
-//     lessonIndex: {type: Number, required: true, unique: false },
-//     objectivesMet: {type: [Boolean], required: true, unique: false },
-//     convoHistory: {type: [{role: { type: String, required: true },message: { type: String, required: true }}],required: true, unique: false }
-// })
+        const userId = sessionClaims?.userId as string;
+
+        if (!userId) {
+            throw new Error ("User not found");
+        }
+
+        const lessonProgress = await LessonProgress.find({userId: userId, lessonIndex: lessonIndex})
+        
+        if (!lessonProgress) {
+            console.log("No Lesson Progress found")
+        }
+
+        return JSON.parse(JSON.stringify(lessonProgress));
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
