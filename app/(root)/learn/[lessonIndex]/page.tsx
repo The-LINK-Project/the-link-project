@@ -33,21 +33,36 @@ const LessonPage = async ({ params }: LessonPageProps) => {
     .replace('<<LEARNING_OBJECTIVES>>', lessonObjectives.join(', '));
   console.log(specificInstructions);
 
-  const lessonProgress = await getLessonProgress({ lessonIndex: index });
+  const lessonProgressArray = await getLessonProgress({ lessonIndex: index });
+  const lessonProgress = lessonProgressArray[0];
+  console.log(lessonProgress)
+
+  // if there is lesson progress then this changes to that
+  let lessonConvoHistory = []
+
   if (lessonProgress) {
     const lessonObjectivesProgress = lessonProgress.lessonObjectives;
-    const lessonConvoHistory = lessonProgress.convoHistory;
+    lessonConvoHistory = lessonProgress.convoHistory;
+    console.log("TEST 0");
+    console.log(lessonProgress.convoHistory)
+    console.log("TEST!");
+    console.log(lessonConvoHistory);
     
     let formattedConvoHistory: string | null = null;
 
     if (lessonConvoHistory && lessonConvoHistory.length > 0) {
+      console.log(lessonConvoHistory)
       formattedConvoHistory = formatConvoHistory(lessonConvoHistory);
+      console.log("FORMATTED: ")
+      console.log(formattedConvoHistory)
     }
     specificInstructions = specificInstructions.replace(
       '<<PREVIOUS_CONVERSATION>>',
       formattedConvoHistory ?? ''
     );
+    console.log(specificInstructions)
   }
+
 
 
 
@@ -61,7 +76,7 @@ const LessonPage = async ({ params }: LessonPageProps) => {
           <li key={i} className="text-gray-800 text-base">{objective}</li>
         ))}
       </ul>
-      <Lesson initialInstructions={specificInstructions} lessonIndex={index}></Lesson>
+      <Lesson initialInstructions={specificInstructions} lessonIndex={index} previousConvoHistory = {lessonConvoHistory}></Lesson>
     </section>
   )
 }

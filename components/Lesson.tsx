@@ -5,11 +5,19 @@ import { getResponse, getUserTranscription } from '@/lib/actions/conversation.ac
 import { createLessonProgress } from '@/lib/actions/LessonProgress.actions';
 import { Button } from './ui/button';
 import { lessons } from './constants';
+
+type Message = {
+    role: string;
+    message: string;
+    audioURL?: string;
+  }
+
 type Props = {
     initialInstructions: string;
-    lessonIndex: number
+    lessonIndex: number;
+    previousConvoHistory: Message[];
 }
-const Lesson = ({initialInstructions, lessonIndex}: Props) => {
+const Lesson = ({initialInstructions, lessonIndex, previousConvoHistory}: Props) => {
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -18,12 +26,9 @@ const Lesson = ({initialInstructions, lessonIndex}: Props) => {
   const instructionsRef = useRef<string>(initialInstructions);
   const [objectivesMet, setObjectivesMet] = useState<boolean[]>([]);
 
-  type Message = {
-    role: string;
-    message: string;
-    audioURL?: string;
-  }
-  const [convoHistory, setConvoHistory] = useState<Message[] | []>([]);
+ 
+  const [convoHistory, setConvoHistory] = useState<Message[] | []>(previousConvoHistory ?? []);
+  const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
   useEffect(() => {
     if (!audioURL) return; // exit early if not set
   
@@ -36,7 +41,9 @@ const Lesson = ({initialInstructions, lessonIndex}: Props) => {
         const userTranscription = transcriptionUser.userTranscription;
         
         console.log(userTranscription)
-        setConvoHistory(prevConversation => [...(prevConversation ?? []), {role: "user", message: userTranscription?? "", audioURL: audioURL}])
+        // use ref to keep the value up to date between renders.
+        convoHistoryRef.current = [...convoHistoryRef.current, {role: "User", message: userTranscription?? "", audioURL: audioURL}]
+        setConvoHistory(convoHistoryRef.current);
 
         const updatedUserInstructions = (instructionsRef.current ?? "") + "\nUser: " + userTranscription;
         setInstructions(updatedUserInstructions);
@@ -54,7 +61,8 @@ const Lesson = ({initialInstructions, lessonIndex}: Props) => {
         const audio = new Audio(audioSrc);
         audio.play();
         const systemTranscription = audioResponse.systemTranscription;
-        setConvoHistory(prevConversation => [...(prevConversation ?? []), {role: "system", message: systemTranscription ?? "", audioURL: audioSrc}])
+        convoHistoryRef.current = [...convoHistoryRef.current, {role: "System", message: systemTranscription ?? "", audioURL: audioSrc}]
+        setConvoHistory(convoHistoryRef.current)
 
         const updatedSystemInstructions = instructionsRef.current + "\nSystem: " + systemTranscription;
         setInstructions(updatedSystemInstructions);
