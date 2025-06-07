@@ -1,5 +1,5 @@
 import React from 'react'
-import { lessons } from '@/components/constants'
+import { lessons } from '@/constants'
 import Link from 'next/link'
 
 const DashboardPage = () => {

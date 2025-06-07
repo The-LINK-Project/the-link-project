@@ -2,10 +2,10 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { getResponse, getUserTranscription } from '@/lib/actions/conversation.actions';
-import { createLessonProgress } from '@/lib/actions/LessonProgress.actions';
+import { createLessonProgress, updateLessonProgress } from '@/lib/actions/LessonProgress.actions';
 import { Button } from './ui/button';
-import { lessons } from './constants';
-
+import { lessons } from '../constants';
+import ObjectivesMet from './ObjectivesMet';
 type Message = {
     role: string;
     message: string;
@@ -16,15 +16,20 @@ type Props = {
     initialInstructions: string;
     lessonIndex: number;
     previousConvoHistory: Message[];
+    previousLessonObjectivesProgress: boolean[];
+    lessonObjectives: string[];
 }
-const Lesson = ({initialInstructions, lessonIndex, previousConvoHistory}: Props) => {
+const Lesson = ({initialInstructions, lessonIndex, previousConvoHistory, previousLessonObjectivesProgress, lessonObjectives}: Props) => {
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
   const [instructions, setInstructions] = useState<string | null>(initialInstructions);
   const instructionsRef = useRef<string>(initialInstructions);
-  const [objectivesMet, setObjectivesMet] = useState<boolean[]>([]);
+  const [objectivesMet, setObjectivesMet] = useState<boolean[]>(previousLessonObjectivesProgress);
+
+  console.log("OBJECTIVES MET");
+  console.log(objectivesMet)
 
  
   const [convoHistory, setConvoHistory] = useState<Message[] | []>(previousConvoHistory ?? []);
@@ -133,6 +138,22 @@ return new Promise((resolve, reject) => {
         objectivesMet,
         convoHistory
     })
+  };
+
+  const updateObjectivesMet = () => {
+    console.log("UPDATING LESSON PROGRESS");
+    // makin a copy here so rerender works
+    const updatedObjectivesMet = [...objectivesMet]; 
+    updatedObjectivesMet[0] = true;
+    setObjectivesMet(updatedObjectivesMet);    
+    console.log(objectivesMet)
+    console.log(updatedObjectivesMet)
+    const updatedLesson = updateLessonProgress({
+        updatedObjectivesMet,
+        lessonIndex
+    });
+    console.log(updatedLesson);
+
   }
 
   return (
@@ -178,7 +199,12 @@ return new Promise((resolve, reject) => {
         <Button onClick={disconnect}>
             Exit Lesson
         </Button>
+        <Button onClick = {updateObjectivesMet}>
+            Change Lesson Progress
+        </Button>
+        <h1>{objectivesMet}</h1>
       </div>
+        <ObjectivesMet lessonObjectives={lessonObjectives} lessonObjectivesProgress={objectivesMet}></ObjectivesMet>
     </div>
   );
 };

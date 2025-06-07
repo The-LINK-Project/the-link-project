@@ -1,5 +1,5 @@
 import React from 'react'
-import { navLinks } from '../constants'
+import { navLinks } from '../../constants'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 

@@ -79,3 +79,34 @@ export async function getLessonProgress({
         throw error;
     }
 }
+
+export async function updateLessonProgress({
+    updatedObjectivesMet,
+    lessonIndex,
+}: {
+    updatedObjectivesMet: boolean[],
+    lessonIndex: number,
+}){
+    try {
+        await connectToDatabase();
+
+        const {sessionClaims} = await auth();
+
+        const userId = sessionClaims?.userId as string;
+
+        if (!userId) {
+            throw new Error ("User not found");
+        }
+
+        // const lessonProgress= await LessonProgress.find({userId: userId, lessonIndex: lessonIndex})
+        const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
+            { userId, lessonIndex},
+            { $set: {objectivesMet: updatedObjectivesMet}},
+            { new: true},
+        )
+
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}

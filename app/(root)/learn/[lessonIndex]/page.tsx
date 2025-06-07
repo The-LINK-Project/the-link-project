@@ -1,5 +1,5 @@
 import React from 'react'
-import { lessons } from '@/components/constants'
+import { lessons } from '@/constants'
 import { instructions } from '@/utils/conversation_config'
 import { getCurrentUser } from '@/lib/actions/user.actions'
 import ConsolePage from '@/components/ConsolePage'
@@ -39,9 +39,12 @@ const LessonPage = async ({ params }: LessonPageProps) => {
 
   // if there is lesson progress then this changes to that
   let lessonConvoHistory = []
+  let lessonObjectivesProgress = []
 
   if (lessonProgress) {
-    const lessonObjectivesProgress = lessonProgress.lessonObjectives;
+    lessonObjectivesProgress = lessonProgress.objectivesMet;
+    console.log("TEST ))")
+    console.log(lessonObjectivesProgress)
     lessonConvoHistory = lessonProgress.convoHistory;
     console.log("TEST 0");
     console.log(lessonProgress.convoHistory)
@@ -76,7 +79,7 @@ const LessonPage = async ({ params }: LessonPageProps) => {
           <li key={i} className="text-gray-800 text-base">{objective}</li>
         ))}
       </ul>
-      <Lesson initialInstructions={specificInstructions} lessonIndex={index} previousConvoHistory = {lessonConvoHistory}></Lesson>
+      <Lesson initialInstructions={specificInstructions} lessonIndex={index} previousConvoHistory = {lessonConvoHistory} previousLessonObjectivesProgress = {lessonObjectivesProgress} lessonObjectives = {lessonObjectives}></Lesson>
     </section>
   )
 }

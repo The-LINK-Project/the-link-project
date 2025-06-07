@@ -1,5 +1,5 @@
 import React from 'react'
-import { frequentlyAskedQuestions } from '../constants'
+import { frequentlyAskedQuestions } from '../../constants'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion'
 
 

@@ -8,8 +8,7 @@ const LessonProgressSchema = new Schema({
     convoHistory: {type: [{role: { type: String, required: true },message: { type: String, required: true }, audioURL: {type: String, required: false}}],required: true, unique: false }
 })
 
-const LessonProgress = models.LessonProgress || model ("LessonsProgress", LessonProgressSchema);
+const LessonProgress = models.LessonProgress || model ("LessonProgress", LessonProgressSchema);
 
 export default LessonProgress
-
 
