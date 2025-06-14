@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { getResponse, getUserTranscription } from '@/lib/actions/conversation.actions';
-import { createLessonProgress, updateLessonProgress } from '@/lib/actions/LessonProgress.actions';
+import { createLessonProgress, initLessonProgress, updateLessonProgress } from '@/lib/actions/LessonProgress.actions';
 import { Button } from './ui/button';
 import { lessons } from '../constants';
 import ObjectivesMet from './ObjectivesMet';
@@ -18,8 +18,9 @@ type Props = {
     previousConvoHistory: Message[];
     previousLessonObjectivesProgress: boolean[];
     lessonObjectives: string[];
+    isLessonProgress: boolean;
 }
-const Lesson = ({initialInstructions, lessonIndex, previousConvoHistory, previousLessonObjectivesProgress, lessonObjectives}: Props) => {
+const Lesson = ({initialInstructions, lessonIndex, previousConvoHistory, previousLessonObjectivesProgress, lessonObjectives, isLessonProgress}: Props) => {
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -27,12 +28,24 @@ const Lesson = ({initialInstructions, lessonIndex, previousConvoHistory, previou
   const [instructions, setInstructions] = useState<string | null>(initialInstructions);
   const instructionsRef = useRef<string>(initialInstructions);
   const [objectivesMet, setObjectivesMet] = useState<boolean[]>(previousLessonObjectivesProgress);
+  const [convoHistory, setConvoHistory] = useState<Message[] | []>(previousConvoHistory ?? []);
 
   console.log("OBJECTIVES MET");
   console.log(objectivesMet)
 
+  useEffect(() => {
+    console.log(`Lesson Progress?: ${isLessonProgress}`)
+    console.log("TO INITIALISE")
+    const runInit = async () => {
+      if (isLessonProgress == false) {
+        const startLessonProgress = await initLessonProgress({lessonIndex: lessonIndex, objectives: lessonObjectives})
+      }
+    console.log("DONE INITIALISING")
+    };
+    runInit()
+  }, [])
+
  
-  const [convoHistory, setConvoHistory] = useState<Message[] | []>(previousConvoHistory ?? []);
   const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
   useEffect(() => {
     if (!audioURL) return; // exit early if not set
@@ -81,6 +94,18 @@ const Lesson = ({initialInstructions, lessonIndex, previousConvoHistory, previou
   
   }, [audioURL]); // 🔁 This whole effect re-runs when `audioURL` changes
   
+  // Call disonnect when the user disonnects unnaturally e.g closing tab
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      disconnect();
+    };
+  
+    window.addEventListener('beforeunload', handleBeforeUnload);
+  
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
 async function urlToBase64(audioUrl: string): Promise<string> {
 const response = await fetch(audioUrl);

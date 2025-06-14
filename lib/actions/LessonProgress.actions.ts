@@ -5,20 +5,22 @@ import { revalidatePath } from "next/cache";
 import User from "@/lib/database/models/user.model";
 import LessonProgress from "../database/models/lessonProgress.model";
 import { auth } from "@clerk/nextjs/server";
+import { formatInitialObjectives } from "../utils";
 
 interface Message {
     role: string;
     message: string;
     audioURL?: string;
   }
-  export async function createLessonProgress({
+
+// when user has never done the lesson before and goes to it make a mongoDB item with convoHistory and objectives met default empty array and false array respectively
+  export async function initLessonProgress({
     lessonIndex,
-    objectivesMet,
-    convoHistory,
+    objectives
   }: {
     lessonIndex: number;
-    objectivesMet: boolean[];
-    convoHistory: Message[];
+    objectives: string[]
+
   }){
     try {
         await connectToDatabase();
@@ -31,13 +33,15 @@ interface Message {
             throw new Error ("User not found");
         }
 
+        const objectivesMet = formatInitialObjectives(objectives)
+
         const payload = {
             userId: userId,
             lessonIndex: lessonIndex,
             objectivesMet: objectivesMet,
-            convoHistory: convoHistory
+            convoHistory: []
         }
-
+        console.log(`PAYLOAD: ${payload}`)
         const newLessonProgress = await LessonProgress.create(payload);
 
         if (!newLessonProgress)
@@ -49,6 +53,46 @@ interface Message {
         console.log(error);
         throw error;
     }
+}
+
+export async function createLessonProgress({
+lessonIndex,
+objectivesMet,
+convoHistory,
+}: {
+lessonIndex: number;
+objectivesMet: boolean[];
+convoHistory: Message[];
+}){
+try {
+    await connectToDatabase();
+
+    const {sessionClaims} = await auth();
+
+    const userId = sessionClaims?.userId as string;
+
+    if (!userId) {
+        throw new Error ("User not found");
+    }
+
+    const payload = {
+        userId: userId,
+        lessonIndex: lessonIndex,
+        objectivesMet: objectivesMet,
+        convoHistory: convoHistory
+    }
+
+    const newLessonProgress = await LessonProgress.create(payload);
+
+    if (!newLessonProgress)
+        throw Error ("Failed to create new lesson progress")
+
+    return JSON.parse(JSON.stringify(newLessonProgress));
+
+} catch (error) {
+    console.log(error);
+    throw error;
+}
 }
 
 export async function getLessonProgress({
@@ -104,6 +148,37 @@ export async function updateLessonProgress({
             { $set: {objectivesMet: updatedObjectivesMet}},
             { new: true},
         )
+
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+// this is used right when the user first opens the lesson, checks if they've done any part of the lesson before 
+export async function checkIfLessonProgress({
+    lessonIndex,
+}: {
+    lessonIndex: number
+}){
+    try {
+        await connectToDatabase();
+
+        const {sessionClaims} = await auth();
+
+        const userId = sessionClaims?.userId as string;
+
+        if (!userId) {
+            throw new Error ("User not found");
+        }
+
+        const lessonProgress = await LessonProgress.findOne({
+            userId, 
+            lessonIndex
+          });
+
+        // will return true if user has touched the lesson b4
+        return !!lessonProgress;
 
     } catch (error) {
         console.log(error);

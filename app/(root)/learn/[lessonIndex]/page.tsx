@@ -1,11 +1,12 @@
-import React from 'react'
-import { lessons } from '@/constants'
-import { instructions } from '@/utils/conversation_config'
-import { getCurrentUser } from '@/lib/actions/user.actions'
-import ConsolePage from '@/components/ConsolePage'
-import Lesson from '@/components/Lesson'
-import { getLessonProgress } from '@/lib/actions/LessonProgress.actions'
-import { formatConvoHistory } from '@/lib/utils'
+import React from 'react';
+import { lessons } from '@/constants';
+import { instructions } from '@/utils/conversation_config';
+import { getCurrentUser } from '@/lib/actions/user.actions';
+import ConsolePage from '@/components/ConsolePage';
+import Lesson from '@/components/Lesson';
+import { getLessonProgress } from '@/lib/actions/LessonProgress.actions';
+import { formatConvoHistory } from '@/lib/utils';
+import { checkIfLessonProgress } from '@/lib/actions/LessonProgress.actions';
 
 type LessonPageProps = {
   params: {
@@ -65,6 +66,9 @@ const LessonPage = async ({ params }: LessonPageProps) => {
     );
     console.log(specificInstructions)
   }
+// check if they have done any part of the lesson before.
+  const isLessonProgress = await checkIfLessonProgress({lessonIndex: index})
+  console.log(isLessonProgress)
 
 
 
@@ -79,7 +83,7 @@ const LessonPage = async ({ params }: LessonPageProps) => {
           <li key={i} className="text-gray-800 text-base">{objective}</li>
         ))}
       </ul>
-      <Lesson initialInstructions={specificInstructions} lessonIndex={index} previousConvoHistory = {lessonConvoHistory} previousLessonObjectivesProgress = {lessonObjectivesProgress} lessonObjectives = {lessonObjectives}></Lesson>
+      <Lesson initialInstructions={specificInstructions} lessonIndex={index} previousConvoHistory = {lessonConvoHistory} previousLessonObjectivesProgress = {lessonObjectivesProgress} lessonObjectives = {lessonObjectives} isLessonProgress = {isLessonProgress}></Lesson>
     </section>
   )
 }
