@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { getResponse, getUserTranscription } from '@/lib/actions/conversation.actions';
-import { createLessonProgress, initLessonProgress, updateLessonProgress } from '@/lib/actions/LessonProgress.actions';
+import { initLessonProgress, updateLessonProgress } from '@/lib/actions/LessonProgress.actions';
 import { Button } from './ui/button';
 import { lessons } from '../constants';
 import ObjectivesMet from './ObjectivesMet';
@@ -33,17 +33,23 @@ const Lesson = ({initialInstructions, lessonIndex, previousConvoHistory, previou
   console.log("OBJECTIVES MET");
   console.log(objectivesMet)
 
+// prevents a double creation in mongodb
+  const hasRunRef = useRef(false);
+
   useEffect(() => {
-    console.log(`Lesson Progress?: ${isLessonProgress}`)
-    console.log("TO INITIALISE")
-    const runInit = async () => {
-      if (isLessonProgress == false) {
-        const startLessonProgress = await initLessonProgress({lessonIndex: lessonIndex, objectives: lessonObjectives})
-      }
-    console.log("DONE INITIALISING")
-    };
-    runInit()
-  }, [])
+    if (!hasRunRef.current) {
+      console.log(`Lesson Progress?: ${isLessonProgress}`);
+      console.log("TO INITIALISE");
+      const runInit = async () => {
+        if (isLessonProgress === false) {
+          const startLessonProgress = await initLessonProgress({lessonIndex: lessonIndex, objectives: lessonObjectives});
+        }
+        console.log("DONE INITIALISING");
+      };
+      runInit();
+      hasRunRef.current = true; // Set the ref so no repeat
+    }
+  }, [isLessonProgress, lessonIndex, lessonObjectives]);
 
  
   const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
@@ -155,13 +161,20 @@ return new Promise((resolve, reject) => {
   const disconnect = async() => {
     console.log("GONNA DISCONNECT")
 
-    const lessonObj = lessons[lessonIndex]; 
-    const objectivesMet = Array(lessonObj.objectives.length).fill(false);
+    // const lessonObj = lessons[lessonIndex]; 
+    // const objectivesMet = Array(lessonObj.objectives.length).fill(false);
 
-    const newLessonProgress = await createLessonProgress({
+    // here I destructure each message and remove audioURL because it is not needed in the database and takes too much storage data
+    const convoHistoryWithoutAudio = convoHistory.map(message => {
+      // Use object destructuring with rest property to remove audioURL from each message
+      const { audioURL, ...messageWithoutAudio } = message;
+      return messageWithoutAudio;
+    });
+
+    const newLessonProgress = await updateLessonProgress({
         lessonIndex,
         objectivesMet,
-        convoHistory
+        convoHistory: convoHistoryWithoutAudio
     })
   };
 
@@ -173,11 +186,11 @@ return new Promise((resolve, reject) => {
     setObjectivesMet(updatedObjectivesMet);    
     console.log(objectivesMet)
     console.log(updatedObjectivesMet)
-    const updatedLesson = updateLessonProgress({
-        updatedObjectivesMet,
-        lessonIndex
-    });
-    console.log(updatedLesson);
+    // const updatedLesson = updateLessonProgress({
+    //     updatedObjectivesMet,
+    //     lessonIndex
+    // });
+    // console.log(updatedLesson);
 
   }
 

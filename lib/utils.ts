@@ -13,6 +13,7 @@ export function formatConvoHistory(convoHistory: { role: string; message: string
 
 export function formatInitialObjectives(objectives: any[]){
   const initialObjectives =  Array(objectives.length).fill(false);
+  console.log(`INITIAL OBJECRIVES: ${initialObjectives}`)
   return initialObjectives;
 }
 
