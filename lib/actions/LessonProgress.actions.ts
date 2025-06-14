@@ -35,6 +35,8 @@ interface Message {
 
         const objectivesMet = formatInitialObjectives(objectives)
 
+        console.log(`TOINK: ${objectivesMet}`)
+
         const payload = {
             userId: userId,
             lessonIndex: lessonIndex,
@@ -47,6 +49,7 @@ interface Message {
         if (!newLessonProgress)
             throw Error ("Failed to create new lesson progress")
 
+        console.log(`NEWLESSONPROG: ${newLessonProgress}`)
         return JSON.parse(JSON.stringify(newLessonProgress));
 
     } catch (error) {
@@ -55,45 +58,45 @@ interface Message {
     }
 }
 
-export async function createLessonProgress({
-lessonIndex,
-objectivesMet,
-convoHistory,
-}: {
-lessonIndex: number;
-objectivesMet: boolean[];
-convoHistory: Message[];
-}){
-try {
-    await connectToDatabase();
+// export async function createLessonProgress({
+// lessonIndex,
+// objectivesMet,
+// convoHistory,
+// }: {
+// lessonIndex: number;
+// objectivesMet: boolean[];
+// convoHistory: Message[];
+// }){
+// try {
+//     await connectToDatabase();
 
-    const {sessionClaims} = await auth();
+//     const {sessionClaims} = await auth();
 
-    const userId = sessionClaims?.userId as string;
+//     const userId = sessionClaims?.userId as string;
 
-    if (!userId) {
-        throw new Error ("User not found");
-    }
+//     if (!userId) {
+//         throw new Error ("User not found");
+//     }
 
-    const payload = {
-        userId: userId,
-        lessonIndex: lessonIndex,
-        objectivesMet: objectivesMet,
-        convoHistory: convoHistory
-    }
+//     const payload = {
+//         userId: userId,
+//         lessonIndex: lessonIndex,
+//         objectivesMet: objectivesMet,
+//         convoHistory: convoHistory
+//     }
 
-    const newLessonProgress = await LessonProgress.create(payload);
+//     const newLessonProgress = await LessonProgress.create(payload);
 
-    if (!newLessonProgress)
-        throw Error ("Failed to create new lesson progress")
+//     if (!newLessonProgress)
+//         throw Error ("Failed to create new lesson progress")
 
-    return JSON.parse(JSON.stringify(newLessonProgress));
+//     return JSON.parse(JSON.stringify(newLessonProgress));
 
-} catch (error) {
-    console.log(error);
-    throw error;
-}
-}
+// } catch (error) {
+//     console.log(error);
+//     throw error;
+// }
+// }
 
 export async function getLessonProgress({
     lessonIndex,
@@ -124,36 +127,36 @@ export async function getLessonProgress({
     }
 }
 
-export async function updateLessonProgress({
-    updatedObjectivesMet,
-    lessonIndex,
-}: {
-    updatedObjectivesMet: boolean[],
-    lessonIndex: number,
-}){
-    try {
-        await connectToDatabase();
+// export async function updateLessonProgress({
+//     updatedObjectivesMet,
+//     lessonIndex,
+// }: {
+//     updatedObjectivesMet: boolean[],
+//     lessonIndex: number,
+// }){
+//     try {
+//         await connectToDatabase();
 
-        const {sessionClaims} = await auth();
+//         const {sessionClaims} = await auth();
 
-        const userId = sessionClaims?.userId as string;
+//         const userId = sessionClaims?.userId as string;
 
-        if (!userId) {
-            throw new Error ("User not found");
-        }
+//         if (!userId) {
+//             throw new Error ("User not found");
+//         }
 
-        // const lessonProgress= await LessonProgress.find({userId: userId, lessonIndex: lessonIndex})
-        const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
-            { userId, lessonIndex},
-            { $set: {objectivesMet: updatedObjectivesMet}},
-            { new: true},
-        )
+//         // const lessonProgress= await LessonProgress.find({userId: userId, lessonIndex: lessonIndex})
+//         const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
+//             { userId, lessonIndex},
+//             { $set: {objectivesMet: updatedObjectivesMet}},
+//             { new: true},
+//         )
 
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
+//     } catch (error) {
+//         console.log(error);
+//         throw error;
+//     }
+// }
 
 // this is used right when the user first opens the lesson, checks if they've done any part of the lesson before 
 export async function checkIfLessonProgress({
@@ -185,3 +188,49 @@ export async function checkIfLessonProgress({
         throw error;
     }
 }
+
+// this runs when the user clicks disconnect or unnaturally disconnects such as exiting tab
+export async function updateLessonProgress({
+    lessonIndex,
+    objectivesMet,
+    convoHistory,
+    }: {
+    lessonIndex: number;
+    objectivesMet: boolean[];
+    convoHistory: Message[];
+    }){
+    try {
+        await connectToDatabase();
+    
+        const {sessionClaims} = await auth();
+    
+        const userId = sessionClaims?.userId as string;
+    
+        if (!userId) {
+            throw new Error ("User not found");
+        }
+        const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
+            {
+                userId: userId, lessonIndex: lessonIndex
+            },
+            {
+                $set: {
+                    objectivesMet: objectivesMet,
+                    convoHistory: convoHistory
+                }
+            },
+            {
+                upsert: true, new: true
+            }
+        );
+    
+        if (!updatedLessonProgress)
+            throw Error ("Failed to create new lesson progress")
+    
+        return JSON.parse(JSON.stringify(updatedLessonProgress));
+    
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+    }
