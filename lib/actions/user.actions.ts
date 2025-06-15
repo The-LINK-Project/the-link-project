@@ -1,4 +1,4 @@
-"use server"; 
+"use server";
 
 import { connectToDatabase } from "@/lib/database";
 import { revalidatePath } from "next/cache";
@@ -6,29 +6,27 @@ import { revalidatePath } from "next/cache";
 import User from "@/lib/database/models/user.model";
 import { auth } from "@clerk/nextjs/server";
 
-export async function createUser(user: { 
-    clerkId: string; 
-    firstName: string; 
-    lastName: string; 
-    username: string; 
+export async function createUser(user: {
+    clerkId: string;
+    firstName: string;
+    lastName: string;
+    username: string;
     email: string;
-    photo: string; 
+    photo: string;
 }) {
-    try 
-    {
+    try {
         await connectToDatabase();
 
         const newUser = await User.create(user);
 
         return JSON.parse(JSON.stringify(newUser));
     } catch (error) {
-        console.log (error);
-        throw error; 
+        console.log(error);
+        throw error;
     }
 }
 
-export async function getUserById(userId: string)
-{
+export async function getUserById(userId: string) {
     try {
         await connectToDatabase();
 
@@ -38,17 +36,20 @@ export async function getUserById(userId: string)
 
         return JSON.parse(JSON.stringify(user));
     } catch (error) {
-        console.log (error);
-        throw error; 
+        console.log(error);
+        throw error;
     }
 }
 
-export async function updateUser(clerkId: string, user: {
-    firstName: string; 
-    lastName: string; 
-    username: string; 
-    photo: string; 
-}) {
+export async function updateUser(
+    clerkId: string,
+    user: {
+        firstName: string;
+        lastName: string;
+        username: string;
+        photo: string;
+    }
+) {
     try {
         await connectToDatabase();
 
@@ -59,7 +60,7 @@ export async function updateUser(clerkId: string, user: {
         if (!updatedUser) throw new Error("User update failed");
         return JSON.parse(JSON.stringify(updatedUser));
     } catch (error) {
-        console.log (error);
+        console.log(error);
         throw error;
     }
 }
@@ -79,11 +80,11 @@ export async function deleteUser(clerkId: string) {
 
         // Delete user
         const deletedUser = await User.findByIdAndDelete(userToDelete._id);
-        revalidatePath("/"); 
+        revalidatePath("/");
 
         return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
     } catch (error) {
-        console.log (error);
+        console.log(error);
         throw error;
     }
 }
@@ -99,7 +100,3 @@ export async function getCurrentUser() {
 
     return getUserById(userId);
 }
-
-
-
-                      

@@ -1,4 +1,4 @@
-"use server"; 
+"use server";
 
 import { connectToDatabase } from "@/lib/database";
 import { revalidatePath } from "next/cache";
@@ -11,47 +11,45 @@ interface Message {
     role: string;
     message: string;
     audioURL?: string;
-  }
+}
 
 // when user has never done the lesson before and goes to it make a mongoDB item with convoHistory and objectives met default empty array and false array respectively
-  export async function initLessonProgress({
+export async function initLessonProgress({
     lessonIndex,
-    objectives
-  }: {
+    objectives,
+}: {
     lessonIndex: number;
-    objectives: string[]
-
-  }){
+    objectives: string[];
+}) {
     try {
         await connectToDatabase();
 
-        const {sessionClaims} = await auth();
+        const { sessionClaims } = await auth();
 
         const userId = sessionClaims?.userId as string;
 
         if (!userId) {
-            throw new Error ("User not found");
+            throw new Error("User not found");
         }
 
-        const objectivesMet = formatInitialObjectives(objectives)
+        const objectivesMet = formatInitialObjectives(objectives);
 
-        console.log(`TOINK: ${objectivesMet}`)
+        console.log(`TOINK: ${objectivesMet}`);
 
         const payload = {
             userId: userId,
             lessonIndex: lessonIndex,
             objectivesMet: objectivesMet,
-            convoHistory: []
-        }
-        console.log(`PAYLOAD: ${payload}`)
+            convoHistory: [],
+        };
+        console.log(`PAYLOAD: ${payload}`);
         const newLessonProgress = await LessonProgress.create(payload);
 
         if (!newLessonProgress)
-            throw Error ("Failed to create new lesson progress")
+            throw Error("Failed to create new lesson progress");
 
-        console.log(`NEWLESSONPROG: ${newLessonProgress}`)
+        console.log(`NEWLESSONPROG: ${newLessonProgress}`);
         return JSON.parse(JSON.stringify(newLessonProgress));
-
     } catch (error) {
         console.log(error);
         throw error;
@@ -101,23 +99,26 @@ interface Message {
 export async function getLessonProgress({
     lessonIndex,
 }: {
-    lessonIndex: number
-}){
+    lessonIndex: number;
+}): Promise<LessonProgress> {
     try {
-        await connectToDatabase()
+        await connectToDatabase();
 
-        const {sessionClaims} = await auth();
+        const { sessionClaims } = await auth();
 
         const userId = sessionClaims?.userId as string;
 
         if (!userId) {
-            throw new Error ("User not found");
+            throw new Error("User not found");
         }
 
-        const lessonProgress = await LessonProgress.find({userId: userId, lessonIndex: lessonIndex})
-        
+        const lessonProgress = await LessonProgress.findOne({
+            userId: userId,
+            lessonIndex: lessonIndex,
+        });
+
         if (!lessonProgress) {
-            console.log("No Lesson Progress found")
+            console.log("No Lesson Progress found");
         }
 
         return JSON.parse(JSON.stringify(lessonProgress));
@@ -158,31 +159,30 @@ export async function getLessonProgress({
 //     }
 // }
 
-// this is used right when the user first opens the lesson, checks if they've done any part of the lesson before 
+// this is used right when the user first opens the lesson, checks if they've done any part of the lesson before
 export async function checkIfLessonProgress({
     lessonIndex,
 }: {
-    lessonIndex: number
-}){
+    lessonIndex: number;
+}) {
     try {
         await connectToDatabase();
 
-        const {sessionClaims} = await auth();
+        const { sessionClaims } = await auth();
 
         const userId = sessionClaims?.userId as string;
 
         if (!userId) {
-            throw new Error ("User not found");
+            throw new Error("User not found");
         }
 
         const lessonProgress = await LessonProgress.findOne({
-            userId, 
-            lessonIndex
-          });
+            userId,
+            lessonIndex,
+        });
 
         // will return true if user has touched the lesson b4
         return !!lessonProgress;
-
     } catch (error) {
         console.log(error);
         throw error;
@@ -194,43 +194,44 @@ export async function updateLessonProgress({
     lessonIndex,
     objectivesMet,
     convoHistory,
-    }: {
+}: {
     lessonIndex: number;
     objectivesMet: boolean[];
     convoHistory: Message[];
-    }){
+}) {
     try {
         await connectToDatabase();
-    
-        const {sessionClaims} = await auth();
-    
+
+        const { sessionClaims } = await auth();
+
         const userId = sessionClaims?.userId as string;
-    
+
         if (!userId) {
-            throw new Error ("User not found");
+            throw new Error("User not found");
         }
         const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
             {
-                userId: userId, lessonIndex: lessonIndex
+                userId: userId,
+                lessonIndex: lessonIndex,
             },
             {
                 $set: {
                     objectivesMet: objectivesMet,
-                    convoHistory: convoHistory
-                }
+                    convoHistory: convoHistory,
+                },
             },
             {
-                upsert: true, new: true
+                upsert: true,
+                new: true,
             }
         );
-    
+
         if (!updatedLessonProgress)
-            throw Error ("Failed to create new lesson progress")
-    
+            throw Error("Failed to create new lesson progress");
+
         return JSON.parse(JSON.stringify(updatedLessonProgress));
-    
     } catch (error) {
         console.log(error);
         throw error;
     }
-    }
+}
