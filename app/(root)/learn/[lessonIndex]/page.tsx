@@ -33,7 +33,7 @@ const LessonPage = async ({ params }: LessonPageProps) => {
     .replace('<<NAME>>', user?.firstName)
     .replace('<<LESSON_TITLE>>', lessonTitle)
     .replace('<<LESSON_DESCRIPTION>>', lessonDescription)
-    .replace('<<LEARNING_OBJECTIVES>>', lessonObjectives.join(', '));
+    .replace('<<LEARNING_OBJECTIVES>>', lessonObjectives.map((objective, index) => `INDEX ${index}: ${objective}`).join(', '));
   console.log(specificInstructions);
 
 

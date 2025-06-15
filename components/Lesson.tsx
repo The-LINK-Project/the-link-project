@@ -75,8 +75,8 @@ const Lesson = ({initialInstructions, lessonIndex, previousConvoHistory, previou
         console.log(instructions)
         instructionsRef.current = updatedUserInstructions;
       }
-      // 2. Send to OpenAI/Gemini or whatever your `getResponse` is
-      const audioResponse = await getResponse(base64 || "null", instructionsRef.current || "");
+      // 2. Send to gemini and openai for audio
+      const audioResponse = await getResponse(base64 || "null", instructionsRef.current || "", convoHistoryRef.current, objectivesMet);
   
       // 3. If it returns a successful response, play the result
       if (audioResponse.success) {
@@ -91,14 +91,28 @@ const Lesson = ({initialInstructions, lessonIndex, previousConvoHistory, previou
         const updatedSystemInstructions = instructionsRef.current + "\nSystem: " + systemTranscription;
         setInstructions(updatedSystemInstructions);
         instructionsRef.current = updatedSystemInstructions;
-        console.log("Instructions: ")
-        console.log(instructions)
+        // console.log("Instructions: ")
+        // console.log(instructions)
+
+        // if objective index was returned by function call update objectivesMet
+        const objectiveIndex = audioResponse.objectiveIndex;
+        console.log (">>>>>>>>>>>>>>>>>>>>>˘")
+        console.log (JSON.stringify(audioResponse, null, 2))
+        console.log (">>>>>>>>>>>>>>>>>>>>>˘")
+        console.log ("objectiveIndex: ")
+        console.log (objectiveIndex); 
+        console.log (">>>>>>>>>>>>>>>>>>>>>˘")
+
+        if (objectiveIndex !== undefined) {
+
+          updateObjectivesMet(objectiveIndex)
+        }
       }
     };
   
     handleResponse(); // Trigger the async function
   
-  }, [audioURL]); // 🔁 This whole effect re-runs when `audioURL` changes
+  }, [audioURL]);
   
   // Call disonnect when the user disonnects unnaturally e.g closing tab
   useEffect(() => {
@@ -178,23 +192,19 @@ return new Promise((resolve, reject) => {
     })
   };
 
-  const updateObjectivesMet = () => {
-    console.log(`Before update: ${objectivesMet}`)
-    console.log("UPDATING LESSON PROGRESS");
+  const updateObjectivesMet = (index: number) => {
+    console.log ("UPDATING OBJECTIVES MET")
+
+    console.log ("1. previous objectives met:")
+    console.log (objectivesMet); 
+
     // makin a copy here so rerender works
     const updatedObjectivesMet = [...objectivesMet]; 
-    console.log(updatedObjectivesMet)
-    updatedObjectivesMet[0] = true;
-    console.log(updatedObjectivesMet)
+    updatedObjectivesMet[index] = true;
     setObjectivesMet(updatedObjectivesMet);    
-    console.log(objectivesMet)
-    console.log(updatedObjectivesMet)
-    // const updatedLesson = updateLessonProgress({
-    //     updatedObjectivesMet,
-    //     lessonIndex
-    // });
-    // console.log(updatedLesson);
 
+    console.log ("2. after objectives met updated:")
+    console.log (updatedObjectivesMet); 
   }
 
   return (
@@ -242,9 +252,9 @@ return new Promise((resolve, reject) => {
         <Button onClick={disconnect}>
             Exit Lesson
         </Button>
-        <Button onClick = {updateObjectivesMet}>
+        {/* <Button onClick = {updateObjectivesMet}>
             Change Lesson Progress
-        </Button>
+        </Button> */}
         <h1>{objectivesMet}</h1>
       </div>
         <ObjectivesMet lessonObjectives={lessonObjectives} lessonObjectivesProgress={objectivesMet}></ObjectivesMet>
