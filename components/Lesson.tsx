@@ -11,6 +11,7 @@ import {
 } from "@/lib/actions/LessonProgress.actions";
 import { Button } from "./ui/button";
 import ObjectivesMet from "./ObjectivesMet";
+import Loading from "./shared/Loading";
 
 type LessonProps = {
     initialInstructions: string;
@@ -43,6 +44,7 @@ const Lesson = ({
     const [convoHistory, setConvoHistory] = useState<Message[] | []>(
         previousConvoHistory ?? []
     );
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // prevents a double creation in mongodb
     const hasRunRef = useRef(false);
@@ -68,8 +70,9 @@ const Lesson = ({
     const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
     useEffect(() => {
         if (!audioURL) return; // exit early if not set
-
+        
         const handleResponse = async () => {
+            setIsLoading(true)
             // 1. Convert recorded audio to base64
             const base64 = await urlToBase64(audioURL);
 
@@ -151,6 +154,7 @@ const Lesson = ({
                 convoHistory: convoHistoryWithoutAudio
             })
        
+            setIsLoading(false)
         };
 
         handleResponse(); // Trigger the async function
@@ -280,6 +284,9 @@ const Lesson = ({
                 lessonObjectives={lessonObjectives}
                 lessonObjectivesProgress={objectivesMet}
             ></ObjectivesMet>
+            <div>
+                {isLoading ? <Loading/> : null}
+            </div>          
         </div>
     );
 };
