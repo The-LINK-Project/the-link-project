@@ -179,10 +179,13 @@ return new Promise((resolve, reject) => {
   };
 
   const updateObjectivesMet = () => {
+    console.log(`Before update: ${objectivesMet}`)
     console.log("UPDATING LESSON PROGRESS");
     // makin a copy here so rerender works
     const updatedObjectivesMet = [...objectivesMet]; 
+    console.log(updatedObjectivesMet)
     updatedObjectivesMet[0] = true;
+    console.log(updatedObjectivesMet)
     setObjectivesMet(updatedObjectivesMet);    
     console.log(objectivesMet)
     console.log(updatedObjectivesMet)
@@ -227,7 +230,9 @@ return new Promise((resolve, reject) => {
                 <p key={index}>
                     <strong>{message.role}: </strong> {message.message}
                 </p>
-                <audio src={message.audioURL?? ""} controls></audio>
+                {message.audioURL && (
+                  <audio src={message.audioURL} controls></audio>
+)}
             </div>
                 
 

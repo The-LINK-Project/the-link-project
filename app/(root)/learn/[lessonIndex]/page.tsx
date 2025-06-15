@@ -5,7 +5,7 @@ import { getCurrentUser } from '@/lib/actions/user.actions';
 import ConsolePage from '@/components/ConsolePage';
 import Lesson from '@/components/Lesson';
 import { getLessonProgress } from '@/lib/actions/LessonProgress.actions';
-import { formatConvoHistory } from '@/lib/utils';
+import { formatConvoHistory, formatInitialObjectives } from '@/lib/utils';
 import { checkIfLessonProgress } from '@/lib/actions/LessonProgress.actions';
 
 type LessonPageProps = {
@@ -24,6 +24,8 @@ const LessonPage = async ({ params }: LessonPageProps) => {
   if (!lesson) {
     return <div>Lesson not found.</div>
   }
+
+  // fill all the replacements in instructions
   const lessonTitle = lesson.title;
   const lessonDescription = lesson.description;
   const lessonObjectives = lesson.objectives;
@@ -34,44 +36,46 @@ const LessonPage = async ({ params }: LessonPageProps) => {
     .replace('<<LEARNING_OBJECTIVES>>', lessonObjectives.join(', '));
   console.log(specificInstructions);
 
-  const lessonProgressArray = await getLessonProgress({ lessonIndex: index });
-  const lessonProgress = lessonProgressArray[0];
-  console.log(lessonProgress)
 
-  // if there is lesson progress then this changes to that
-  let lessonConvoHistory = []
-  let lessonObjectivesProgress = []
+   // init lessonConvoHistory and lessonObjectivesProgress and formattedConvoHistory
+   let lessonConvoHistory = []
+   let lessonObjectivesProgress = []
+   let formattedConvoHistory: string | null = null;
 
-  if (lessonProgress) {
-    lessonObjectivesProgress = lessonProgress.objectivesMet;
-    console.log("TEST ))")
-    console.log(lessonObjectivesProgress)
-    lessonConvoHistory = lessonProgress.convoHistory;
-    console.log("TEST 0");
-    console.log(lessonProgress.convoHistory)
-    console.log("TEST!");
-    console.log(lessonConvoHistory);
-    
-    let formattedConvoHistory: string | null = null;
-
-    if (lessonConvoHistory && lessonConvoHistory.length > 0) {
-      console.log(lessonConvoHistory)
-      formattedConvoHistory = formatConvoHistory(lessonConvoHistory);
-      console.log("FORMATTED: ")
-      console.log(formattedConvoHistory)
-    }
-    specificInstructions = specificInstructions.replace(
-      '<<PREVIOUS_CONVERSATION>>',
-      formattedConvoHistory ?? ''
-    );
-    console.log(specificInstructions)
-  }
-// check if they have done any part of the lesson before.
+  // check if the user has opened the lesson before
   const isLessonProgress = await checkIfLessonProgress({lessonIndex: index})
   console.log(isLessonProgress)
 
+  // if there is an object with the user and lesson in the database
+  if (isLessonProgress) {
+    // get the lesson progress
+    const lessonProgressArray = await getLessonProgress({ lessonIndex: index });
+    const lessonProgress = lessonProgressArray[0];
 
 
+    // set lesson objectives and convo history to progress
+    lessonObjectivesProgress = lessonProgress.objectivesMet;
+    lessonConvoHistory = lessonProgress.convoHistory;
+    
+
+
+    // if there is previous chat history in the lesson replace <<PREVIOUS_CONVERSATION>> with it else replace it with empty string
+    if (lessonConvoHistory && lessonConvoHistory.length > 0) {
+      formattedConvoHistory = formatConvoHistory(lessonConvoHistory);
+    }
+
+  }
+
+  else {
+    lessonObjectivesProgress = formatInitialObjectives(lessonObjectives);
+  }
+
+  // replace previous chat history
+  specificInstructions = specificInstructions.replace(
+    '<<PREVIOUS_CONVERSATION>>',
+    formattedConvoHistory ?? ''
+  );
+  console.log(specificInstructions)
 
   return (
     <section className="max-w-2xl mx-auto mt-10 bg-white rounded-xl shadow-lg p-8">
