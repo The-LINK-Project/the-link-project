@@ -116,12 +116,14 @@ export async function getLessonProgress({
             userId: userId,
             lessonIndex: lessonIndex,
         });
+        console.log(`PROOG: ${lessonProgress}`)
 
         if (!lessonProgress) {
             console.log("No Lesson Progress found");
         }
-
+        console.log(`PARSED: ${ JSON.stringify(lessonProgress, null, 4)}`)
         return JSON.parse(JSON.stringify(lessonProgress));
+
     } catch (error) {
         console.log(error);
         throw error;

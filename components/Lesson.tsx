@@ -50,7 +50,9 @@ const Lesson = ({
     useEffect(() => {
         if (!hasRunRef.current) {
             const runInit = async () => {
+                console.log(`Is previous progress? ${isLessonProgress}`)
                 if (isLessonProgress === false) {
+                    console.log("NEWTOMAKe")
                     const startLessonProgress = await initLessonProgress({
                         lessonIndex: lessonIndex,
                         objectives: lessonObjectives,
@@ -134,23 +136,26 @@ const Lesson = ({
                     updateObjectivesMet(objectiveIndex);
                 }
             }
+
+            // removing audio for db
+            const convoHistoryWithoutAudio = convoHistoryRef.current.map((message) => {
+                // Use object destructuring with rest property to remove audioURL from each message
+                const { audioURL, ...messageWithoutAudio } = message;
+                return messageWithoutAudio;
+            });
+            
+            // update lesson progress in mongodb
+            await updateLessonProgress({
+                lessonIndex,
+                objectivesMet,
+                convoHistory: convoHistoryWithoutAudio
+            })
+       
         };
 
         handleResponse(); // Trigger the async function
+        
     }, [audioURL]);
-
-    // Call disonnect when the user disonnects unnaturally e.g closing tab
-    useEffect(() => {
-        const handleBeforeUnload = () => {
-            disconnect();
-        };
-
-        window.addEventListener("beforeunload", handleBeforeUnload);
-
-        return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
-    }, []);
 
     async function urlToBase64(audioUrl: string): Promise<string> {
         const response = await fetch(audioUrl);
@@ -201,6 +206,7 @@ const Lesson = ({
         setRecording(false);
     };
 
+    // not needed for now, maybe reuse some of this code later
     const disconnect = async () => {
         console.log("🔌 Disconnecting and saving lesson progress...");
 
@@ -210,7 +216,10 @@ const Lesson = ({
             const { audioURL, ...messageWithoutAudio } = message;
             return messageWithoutAudio;
         });
-
+        console.log("FLUSHING THE TOILET")
+        console.log(lessonIndex)
+        console.log(objectivesMet)
+        console.log(convoHistoryWithoutAudio)
         await updateLessonProgress({
             lessonIndex,
             objectivesMet,

@@ -35,6 +35,7 @@ const LessonPage = async ({ params }: LessonPageProps) => {
     const isLessonProgress = await checkIfLessonProgress({
         lessonIndex: index,
     });
+    console.log(`IS THERE LESSON PROGRESS?: ${isLessonProgress}`)
 
     // if there is an object with the user and lesson in the database
     if (isLessonProgress) {
@@ -42,6 +43,8 @@ const LessonPage = async ({ params }: LessonPageProps) => {
         const lessonProgress = await getLessonProgress({
             lessonIndex: index,
         });
+
+        console.log(`LESSON PROG: ${lessonProgress}`)
 
         // set lesson objectives and convo history to progress
         lessonObjectivesProgress = lessonProgress.objectivesMet;
