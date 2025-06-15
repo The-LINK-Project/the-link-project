@@ -6,6 +6,7 @@ import User from "@/lib/database/models/user.model";
 import LessonProgress from "../database/models/lessonProgress.model";
 import { auth } from "@clerk/nextjs/server";
 import { formatInitialObjectives } from "../utils";
+import { lessons } from "@/constants";
 
 interface Message {
     role: string;
@@ -232,6 +233,49 @@ export async function updateLessonProgress({
             throw Error("Failed to create new lesson progress");
 
         return JSON.parse(JSON.stringify(updatedLessonProgress));
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function getAllLessonProgressesForDashboard() {
+    try {
+        await connectToDatabase();
+
+        const {sessionClaims} = await auth();
+
+        const userId = sessionClaims?.userId as string;
+
+        if (!userId) {
+            throw new Error("User not found");
+        }
+
+    let completionStatuses = []
+    for (let i = 0; i < lessons.length; i++) {
+        console.log(i);
+
+    const lessonProgress = await LessonProgress.findOne({
+        userId: userId,
+        lessonIndex: i,
+    });
+
+    if (lessonProgress) {
+        if (lessonProgress.objectivesMet.every((met: boolean) => met)) {
+            completionStatuses[i] = "Completed";
+        } else {
+            completionStatuses[i] = "In Progress";
+        }
+    }
+    else {
+        completionStatuses[i] = "Not Started";
+    }
+}
+    console.log (`Completion Statuses: ${completionStatuses}`)
+    return completionStatuses
+    
+
+       
     } catch (error) {
         console.log(error);
         throw error;
