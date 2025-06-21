@@ -6,12 +6,13 @@ import { createLesson } from '@/lib/actions/Lesson.actions';
 
 const CreatePage = () => {
     const handleResponse = async () => {
-    for (const lesson of lessons) {
+    for (const [index, lesson] of lessons.entries()) {
         const title = lesson.title;
         const description = lesson.description;
         const objectives = lesson.objectives;
+        const lessonIndex = index+1;
 
-        const newLesson = await createLesson({ title, description, objectives });
+        const newLesson = await createLesson({ title, description, objectives, lessonIndex });
         console.log(`Created new lesson: ${newLesson}`)
     }
     }

@@ -12,10 +12,12 @@ export async function createLesson({
     title,
     description,
     objectives,
+    lessonIndex,
 }: {
     title: string,
     description: string,
-    objectives: string[];
+    objectives: string[],
+    lessonIndex: Number
 }): Promise<Lesson> {
     try {
         await connectToDatabase();
@@ -25,7 +27,8 @@ export async function createLesson({
         const payload = {
             title: title, 
             description: description,
-            objectives: objectives
+            objectives: objectives,
+            lessonIndex: lessonIndex
         };
         console.log(`PAYLOAD: ${payload}`);
         const newLesson = await Lesson.create(payload);
