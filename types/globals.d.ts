@@ -20,5 +20,6 @@ declare type Message = {
 declare type Lesson = {
     title: string,
     description: string,
-    objectives: string[]
+    objectives: string[],
+    lessonIndex: Number
 }

@@ -1,11 +1,12 @@
 import React from "react";
-import { lessons } from "@/constants";
+
 import { instructions } from "@/utils/conversation_config";
 import { getCurrentUser } from "@/lib/actions/user.actions";
 import Lesson from "@/components/Lesson";
 import { getLessonProgress } from "@/lib/actions/LessonProgress.actions";
 import { formatConvoHistory, formatInitialObjectives } from "@/lib/utils";
 import { checkIfLessonProgress } from "@/lib/actions/LessonProgress.actions";
+import { getAllLessons } from "@/lib/actions/Lesson.actions";
 
 type LessonPageProps = {
     params: {
@@ -14,6 +15,9 @@ type LessonPageProps = {
 };
 
 const LessonPage = async ({ params }: LessonPageProps) => {
+
+    const lessons = await getAllLessons()
+
     const user = await getCurrentUser();
 
     const index = parseInt(params.lessonIndex, 10);

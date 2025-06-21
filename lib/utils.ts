@@ -16,5 +16,3 @@ export function formatInitialObjectives(objectives: any[]){
   console.log(`INITIAL OBJECRIVES: ${initialObjectives}`)
   return initialObjectives;
 }
-
-// export function formatLessonObjectives()

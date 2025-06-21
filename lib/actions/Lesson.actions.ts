@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import User from "@/lib/database/models/user.model";
 import { auth } from "@clerk/nextjs/server";
 import { formatInitialObjectives } from "../utils";
-import { lessons } from "@/constants";
 import Lesson from "../database/models/lesson.model";
 
 export async function createLesson({
@@ -38,6 +37,26 @@ export async function createLesson({
 
         console.log(`New Lesson: ${newLesson}`);
         return JSON.parse(JSON.stringify(newLesson));
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function getAllLessons(): Promise<Lesson[]> {
+    try {
+        await connectToDatabase();
+
+        console.log("Retrieving Lessons")
+
+        const lessons = await Lesson.find({});
+
+        console.log(`All Lessons Retrieved`)
+        
+        return JSON.parse(JSON.stringify(lessons));
+
+
+
     } catch (error) {
         console.log(error);
         throw error;

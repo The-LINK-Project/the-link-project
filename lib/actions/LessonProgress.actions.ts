@@ -5,14 +5,19 @@ import { revalidatePath } from "next/cache";
 import User from "@/lib/database/models/user.model";
 import LessonProgress from "../database/models/lessonProgress.model";
 import { auth } from "@clerk/nextjs/server";
+import { getAllLessons } from "./Lesson.actions";
 import { formatInitialObjectives } from "../utils";
-import { lessons } from "@/constants";
+// import { lessons } from "@/constants";
+
+
 
 interface Message {
     role: string;
     message: string;
     audioURL?: string;
 }
+
+const lessons = await getAllLessons()
 
 // when user has never done the lesson before and goes to it make a mongoDB item with convoHistory and objectives met default empty array and false array respectively
 export async function initLessonProgress({

@@ -1,9 +1,10 @@
 import React from "react";
-import { lessons } from "@/constants";
 import Link from "next/link";
 import { getAllLessonProgressesForDashboard } from "@/lib/actions/LessonProgress.actions";
+import { getAllLessons } from "@/lib/actions/Lesson.actions";
 
 const DashboardLessons = async() => {
+    const lessons = await getAllLessons()
     const lessonProgresses = await getAllLessonProgressesForDashboard();
 
     // colour coding the tiles
