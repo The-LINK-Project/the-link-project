@@ -6,16 +6,17 @@ import { getAllLessonProgressesForDashboard } from "@/lib/actions/LessonProgress
 const DashboardLessons = async() => {
     const lessonProgresses = await getAllLessonProgressesForDashboard();
 
+    // colour coding the tiles
     const getProgressColor = (progress: string) => {
         switch (progress) {
           case "Completed":
-            return "bg-green-100 border-green-300"; // Light green
+            return "bg-green-100 border-green-300";
           case "In Progress":
-            return "bg-yellow-100 border-yellow-300"; // Light yellow
+            return "bg-yellow-100 border-yellow-300"; 
           case "Not Started":
-            return "bg-red-100 border-red-300"; // Light red
+            return "bg-red-100 border-red-300"; 
           default:
-            return "bg-gray-100 border-gray-300"; // Default gray
+            return "bg-gray-100 border-gray-300"; 
         }
       };
 

@@ -16,3 +16,9 @@ declare type Message = {
     message: string;
     audioURL?: string;
 };
+
+declare type Lesson = {
+    title: string,
+    description: string,
+    objectives: string[]
+}
