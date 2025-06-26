@@ -23,3 +23,10 @@ declare type Lesson = {
     objectives: string[],
     lessonIndex: Number
 }
+
+declare type ChatMessageType = {
+    role: ChatRole;
+    text: string;
+    isError?: boolean;
+    hideInChat?: boolean;
+  };
