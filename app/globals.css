@@ -124,5 +124,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow-y: scroll;
+    padding-left: 100 !important;
   }
+
+
 }
+

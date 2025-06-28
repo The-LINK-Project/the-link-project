@@ -1,36 +1,45 @@
-
-import Link from "next/link";
+import { ActionButton } from "@/components/ui/actionbutton";
+import { CheckCircle2, PlayCircle, ListCheck } from "lucide-react";
 import { createTestQuiz } from "@/lib/actions/quiz.actions";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <h1 className="text-3xl font-bold">Quiz Application</h1>
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-indigo-100 via-white to-teal-100 p-8">
+      <div className="max-w-lg w-full">
+        <h1 className="mb-4 text-5xl font-extrabold tracking-tight text-slate-900 drop-shadow-sm text-center">
+          Quiz Application
+        </h1>
+        <p className="mb-10 max-w-md mx-auto text-center text-lg text-slate-600 font-medium">
+          Create, take, and review quizzes easily — improve your learning journey.
+        </p>
 
-      <div className="flex flex-col gap-6 items-center">
-        <form action={createTestQuiz} className="mb-4">
-          <button
-            type="submit"
-            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
-          >
-            Create Test Quiz
-          </button>
-        </form>
+        <div className="flex flex-col gap-6">
+          <form action={createTestQuiz}>
+            <ActionButton
+              label="Create Test Quiz"
+              icon={<CheckCircle2 className="h-5 w-5" />}
+              type="submit"
+              variant="default"
+            />
+          </form>
 
-        <Link
-          href="/quiz/60f8a8d5287f1e00203b5f9b"
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-          Take Quiz
-        </Link>
+          <ActionButton
+            label="Take Quiz"
+            icon={<PlayCircle className="h-5 w-5" />}
+            tooltip="Start answering quiz questions now."
+            href="/quiz/60f8a8d5287f1e00203b5f9b"
+            variant="outline"
+          />
 
-        <Link
-          href="/quiz/results"
-          className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-        >
-          View Results
-        </Link>
+          <ActionButton
+            label="View Results"
+            icon={<ListCheck className="h-5 w-5" />}
+            tooltip="Check your past quiz scores and stats."
+            href="/quiz/results"
+            variant="secondary"
+          />
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

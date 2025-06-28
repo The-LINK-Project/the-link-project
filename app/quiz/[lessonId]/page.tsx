@@ -3,6 +3,31 @@ import { useState, useEffect, use } from "react";  // Add the use import
 import { useRouter } from "next/navigation";
 import {getQuizByLessonId} from "@/lib/actions/quiz.actions";
 import {saveQuizResult} from "@/lib/actions/results.actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 interface Question {
   questionText: string;
@@ -90,8 +115,26 @@ export default function QuizPage({ params }: QuizPageProps) {
 
   }
   if (isLoading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading quiz...</div>;
+    return (
+      <div className="max-w-4xl mx-auto px-6 py-10 space-y-8">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="space-y-4">
+            {/* Question title skeleton */}
+            <Skeleton className="h-6 w-2/3 rounded-md" />
+  
+            {/* Options skeletons */}
+            <div className="space-y-2">
+              {[...Array(4)].map((_, j) => (
+                <Skeleton key={j} className="h-10 w-full rounded-xl" />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
+  
+  
 
   if (error) {
     return <div className="flex justify-center items-center min-h-screen text-red-500">{error}</div>;
@@ -102,66 +145,96 @@ export default function QuizPage({ params }: QuizPageProps) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">{quiz.title}</h1>
-      
-      {!isSubmitted ? (
-        // this part displays the quiz questions and options
-        <>
+    
+    <div className="w-full max-w-4xl mx-auto px-6 py-10" style={{ overflowAnchor: 'none' }}>
 
+      <h1 className="text-4xl font-extrabold text-center text-blue-700 mb-8">{quiz.title}</h1>
+  
+      {/* Progress bar */}
+      {!isSubmitted && (
+        <div className="w-full bg-gray-200 rounded-full h-3 mb-8">
+          <div
+            className="bg-blue-600 h-3 rounded-full transition-all duration-300"
+            style={{ width: `${(selectedAnswers.filter(a => a !== -1).length / quiz.questions.length) * 100}%` }}
+          />
+        </div>
+      )}
+  
+      {!isSubmitted ? (
+        <>
           {quiz.questions.map((q, qIndex) => (
-            <div key={qIndex} className="mb-8 p-4 border rounded-lg shadow-sm">
-              <p className="font-medium mb-4">{q.questionText}</p>
-              <div className="space-y-2">
+            <Card key={qIndex} className="mb-10 shadow-md transition-shadow hover:shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">{qIndex + 1}. {q.questionText}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 {q.options.map((opt, optIndex) => (
-                  <div 
+                  <div
                     key={optIndex}
-                    className={`p-3 border rounded cursor-pointer ${
-                      selectedAnswers[qIndex] === optIndex 
-                        ? 'bg-blue-100 border-blue-500' 
-                        : 'hover:bg-gray-50'
+                    className={`p-3 border rounded-xl transition-all duration-200 cursor-pointer text-sm font-medium ${
+                      selectedAnswers[qIndex] === optIndex
+                        ? 'bg-blue-100 border-blue-600 text-blue-800'
+                        : 'hover:bg-gray-50 border-gray-300'
                     }`}
                     onClick={() => handleAnswerSelect(qIndex, optIndex)}
                   >
                     {opt}
                   </div>
                 ))}
-              </div>
-            </div>
-          ))}
+              </CardContent>
+            </Card>
           
-          <button
-            onClick={handleSubmit}
-            disabled={selectedAnswers.includes(-1)}
-            className={`px-6 py-2 rounded-md ${
-              selectedAnswers.includes(-1)
-                ? 'bg-gray-300 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
-            }`}
-          >
-            Submit Quiz
-          </button>
+          ))}
+  
+          <div className="text-center mt-10">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button
+                disabled={selectedAnswers.includes(-1)}
+                className={`px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-200 shadow-sm ${
+                  selectedAnswers.includes(-1)
+                    ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+              >
+                Submit Quiz
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Submit your quiz?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  You won’t be able to change your answers after submitting.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleSubmit}>Yes, Submit</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+
         </>
       ) : (
-        // ruhan this part displays that mini results page after submission
-        <div className="text-center p-8 border rounded-lg">
-          <h2 className="text-2xl font-bold mb-4">Quiz Results</h2>
-          <p className="text-4xl font-bold mb-6">{score}%</p>
-          <p className="mb-6">
-            You got {selectedAnswers.filter((ans, idx) => 
+        <div className="text-center p-10 bg-white border border-gray-200 rounded-xl shadow-lg animate-fade-in">
+          <h2 className="text-3xl font-bold text-green-600 mb-4">Quiz Submitted!</h2>
+          <p className="text-5xl font-extrabold text-gray-800 mb-6">{score}%</p>
+          <p className="text-lg mb-8 text-gray-600">
+            You got {selectedAnswers.filter((ans, idx) =>
               ans === quiz.questions[idx].correctAnswerIndex
             ).length} out of {quiz.questions.length} questions correct.
           </p>
           <button
             onClick={() => router.push('/quiz')}
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="px-6 py-3 bg-blue-600 text-white text-lg rounded-lg hover:bg-blue-700 transition-all duration-200"
           >
             Return to Quiz Home Page
           </button>
         </div>
       )}
     </div>
-  )
+  );
   
 
 };
