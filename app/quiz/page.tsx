@@ -4,7 +4,7 @@ import { createTestQuiz } from "@/lib/actions/quiz.actions";
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-indigo-100 via-white to-teal-100 p-8">
+    <main className="min-h-screen flex items-center justify-center p-8">
       <div className="max-w-lg w-full">
         <h1 className="mb-4 text-5xl font-extrabold tracking-tight text-slate-900 drop-shadow-sm text-center">
           Quiz Application
