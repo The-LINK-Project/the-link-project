@@ -170,3 +170,39 @@ export async function getAllQuizzes() {
     return [];
   }
 }
+
+export async function deleteQuiz(quizId: string) {
+  try {
+    await connectToDatabase();
+
+    // Ensure Quiz model is registered
+    if (!mongoose.models.Quiz) {
+      require("@/lib/database/models/quiz.model");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(quizId)) {
+      throw new Error("Invalid Quiz ID format");
+    }
+
+    const deletedQuiz = await Quiz.findByIdAndDelete(quizId);
+
+    if (!deletedQuiz) {
+      throw new Error("Quiz not found");
+    }
+
+    revalidatePath("/admin/quiz/manage");
+    revalidatePath("/admin/quiz");
+
+    return {
+      success: true,
+      message: "Quiz deleted successfully",
+    };
+  } catch (error) {
+    console.error("Error deleting quiz:", error);
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "An unexpected error occurred",
+    };
+  }
+}

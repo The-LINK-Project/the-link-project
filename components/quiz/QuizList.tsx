@@ -2,7 +2,6 @@
 import { useState } from "react";
 import {
   Eye,
-  Edit,
   Trash2,
   Search,
   Filter,
@@ -11,6 +10,17 @@ import {
   Users,
 } from "lucide-react";
 import QuizDetailModal from "@/components/quiz/QuizDetailModal";
+import { deleteQuiz } from "@/lib/actions/quiz.actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Quiz {
   _id: string;
@@ -29,13 +39,15 @@ interface QuizListProps {
   quizzes: Quiz[];
 }
 
-export default function QuizList({ quizzes }: QuizListProps) {
+export default function QuizList({ quizzes: initialQuizzes }: QuizListProps) {
+  const [quizzes, setQuizzes] = useState(initialQuizzes);
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [deletingQuiz, setDeletingQuiz] = useState<Quiz | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"title" | "createdAt" | "questions">(
     "createdAt"
   );
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const filteredQuizzes = quizzes
     .filter(
@@ -57,6 +69,29 @@ export default function QuizList({ quizzes }: QuizListProps) {
           return 0;
       }
     });
+
+  const handleDelete = async () => {
+    if (!deletingQuiz) return;
+
+    setIsDeleting(true);
+    try {
+      const result = await deleteQuiz(deletingQuiz._id);
+      if (result.success) {
+        // Remove the deleted quiz from state
+        setQuizzes((prev) =>
+          prev.filter((quiz) => quiz._id !== deletingQuiz._id)
+        );
+        alert("Quiz deleted successfully!");
+      } else {
+        alert(`Error: ${result.message}`);
+      }
+    } catch (error) {
+      alert("An error occurred while deleting the quiz.");
+    } finally {
+      setIsDeleting(false);
+      setDeletingQuiz(null);
+    }
+  };
 
   return (
     <>
@@ -159,7 +194,7 @@ export default function QuizList({ quizzes }: QuizListProps) {
                 </div>
               </div>
 
-              {/* Action Buttons */}
+              {/* Action Buttons - Only View and Delete */}
               <div className="flex gap-2">
                 <button
                   onClick={() => setSelectedQuiz(quiz)}
@@ -169,11 +204,11 @@ export default function QuizList({ quizzes }: QuizListProps) {
                   View Details
                 </button>
 
-                <button className="px-3 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors">
-                  <Edit className="h-4 w-4" />
-                </button>
-
-                <button className="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">
+                <button
+                  onClick={() => setDeletingQuiz(quiz)}
+                  className="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors cursor-pointer"
+                  title="Delete Quiz"
+                >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
@@ -189,6 +224,33 @@ export default function QuizList({ quizzes }: QuizListProps) {
           onClose={() => setSelectedQuiz(null)}
         />
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={!!deletingQuiz}
+        onOpenChange={(open) => !open && setDeletingQuiz(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Quiz</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{deletingQuiz?.title}"? This
+              action cannot be undone. All quiz data and associated results will
+              be permanently removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {isDeleting ? "Deleting..." : "Delete Quiz"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
