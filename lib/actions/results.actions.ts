@@ -1,12 +1,13 @@
-'use server'
-import { revalidatePath } from "next/cache"
-import { connectToDatabase } from "@/lib/database"
-import UserResult from "@/lib/database/models/userResult.model"
-import mongoose from "mongoose"
+"use server";
+import { revalidatePath } from "next/cache";
+import { connectToDatabase } from "@/lib/database";
+import UserResult from "@/lib/database/models/userResult.model";
+import Quiz from "@/lib/database/models/quiz.model"; // Add this import
+import mongoose from "mongoose";
 
 const TEST_USER_ID = new mongoose.Types.ObjectId("000000000000000000000001");
 // submitting and sending over the quiz results to mongodb
-export async function saveQuizResult(formData: FormData){
+export async function saveQuizResult(formData: FormData) {
   try {
     await connectToDatabase();
     const lessonId = formData.get("lessonId") as string;
@@ -18,7 +19,10 @@ export async function saveQuizResult(formData: FormData){
     if (!lessonId || !quizId || isNaN(score) || !answers) {
       throw new Error("Missing required fields");
     }
-    if (!mongoose.Types.ObjectId.isValid(lessonId) || !mongoose.Types.ObjectId.isValid(quizId)) {
+    if (
+      !mongoose.Types.ObjectId.isValid(lessonId) ||
+      !mongoose.Types.ObjectId.isValid(quizId)
+    ) {
       throw new Error("Invalid ID format");
     }
     if (isNaN(score) || score < 0 || score > 100) {
@@ -30,21 +34,21 @@ export async function saveQuizResult(formData: FormData){
       lessonId: new mongoose.Types.ObjectId(lessonId),
       quizId: new mongoose.Types.ObjectId(quizId),
       score,
-      answers
+      answers,
     });
     revalidatePath("/results");
     return {
-      success:true,
+      success: true,
       id: result._id.toString(),
       score: result.score,
-      message: "Quiz result saved successfully"
+      message: "Quiz result saved successfully",
     };
-    
   } catch (error) {
     console.error("Error saving quiz result:", error);
     return {
       success: false,
-      message: error instanceof Error ? error.message : "An unexpected error occurred"
+      message:
+        error instanceof Error ? error.message : "An unexpected error occurred",
     };
   }
 }
@@ -58,30 +62,36 @@ export async function getUserResults(lessonId?: string) {
       query.lessonId = new mongoose.Types.ObjectId(lessonId);
     }
 
-    const results = await UserResult.find(query).populate("quizId").sort({ completedAt: -1 });
-    
-    // Add proper null checks to handle cases where quizId might be null
-    const serializedResults = results.map(result => {
+    const results = await UserResult.find(query)
+      .populate("quizId")
+      .sort({ completedAt: -1 });
+
+    const serializedResults = results.map((result) => {
       const plainResult = result.toObject();
       return {
         ...plainResult,
         _id: plainResult._id.toString(),
         userId: plainResult.userId.toString(),
         lessonId: plainResult.lessonId.toString(),
-        
-        // Fix this part with proper null checking
-        quizId: plainResult.quizId 
-          ? (plainResult.quizId._id 
-              ? { ...plainResult.quizId, _id: plainResult.quizId._id.toString() } 
-              : plainResult.quizId.toString())
+
+        quizId: plainResult.quizId
+          ? plainResult.quizId._id
+            ? { ...plainResult.quizId, _id: plainResult.quizId._id.toString() }
+            : plainResult.quizId.toString()
           : null,
-          
-        createdAt: plainResult.createdAt ? plainResult.createdAt.toISOString() : undefined,
-        updatedAt: plainResult.updatedAt ? plainResult.updatedAt.toISOString() : undefined,
-        completedAt: plainResult.completedAt ? plainResult.completedAt.toISOString() : undefined
+
+        createdAt: plainResult.createdAt
+          ? plainResult.createdAt.toISOString()
+          : undefined,
+        updatedAt: plainResult.updatedAt
+          ? plainResult.updatedAt.toISOString()
+          : undefined,
+        completedAt: plainResult.completedAt
+          ? plainResult.completedAt.toISOString()
+          : undefined,
       };
     });
-    
+
     return serializedResults;
   } catch (error) {
     console.error("Error fetching user results:", error);

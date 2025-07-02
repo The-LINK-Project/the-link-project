@@ -1,6 +1,5 @@
 import { ActionButton } from "@/components/ui/actionbutton";
-import { CheckCircle2, PlayCircle, ListCheck } from "lucide-react";
-import { createTestQuiz } from "@/lib/actions/quiz.actions";
+import { PlayCircle, ListCheck } from "lucide-react";
 
 export default function Home() {
   return (
@@ -10,19 +9,11 @@ export default function Home() {
           Quiz Application
         </h1>
         <p className="mb-10 max-w-md mx-auto text-center text-lg text-slate-600 font-medium">
-          Create, take, and review quizzes easily — improve your learning journey.
+          Create, take, and review quizzes easily — improve your learning
+          journey.
         </p>
 
         <div className="flex flex-col gap-6">
-          <form action={createTestQuiz}>
-            <ActionButton
-              label="Create Test Quiz"
-              icon={<CheckCircle2 className="h-5 w-5" />}
-              type="submit"
-              variant="default"
-            />
-          </form>
-
           <ActionButton
             label="Take Quiz"
             icon={<PlayCircle className="h-5 w-5" />}
