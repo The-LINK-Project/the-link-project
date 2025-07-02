@@ -11,9 +11,12 @@ interface IQuestion {
 }
 
 interface IQuiz extends Document {
+  _id: mongoose.Types.ObjectId;
   lessonId: mongoose.Types.ObjectId;
   title: string;
   questions: IQuestion[];
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 // Better model registration pattern for Quiz with proper typing
@@ -51,67 +54,6 @@ export async function getQuizByLessonId(lessonId: string) {
     return safeQuiz;
   } catch (error) {
     console.error("Error fetching quiz:", error);
-    throw error;
-  }
-}
-
-export async function createTestQuiz() {
-  try {
-    await connectToDatabase();
-
-    // Ensure Quiz model is registered
-    if (!mongoose.models.Quiz) {
-      require("@/lib/database/models/quiz.model");
-    }
-
-    const lessonId = "60f8a8d5287f1e00203b5f9b"; // the fake lesson ID I made
-
-    // check if quiz exists
-    const existingQuiz = await Quiz.findOne({
-      lessonId: new mongoose.Types.ObjectId(lessonId),
-    });
-    if (existingQuiz) {
-      await Quiz.findByIdAndDelete(existingQuiz._id);
-    }
-
-    const testQuiz = {
-      lessonId: new mongoose.Types.ObjectId(lessonId),
-      title: "Simple Present Tense Quiz",
-      questions: [
-        {
-          questionText:
-            "What is the correct form of the verb in: She ___ to work at 8 AM?",
-          options: ["go", "goes", "going", "gone"],
-          correctAnswerIndex: 1,
-        },
-        {
-          questionText: "Which sentence is correct?",
-          options: [
-            "He play football",
-            "He plays football",
-            "He playing football",
-            "He played football",
-          ],
-          correctAnswerIndex: 1,
-        },
-        {
-          questionText: "Choose the correct sentence:",
-          options: [
-            "They doesn't work here",
-            "They don't works here",
-            "They don't working here",
-            "They don't work here",
-          ],
-          correctAnswerIndex: 3,
-        },
-      ],
-    };
-
-    await Quiz.create(testQuiz);
-    revalidatePath(`/quiz/${lessonId}`);
-    revalidatePath(`/quiz/results`);
-  } catch (error) {
-    console.error("Error creating test quiz:", error);
     throw error;
   }
 }
@@ -189,5 +131,42 @@ export async function createCustomQuiz(quizData: {
       message:
         error instanceof Error ? error.message : "An unexpected error occurred",
     };
+  }
+}
+
+export async function getAllQuizzes() {
+  try {
+    await connectToDatabase();
+
+    // Ensure Quiz model is registered
+    if (!mongoose.models.Quiz) {
+      require("@/lib/database/models/quiz.model");
+    }
+
+    const quizzes = await Quiz.find({}).sort({ createdAt: -1 }).lean();
+
+    const serializedQuizzes = quizzes.map((quiz) => {
+      return {
+        _id: quiz._id.toString(),
+        lessonId: quiz.lessonId.toString(),
+        title: quiz.title,
+        questions: quiz.questions.map((question: any) => ({
+          questionText: question.questionText,
+          options: [...question.options],
+          correctAnswerIndex: question.correctAnswerIndex,
+        })),
+        createdAt: quiz.createdAt
+          ? quiz.createdAt.toISOString()
+          : new Date().toISOString(),
+        updatedAt: quiz.updatedAt
+          ? quiz.updatedAt.toISOString()
+          : new Date().toISOString(),
+      };
+    });
+
+    return serializedQuizzes;
+  } catch (error) {
+    console.error("Error fetching all quizzes:", error);
+    return [];
   }
 }

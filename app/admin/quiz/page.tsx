@@ -1,6 +1,5 @@
 import { ActionButton } from "@/components/ui/actionbutton";
-import { CheckCircle2, Settings, Database, Plus } from "lucide-react";
-import { createTestQuiz } from "@/lib/actions/quiz.actions";
+import { Database, Plus } from "lucide-react";
 
 export default function AdminQuizPage() {
   return (
@@ -15,7 +14,7 @@ export default function AdminQuizPage() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2">
           <div className="bg-white rounded-xl p-6 shadow-lg">
             <h2 className="text-xl font-semibold mb-4 text-[rgb(90,199,219)]">
               Create New Quiz
@@ -28,23 +27,6 @@ export default function AdminQuizPage() {
             />
             <p className="text-sm text-slate-500 mt-3">
               Create a custom quiz with your own questions
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl p-6 shadow-lg">
-            <h2 className="text-xl font-semibold mb-4 text-slate-800">
-              Quick Test Quiz
-            </h2>
-            <form action={createTestQuiz}>
-              <ActionButton
-                label="Create Test Quiz"
-                icon={<CheckCircle2 className="h-5 w-5" />}
-                type="submit"
-                variant="outline"
-              />
-            </form>
-            <p className="text-sm text-slate-500 mt-3">
-              Creates a sample English grammar quiz for testing
             </p>
           </div>
 
