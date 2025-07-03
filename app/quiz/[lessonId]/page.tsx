@@ -1,5 +1,5 @@
 import { getQuizByLessonId } from "@/lib/actions/quiz.actions";
-import QuizClient from "@/components/QuizClient";
+import QuizClient from "@/components/quiz/QuizClient";
 
 interface Question {
   questionText: string;
