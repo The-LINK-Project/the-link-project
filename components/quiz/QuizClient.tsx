@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { saveQuizResult } from "@/lib/actions/results.actions";
+import { saveQuizResult } from "@/lib/actions/quizResults.actions";
 import { getQuizByLessonId } from "@/lib/actions/quiz.actions";
 
 type LessonPageProps = {

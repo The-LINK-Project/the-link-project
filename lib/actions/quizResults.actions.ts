@@ -1,9 +1,10 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
-import UserResult from "@/lib/database/models/userResult.model";
+import UserResult from "@/lib/database/models/quizResult.model";
 import mongoose from "mongoose";
 import { auth } from "@clerk/nextjs/server";
+import QuizResult from "@/lib/database/models/quizResult.model";
 
 // const TEST_USER_ID = new mongoose.Types.ObjectId("000000000000000000000001");
 
@@ -82,7 +83,7 @@ export async function getUserResults() {
     const query: any = { userId: userId};
 
 
-    const results = await UserResult.find(query)
+    const results = await QuizResult.find(query)
       .populate("quizId")
       .sort({ completedAt: -1 });
 
