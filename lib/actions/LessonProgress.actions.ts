@@ -262,7 +262,7 @@ export async function getAllLessonProgressesForDashboard() {
 
     const lessonProgress = await LessonProgress.findOne({
         userId: userId,
-        lessonIndex: i,
+        lessonIndex: i+1,
     });
 
     if (lessonProgress) {

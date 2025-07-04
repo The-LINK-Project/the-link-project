@@ -23,7 +23,7 @@ const LessonPage = async ({ params }: LessonPageProps) => {
     const user = await getCurrentUser();
 
     const index = parseInt(params.lessonIndex, 10);
-    const lesson = lessons[index];
+    const lesson = lessons[index-1];
     if (!lesson) {
         return <div>Lesson not found.</div>;
     }

@@ -5,6 +5,7 @@ import { getAllLessons } from "@/lib/actions/Lesson.actions";
 
 const DashboardLessons = async() => {
     const lessons = await getAllLessons()
+    console.log(`lessons: ${lessons}`);
     const lessonProgresses = await getAllLessonProgressesForDashboard();
 
     // colour coding the tiles
@@ -29,7 +30,7 @@ const DashboardLessons = async() => {
             const colorClasses = getProgressColor(progressStatus);
             
             return (
-            <Link href={`/learn/${index}`} key={index}>
+            <Link href={`/learn/${index+1}`} key={index}>
                 <div className={`${colorClasses} rounded-lg p-4 shadow-md h-full flex flex-col border-2 hover:shadow-lg transition-shadow`}>
                 <h2 className="text-lg font-bold mb-2">
                     {index + 1}. {lesson.title}
