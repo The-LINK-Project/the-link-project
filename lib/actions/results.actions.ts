@@ -3,13 +3,22 @@ import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
 import UserResult from "@/lib/database/models/userResult.model";
 import mongoose from "mongoose";
+import { auth } from "@clerk/nextjs/server";
 
-const TEST_USER_ID = new mongoose.Types.ObjectId("000000000000000000000001");
+// const TEST_USER_ID = new mongoose.Types.ObjectId("000000000000000000000001");
 
 // submitting and sending over the quiz results to mongodb
 export async function saveQuizResult(formData: FormData) {
   try {
     await connectToDatabase();
+
+    const { sessionClaims } = await auth();
+
+    const userId = sessionClaims?.userId as string;
+
+    if (!userId) {
+      throw new Error("User not found");
+    }
 
     // Ensure Quiz model is registered
     if (!mongoose.models.Quiz) {
@@ -36,7 +45,7 @@ export async function saveQuizResult(formData: FormData) {
     }
 
     const result = await UserResult.create({
-      userId: TEST_USER_ID,
+      userId: userId,
       lessonId: new mongoose.Types.ObjectId(lessonId),
       quizId: new mongoose.Types.ObjectId(quizId),
       score,
@@ -64,12 +73,20 @@ export async function getUserResults(lessonId?: string) {
   try {
     await connectToDatabase();
 
+    const { sessionClaims } = await auth();
+
+    const userId = sessionClaims?.userId as string;
+
+    if (!userId) {
+      throw new Error("User not found");
+    }
+
     // Ensure Quiz model is registered before populate
     if (!mongoose.models.Quiz) {
       require("@/lib/database/models/quiz.model");
     }
 
-    const query: any = { userId: TEST_USER_ID };
+    const query: any = { userId: userId};
 
     if (lessonId) {
       query.lessonId = new mongoose.Types.ObjectId(lessonId);
