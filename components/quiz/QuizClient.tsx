@@ -1,27 +1,39 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { saveQuizResult } from "@/lib/actions/results.actions";
+import { getQuizByLessonId } from "@/lib/actions/quiz.actions";
 
-interface Question {
-  questionText: string;
-  options: string[];
-  correctAnswerIndex: number;
-}
+type LessonPageProps = {
+  params: {
+      lessonIndex: number;
+  };
+};
 
-interface Quiz {
-  _id: string;
-  lessonId: string;
-  title: string;
-  questions: Question[];
-}
+export default function QuizClient({params}: LessonPageProps) {
+  const lessonIndex = params.lessonIndex;
+  const [quiz, setQuiz] = useState<any>({
+    _id: "",
+    title: "",
+    lessonId: 0,
+    questions: [],
+  });
 
-interface QuizClientProps {
-  quiz: Quiz;
-  lessonId: string;
-}
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      try {
+        const data = await getQuizByLessonId(lessonIndex);
+        setQuiz(data);
+      } catch (error) {
+        console.error('Failed to fetch quiz:', error);
+      }
+    };
 
-export default function QuizClient({ quiz, lessonId }: QuizClientProps) {
+    fetchQuiz();
+  }, []);
+
+  const lessonId = quiz.lessonId;
+
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>(
     new Array(quiz.questions.length).fill(-1)
   );
@@ -41,7 +53,7 @@ export default function QuizClient({ quiz, lessonId }: QuizClientProps) {
     const totalQuestions = quiz.questions.length;
     let correctAnswers = 0;
 
-    quiz.questions.forEach((question, index) => {
+    quiz.questions.forEach((question: Question, index: number) => {
       if (selectedAnswers[index] === question.correctAnswerIndex) {
         correctAnswers++;
       }
@@ -52,7 +64,7 @@ export default function QuizClient({ quiz, lessonId }: QuizClientProps) {
     setIsSubmitted(true);
 
     const formData = new FormData();
-    formData.append("lessonId", lessonId);
+    formData.append("lessonId", lessonId.toString());
     formData.append("quizId", quiz._id.toString());
     formData.append("score", calculatedScore.toString());
     formData.append("answers", JSON.stringify(selectedAnswers));
@@ -108,7 +120,7 @@ export default function QuizClient({ quiz, lessonId }: QuizClientProps) {
         {!isSubmitted ? (
           <>
             <div className="space-y-6">
-              {quiz.questions.map((q, qIndex) => (
+              {quiz.questions.map((q: Question, qIndex: number) => (
                 <div
                   key={qIndex}
                   className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"

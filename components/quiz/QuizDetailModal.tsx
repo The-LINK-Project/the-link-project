@@ -1,21 +1,8 @@
 "use client";
 import { X, BookOpen, Calendar, Clock, CheckCircle } from "lucide-react";
 
-interface Quiz {
-  _id: string;
-  title: string;
-  lessonId: string;
-  questions: Array<{
-    questionText: string;
-    options: string[];
-    correctAnswerIndex: number;
-  }>;
-  createdAt: string;
-  updatedAt: string;
-}
-
 interface QuizDetailModalProps {
-  quiz: Quiz;
+  quiz: QuizAdmin;
   onClose: () => void;
 }
 

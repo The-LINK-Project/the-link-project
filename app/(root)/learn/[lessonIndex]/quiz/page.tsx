@@ -1,8 +1,20 @@
-import React from 'react'
+import React from 'react';
+import QuizClient from '@/components/quiz/QuizClient';
 
-const page = () => {
+
+type QuizPageProps = {
+  params: {
+    lessonIndex: string;
+  };
+};
+const page = ({ params }: QuizPageProps) => {
+  const index = parseInt(params.lessonIndex, 10);
+  
   return (
-    <div>page</div>
+    <div>
+      Quiz for lesson {index}
+      <QuizClient params={{ lessonIndex: index }} />
+    </div>
   )
 }
 

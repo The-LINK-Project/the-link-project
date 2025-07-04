@@ -6,22 +6,10 @@ import QuestionBuilder from "./QuestionBuilder";
 import QuizPreview from "./QuizPreview";
 import { Plus, Save, Eye, EyeOff } from "lucide-react";
 
-interface Question {
-  questionText: string;
-  options: string[];
-  correctAnswerIndex: number;
-}
-
-interface QuizData {
-  title: string;
-  lessonId: string;
-  questions: Question[];
-}
-
 export default function QuizForm() {
   const [quizData, setQuizData] = useState<QuizData>({
     title: "",
-    lessonId: "",
+    lessonId: 0,
     questions: [],
   });
   const [showPreview, setShowPreview] = useState(false);
@@ -111,13 +99,17 @@ export default function QuizForm() {
               Lesson ID *
             </label>
             <input
-              type="text"
-              value={quizData.lessonId}
+              type="number"
+              value={quizData.lessonId || ""}
               onChange={(e) =>
-                setQuizData((prev) => ({ ...prev, lessonId: e.target.value }))
+                setQuizData((prev) => ({ 
+                  ...prev, 
+                  lessonId: e.target.value ? parseInt(e.target.value) : 0 
+                }))
               }
               className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[rgb(90,199,219)] focus:border-transparent"
               placeholder="Enter lesson ID..."
+              min="1"
             />
           </div>
         </div>
