@@ -5,6 +5,7 @@ import UserResult from "@/lib/database/models/quizResult.model";
 import mongoose from "mongoose";
 import { auth } from "@clerk/nextjs/server";
 import QuizResult from "@/lib/database/models/quizResult.model";
+import LessonProgress from "@/lib/database/models/lessonProgress.model";
 
 // const TEST_USER_ID = new mongoose.Types.ObjectId("000000000000000000000001");
 
@@ -45,6 +46,12 @@ export async function saveQuizResult(formData: FormData) {
     });
 
     console.log(result);
+
+    // here I am adding the quiz result to the lesson progress
+    const lessonProgress = await LessonProgress.findOneAndUpdate(
+      { userId: userId, lessonIndex: lessonId },
+      { $push: { quizResult: result._id } }
+    );
 
     revalidatePath("/quiz/results");
     return {

@@ -47,6 +47,7 @@ export async function initLessonProgress({
             lessonIndex: lessonIndex,
             objectivesMet: objectivesMet,
             convoHistory: [],
+            quizResult: [],
         };
         console.log(`PAYLOAD: ${payload}`);
         const newLessonProgress = await LessonProgress.create(payload);
