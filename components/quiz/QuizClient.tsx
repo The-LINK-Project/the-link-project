@@ -62,7 +62,9 @@ export default function QuizClient({params}: LessonPageProps) {
     const calculatedScore = Math.round((correctAnswers / totalQuestions) * 100);
     setScore(calculatedScore);
     setIsSubmitted(true);
-
+    console.log(calculatedScore);
+    console.log("TESTING");
+    console.log(lessonId);
     const formData = new FormData();
     formData.append("lessonId", lessonId.toString());
     formData.append("quizId", quiz._id.toString());

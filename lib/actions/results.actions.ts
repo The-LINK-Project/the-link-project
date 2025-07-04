@@ -20,12 +20,8 @@ export async function saveQuizResult(formData: FormData) {
       throw new Error("User not found");
     }
 
-    // Ensure Quiz model is registered
-    if (!mongoose.models.Quiz) {
-      require("@/lib/database/models/quiz.model");
-    }
-
-    const lessonId = formData.get("lessonId") as string;
+    const lessonId = parseInt(formData.get("lessonId") as string);
+    console.log(lessonId);
     const quizId = formData.get("quizId") as string;
     const score = parseInt(formData.get("score") as string);
     const answersJson = formData.get("answers") as string;
@@ -34,23 +30,20 @@ export async function saveQuizResult(formData: FormData) {
     if (!lessonId || !quizId || isNaN(score) || !answers) {
       throw new Error("Missing required fields");
     }
-    if (
-      !mongoose.Types.ObjectId.isValid(lessonId) ||
-      !mongoose.Types.ObjectId.isValid(quizId)
-    ) {
-      throw new Error("Invalid ID format");
-    }
+  
     if (isNaN(score) || score < 0 || score > 100) {
       throw new Error("Score must be a number between 0 and 100");
     }
 
     const result = await UserResult.create({
       userId: userId,
-      lessonId: new mongoose.Types.ObjectId(lessonId),
+      lessonId: (lessonId),
       quizId: new mongoose.Types.ObjectId(quizId),
       score,
       answers,
     });
+
+    console.log(result);
 
     revalidatePath("/quiz/results");
     return {
@@ -69,7 +62,7 @@ export async function saveQuizResult(formData: FormData) {
   }
 }
 
-export async function getUserResults(lessonId?: string) {
+export async function getUserResults() {
   try {
     await connectToDatabase();
 
@@ -88,9 +81,6 @@ export async function getUserResults(lessonId?: string) {
 
     const query: any = { userId: userId};
 
-    if (lessonId) {
-      query.lessonId = new mongoose.Types.ObjectId(lessonId);
-    }
 
     const results = await UserResult.find(query)
       .populate("quizId")
@@ -102,7 +92,7 @@ export async function getUserResults(lessonId?: string) {
         ...plainResult,
         _id: plainResult._id.toString(),
         userId: plainResult.userId.toString(),
-        lessonId: plainResult.lessonId.toString(),
+        lessonId: plainResult.lessonId,
         quizId: plainResult.quizId
           ? plainResult.quizId._id
             ? { ...plainResult.quizId, _id: plainResult.quizId._id.toString() }

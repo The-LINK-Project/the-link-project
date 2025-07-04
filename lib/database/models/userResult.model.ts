@@ -7,8 +7,7 @@ const userResultSchema = new mongoose.Schema({
     required: true
   },
   lessonId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Lesson',
+    type: Number,
     required: true
   },
   quizId: {
