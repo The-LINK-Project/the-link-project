@@ -1,6 +1,7 @@
 "use client";
 import { useRef } from 'react';
 import type { FC } from 'react';
+import SendIcon from "./ChatbotIconsend";
 
 type ChatRole = "user" | "model";
 
@@ -57,7 +58,7 @@ const ChatForm: FC<ChatFormProps> = ({ chatHistory, setChatHistory, generateBotR
       
 
     return (
-      <form action="#" className="flex items-center bg-white rounded-[32px] outline-1 outline-[#CCCCE5] shadow-[0_0_8px_rgba(0,0,0,0.06)] focus-within:outline-2 focus-within:outline-[#6D4FC2]" onSubmit={handleFormSubmit}>
+      <form action="#" className="flex items-center bg-white rounded-[32px] outline-1 outline-[#CCCCE5] shadow-[0_0_8px_rgba(0,0,0,0.06)] focus-within:outline-2 focus-within:outline-[#49BED4]" onSubmit={handleFormSubmit}>
           <input 
               ref={inputRef} 
               type="text" 
@@ -65,9 +66,15 @@ const ChatForm: FC<ChatFormProps> = ({ chatHistory, setChatHistory, generateBotR
               className="border-none outline-none w-full bg-transparent h-[47px] px-[17px] text-[0.95rem]" 
               required 
           />
-          <button className="h-[35px] w-[35px] border-none hidden outline-none cursor-pointer text-[1.15rem] text-white flex-shrink-0 mr-1.5 rounded-full bg-[#6D4FC2] transition-all duration-200 hover:bg-[#593bab] peer-valid:block [input:valid~&]:block">
-              arrow_upward
+          <button
+            type="submit"
+            className="h-[35px] w-[35px] flex items-center justify-center border-none hidden outline-none cursor-pointer flex-shrink-0 mr-1.5 rounded-full bg-[#49BED4] transition-all duration-200 hover:bg-[#49BED4] peer-valid:block [input:valid~&]:block"
+          >
+            <span className="flex items-center justify-center">
+              <SendIcon />
+            </span>
           </button>
+
       </form>
   );
 };
