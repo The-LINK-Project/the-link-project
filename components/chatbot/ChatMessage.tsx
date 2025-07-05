@@ -15,27 +15,31 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: FC<ChatMessageProps> = ({ chat }) => {
-  // Default hideInChat and isError to false if undefined
   const hide = chat.hideInChat ?? false;
   const isError = chat.isError ?? false;
 
   if (hide) return null;
 
+  if (chat.role === "model") {
+    return (
+      <div className="message bot-message flex gap-[11px] items-center">
+        <span className="h-[35px] w-[35px] p-[6px] bg-[#49BED4] rounded-full flex items-center justify-center">
+          <ChatbotIcon />
+        </span>
+        <p className={`message-text p-[12px_16px] max-w-[75%] break-words whitespace-pre-line text-[0.85rem] bg-[#E6FAFD] rounded-[13px_13px_13px_3px] ${isError ? "text-red-500" : ""}`}>
+          {chat.text}
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className={`flex gap-3 items-center ${
-      chat.role === "model" ? "" : "flex-col items-end"
-    } ${chat.role === "model" && chat.isError ? "error" : ""}`}>
-      
-      {chat.role === "model" && <ChatbotIcon />}
-      
-      <p className={`py-3 px-4 max-w-[75%] break-words whitespace-pre-line text-sm ${
-        chat.role === "model" 
-          ? "bg-purple-50 rounded-[13px_13px_13px_3px]" 
-          : "text-white bg-purple-600 rounded-[13px_13px_3px_13px]"
-      } ${chat.role === "model" && chat.isError ? "text-red-500" : ""}`}>
+    <div className="message user-message flex justify-end">
+      <p className="message-text p-[12px_16px] max-w-[75%] break-words whitespace-pre-line text-[0.85rem] bg-[#EAEAEA] rounded-[13px_13px_3px_13px]">
         {chat.text}
       </p>
     </div>
   );
 };
+
 export default ChatMessage;
