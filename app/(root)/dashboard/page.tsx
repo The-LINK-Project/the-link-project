@@ -1,17 +1,16 @@
 import React from "react";
-import Link from "next/link";
 import DashboardLessons from "@/components/shared/DashboardLessons";
 import Chatbot from "@/components/chatbot/Chatbot";
 
-const DashboardPage = async() => {
-
-    return (
-        <div>
-            <DashboardLessons></DashboardLessons>
-            <Chatbot></Chatbot>
-
-        </div>
-    );
+const DashboardPage = async () => {
+  return (
+    <div className="min-h-screen">
+      <DashboardLessons />
+      <div className="px-6 pb-6">
+        <Chatbot />
+      </div>
+    </div>
+  );
 };
 
 export default DashboardPage;
