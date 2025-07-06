@@ -2,34 +2,27 @@
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
 import mongoose, { Model, Document } from "mongoose";
+import Quiz from "@/lib/database/models/quiz.model";
 
-// Define interfaces for TypeScript
-interface IQuestion {
-  questionText: string;
-  options: string[];
-  correctAnswerIndex: number;
-}
+// // Define interfaces for TypeScript
+// interface IQuestion {
+//   questionText: string;
+//   options: string[];
+//   correctAnswerIndex: number;
+// }
 
-interface IQuiz extends Document {
-  _id: mongoose.Types.ObjectId;
-  lessonId: mongoose.Types.ObjectId;
-  title: string;
-  questions: IQuestion[];
-  createdAt?: Date;
-  updatedAt?: Date;
-}
 
-// Better model registration pattern for Quiz with proper typing
-let Quiz: Model<IQuiz>;
-try {
-  Quiz = mongoose.model<IQuiz>("Quiz");
-} catch {
-  // If model doesn't exist, import and register it
-  const quizModel = require("@/lib/database/models/quiz.model").default;
-  Quiz = quizModel;
-}
+// // Better model registration pattern for Quiz with proper typing
+// let Quiz: Model<IQuiz>;
+// try {
+//   Quiz = mongoose.model<IQuiz>("Quiz");
+// } catch {
+//   // If model doesn't exist, import and register it
+//   const quizModel = require("@/lib/database/models/quiz.model").default;
+//   Quiz = quizModel;
+// }
 
-export async function getQuizByLessonId(lessonId: string) {
+export async function getQuizByLessonId(lessonId: number) {
   try {
     await connectToDatabase();
 
@@ -38,12 +31,9 @@ export async function getQuizByLessonId(lessonId: string) {
       require("@/lib/database/models/quiz.model");
     }
 
-    if (!mongoose.Types.ObjectId.isValid(lessonId)) {
-      throw new Error("Invalid Lesson ID format");
-    }
 
     const quiz = await Quiz.findOne({
-      lessonId: new mongoose.Types.ObjectId(lessonId),
+      lessonId: lessonId,
     });
     if (!quiz) {
       throw new Error("Quiz not found for this lesson");
@@ -58,15 +48,7 @@ export async function getQuizByLessonId(lessonId: string) {
   }
 }
 
-export async function createCustomQuiz(quizData: {
-  title: string;
-  lessonId: string;
-  questions: {
-    questionText: string;
-    options: string[];
-    correctAnswerIndex: number;
-  }[];
-}) {
+export async function createCustomQuiz(quizData: QuizData) {
   try {
     await connectToDatabase();
 
@@ -80,9 +62,6 @@ export async function createCustomQuiz(quizData: {
       throw new Error("Missing required fields");
     }
 
-    if (!mongoose.Types.ObjectId.isValid(quizData.lessonId)) {
-      throw new Error("Invalid Lesson ID format");
-    }
 
     // Validate questions
     for (const question of quizData.questions) {
@@ -102,7 +81,7 @@ export async function createCustomQuiz(quizData: {
 
     // Check if quiz already exists for this lesson
     const existingQuiz = await Quiz.findOne({
-      lessonId: new mongoose.Types.ObjectId(quizData.lessonId),
+      lessonId: quizData.lessonId,
     });
 
     if (existingQuiz) {
@@ -111,7 +90,7 @@ export async function createCustomQuiz(quizData: {
 
     // Create the quiz
     const newQuiz = await Quiz.create({
-      lessonId: new mongoose.Types.ObjectId(quizData.lessonId),
+      lessonId: quizData.lessonId,
       title: quizData.title,
       questions: quizData.questions,
     });
@@ -121,7 +100,7 @@ export async function createCustomQuiz(quizData: {
 
     return {
       success: true,
-      quizId: (newQuiz._id as mongoose.Types.ObjectId).toString(),
+      quizId: newQuiz._id.toString(),
       message: "Quiz created successfully",
     };
   } catch (error) {
@@ -145,7 +124,7 @@ export async function getAllQuizzes() {
 
     const quizzes = await Quiz.find({}).sort({ createdAt: -1 }).lean();
 
-    const serializedQuizzes = quizzes.map((quiz) => {
+    const serializedQuizzes = quizzes.map((quiz: any) => {
       return {
         _id: quiz._id.toString(),
         lessonId: quiz.lessonId.toString(),

@@ -47,6 +47,7 @@ export async function initLessonProgress({
             lessonIndex: lessonIndex,
             objectivesMet: objectivesMet,
             convoHistory: [],
+            quizResult: [],
         };
         console.log(`PAYLOAD: ${payload}`);
         const newLessonProgress = await LessonProgress.create(payload);
@@ -262,7 +263,7 @@ export async function getAllLessonProgressesForDashboard() {
 
     const lessonProgress = await LessonProgress.findOne({
         userId: userId,
-        lessonIndex: i,
+        lessonIndex: i+1,
     });
 
     if (lessonProgress) {

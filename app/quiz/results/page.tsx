@@ -1,4 +1,4 @@
-import { getUserResults } from "@/lib/actions/results.actions";
+import { getUserResults } from "@/lib/actions/quizResults.actions";
 import { Calendar, Trophy, Target, Clock } from "lucide-react";
 
 export default async function ResultsPage() {

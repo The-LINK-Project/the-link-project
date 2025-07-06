@@ -7,6 +7,8 @@ import { getLessonProgress } from "@/lib/actions/LessonProgress.actions";
 import { formatConvoHistory, formatInitialObjectives } from "@/lib/utils";
 import { checkIfLessonProgress } from "@/lib/actions/LessonProgress.actions";
 import { getAllLessons } from "@/lib/actions/Lesson.actions";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type LessonPageProps = {
     params: {
@@ -21,7 +23,7 @@ const LessonPage = async ({ params }: LessonPageProps) => {
     const user = await getCurrentUser();
 
     const index = parseInt(params.lessonIndex, 10);
-    const lesson = lessons[index];
+    const lesson = lessons[index-1];
     if (!lesson) {
         return <div>Lesson not found.</div>;
     }
@@ -84,6 +86,9 @@ const LessonPage = async ({ params }: LessonPageProps) => {
                     </li>
                 ))}
             </ul>
+            <Link href={`/learn/${index}/quiz`}>
+                <Button>Go to quiz</Button>
+            </Link>
             <Lesson
                 initialInstructions={specificInstructions}
                 lessonIndex={index}

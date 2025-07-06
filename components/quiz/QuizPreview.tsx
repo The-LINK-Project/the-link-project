@@ -1,16 +1,5 @@
 "use client";
 
-interface Question {
-  questionText: string;
-  options: string[];
-  correctAnswerIndex: number;
-}
-
-interface QuizData {
-  title: string;
-  lessonId: string;
-  questions: Question[];
-}
 
 interface QuizPreviewProps {
   quizData: QuizData;
@@ -27,7 +16,7 @@ export default function QuizPreview({ quizData }: QuizPreviewProps) {
         <h3 className="text-xl font-bold text-slate-800 mb-2">
           {quizData.title}
         </h3>
-        <p className="text-slate-600">Lesson ID: {quizData.lessonId}</p>
+        <p className="text-slate-600">Lesson ID: {quizData.lessonId.toString()}</p>
       </div>
 
       <div className="space-y-6">

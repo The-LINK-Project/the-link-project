@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, CheckCircle, Clock, Play } from "lucide-react";
 
+
 const DashboardLessons = async () => {
   const lessons = await getAllLessons();
   const lessonProgresses = await getAllLessonProgressesForDashboard();

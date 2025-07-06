@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
 
-const userResultSchema = new mongoose.Schema({
+const quizResultSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
   lessonId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Lesson',
+    type: Number,
     required: true
   },
   quizId: {
@@ -30,8 +29,8 @@ const userResultSchema = new mongoose.Schema({
   }
 }, {
   timestamps: true,
-  collection: 'userresults'
+  collection: 'quizresults'
 });
 
-const UserResult = mongoose.models.UserResult || mongoose.model('UserResult', userResultSchema);
-export default UserResult;
+const QuizResult = mongoose.models.QuizResult || mongoose.model('QuizResult', quizResultSchema);
+export default QuizResult;

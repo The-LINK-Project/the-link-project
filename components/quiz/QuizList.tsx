@@ -22,27 +22,15 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-interface Quiz {
-  _id: string;
-  title: string;
-  lessonId: string;
-  questions: Array<{
-    questionText: string;
-    options: string[];
-    correctAnswerIndex: number;
-  }>;
-  createdAt: string;
-  updatedAt: string;
-}
 
 interface QuizListProps {
-  quizzes: Quiz[];
+  quizzes: QuizAdmin[];
 }
 
 export default function QuizList({ quizzes: initialQuizzes }: QuizListProps) {
   const [quizzes, setQuizzes] = useState(initialQuizzes);
-  const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
-  const [deletingQuiz, setDeletingQuiz] = useState<Quiz | null>(null);
+  const [selectedQuiz, setSelectedQuiz] = useState<QuizAdmin | null>(null);
+  const [deletingQuiz, setDeletingQuiz] = useState<QuizAdmin | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"title" | "createdAt" | "questions">(
     "createdAt"
@@ -53,7 +41,7 @@ export default function QuizList({ quizzes: initialQuizzes }: QuizListProps) {
     .filter(
       (quiz) =>
         quiz.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        quiz.lessonId.toLowerCase().includes(searchTerm.toLowerCase())
+        quiz.lessonId.toString().toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
       switch (sortBy) {
