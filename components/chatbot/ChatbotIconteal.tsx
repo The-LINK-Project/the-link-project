@@ -1,15 +1,15 @@
 import type { FC } from 'react';
 
-const ChatbotIcon: FC = () => {
+const ChatbotIconteal: FC = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="50"
-      height="50"
+      width="32"
+      height="32"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#ffffff"
-      strokeWidth="2"
+      stroke="#49BED4"
+      strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
       className="lucide lucide-bot-icon lucide-bot"
@@ -24,4 +24,4 @@ const ChatbotIcon: FC = () => {
   );
 };
 
-export default ChatbotIcon;
+export default ChatbotIconteal;

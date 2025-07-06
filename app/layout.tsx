@@ -11,6 +11,8 @@ import {
     SignedOut,
     UserButton,
 } from "@clerk/nextjs";
+import Chatbot from "@/components/chatbot/Chatbot";
+
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -72,6 +74,7 @@ export default function RootLayout({
 }>) {
     return (
         <div>
+            <Chatbot></Chatbot>
             <ClerkProvider>
                 <Header></Header>
                 <html lang="en">
