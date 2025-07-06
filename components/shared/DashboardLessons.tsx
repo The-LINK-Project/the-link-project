@@ -64,7 +64,7 @@ const DashboardLessons = async () => {
           const status = getProgressStatus(progressStatus);
 
           return (
-            <Link href={`/learn/${index}`} key={index} className="group">
+            <Link href={`/learn/${index+1}`} key={index} className="group">
               <Card
                 className={`h-full transition-all duration-200 hover:shadow-lg hover:-translate-y-1 cursor-pointer ${status.cardClass}`}
               >
