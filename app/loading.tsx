@@ -1,8 +1,11 @@
 import React from 'react'
+import LoadingSpline from '../components/loadingspline';
 
 const LoadingScreen = () => {
   return (
-    <div>Loading...</div>
+    <div>
+      <LoadingSpline />
+    </div>
   )
 }
 
