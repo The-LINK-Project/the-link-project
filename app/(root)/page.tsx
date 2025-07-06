@@ -6,14 +6,14 @@ import FAQ from "@/components/shared/FAQ";
 import ShareIdeasSection from "@/components/shared/ShareIdeasSection";
 
 export default function Home() {
-    return (
-        <div className="mt-24">
-            <HeroSection />
-            <VideoDisplay />
-            <ProblemSection />
-            <SolutionSection />
-            <FAQ />
-            <ShareIdeasSection />
-        </div>
-    );
+  return (
+    <div className="mt-24">
+      <HeroSection />
+      <VideoDisplay />
+      <ProblemSection />
+      <SolutionSection />
+      <FAQ />
+      <ShareIdeasSection />
+    </div>
+  );
 }

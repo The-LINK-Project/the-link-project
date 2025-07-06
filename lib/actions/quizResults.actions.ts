@@ -32,14 +32,14 @@ export async function saveQuizResult(formData: FormData) {
     if (!lessonId || !quizId || isNaN(score) || !answers) {
       throw new Error("Missing required fields");
     }
-  
+
     if (isNaN(score) || score < 0 || score > 100) {
       throw new Error("Score must be a number between 0 and 100");
     }
 
     const result = await UserResult.create({
       userId: userId,
-      lessonId: (lessonId),
+      lessonId: lessonId,
       quizId: new mongoose.Types.ObjectId(quizId),
       score,
       answers,
@@ -87,8 +87,7 @@ export async function getUserResults() {
       require("@/lib/database/models/quiz.model");
     }
 
-    const query: any = { userId: userId};
-
+    const query: any = { userId: userId };
 
     const results = await QuizResult.find(query)
       .populate("quizId")

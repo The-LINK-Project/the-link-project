@@ -165,19 +165,19 @@ export default async function ResultsPage() {
                         result.score >= 90
                           ? "bg-gray-900 text-white"
                           : result.score >= 80
-                          ? "bg-gray-200 text-gray-800"
-                          : result.score >= 70
-                          ? "bg-gray-100 text-gray-700"
-                          : "bg-gray-50 text-gray-600 border border-gray-300"
+                            ? "bg-gray-200 text-gray-800"
+                            : result.score >= 70
+                              ? "bg-gray-100 text-gray-700"
+                              : "bg-gray-50 text-gray-600 border border-gray-300"
                       }`}
                     >
                       {result.score >= 90
                         ? "A"
                         : result.score >= 80
-                        ? "B"
-                        : result.score >= 70
-                        ? "C"
-                        : "D"}
+                          ? "B"
+                          : result.score >= 70
+                            ? "C"
+                            : "D"}
                     </div>
                   </div>
                 </div>

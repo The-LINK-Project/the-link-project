@@ -11,7 +11,6 @@ import Quiz from "@/lib/database/models/quiz.model";
 //   correctAnswerIndex: number;
 // }
 
-
 // // Better model registration pattern for Quiz with proper typing
 // let Quiz: Model<IQuiz>;
 // try {
@@ -30,7 +29,6 @@ export async function getQuizByLessonId(lessonId: number) {
     if (!mongoose.models.Quiz) {
       require("@/lib/database/models/quiz.model");
     }
-
 
     const quiz = await Quiz.findOne({
       lessonId: lessonId,
@@ -61,7 +59,6 @@ export async function createCustomQuiz(quizData: QuizData) {
     if (!quizData.title || !quizData.lessonId || !quizData.questions.length) {
       throw new Error("Missing required fields");
     }
-
 
     // Validate questions
     for (const question of quizData.questions) {

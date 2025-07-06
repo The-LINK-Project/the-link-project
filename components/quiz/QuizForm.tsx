@@ -102,9 +102,9 @@ export default function QuizForm() {
               type="number"
               value={quizData.lessonId || ""}
               onChange={(e) =>
-                setQuizData((prev) => ({ 
-                  ...prev, 
-                  lessonId: e.target.value ? parseInt(e.target.value) : 0 
+                setQuizData((prev) => ({
+                  ...prev,
+                  lessonId: e.target.value ? parseInt(e.target.value) : 0,
                 }))
               }
               className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[rgb(90,199,219)] focus:border-transparent"

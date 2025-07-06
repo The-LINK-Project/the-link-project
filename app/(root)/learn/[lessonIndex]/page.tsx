@@ -14,7 +14,7 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
   const lessons = await getAllLessons();
   const user = await getCurrentUser();
   const index = parseInt(params.lessonIndex, 10);
-  const lesson = lessons[index-1];
+  const lesson = lessons[index - 1];
 
   if (!lesson) {
     return <div>Lesson not found.</div>;
@@ -23,7 +23,6 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
   const lessonTitle = lesson.title;
   const lessonDescription = lesson.description;
   const lessonObjectives = lesson.objectives;
-
 
   let lessonConvoHistory: Message[] = [];
   let lessonObjectivesProgress = [];
@@ -80,7 +79,6 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
       />
     </div>
   );
-
 };
 
 export default LessonPage;

@@ -12,7 +12,7 @@ import React from "react";
 interface ActionButtonProps {
   label: string;
   icon: React.ReactNode;
-  tooltip?: string;  // make tooltip optional
+  tooltip?: string; // make tooltip optional
   href?: string;
   type?: "button" | "submit" | "reset";
   variant?: "default" | "outline" | "secondary";
@@ -65,7 +65,11 @@ export function ActionButton({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>{content}</TooltipTrigger>
-        <TooltipContent side="top" align="center" className="max-w-xs text-center">
+        <TooltipContent
+          side="top"
+          align="center"
+          className="max-w-xs text-center"
+        >
           {tooltip}
         </TooltipContent>
       </Tooltip>
