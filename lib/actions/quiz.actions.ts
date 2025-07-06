@@ -185,3 +185,53 @@ export async function deleteQuiz(quizId: string) {
     };
   }
 }
+
+export async function getQuizResultStats() {
+  try {
+    await connectToDatabase();
+
+    if (!mongoose.models.UserResult) {
+      require("@/lib/database/models/userResult.model");
+    }
+
+    const UserResult = mongoose.models.UserResult;
+    const allResults = await UserResult.find({});
+
+    if (allResults.length === 0) {
+      return {
+        totalAttempts: 0,
+        averageScore: 0,
+        highPerformers: 0,
+        needSupport: 0,
+      };
+    }
+
+    const totalAttempts = allResults.length;
+    const averageScore = Math.round(
+      allResults.reduce((sum: number, result: any) => sum + result.score, 0) /
+        totalAttempts
+    );
+
+    const highPerformers = allResults.filter(
+      (result: any) => result.score >= 80
+    ).length;
+    const needSupport = allResults.filter(
+      (result: any) => result.score < 60
+    ).length;
+
+    return {
+      totalAttempts,
+      averageScore,
+      highPerformers,
+      needSupport,
+    };
+  } catch (error) {
+    console.log("Error getting quiz stats:", error);
+    return {
+      totalAttempts: 0,
+      averageScore: 0,
+      highPerformers: 0,
+      needSupport: 0,
+    };
+  }
+}

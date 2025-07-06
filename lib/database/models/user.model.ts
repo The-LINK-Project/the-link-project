@@ -7,6 +7,8 @@ const UserSchema = new Schema({
     firstName: { type: String, required: true, unique: false },
     lastName: { type: String, required: false, unique: false },
     photo: { type: String, required: false, unique: false },
+}, {
+    timestamps: true  // This adds createdAt and updatedAt automatically
 });
 
 const User = models.User || model("User", UserSchema);
