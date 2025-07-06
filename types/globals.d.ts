@@ -30,3 +30,24 @@ declare type ChatMessageType = {
     isError?: boolean;
     hideInChat?: boolean;
   };
+
+declare type Question = {
+    questionText: string;
+    options: string[];
+    correctAnswerIndex: number;
+  }
+  
+declare type QuizData = {
+    title: string;
+    lessonId: number;
+    questions: Question[];
+  }
+  
+declare type QuizAdmin = {
+  _id: string;
+  title: string;
+  lessonId: number;
+  questions: Question[];
+  createdAt: string;
+  updatedAt: string;
+}

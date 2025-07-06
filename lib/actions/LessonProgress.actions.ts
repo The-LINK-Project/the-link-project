@@ -40,13 +40,15 @@ export async function initLessonProgress({
     console.log(`TOINK: ${objectivesMet}`);
 
     const payload = {
-      userId: userId,
-      lessonIndex: lessonIndex,
-      objectivesMet: objectivesMet,
-      convoHistory: [],
+        userId: userId,
+        lessonIndex: lessonIndex,
+        objectivesMet: objectivesMet,
+        convoHistory: [],
+        quizResult: [],
     };
     console.log(`PAYLOAD: ${payload}`);
     const newLessonProgress = await LessonProgress.create(payload);
+
 
     if (!newLessonProgress) throw Error("Failed to create new lesson progress");
 
@@ -257,8 +259,9 @@ export async function getAllLessonProgressesForDashboard() {
 
       const lessonProgress = await LessonProgress.findOne({
         userId: userId,
-        lessonIndex: i,
-      });
+        lessonIndex: i+1,
+    });
+
 
       if (lessonProgress) {
         if (lessonProgress.objectivesMet.every((met: boolean) => met)) {
