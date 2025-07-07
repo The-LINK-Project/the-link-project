@@ -22,6 +22,7 @@ declare type Lesson = {
   description: string;
   objectives: string[];
   lessonIndex: Number;
+  difficulty: string;
 };
 
 declare type ChatMessageType = {
