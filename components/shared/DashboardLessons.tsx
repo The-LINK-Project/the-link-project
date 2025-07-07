@@ -82,7 +82,6 @@ const DashboardLessons = async () => {
                             {lesson.difficulty}
                           </Badge>
                         )}
-                        
                       </CardTitle>
                     </div>
                     {status.icon}

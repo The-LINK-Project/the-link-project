@@ -419,10 +419,9 @@ const Lesson = ({
           </div>
         </div>
 
-        <div className = "flex flex-col items-center text-blue-700">
-          <Link href = {`/learn/${lessonIndex}/quiz`}>
+        <div className="flex flex-col items-center text-blue-700">
+          <Link href={`/learn/${lessonIndex}/quiz`}>
             Already know this? Test your knowledge with this quiz!
-          
           </Link>
         </div>
 
