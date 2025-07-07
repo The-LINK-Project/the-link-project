@@ -1,6 +1,6 @@
 "use client";
-import { useRef } from 'react';
-import type { FC } from 'react';
+import { useRef } from "react";
+import type { FC } from "react";
 import SendIcon from "./ChatbotIconsend";
 
 type ChatRole = "user" | "model";
@@ -12,8 +12,7 @@ interface ChatMessageType {
   hideInChat?: boolean;
 }
 
-
-import type { Dispatch, SetStateAction} from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 interface ChatFormProps {
   chatHistory: ChatMessageType[];
@@ -21,61 +20,73 @@ interface ChatFormProps {
   generateBotResponse: (history: ChatMessageType[]) => void | Promise<void>;
 }
 
+const ChatForm: FC<ChatFormProps> = ({
+  chatHistory,
+  setChatHistory,
+  generateBotResponse,
+}) => {
+  const inputRef = useRef<HTMLInputElement>(null);
 
-const ChatForm: FC<ChatFormProps> = ({ chatHistory, setChatHistory, generateBotResponse }) => {
-    const inputRef = useRef<HTMLInputElement>(null);
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
 
-    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-        e.preventDefault();
-    
-        const userMessage = inputRef.current?.value.trim();
-        if (!userMessage) return;
-    
-        if (inputRef.current) inputRef.current.value = "";
-    
-        const updatedHistory: ChatMessageType[] = [
-            ...chatHistory,
-            { role: "user", text: userMessage }
-        ];
-          
-    
-        setChatHistory(updatedHistory);
-    
-        setTimeout(() => {
-            const thinkingMessage: ChatMessageType = { role: "model", text: "Thinking..." };
+    const userMessage = inputRef.current?.value.trim();
+    if (!userMessage) return;
 
-            const thinkingHistory: ChatMessageType[] = [...updatedHistory, thinkingMessage];
-            
-            setChatHistory(thinkingHistory);
-            
-    
-          generateBotResponse([
-            ...updatedHistory,
-            { role: "user", text: ` Using the details provided above, please address this query: ${userMessage}` }
-          ]);
-        }, 600);
-    };
-      
+    if (inputRef.current) inputRef.current.value = "";
 
-    return (
-      <form action="#" className="flex items-center bg-white rounded-[32px] outline-1 outline-[#CCCCE5] shadow-[0_0_8px_rgba(0,0,0,0.06)] focus-within:outline-2 focus-within:outline-[#49BED4]" onSubmit={handleFormSubmit}>
-          <input 
-              ref={inputRef} 
-              type="text" 
-              placeholder="Message..."
-              className="border-none outline-none w-full bg-transparent h-[47px] px-[17px] text-[0.95rem]" 
-              required 
-          />
-          <button
-            type="submit"
-            className="h-[35px] w-[35px] flex items-center justify-center border-none hidden outline-none cursor-pointer flex-shrink-0 mr-1.5 rounded-full bg-[#49BED4] transition-all duration-200 hover:bg-[#49BED4] peer-valid:block [input:valid~&]:block"
-          >
-            <span className="flex items-center justify-center">
-              <SendIcon />
-            </span>
-          </button>
+    const updatedHistory: ChatMessageType[] = [
+      ...chatHistory,
+      { role: "user", text: userMessage },
+    ];
 
-      </form>
+    setChatHistory(updatedHistory);
+
+    setTimeout(() => {
+      const thinkingMessage: ChatMessageType = {
+        role: "model",
+        text: "Thinking...",
+      };
+
+      const thinkingHistory: ChatMessageType[] = [
+        ...updatedHistory,
+        thinkingMessage,
+      ];
+
+      setChatHistory(thinkingHistory);
+
+      generateBotResponse([
+        ...updatedHistory,
+        {
+          role: "user",
+          text: ` Using the details provided above, please address this query: ${userMessage}`,
+        },
+      ]);
+    }, 600);
+  };
+
+  return (
+    <form
+      action="#"
+      className="flex items-center bg-white rounded-[32px] outline-1 outline-[#CCCCE5] shadow-[0_0_8px_rgba(0,0,0,0.06)] focus-within:outline-2 focus-within:outline-[#49BED4]"
+      onSubmit={handleFormSubmit}
+    >
+      <input
+        ref={inputRef}
+        type="text"
+        placeholder="Message..."
+        className="border-none outline-none w-full bg-transparent h-[47px] px-[17px] text-[0.95rem]"
+        required
+      />
+      <button
+        type="submit"
+        className="h-[35px] w-[35px] flex items-center justify-center border-none hidden outline-none cursor-pointer flex-shrink-0 mr-1.5 rounded-full bg-[#49BED4] transition-all duration-200 hover:bg-[#49BED4] peer-valid:block [input:valid~&]:block"
+      >
+        <span className="flex items-center justify-center">
+          <SendIcon />
+        </span>
+      </button>
+    </form>
   );
 };
 

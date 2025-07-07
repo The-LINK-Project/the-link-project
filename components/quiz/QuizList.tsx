@@ -22,7 +22,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-
 interface QuizListProps {
   quizzes: QuizAdmin[];
 }
@@ -41,7 +40,10 @@ export default function QuizList({ quizzes: initialQuizzes }: QuizListProps) {
     .filter(
       (quiz) =>
         quiz.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        quiz.lessonId.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        quiz.lessonId
+          .toString()
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
       switch (sortBy) {

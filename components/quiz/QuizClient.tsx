@@ -6,11 +6,11 @@ import { getQuizByLessonId } from "@/lib/actions/quiz.actions";
 
 type LessonPageProps = {
   params: {
-      lessonIndex: number;
+    lessonIndex: number;
   };
 };
 
-export default function QuizClient({params}: LessonPageProps) {
+export default function QuizClient({ params }: LessonPageProps) {
   const lessonIndex = params.lessonIndex;
   const [quiz, setQuiz] = useState<any>({
     _id: "",
@@ -25,7 +25,7 @@ export default function QuizClient({params}: LessonPageProps) {
         const data = await getQuizByLessonId(lessonIndex);
         setQuiz(data);
       } catch (error) {
-        console.error('Failed to fetch quiz:', error);
+        console.error("Failed to fetch quiz:", error);
       }
     };
 

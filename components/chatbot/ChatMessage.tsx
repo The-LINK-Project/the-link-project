@@ -1,5 +1,5 @@
-import ChatbotIcon from './ChatbotIcon';
-import type { FC } from 'react';
+import ChatbotIcon from "./ChatbotIcon";
+import type { FC } from "react";
 
 type ChatRole = "user" | "model";
 
@@ -26,7 +26,9 @@ const ChatMessage: FC<ChatMessageProps> = ({ chat }) => {
         <span className="h-[35px] w-[35px] p-[6px] bg-[#49BED4] rounded-full flex items-center justify-center">
           <ChatbotIcon />
         </span>
-        <p className={`message-text p-[12px_16px] max-w-[75%] break-words whitespace-pre-line text-[0.85rem] bg-[#E6FAFD] rounded-[13px_13px_13px_3px] ${isError ? "text-red-500" : ""}`}>
+        <p
+          className={`message-text p-[12px_16px] max-w-[75%] break-words whitespace-pre-line text-[0.85rem] bg-[#E6FAFD] rounded-[13px_13px_13px_3px] ${isError ? "text-red-500" : ""}`}
+        >
           {chat.text}
         </p>
       </div>

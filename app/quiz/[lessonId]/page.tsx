@@ -1,8 +1,7 @@
-"use server"
+"use server";
 
 import { getQuizByLessonId } from "@/lib/actions/quiz.actions";
 import QuizClient from "@/components/quiz/QuizClient";
-
 
 type QuizPageProps = {
   params: { lessonId: number } | Promise<{ lessonId: number }>;

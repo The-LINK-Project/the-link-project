@@ -1,7 +1,7 @@
-"use client"; 
+"use client";
 
-import React, { useRef, useState, useEffect } from 'react';
-import { getResponse } from '@/lib/actions/conversation.actions';
+import React, { useRef, useState, useEffect } from "react";
+import { getResponse } from "@/lib/actions/conversation.actions";
 
 const PlaygroundPage = () => {
   const [recording, setRecording] = useState(false);
@@ -10,14 +10,14 @@ const PlaygroundPage = () => {
   const audioChunks = useRef<Blob[]>([]);
   useEffect(() => {
     if (!audioURL) return; // exit early if not set
-  
+
     const handleResponse = async () => {
       // 1. Convert recorded audio to base64
       const base64 = await urlToBase64(audioURL);
-  
+
       // 2. Send to OpenAI/Gemini or whatever your `getResponse` is
       const audioResponse = await getResponse(base64 || "null", "");
-  
+
       // 3. If it returns a successful response, play the result
       if (audioResponse.success) {
         const ttsBase64 = audioResponse.audioBase64Response;
@@ -26,31 +26,29 @@ const PlaygroundPage = () => {
         audio.play();
       }
     };
-  
+
     handleResponse(); // Trigger the async function
-  
   }, [audioURL]); // 🔁 This whole effect re-runs when `audioURL` changes
-  
 
-async function urlToBase64(audioUrl: string): Promise<string> {
-const response = await fetch(audioUrl);
-const blob = await response.blob();
+  async function urlToBase64(audioUrl: string): Promise<string> {
+    const response = await fetch(audioUrl);
+    const blob = await response.blob();
 
-return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onload = () => {
-    const result = reader.result as string;
-    const base64 = result.split(',')[1]; // strip the "data:audio/webm;base64,"
-    resolve(base64);
-    };
-    reader.onerror = reject;
-});
-}
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onload = () => {
+        const result = reader.result as string;
+        const base64 = result.split(",")[1]; // strip the "data:audio/webm;base64,"
+        resolve(base64);
+      };
+      reader.onerror = reject;
+    });
+  }
 
   const handleStartRecording = async () => {
     if (!navigator.mediaDevices) {
-      alert('MediaDevices API not supported.');
+      alert("MediaDevices API not supported.");
       return;
     }
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -64,7 +62,7 @@ return new Promise((resolve, reject) => {
     };
 
     mediaRecorderRef.current.onstop = () => {
-      const audioBlob = new Blob(audioChunks.current, { type: 'audio/webm' });
+      const audioBlob = new Blob(audioChunks.current, { type: "audio/webm" });
       setAudioURL(URL.createObjectURL(audioBlob));
     };
 
@@ -72,19 +70,19 @@ return new Promise((resolve, reject) => {
     setRecording(true);
   };
 
-  const handleStopRecording = async() => {
+  const handleStopRecording = async () => {
     mediaRecorderRef.current?.stop();
     setRecording(false);
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: 40 }}>
+    <div style={{ textAlign: "center", marginTop: 40 }}>
       <h2>Audio Recorder Playground</h2>
       <button
         onClick={recording ? handleStopRecording : handleStartRecording}
-        style={{ fontSize: 24, padding: '10px 20px', marginRight: 10 }}
+        style={{ fontSize: 24, padding: "10px 20px", marginRight: 10 }}
       >
-        {recording ? 'Stop 🎤' : 'Record 🎤'}
+        {recording ? "Stop 🎤" : "Record 🎤"}
       </button>
       <button
         onClick={() => {
@@ -94,18 +92,15 @@ return new Promise((resolve, reject) => {
           }
         }}
         disabled={!audioURL}
-        style={{ fontSize: 24, padding: '10px 20px' }}
+        style={{ fontSize: 24, padding: "10px 20px" }}
       >
         Play ▶️
       </button>
       <div style={{ marginTop: 20 }}>
-        {audioURL && (
-          <audio src={audioURL} controls />
-        )}
+        {audioURL && <audio src={audioURL} controls />}
       </div>
     </div>
   );
 };
 
 export default PlaygroundPage;
-

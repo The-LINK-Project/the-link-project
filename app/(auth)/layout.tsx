@@ -1,5 +1,3 @@
-
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -7,9 +5,7 @@ export default function RootLayout({
 }>) {
   return (
     <div className="flex flex-col items-center justify-center w-screen h-screen">
-    
-        <main className="">{children}</main>
-     
+      <main className="">{children}</main>
     </div>
   );
 }

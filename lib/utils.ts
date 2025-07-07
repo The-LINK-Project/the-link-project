@@ -1,18 +1,20 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export function formatConvoHistory(convoHistory: { role: string; message: string }[]): string {
+export function formatConvoHistory(
+  convoHistory: { role: string; message: string }[]
+): string {
   return convoHistory
-    .map(message => `${(message.role)}: ${message.message}`)
-    .join('\n');
+    .map((message) => `${message.role}: ${message.message}`)
+    .join("\n");
 }
 
-export function formatInitialObjectives(objectives: any[]){
-  const initialObjectives =  Array(objectives.length).fill(false);
-  console.log(`INITIAL OBJECRIVES: ${initialObjectives}`)
+export function formatInitialObjectives(objectives: any[]) {
+  const initialObjectives = Array(objectives.length).fill(false);
+  console.log(`INITIAL OBJECRIVES: ${initialObjectives}`);
   return initialObjectives;
 }

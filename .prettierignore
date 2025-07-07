@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+dist/
+build/
+.env*
+*.log
+package-lock.json
+yarn.lock
+.DS_Store
+*.tsbuildinfo

@@ -5,87 +5,86 @@ import Head from "next/head";
 import Header from "@/components/shared/Header";
 import { Analytics } from "@vercel/analytics/react";
 import {
-    ClerkProvider,
-    SignInButton,
-    SignedIn,
-    SignedOut,
-    UserButton,
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
 } from "@clerk/nextjs";
 import Chatbot from "@/components/chatbot/Chatbot";
 
-
 const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
-    subsets: ["latin"],
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 const openSans = Open_Sans({
-    variable: "--font-open-sans",
-    subsets: ["latin"],
+  variable: "--font-open-sans",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
+  title: "The LINK Project | AI English Lessons for Migrant Workers",
+  description:
+    "English learning resources for migrant workers in Singapore through a personalized AI voice assistant",
+  keywords: [
+    "learn English",
+    "AI tutor",
+    "practical English",
+    "migrant workers",
+    "Singapore",
+    "ESL",
+    "conversational English",
+    "real-world English lessons",
+  ],
+  authors: [{ name: "The LINK Project" }],
+  openGraph: {
     title: "The LINK Project | AI English Lessons for Migrant Workers",
     description:
-        "English learning resources for migrant workers in Singapore through a personalized AI voice assistant",
-    keywords: [
-        "learn English",
-        "AI tutor",
-        "practical English",
-        "migrant workers",
-        "Singapore",
-        "ESL",
-        "conversational English",
-        "real-world English lessons",
+      "English learning resources for migrant workers in Singapore through a personalized AI voice assistant",
+    url: "https://thelinkproject.org",
+    siteName: "The LINK Project",
+    images: [
+      {
+        url: "/assets/link_blue.png",
+        width: 600,
+        height: 600,
+        alt: "The LINK Project Logo",
+      },
     ],
-    authors: [{ name: "The LINK Project" }],
-    openGraph: {
-        title: "The LINK Project | AI English Lessons for Migrant Workers",
-        description:
-            "English learning resources for migrant workers in Singapore through a personalized AI voice assistant",
-        url: "https://thelinkproject.org",
-        siteName: "The LINK Project",
-        images: [
-            {
-                url: "/assets/link_blue.png",
-                width: 600,
-                height: 600,
-                alt: "The LINK Project Logo",
-            },
-        ],
-        type: "website",
-    },
+    type: "website",
+  },
 
-    robots: {
-        index: true,
-        follow: true,
-    },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    return (
-        <div>
-            <Chatbot></Chatbot>
-            <ClerkProvider>
-                <Header></Header>
-                <html lang="en">
-                    <body
-                        className={`${openSans.variable} antialiased container mx-auto max-w-7xl`}
-                    >
-                        {children}
-                        <Analytics />
-                    </body>
-                </html>
-            </ClerkProvider>
-        </div>
-    );
+  return (
+    <div>
+      <Chatbot></Chatbot>
+      <ClerkProvider>
+        <Header></Header>
+        <html lang="en">
+          <body
+            className={`${openSans.variable} antialiased container mx-auto max-w-7xl`}
+          >
+            {children}
+            <Analytics />
+          </body>
+        </html>
+      </ClerkProvider>
+    </div>
+  );
 }

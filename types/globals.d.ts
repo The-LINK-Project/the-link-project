@@ -1,48 +1,48 @@
 declare type LessonData = {
-    title: string;
-    description: string;
-    objectives: string[];
+  title: string;
+  description: string;
+  objectives: string[];
 };
 
 declare type LessonProgress = {
-    userId: string;
-    lessonIndex: number;
-    objectivesMet: boolean[];
-    convoHistory: Message[];
+  userId: string;
+  lessonIndex: number;
+  objectivesMet: boolean[];
+  convoHistory: Message[];
 };
 
 declare type Message = {
-    role: string;
-    message: string;
-    audioURL?: string;
+  role: string;
+  message: string;
+  audioURL?: string;
 };
 
 declare type Lesson = {
-    title: string,
-    description: string,
-    objectives: string[],
-    lessonIndex: Number
-}
+  title: string;
+  description: string;
+  objectives: string[];
+  lessonIndex: Number;
+};
 
 declare type ChatMessageType = {
-    role: ChatRole;
-    text: string;
-    isError?: boolean;
-    hideInChat?: boolean;
-  };
+  role: ChatRole;
+  text: string;
+  isError?: boolean;
+  hideInChat?: boolean;
+};
 
 declare type Question = {
-    questionText: string;
-    options: string[];
-    correctAnswerIndex: number;
-  }
-  
+  questionText: string;
+  options: string[];
+  correctAnswerIndex: number;
+};
+
 declare type QuizData = {
-    title: string;
-    lessonId: number;
-    questions: Question[];
-  }
-  
+  title: string;
+  lessonId: number;
+  questions: Question[];
+};
+
 declare type QuizAdmin = {
   _id: string;
   title: string;
@@ -50,4 +50,4 @@ declare type QuizAdmin = {
   questions: Question[];
   createdAt: string;
   updatedAt: string;
-}
+};
