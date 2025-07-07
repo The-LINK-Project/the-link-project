@@ -13,6 +13,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Link from "next/link";
 import {
   Tooltip,
   TooltipContent,
@@ -416,6 +417,12 @@ const Lesson = ({
           <div className="w-14 h-14 bg-gradient-to-r from-[rgb(90,199,219)] to-[rgb(70,179,199)] rounded-full flex items-center justify-center shadow-xl">
             <Brain className="h-7 w-7 text-white" />
           </div>
+        </div>
+
+        <div className="flex flex-col items-center text-blue-700">
+          <Link href={`/learn/${lessonIndex}/quiz`}>
+            Already know this? Test your knowledge with this quiz!
+          </Link>
         </div>
 
         {/* Bottom Center - Apple Pencil Style Toolbar */}

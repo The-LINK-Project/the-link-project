@@ -75,6 +75,13 @@ const DashboardLessons = async () => {
                       </div>
                       <CardTitle className="text-lg group-hover:text-[rgb(90,199,219)] transition-colors">
                         {lesson.title}
+
+                        {/* for adrish: im adding the lesson difficulty here u can style later with a swtich for beginner, intermediate, advanced*/}
+                        {lesson.difficulty && (
+                          <Badge variant="secondary" className={status.badge}>
+                            {lesson.difficulty}
+                          </Badge>
+                        )}
                       </CardTitle>
                     </div>
                     {status.icon}
