@@ -160,6 +160,9 @@ const Lesson = ({
         objectivesMet
       );
 
+      // Track the current objectives state for database update
+      let currentObjectivesMet = objectivesMet;
+
       // 3. If it returns a successful response, play the result
       if (audioResponse.success) {
         const ttsBase64 = audioResponse.audioBase64Response;
@@ -186,7 +189,8 @@ const Lesson = ({
         const objectiveIndex = audioResponse.objectiveIndex;
 
         if (objectiveIndex !== undefined) {
-          updateObjectivesMet(objectiveIndex);
+          currentObjectivesMet = updateObjectivesMet(objectiveIndex);
+          setObjectivesMet(currentObjectivesMet);
         }
       }
 
@@ -202,7 +206,7 @@ const Lesson = ({
       // update lesson progress in mongodb
       await updateLessonProgress({
         lessonIndex,
-        objectivesMet,
+        objectivesMet: currentObjectivesMet,
         convoHistory: convoHistoryWithoutAudio,
       });
 
@@ -288,12 +292,14 @@ const Lesson = ({
     const updatedObjectivesMet = [...objectivesMet];
     updatedObjectivesMet[index] = true;
     setObjectivesMet(updatedObjectivesMet);
-
+    
     // Show success toast when objective is completed
     toast.success("Objective completed!", {
       description: lessonObjectives[index],
       duration: 3000,
     });
+    // here i return it to get the most up to date objectivesMet for adding to the mongodb
+    return updatedObjectivesMet;
   };
 
   return (
