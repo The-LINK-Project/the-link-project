@@ -411,14 +411,7 @@ const Lesson = ({
             Skip to Quiz
           </Button>
         </div>
-
-        {/* Bottom Right - AI Icon */}
-        <div className="fixed bottom-6 right-6">
-          <div className="w-14 h-14 bg-gradient-to-r from-[rgb(90,199,219)] to-[rgb(70,179,199)] rounded-full flex items-center justify-center shadow-xl">
-            <Brain className="h-7 w-7 text-white" />
-          </div>
-        </div>
-
+        
         <div className="flex flex-col items-center text-blue-700">
           <Link href={`/learn/${lessonIndex}/quiz`}>
             Already know this? Test your knowledge with this quiz!

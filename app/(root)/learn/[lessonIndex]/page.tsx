@@ -66,44 +66,45 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
 
             <p className="text-lg text-gray-700 mb-6">{lesson.description}</p>
             <h2 className="text-xl font-semibold text-blue-700 mb-3">
-                Objectives
+              Objectives
             </h2>
             <ul className="list-disc list-inside space-y-2 pl-2">
-                {lesson.objectives.map((objective, i) => (
-                    <li key={i} className="text-gray-800 text-base">
-                        {objective}
-                    </li>
-                ))}
+              {lesson.objectives.map((objective, i) => (
+                <li key={i} className="text-gray-800 text-base">
+                  {objective}
+                </li>
+              ))}
             </ul>
             <Lesson
-                initialInstructions={specificInstructions}
-                lessonIndex={index}
-                previousConvoHistory={lessonConvoHistory}
-                previousLessonObjectivesProgress={lessonObjectivesProgress}
-                lessonObjectives={lessonObjectives}
-                isLessonProgress={isLessonProgress}
+              initialInstructions={specificInstructions}
+              lessonIndex={index}
+              previousConvoHistory={lessonConvoHistory}
+              previousLessonObjectivesProgress={lessonObjectivesProgress}
+              lessonObjectives={lessonObjectives}
+              isLessonProgress={isLessonProgress}
             />
 
             <div className="mt-8 flex justify-between">
-                {index > 0 && (
-                    <Link href={`/learn/${index - 1}`}>
-                        <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
-                            ← Previous Lesson
-                        </button>
-                    </Link>
-                )}
-                {index < lessons.length - 1 && (
-                    <Link href={`/learn/${index + 1}`}>
-                        <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition ml-auto">
-                            Next Lesson →
-                        </button>
-                    </Link>
-                )}
+              {index > 0 && (
+                <Link href={`/learn/${index - 1}`}>
+                  <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                    ← Previous Lesson
+                  </button>
+                </Link>
+              )}
+              {index < lessons.length - 1 && (
+                <Link href={`/learn/${index + 1}`}>
+                  <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition ml-auto">
+                    Next Lesson →
+                  </button>
+                </Link>
+              )}
             </div>
-
-        </section>
-    );
-
+          </div>
+        </div>
+      </div>
+    </div> 
+  );
 };
 
 export default LessonPage;

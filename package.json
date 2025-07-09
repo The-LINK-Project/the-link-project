@@ -16,6 +16,7 @@
     "@clerk/nextjs": "^6.20.1",
     "@emailjs/browser": "^4.4.1",
     "@google/genai": "^1.3.0",
+    "@heroicons/react": "^2.2.0",
     "@openai/realtime-api-beta": "github:openai/openai-realtime-api-beta",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-alert-dialog": "^1.1.14",
