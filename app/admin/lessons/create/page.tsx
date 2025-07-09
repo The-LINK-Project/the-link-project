@@ -81,26 +81,32 @@ const CreateLessonPage = () => {
     try {
       if (formData.difficulty === "") {
         setMessage("Please select a difficulty level");
-        setTimeout(() => setMessage(""), 5000);
         return;
       }
 
-      await createLesson({
+      console.log("Submitting lesson data:", formData);
+
+      const result = await createLesson({
         title: formData.title,
         description: formData.description,
         objectives: formData.objectives.filter((obj) => obj.trim() !== ""),
         lessonIndex: formData.lessonIndex as unknown as Number,
-        difficulty: formData.difficulty, // This is already the correct string value
+        difficulty: formData.difficulty,
       });
 
+      console.log("Lesson created successfully:", result);
       setMessage("Lesson created successfully!");
+
       setTimeout(() => {
         router.push("/admin/lessons/manage");
       }, 2000);
     } catch (error) {
       console.error("Error creating lesson:", error);
-      setMessage("Failed to create lesson");
-      setTimeout(() => setMessage(""), 5000);
+      setMessage(
+        `Failed to create lesson: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     } finally {
       setIsSubmitting(false);
     }

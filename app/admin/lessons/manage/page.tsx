@@ -271,16 +271,14 @@ const ManageLessonsPage = () => {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Edit className="h-4 w-4 mr-1" />
-                      Edit
-                    </Button>
                     <Button
                       variant="destructive"
                       size="sm"
                       onClick={() => handleDelete(lesson._id, lesson.title)}
+                      className="w-full"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete
                     </Button>
                   </div>
                 </CardContent>
