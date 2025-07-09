@@ -79,6 +79,48 @@ const Lesson = ({
   // prevents a double creation in mongodb
   const hasRunRef = useRef(false);
 
+  // Audio management refs
+  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
+  const allAudioElementsRef = useRef<Set<HTMLAudioElement>>(new Set());
+
+  // Function to stop all currently playing audio
+  const stopAllAudio = () => {
+    // Stop the current main audio if playing
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current.currentTime = 0;
+      currentAudioRef.current = null;
+    }
+    
+    // Stop all registered audio elements
+    allAudioElementsRef.current.forEach(audio => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    });
+  };
+
+  // Function to play audio safely (stops others first)
+  const playAudioSafely = (audioElement: HTMLAudioElement) => {
+    stopAllAudio();
+    currentAudioRef.current = audioElement;
+    
+    // Add event listener to clear ref when audio ends
+    const handleEnded = () => {
+      if (currentAudioRef.current === audioElement) {
+        currentAudioRef.current = null;
+      }
+      audioElement.removeEventListener('ended', handleEnded);
+    };
+    
+    audioElement.addEventListener('ended', handleEnded);
+    audioElement.play().catch(error => {
+      console.warn('Audio play failed:', error);
+      currentAudioRef.current = null;
+    });
+  };
+
   useEffect(() => {
     if (!hasRunRef.current) {
       const runInit = async () => {
@@ -118,6 +160,13 @@ const Lesson = ({
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   }, [convoHistory]);
+
+  // Cleanup audio on component unmount
+  useEffect(() => {
+    return () => {
+      stopAllAudio();
+    };
+  }, []);
 
   const router = useRouter();
   // checking if all objectives are met and can end the lesson and if they are then maybe have a quick end of lesson progress popup and continue to qiuz
@@ -183,7 +232,7 @@ const Lesson = ({
         const ttsBase64 = audioResponse.audioBase64Response;
         const audioSrc = `data:audio/wav;base64,${ttsBase64}`;
         const audio = new Audio(audioSrc);
-        audio.play();
+        playAudioSafely(audio);
         const systemTranscription = audioResponse.systemTranscription;
         convoHistoryRef.current = [
           ...convoHistoryRef.current,
@@ -252,6 +301,10 @@ const Lesson = ({
       alert("MediaDevices API not supported.");
       return;
     }
+    
+    // Stop all currently playing audio before starting recording
+    stopAllAudio();
+    
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
     });
@@ -390,6 +443,37 @@ const Lesson = ({
                                       src={message.audioURL}
                                       controls
                                       className="w-full h-8 rounded-lg"
+                                      ref={(audioElement) => {
+                                        if (audioElement) {
+                                          allAudioElementsRef.current.add(audioElement);
+                                          
+                                          // Add event listener to manage playback
+                                          const handlePlay = () => {
+                                            // Stop other audio when this one starts playing
+                                            allAudioElementsRef.current.forEach(audio => {
+                                              if (audio !== audioElement && !audio.paused) {
+                                                audio.pause();
+                                                audio.currentTime = 0;
+                                              }
+                                            });
+                                            
+                                            // Stop main audio if playing
+                                            if (currentAudioRef.current && currentAudioRef.current !== audioElement) {
+                                              currentAudioRef.current.pause();
+                                              currentAudioRef.current.currentTime = 0;
+                                              currentAudioRef.current = null;
+                                            }
+                                          };
+                                          
+                                          audioElement.addEventListener('play', handlePlay);
+                                          
+                                          // Cleanup on unmount
+                                          return () => {
+                                            allAudioElementsRef.current.delete(audioElement);
+                                            audioElement.removeEventListener('play', handlePlay);
+                                          };
+                                        }
+                                      }}
                                     />
                                   )}
                                 </div>
@@ -490,7 +574,7 @@ const Lesson = ({
                             onClick={() => {
                               if (audioURL) {
                                 const audio = new Audio(audioURL);
-                                audio.play();
+                                playAudioSafely(audio);
                               }
                             }}
                             disabled={!audioURL || isLoading}
