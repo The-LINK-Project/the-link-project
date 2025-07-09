@@ -61,3 +61,36 @@ export async function getAllLessons(): Promise<Lesson[]> {
     throw error;
   }
 }
+
+export async function deleteLesson(
+  lessonId: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    await connectToDatabase();
+
+    console.log("Deleting lesson with ID:", lessonId);
+
+    const deletedLesson = await Lesson.findByIdAndDelete(lessonId);
+
+    if (!deletedLesson) {
+      return {
+        success: false,
+        message: "Lesson not found",
+      };
+    }
+
+    console.log("Lesson deleted successfully");
+    revalidatePath("/admin/lessons");
+
+    return {
+      success: true,
+      message: "Lesson deleted successfully",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      message: "Failed to delete lesson",
+    };
+  }
+}
