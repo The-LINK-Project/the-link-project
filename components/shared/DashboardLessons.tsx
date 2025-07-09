@@ -63,7 +63,7 @@ const DashboardLessons = async () => {
           const status = getProgressStatus(progressStatus);
 
           return (
-            <Link href={`/learn/${index}`} key={index} className="group">
+            <Link href={`/learn/${index + 1}`} key={index} className="group">
               <Card
                 className={`h-full transition-all duration-200 hover:shadow-lg hover:-translate-y-1 cursor-pointer ${status.cardClass}`}
               >
@@ -75,6 +75,13 @@ const DashboardLessons = async () => {
                       </div>
                       <CardTitle className="text-lg group-hover:text-[rgb(90,199,219)] transition-colors">
                         {lesson.title}
+
+                        {/* for adrish: im adding the lesson difficulty here u can style later with a swtich for beginner, intermediate, advanced*/}
+                        {lesson.difficulty && (
+                          <Badge variant="secondary" className={status.badge}>
+                            {lesson.difficulty}
+                          </Badge>
+                        )}
                       </CardTitle>
                     </div>
                     {status.icon}

@@ -8,57 +8,56 @@ import { formatInitialObjectives } from "../utils";
 import Lesson from "../database/models/lesson.model";
 
 export async function createLesson({
-    title,
-    description,
-    objectives,
-    lessonIndex,
+  title,
+  description,
+  objectives,
+  lessonIndex,
+  difficulty,
 }: {
-    title: string,
-    description: string,
-    objectives: string[],
-    lessonIndex: Number
+  title: string;
+  description: string;
+  objectives: string[];
+  lessonIndex: Number;
+  difficulty: string;
 }): Promise<Lesson> {
-    try {
-        await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-        console.log("Making new lesson")
+    console.log("Making new lesson");
 
-        const payload = {
-            title: title, 
-            description: description,
-            objectives: objectives,
-            lessonIndex: lessonIndex
-        };
-        console.log(`PAYLOAD: ${payload}`);
-        const newLesson = await Lesson.create(payload);
+    const payload = {
+      title: title,
+      description: description,
+      objectives: objectives,
+      lessonIndex: lessonIndex,
+      difficulty: difficulty,
+    };
+    console.log(`PAYLOAD: ${payload}`);
+    const newLesson = await Lesson.create(payload);
 
-        if (!newLesson)
-            throw Error("Failed to create new lesson progress");
+    if (!newLesson) throw Error("Failed to create new lesson progress");
 
-        console.log(`New Lesson: ${newLesson}`);
-        return JSON.parse(JSON.stringify(newLesson));
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
+    console.log(`New Lesson: ${newLesson}`);
+    return JSON.parse(JSON.stringify(newLesson));
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
 
 export async function getAllLessons(): Promise<Lesson[]> {
-    try {
-        await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-        console.log("Retrieving Lessons")
+    console.log("Retrieving Lessons");
 
-        const lessons = await Lesson.find({});
+    const lessons = await Lesson.find({});
 
-        console.log(`All Lessons Retrieved`)
-        
-        return JSON.parse(JSON.stringify(lessons));
+    console.log(`All Lessons Retrieved`);
 
-
-
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
+    return JSON.parse(JSON.stringify(lessons));
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }

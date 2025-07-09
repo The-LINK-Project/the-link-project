@@ -1,21 +1,10 @@
+"use server";
+
 import { getQuizByLessonId } from "@/lib/actions/quiz.actions";
 import QuizClient from "@/components/quiz/QuizClient";
 
-interface Question {
-  questionText: string;
-  options: string[];
-  correctAnswerIndex: number;
-}
-
-interface Quiz {
-  _id: string;
-  lessonId: string;
-  title: string;
-  questions: Question[];
-}
-
 type QuizPageProps = {
-  params: { lessonId: string } | Promise<{ lessonId: string }>;
+  params: { lessonId: number } | Promise<{ lessonId: number }>;
 };
 
 export default async function QuizPage({ params }: QuizPageProps) {
@@ -23,8 +12,7 @@ export default async function QuizPage({ params }: QuizPageProps) {
     params instanceof Promise ? (await params).lessonId : params.lessonId;
 
   try {
-    const quiz = await getQuizByLessonId(lessonId);
-    return <QuizClient quiz={quiz} lessonId={lessonId} />;
+    return <QuizClient params={{ lessonIndex: lessonId }}></QuizClient>;
   } catch (error) {
     return (
       <div className="min-h-screen flex justify-center items-center">

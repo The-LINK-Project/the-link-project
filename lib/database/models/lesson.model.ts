@@ -1,12 +1,13 @@
-import { Schema, model, models } from "mongoose"; 
+import { Schema, model, models } from "mongoose";
 
 const LessonSchema = new Schema({
-    title: { type: String, required: true, unique: false },
-    description: { type: String, required: true, unique: false },
-    objectives: { type: [String], required: true, unique: false },
-    lessonIndex: {type: Number, required: true, unique: false },
-})
+  title: { type: String, required: true, unique: false },
+  description: { type: String, required: true, unique: false },
+  objectives: { type: [String], required: true, unique: false },
+  lessonIndex: { type: Number, required: true, unique: false },
+  difficulty: { type: String, required: true, unique: false },
+});
 
-const Lesson = models.Lesson || model ("Lesson", LessonSchema);
+const Lesson = models.Lesson || model("Lesson", LessonSchema);
 
-export default Lesson
+export default Lesson;

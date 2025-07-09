@@ -1,16 +1,15 @@
-import mongoose from "mongoose";
+import { Schema, model, models } from "mongoose";
 
-const questionSchema = new mongoose.Schema({
+const questionSchema = new Schema({
   questionText: { type: String, required: true },
   options: { type: [String], required: true },
   correctAnswerIndex: { type: Number, required: true },
 });
 
-const quizSchema = new mongoose.Schema(
+const quizSchema = new Schema(
   {
     lessonId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Lesson",
+      type: Number,
       required: true,
     },
     title: { type: String, required: true },
@@ -18,16 +17,9 @@ const quizSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    collection: "quizzes",
   }
 );
 
-// Better model registration pattern
-let Quiz;
-try {
-  Quiz = mongoose.model("Quiz");
-} catch {
-  Quiz = mongoose.model("Quiz", quizSchema);
-}
+const Quiz = models.Quiz || model("Quiz", quizSchema);
 
 export default Quiz;

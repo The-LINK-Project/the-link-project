@@ -35,8 +35,8 @@ const Chatbot = () => {
 
   const generateBotResponse = async (history: ChatMessageType[]) => {
     const updateHistory = (text: string, isError = false) => {
-      setChatHistory(prev => [
-        ...prev.filter(msg => msg.text !== "Thinking..."),
+      setChatHistory((prev) => [
+        ...prev.filter((msg) => msg.text !== "Thinking..."),
         { role: "model", text, isError },
       ]);
     };
@@ -59,7 +59,9 @@ const Chatbot = () => {
   }, [chatHistory]);
 
   return (
-    <div className={`container${showChatbot ? " show-chatbot" : ""} font-[Inter,sans-serif]`}>
+    <div
+      className={`container${showChatbot ? " show-chatbot" : ""} font-[Inter,sans-serif]`}
+    >
       {/* Toggle Button */}
       <button
         id="chatbot-toggler"
@@ -70,7 +72,7 @@ const Chatbot = () => {
           bg-[#49BED4] transition-all duration-200 outline-none z-[100]
           ${showChatbot ? "rotate-90" : ""}
         `}
-        style={{ WebkitTapHighlightColor: 'transparent' }}
+        style={{ WebkitTapHighlightColor: "transparent" }}
       >
         {/* Open/Close text */}
         <span
@@ -98,9 +100,11 @@ const Chatbot = () => {
           fixed z-50 bottom-[90px] right-[20px] w-[95vw] max-w-[320px] bg-white
           rounded-[15px] shadow-[0_0_128px_0_rgba(0,0,0,0.1),0_32px_64px_-48px_rgba(0,0,0,0.5)]
           transition-all duration-100 origin-bottom-right overflow-hidden
-          ${showChatbot
-            ? "opacity-100 scale-100 pointer-events-auto"
-            : "opacity-0 scale-[0.3] pointer-events-none"}
+          ${
+            showChatbot
+              ? "opacity-100 scale-100 pointer-events-auto"
+              : "opacity-0 scale-[0.3] pointer-events-none"
+          }
           sm:w-[320px] sm:right-[35px] sm:bottom-[90px]
         `}
       >
@@ -110,7 +114,9 @@ const Chatbot = () => {
             <span className="h-[35px] w-[35px] p-[6px] bg-white rounded-full flex items-center justify-center">
               <ChatbotIconteal />
             </span>
-            <span className="logo-text text-white text-[1.31rem] font-semibold">Chatbot</span>
+            <span className="logo-text text-white text-[1.31rem] font-semibold">
+              Chatbot
+            </span>
           </div>
         </div>
 
