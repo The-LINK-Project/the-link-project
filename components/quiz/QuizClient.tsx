@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { saveQuizResult } from "@/lib/actions/quizResults.actions";
 import { getQuizByLessonId } from "@/lib/actions/quiz.actions";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type LessonPageProps = {
   params: {
@@ -12,12 +13,16 @@ type LessonPageProps = {
 
 export default function QuizClient({ params }: LessonPageProps) {
   const lessonIndex = params.lessonIndex;
-  const [quiz, setQuiz] = useState<any>({
-    _id: "",
+  const [quiz, setQuiz] = useState<QuizData>({
     title: "",
     lessonId: 0,
     questions: [],
   });
+  const lessonId = quiz.lessonId;
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(new Array(quiz.questions.length).fill(-1));
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [score, setScore] = useState<number | null>(null);
+
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -32,14 +37,6 @@ export default function QuizClient({ params }: LessonPageProps) {
     fetchQuiz();
   }, []);
 
-  const lessonId = quiz.lessonId;
-
-  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(
-    new Array(quiz.questions.length).fill(-1)
-  );
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [score, setScore] = useState<number | null>(null);
-  const router = useRouter();
 
   const handleAnswerSelect = (questionIndex: number, answerIndex: number) => {
     setSelectedAnswers((prev) => {
@@ -62,12 +59,9 @@ export default function QuizClient({ params }: LessonPageProps) {
     const calculatedScore = Math.round((correctAnswers / totalQuestions) * 100);
     setScore(calculatedScore);
     setIsSubmitted(true);
-    console.log(calculatedScore);
-    console.log("TESTING");
-    console.log(lessonId);
+  
     const formData = new FormData();
     formData.append("lessonId", lessonId.toString());
-    formData.append("quizId", quiz._id.toString());
     formData.append("score", calculatedScore.toString());
     formData.append("answers", JSON.stringify(selectedAnswers));
 
@@ -252,12 +246,13 @@ export default function QuizClient({ params }: LessonPageProps) {
                   )}
                 </div>
 
-                <button
-                  onClick={() => router.push("/quiz")}
-                  className="px-6 py-3 bg-[rgb(90,199,219)] text-white text-lg font-semibold rounded-xl hover:bg-[rgb(90,199,219)]/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                >
-                  Return to Quiz Hub
-                </button>
+                <Link href="/quiz">
+                  <Button
+                    className="px-6 py-3 bg-[rgb(90,199,219)] text-white text-lg font-semibold rounded-xl hover:bg-[rgb(90,199,219)]/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                  >
+                    Return to Quiz Hub
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

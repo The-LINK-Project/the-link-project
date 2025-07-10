@@ -17,7 +17,7 @@ const DashboardPage = async () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {lessons.map((lesson, index) => {
-          return <DashboardLessonItem lesson={lesson} lessonNum={index+1} lessonStatus={lessonStatuses[index]} />;
+          return <DashboardLessonItem key={index+1} lesson={lesson} lessonNum={index+1} lessonStatus={lessonStatuses[index]} />;
         })}
       </div>
     </section>

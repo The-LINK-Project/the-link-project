@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getProgressStatus as getLessonStatusData } from "@/lib/clientUtils";
+import { BookOpen, CheckCircle, Clock, Play } from "lucide-react";
 
 type DashboardLessonItemProps = {
     lesson: Lesson
@@ -19,7 +19,32 @@ type DashboardLessonItemProps = {
 const DashboardLessonItem = (props: DashboardLessonItemProps) => {
     const { lesson, lessonNum, lessonStatus } = props; 
 
-    const status = getLessonStatusData(lessonStatus);
+    // Status styling configurations
+    const lessonStatusStyles = {
+      "Completed": {
+        badge: "bg-green-100 text-green-800 hover:bg-green-200",
+        icon: <CheckCircle className="h-4 w-4 text-green-600" />,
+        cardClass: "border-green-200 bg-green-50/30",
+      },
+      "In Progress": {
+        badge: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
+        icon: <Play className="h-4 w-4 text-yellow-600" />,
+        cardClass: "border-yellow-200 bg-yellow-50/30",
+      },
+      "Not Started": {
+        badge: "bg-gray-100 text-gray-800 hover:bg-gray-200",
+        icon: <Clock className="h-4 w-4 text-gray-600" />,
+        cardClass: "border-gray-200 bg-gray-50/30",
+      },
+    };
+
+    const defaultStyle = {
+      badge: "bg-gray-100 text-gray-800 hover:bg-gray-200",
+      icon: <BookOpen className="h-4 w-4 text-gray-600" />,
+      cardClass: "border-gray-200",
+    };
+
+    const status = lessonStatusStyles[lessonStatus] || defaultStyle;
 
   return (
     <Link href={`/learn/${lessonNum}`} key={lessonNum} className="group">

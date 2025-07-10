@@ -1,7 +1,6 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
-import UserResult from "@/lib/database/models/quizResult.model";
 import mongoose from "mongoose";
 import { auth } from "@clerk/nextjs/server";
 import QuizResult from "@/lib/database/models/quizResult.model";
@@ -23,13 +22,12 @@ export async function saveQuizResult(formData: FormData) {
     }
 
     const lessonId = parseInt(formData.get("lessonId") as string);
-    console.log(lessonId);
     const quizId = formData.get("quizId") as string;
     const score = parseInt(formData.get("score") as string);
     const answersJson = formData.get("answers") as string;
     const answers = JSON.parse(answersJson);
 
-    if (!lessonId || !quizId || isNaN(score) || !answers) {
+    if (!lessonId || isNaN(score) || !answers) {
       throw new Error("Missing required fields");
     }
 
@@ -37,10 +35,9 @@ export async function saveQuizResult(formData: FormData) {
       throw new Error("Score must be a number between 0 and 100");
     }
 
-    const result = await UserResult.create({
+    const result = await QuizResult.create({
       userId: userId,
       lessonId: lessonId,
-      quizId: new mongoose.Types.ObjectId(quizId),
       score,
       answers,
     });
