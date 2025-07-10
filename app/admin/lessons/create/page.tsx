@@ -29,7 +29,6 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, BookOpen, Check, ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
 import { createLesson } from "@/lib/actions/Lesson.actions";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 interface LessonFormData {
@@ -56,7 +55,6 @@ const difficulties = [
 ];
 
 const CreateLessonPage = () => {
-  const router = useRouter();
   const [formData, setFormData] = useState<LessonFormData>({
     title: "",
     description: "",
@@ -67,6 +65,7 @@ const CreateLessonPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleObjectiveChange = (index: number, value: string) => {
     const newObjectives = [...formData.objectives];
@@ -96,9 +95,17 @@ const CreateLessonPage = () => {
 
       console.log("Lesson created successfully:", result);
       setMessage("Lesson created successfully!");
+      setIsSuccess(true);
 
+      // Reset form after successful submission
       setTimeout(() => {
-        router.push("/admin/lessons/manage");
+        setFormData({
+          title: "",
+          description: "",
+          objectives: ["", "", ""],
+          lessonIndex: 0,
+          difficulty: "",
+        });
       }, 2000);
     } catch (error) {
       console.error("Error creating lesson:", error);
@@ -154,7 +161,16 @@ const CreateLessonPage = () => {
                 : "bg-green-50 border-green-200 text-green-700"
             }`}
           >
-            {message}
+            <div className="flex items-center justify-between">
+              <span>{message}</span>
+              {isSuccess && (
+                <Link href="/admin/lessons/manage">
+                  <Button size="sm" variant="outline" className="ml-4">
+                    View Lessons
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
         )}
 
