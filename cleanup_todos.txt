@@ -1,0 +1,5 @@
+1. Fix all use clients in key page.tsx files
+2. Make as much code as possible not client component
+3. Sort parts of code into smaller components especially for lesson component, e.g the bar at the bottom with record and all
+4. Standardise tailwind and styles: shadcn components should not have additional classnames or styles except maybe colour
+5. Add utils for code that will be reused
