@@ -1,31 +1,5 @@
 import React from "react";
-
-const people = [
-  {
-    name: "Jane Doe",
-    role: "CEO & Founder",
-    bio: "Passionate about innovation and leading the team toward success. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    image: "https://source.unsplash.com/300x300/?portrait,woman",
-  },
-  {
-    name: "John Smith",
-    role: "CTO",
-    bio: "Tech wizard with a love for solving tough problems. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    image: "https://source.unsplash.com/300x300/?portrait,man",
-  },
-  {
-    name: "Alice Johnson",
-    role: "Lead Designer",
-    bio: "Crafting beautiful user experiences. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    image: "https://source.unsplash.com/300x300/?woman,design",
-  },
-  {
-    name: "Bob Lee",
-    role: "Marketing Head",
-    bio: "Connecting our brand to the world. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    image: "https://source.unsplash.com/300x300/?man,marketing",
-  },
-];
+import { aboutUsInformation } from "@/constants";
 
 export default function AboutPage() {
   return (
@@ -48,7 +22,7 @@ export default function AboutPage() {
       </div>
 
       <div className="mt-16 max-w-7xl mx-auto grid gap-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 px-4">
-        {people.map((person, index) => (
+        {aboutUsInformation.map((person, index) => (
           <div
             key={index}
             className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col items-center text-center p-6"
