@@ -100,9 +100,11 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
                     </Link>
                 )}
             </div>
-
-        </section>
-    );
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
 };
 
