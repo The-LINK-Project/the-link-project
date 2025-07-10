@@ -32,15 +32,17 @@ export async function createLesson({
       lessonIndex: lessonIndex,
       difficulty: difficulty,
     };
-    console.log(`PAYLOAD: ${payload}`);
+
+    console.log(`PAYLOAD: `, JSON.stringify(payload, null, 2));
+
     const newLesson = await Lesson.create(payload);
 
-    if (!newLesson) throw Error("Failed to create new lesson progress");
+    if (!newLesson) throw Error("Failed to create new lesson");
 
-    console.log(`New Lesson: ${newLesson}`);
+    console.log(`New Lesson Created: `, JSON.stringify(newLesson, null, 2));
     return JSON.parse(JSON.stringify(newLesson));
   } catch (error) {
-    console.log(error);
+    console.log("Error creating lesson:", error);
     throw error;
   }
 }
@@ -59,5 +61,38 @@ export async function getAllLessons(): Promise<Lesson[]> {
   } catch (error) {
     console.log(error);
     throw error;
+  }
+}
+
+export async function deleteLesson(
+  lessonId: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    await connectToDatabase();
+
+    console.log("Deleting lesson with ID:", lessonId);
+
+    const deletedLesson = await Lesson.findByIdAndDelete(lessonId);
+
+    if (!deletedLesson) {
+      return {
+        success: false,
+        message: "Lesson not found",
+      };
+    }
+
+    console.log("Lesson deleted successfully");
+    revalidatePath("/admin/lessons");
+
+    return {
+      success: true,
+      message: "Lesson deleted successfully",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      message: "Failed to delete lesson",
+    };
   }
 }
