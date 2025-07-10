@@ -1,10 +1,8 @@
-"use client";
-
 import React from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
-  const router = useRouter();
 
   return (
     <div
@@ -30,15 +28,16 @@ export default function NotFound() {
           Sorry, the page you're looking for doesn't exist. It might have been
           removed or moved to a new location.
         </p>
-        <button
-          onClick={() => router.push("/")}
-          className="px-6 py-3 rounded-full text-white font-semibold shadow-lg hover:shadow-xl transition duration-300"
-          style={{
-            backgroundColor: "#49BED4",
-          }}
-        >
-          Back to Home
-        </button>
+        <Link href="/">
+          <Button
+            className="px-6 py-3 rounded-full text-white font-semibold shadow-lg hover:shadow-xl transition duration-300 cursor-pointer"
+            style={{
+              backgroundColor: "#49BED4",
+            }}
+          >
+            Back to Home
+          </Button>
+        </Link>
       </div>
     </div>
   );

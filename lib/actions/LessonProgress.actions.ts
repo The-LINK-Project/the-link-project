@@ -240,7 +240,7 @@ export async function updateLessonProgress({
   }
 }
 
-export async function getAllLessonProgressesForDashboard() {
+export async function getAllLessonStatuses(): Promise<LessonStatus[]> {
   try {
     await connectToDatabase();
 
@@ -252,7 +252,7 @@ export async function getAllLessonProgressesForDashboard() {
       throw new Error("User not found");
     }
 
-    let completionStatuses = [];
+    let completionStatuses: LessonStatus[] = [];
     for (let i = 0; i < lessons.length; i++) {
       console.log(i);
 

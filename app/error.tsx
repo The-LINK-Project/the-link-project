@@ -1,3 +1,4 @@
+// This one should be kept as use client
 "use client";
 
 import Link from "next/link";

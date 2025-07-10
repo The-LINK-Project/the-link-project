@@ -1,8 +1,6 @@
-declare type LessonData = {
-  title: string;
-  description: string;
-  objectives: string[];
-};
+// LESSON TYPES
+
+
 
 declare type LessonProgress = {
   userId: string;
@@ -11,18 +9,20 @@ declare type LessonProgress = {
   convoHistory: Message[];
 };
 
-declare type Message = {
-  role: string;
-  message: string;
-  audioURL?: string;
-};
-
 declare type Lesson = {
   title: string;
   description: string;
   objectives: string[];
   lessonIndex: Number;
   difficulty: string;
+};
+
+declare type LessonStatus = "Completed" | "In Progress" | "Not Started"; 
+
+declare type Message = {
+  role: string;
+  message: string;
+  audioURL?: string;
 };
 
 declare type ChatMessageType = {
@@ -52,3 +52,4 @@ declare type QuizAdmin = {
   createdAt: string;
   updatedAt: string;
 };
+
