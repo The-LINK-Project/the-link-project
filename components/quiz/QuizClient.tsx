@@ -4,6 +4,7 @@ import { saveQuizResult } from "@/lib/actions/quizResults.actions";
 import { getQuizByLessonId } from "@/lib/actions/quiz.actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import QuizQuestion from "@/components/quiz/QuizQuestion";
 
 type LessonPageProps = {
   params: {
@@ -18,7 +19,6 @@ export default function QuizClient({ params }: LessonPageProps) {
     lessonId: 0,
     questions: [],
   });
-  const lessonId = quiz.lessonId;
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>(new Array(quiz.questions.length).fill(-1));
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [score, setScore] = useState<number | null>(null);
@@ -61,7 +61,7 @@ export default function QuizClient({ params }: LessonPageProps) {
     setIsSubmitted(true);
   
     const formData = new FormData();
-    formData.append("lessonId", lessonId.toString());
+    formData.append("lessonId", quiz.lessonId.toString());
     formData.append("score", calculatedScore.toString());
     formData.append("answers", JSON.stringify(selectedAnswers));
 
@@ -117,50 +117,13 @@ export default function QuizClient({ params }: LessonPageProps) {
           <>
             <div className="space-y-6">
               {quiz.questions.map((q: Question, qIndex: number) => (
-                <div
+                <QuizQuestion
                   key={qIndex}
-                  className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="flex items-start gap-3 mb-4">
-                    <div className="flex-shrink-0 w-8 h-8 bg-[rgb(90,199,219)] rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md">
-                      {qIndex + 1}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-slate-800 leading-relaxed">
-                        {q.questionText}
-                      </h3>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-2 ml-11">
-                    {q.options.map((opt, optIndex) => (
-                      <button
-                        key={optIndex}
-                        className={`group p-3 border-2 rounded-lg transition-all duration-200 text-left font-medium ${
-                          selectedAnswers[qIndex] === optIndex
-                            ? "bg-[rgb(90,199,219)]/10 border-[rgb(90,199,219)] text-[rgb(90,199,219)] shadow-md transform scale-[1.01]"
-                            : "bg-white border-slate-200 text-slate-700 hover:bg-[rgb(90,199,219)]/5 hover:border-[rgb(90,199,219)]/50 hover:shadow-sm"
-                        }`}
-                        onClick={() => handleAnswerSelect(qIndex, optIndex)}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-4 h-4 rounded-full border-2 transition-all duration-200 ${
-                              selectedAnswers[qIndex] === optIndex
-                                ? "bg-[rgb(90,199,219)] border-[rgb(90,199,219)]"
-                                : "border-slate-300 group-hover:border-[rgb(90,199,219)]"
-                            }`}
-                          >
-                            {selectedAnswers[qIndex] === optIndex && (
-                              <div className="w-full h-full rounded-full bg-white scale-50"></div>
-                            )}
-                          </div>
-                          <span>{opt}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                  q={q}
+                  qIndex={qIndex}
+                  selectedAnswers={selectedAnswers}
+                  handleAnswerSelect={handleAnswerSelect}
+                />
               ))}
             </div>
 

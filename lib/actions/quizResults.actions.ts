@@ -22,7 +22,6 @@ export async function saveQuizResult(formData: FormData) {
     }
 
     const lessonId = parseInt(formData.get("lessonId") as string);
-    const quizId = formData.get("quizId") as string;
     const score = parseInt(formData.get("score") as string);
     const answersJson = formData.get("answers") as string;
     const answers = JSON.parse(answersJson);
@@ -84,10 +83,7 @@ export async function getUserResults() {
       require("@/lib/database/models/quiz.model");
     }
 
-    const query: any = { userId: userId };
-
-    const results = await QuizResult.find(query)
-      .populate("quizId")
+    const results = await QuizResult.find({ userId: userId })
       .sort({ completedAt: -1 });
 
     const serializedResults = results.map((result) => {
@@ -97,11 +93,6 @@ export async function getUserResults() {
         _id: plainResult._id.toString(),
         userId: plainResult.userId.toString(),
         lessonId: plainResult.lessonId,
-        quizId: plainResult.quizId
-          ? plainResult.quizId._id
-            ? { ...plainResult.quizId, _id: plainResult.quizId._id.toString() }
-            : plainResult.quizId.toString()
-          : null,
         createdAt: plainResult.createdAt
           ? plainResult.createdAt.toISOString()
           : undefined,
