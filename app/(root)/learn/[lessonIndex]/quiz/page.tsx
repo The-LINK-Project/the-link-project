@@ -11,7 +11,6 @@ const page = ({ params }: QuizPageProps) => {
 
   return (
     <div>
-      Quiz for lesson {index}
       <QuizClient params={{ lessonIndex: index }} />
     </div>
   );
