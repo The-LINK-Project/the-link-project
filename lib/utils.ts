@@ -18,3 +18,19 @@ export function formatInitialObjectives(objectives: any[]) {
   console.log(`INITIAL OBJECRIVES: ${initialObjectives}`);
   return initialObjectives;
 }
+
+export async function urlToBase64(audioUrl: string): Promise<string> {
+  const response = await fetch(audioUrl);
+  const blob = await response.blob();
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64 = result.split(",")[1]; // strip the "data:audio/webm;base64,"
+      resolve(base64);
+    };
+    reader.onerror = reject;
+  });
+}

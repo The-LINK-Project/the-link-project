@@ -68,6 +68,7 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
             <h2 className="text-xl font-semibold text-blue-700 mb-3">
                 Objectives
             </h2>
+            
             <Lesson
                 initialInstructions={specificInstructions}
                 lessonIndex={index}

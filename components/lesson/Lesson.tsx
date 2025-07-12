@@ -1,38 +1,26 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import {
-  getResponse,
-  getUserTranscription,
-} from "@/lib/actions/conversation.actions";
-import LessonInputBar from "./LessonInputBar";
-import {
-  initLessonProgress,
-  updateLessonProgress,
-} from "@/lib/actions/LessonProgress.actions";
-import LessonMessages from "./LessonMessages";
 
+import { getResponse, getUserTranscription } from "@/lib/actions/conversation.actions";
+import { initLessonProgress, updateLessonProgress } from "@/lib/actions/LessonProgress.actions";
+
+import LessonInputBar from "./LessonInputBar";
+import LessonMessages from "./LessonMessages";
+import LessonObjectivesMet from "./LessonObjectivesMet";
+import LessonNotStarted from "./LessonNotStarted";
+import LessonCompleteModal from "./LessonCompleteModal";
+
+import { urlToBase64 } from "@/lib/utils";
+
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import Link from "next/link";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import LessonObjectivesMet from "./LessonObjectivesMet";
 import { toast } from "sonner";
-import {
-  Bot,
-  Brain,
-  BookOpen,
-  Loader2,
-  ChevronDown,
-} from "lucide-react";
-import LessonCompleteModal from "./LessonCompleteModal";
+import { Loader2, ChevronDown } from "lucide-react";
+
+import Link from "next/link";
 
 type LessonProps = {
   initialInstructions: string;
@@ -51,36 +39,24 @@ const Lesson = ({
   lessonObjectives,
   isLessonProgress,
 }: LessonProps) => {
+
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
+  const [objectivesMet, setObjectivesMet] = useState<boolean[]>(previousLessonObjectivesProgress);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isComplete, setIsComplete] = useState<boolean>(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [convoHistory, setConvoHistory] = useState<Message[] | []>(previousConvoHistory ?? []);
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
-  const [instructions, setInstructions] = useState<string | null>(
-    initialInstructions
-  );
   const instructionsRef = useRef<string>(initialInstructions);
-  const [objectivesMet, setObjectivesMet] = useState<boolean[]>(
-    previousLessonObjectivesProgress
-  );
-  const [convoHistory, setConvoHistory] = useState<Message[] | []>(
-    previousConvoHistory ?? []
-  );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  // lesson compleeed status
-  const [isComplete, setIsComplete] = useState<boolean>(false);
-
-  // Scroll state
-  const [showScrollButton, setShowScrollButton] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-
-  // prevents a double creation in mongodb
   const hasRunRef = useRef(false);
-
-  // Audio management refs
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const allAudioElementsRef = useRef<Set<HTMLAudioElement>>(new Set());
-
+  const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
+  
   // Function to stop all currently playing audio
   const stopAllAudio = () => {
     // Stop the current main audio if playing
@@ -184,7 +160,6 @@ const Lesson = ({
     }
   };
 
-  const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
   useEffect(() => {
     if (!audioURL) return; // exit early if not set
 
@@ -210,7 +185,6 @@ const Lesson = ({
 
         const updatedUserInstructions =
           (instructionsRef.current ?? "") + "\nUser: " + userTranscription;
-        setInstructions(updatedUserInstructions);
         instructionsRef.current = updatedUserInstructions;
       }
       // 2. Send to gemini and openai for audio
@@ -243,7 +217,6 @@ const Lesson = ({
 
         const updatedSystemInstructions =
           instructionsRef.current + "\nSystem: " + systemTranscription;
-        setInstructions(updatedSystemInstructions);
         instructionsRef.current = updatedSystemInstructions;
 
         // if objective index was returned by function call update objectivesMet
@@ -258,7 +231,7 @@ const Lesson = ({
       // removing audio for db
       const convoHistoryWithoutAudio = convoHistoryRef.current.map(
         (message) => {
-          // Use object destructuring with rest property to remove audioURL from each message
+          // Use object destructuring with rest property to remove audioURL from each message cuz it takes crazy db space
           const { audioURL, ...messageWithoutAudio } = message;
           return messageWithoutAudio;
         }
@@ -276,22 +249,6 @@ const Lesson = ({
 
     handleResponse(); // Trigger the async function
   }, [audioURL]);
-
-  async function urlToBase64(audioUrl: string): Promise<string> {
-    const response = await fetch(audioUrl);
-    const blob = await response.blob();
-
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onload = () => {
-        const result = reader.result as string;
-        const base64 = result.split(",")[1]; // strip the "data:audio/webm;base64,"
-        resolve(base64);
-      };
-      reader.onerror = reject;
-    });
-  }
 
   const handleStartRecording = async () => {
     if (!navigator.mediaDevices) {
@@ -330,28 +287,6 @@ const Lesson = ({
     setRecording(false);
   };
 
-  // not needed for now, maybe reuse some of this code later
-  const disconnect = async () => {
-    console.log("🔌 Disconnecting and saving lesson progress...");
-
-    // here I destructure each message and remove audioURL because it is not needed in the database and takes too much storage data
-    const convoHistoryWithoutAudio = convoHistory.map((message) => {
-      // Use object destructuring with rest property to remove audioURL from each message
-      const { audioURL, ...messageWithoutAudio } = message;
-      return messageWithoutAudio;
-    });
-    console.log("FLUSHING THE TOILET");
-    console.log(lessonIndex);
-    console.log(objectivesMet);
-    console.log(convoHistoryWithoutAudio);
-    await updateLessonProgress({
-      lessonIndex,
-      objectivesMet,
-      convoHistory: convoHistoryWithoutAudio,
-    });
-
-    console.log("💾 Lesson progress saved");
-  };
 
   const updateObjectivesMet = (index: number) => {
     const updatedObjectivesMet = [...objectivesMet];
@@ -371,7 +306,7 @@ const Lesson = ({
     <>
     <TooltipProvider>
       <div className="min-h-screen bg-white relative">
-        {/* Header with Real-time Objectives */}
+        {/* Lesson Objectives */}
         <div className="bg-white px-6 py-4 border-b border-gray-100">
           <div className="max-w-4xl mx-auto">
             <LessonObjectivesMet
@@ -393,17 +328,7 @@ const Lesson = ({
                     <ScrollArea className="h-full" ref={scrollAreaRef}>
                       <div className="p-6">
                         {convoHistory.length === 0 ? (
-                          <div className="flex items-center justify-center min-h-[500px] text-gray-500">
-                            <div className="text-center">
-                              <Bot className="h-16 w-16 mx-auto mb-6 text-gray-300" />
-                              <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                                Ready to start your lesson!
-                              </h3>
-                              <p className="text-sm text-gray-500">
-                                Click the microphone below to begin speaking
-                              </p>
-                            </div>
-                          </div>
+                          <LessonNotStarted />
                         ) : (
                           <LessonMessages
                             convoHistory={convoHistory}
@@ -446,24 +371,6 @@ const Lesson = ({
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </div>
-
-        {/* Bottom Left - Skip to Quiz Button */}
-        <div className="fixed bottom-6 left-6">
-          <Button
-            variant="outline"
-            className="border-[rgb(90,199,219)] text-[rgb(90,199,219)] hover:bg-[rgb(90,199,219)] hover:text-white shadow-lg"
-          >
-            <BookOpen className="h-4 w-4 mr-2" />
-            Skip to Quiz
-          </Button>
-        </div>
-
-        {/* Bottom Right - AI Icon */}
-        <div className="fixed bottom-6 right-6">
-          <div className="w-14 h-14 bg-gradient-to-r from-[rgb(90,199,219)] to-[rgb(70,179,199)] rounded-full flex items-center justify-center shadow-xl">
-            <Brain className="h-7 w-7 text-white" />
           </div>
         </div>
 
