@@ -25,7 +25,7 @@ const QuizPage = async ({ params }: QuizPageProps) => {
             Test your knowledge and track your progress
           </p>
         </div>
-      <QuizClient params={{ quiz: quiz }} />
+        <QuizClient params={{ quiz: quiz }} />
       </div>
     </div>
 

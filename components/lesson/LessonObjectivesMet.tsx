@@ -6,7 +6,7 @@ type Props = {
   lessonObjectivesProgress: boolean[];
 };
 
-const ObjectivesMet = ({
+const LessonObjectivesMet = ({
   lessonObjectives,
   lessonObjectivesProgress,
 }: Props) => {
@@ -34,4 +34,4 @@ const ObjectivesMet = ({
   );
 };
 
-export default ObjectivesMet;
+export default LessonObjectivesMet;

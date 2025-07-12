@@ -5,14 +5,16 @@ import {
   getResponse,
   getUserTranscription,
 } from "@/lib/actions/conversation.actions";
+import LessonInputBar from "./LessonInputBar";
 import {
   initLessonProgress,
   updateLessonProgress,
 } from "@/lib/actions/LessonProgress.actions";
-import { useRouter } from "next/navigation";
-import { Button } from "./ui/button";
-import { Card, CardContent } from "./ui/card";
-import { Badge } from "./ui/badge";
+import LessonMessages from "./LessonMessages";
+
+import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
+import { Badge } from "../ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
 import {
@@ -21,13 +23,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import ObjectivesMet from "./ObjectivesMet";
+import LessonObjectivesMet from "./LessonObjectivesMet";
 import { toast } from "sonner";
 import {
-  Mic,
-  MicOff,
-  Play,
-  User,
   Bot,
   Brain,
   BookOpen,
@@ -168,7 +166,6 @@ const Lesson = ({
     };
   }, []);
 
-  const router = useRouter();
   // checking if all objectives are met and can end the lesson and if they are then maybe have a quick end of lesson progress popup and continue to qiuz
   useEffect(() => {
     if (objectivesMet.every((objective) => objective)) {
@@ -377,7 +374,7 @@ const Lesson = ({
         {/* Header with Real-time Objectives */}
         <div className="bg-white px-6 py-4 border-b border-gray-100">
           <div className="max-w-4xl mx-auto">
-            <ObjectivesMet
+            <LessonObjectivesMet
               lessonObjectives={lessonObjectives}
               lessonObjectivesProgress={objectivesMet}
             />
@@ -408,78 +405,11 @@ const Lesson = ({
                             </div>
                           </div>
                         ) : (
-                          <div className="space-y-6">
-                            {convoHistory.map((message, index) => (
-                              <div
-                                key={index}
-                                className={`flex gap-4 ${
-                                  message.role === "User"
-                                    ? "justify-end"
-                                    : "justify-start"
-                                }`}
-                              >
-                                <div
-                                  className={`max-w-[75%] rounded-2xl p-4 shadow-sm ${
-                                    message.role === "User"
-                                      ? "bg-[rgb(90,199,219)] text-white"
-                                      : "bg-gray-50 text-gray-800 border border-gray-100"
-                                  }`}
-                                >
-                                  <div className="flex items-center gap-2 mb-3">
-                                    {message.role === "User" ? (
-                                      <User className="h-4 w-4" />
-                                    ) : (
-                                      <Bot className="h-4 w-4" />
-                                    )}
-                                    <span className="font-medium text-sm">
-                                      {message.role}
-                                    </span>
-                                  </div>
-                                  <p className="text-sm leading-relaxed mb-3">
-                                    {message.message}
-                                  </p>
-                                  {message.audioURL && (
-                                    <audio
-                                      src={message.audioURL}
-                                      controls
-                                      className="w-full h-8 rounded-lg"
-                                      ref={(audioElement) => {
-                                        if (audioElement) {
-                                          allAudioElementsRef.current.add(audioElement);
-                                          
-                                          // Add event listener to manage playback
-                                          const handlePlay = () => {
-                                            // Stop other audio when this one starts playing
-                                            allAudioElementsRef.current.forEach(audio => {
-                                              if (audio !== audioElement && !audio.paused) {
-                                                audio.pause();
-                                                audio.currentTime = 0;
-                                              }
-                                            });
-                                            
-                                            // Stop main audio if playing
-                                            if (currentAudioRef.current && currentAudioRef.current !== audioElement) {
-                                              currentAudioRef.current.pause();
-                                              currentAudioRef.current.currentTime = 0;
-                                              currentAudioRef.current = null;
-                                            }
-                                          };
-                                          
-                                          audioElement.addEventListener('play', handlePlay);
-                                          
-                                          // Cleanup on unmount
-                                          return () => {
-                                            allAudioElementsRef.current.delete(audioElement);
-                                            audioElement.removeEventListener('play', handlePlay);
-                                          };
-                                        }
-                                      }}
-                                    />
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
+                          <LessonMessages
+                            convoHistory={convoHistory}
+                            allAudioElementsRef={allAudioElementsRef}
+                            currentAudioRef={currentAudioRef}
+                          />
                         )}
                         {isLoading && (
                           <div className="flex justify-center mt-6">
@@ -505,92 +435,14 @@ const Lesson = ({
                       </Button>
                     )}
                   </div>
-
-                  {/* Chat Input Bar */}
-                  <div className="border-t border-gray-100 p-4 bg-gray-50/50">
-                    <div className="flex items-center gap-3">
-                      {/* Record Button */}
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            onClick={
-                              recording ? handleStopRecording : handleStartRecording
-                            }
-                            size="lg"
-                            className={`w-12 h-12 rounded-full transition-all duration-300 shadow-lg ${
-                              recording
-                                ? "bg-red-500 hover:bg-red-600 animate-pulse"
-                                : "bg-[rgb(90,199,219)] hover:bg-[rgb(90,199,219)]/90"
-                            }`}
-                            disabled={isLoading}
-                          >
-                            {recording ? (
-                              <MicOff className="h-5 w-5" />
-                            ) : (
-                              <Mic className="h-5 w-5" />
-                            )}
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>
-                            {recording ? "Stop recording" : "Click this to speak"}
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-
-                      {/* Status Area */}
-                      <div className="flex-1 flex justify-center">
-                        {recording && (
-                          <Badge
-                            variant="secondary"
-                            className="bg-red-50 text-red-700 border-red-200 px-4 py-2 text-sm font-medium"
-                          >
-                            Recording...
-                          </Badge>
-                        )}
-                        {isLoading && !recording && (
-                          <Badge
-                            variant="secondary"
-                            className="bg-blue-50 text-blue-700 border-blue-200 px-4 py-2 text-sm font-medium flex items-center gap-2"
-                          >
-                            <Loader2 className="h-3 w-3 animate-spin" />
-                            Loading...
-                          </Badge>
-                        )}
-                        {!recording && !isLoading && (
-                          <Badge
-                            variant="secondary"
-                            className="bg-green-50 text-green-700 border-green-200 px-4 py-2 text-sm font-medium"
-                          >
-                            Ready to record
-                          </Badge>
-                        )}
-                      </div>
-
-                      {/* Play Button */}
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            onClick={() => {
-                              if (audioURL) {
-                                const audio = new Audio(audioURL);
-                                playAudioSafely(audio);
-                              }
-                            }}
-                            disabled={!audioURL || isLoading}
-                            variant="outline"
-                            size="lg"
-                            className="w-12 h-12 rounded-full border-[rgb(90,199,219)] text-[rgb(90,199,219)] hover:bg-[rgb(90,199,219)] hover:text-white disabled:opacity-30 shadow-lg"
-                          >
-                            <Play className="h-5 w-5" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Hear your recording</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </div>
+                  <LessonInputBar
+                    recording={recording}
+                    isLoading={isLoading}
+                    audioURL={audioURL ?? ""}
+                    handleStopRecording={handleStopRecording}
+                    handleStartRecording={handleStartRecording}
+                    playAudioSafely={playAudioSafely}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -615,10 +467,6 @@ const Lesson = ({
           </div>
         </div>
 
-
-
-
-
         <div className="flex flex-col items-center text-blue-700">
             <div className="flex flex-col items-center text-blue-700">
               <Link href={`/learn/${lessonIndex}/quiz`}>
@@ -627,21 +475,6 @@ const Lesson = ({
             </div>
         </div>
 
-        {/* Hidden Debug Section - Keeping for functionality */}
-        <div className="hidden">
-          <div className="pt-10 mb-8">
-            <Button
-              onClick={disconnect}
-              variant="outline"
-              className="mb-4 border-[rgb(90,199,219)] text-[rgb(90,199,219)] hover:bg-[rgb(90,199,219)] hover:text-white"
-            >
-              Exit Lesson
-            </Button>
-            <div className="text-sm text-gray-600">
-              <h1>Objectives Status: {JSON.stringify(objectivesMet)}</h1>
-            </div>
-          </div>
-        </div>
       </div>
     </TooltipProvider>
     <LessonCompleteModal
