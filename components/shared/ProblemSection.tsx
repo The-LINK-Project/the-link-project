@@ -1,9 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
 import {
-  Brain,
-  Zap,
-  Shield,
-  Hourglass,
   HourglassIcon,
   Speech,
   BookOpenCheck,

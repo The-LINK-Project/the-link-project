@@ -1,9 +1,7 @@
-"use client";
 import React from "react";
-import { Button } from "../ui/button";
-import { AlertCircleIcon, ArrowRight, Bell, Lightbulb } from "lucide-react";
+import { ArrowRight, Bell } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { redirectToForm } from "@/lib/clientUtils";
+import GetStartedButton from "./GetStartedButton";
 const HeroSection = () => {
   return (
     <div className="flex flex-col items-center gap-7">
@@ -29,17 +27,7 @@ const HeroSection = () => {
         </h1>
       </div>
       <div>
-        <Button
-          className="cursor-pointer bg- w-48 h-10 mt-3 gap-3 bg-main-blue hover:bg-main-blue-hover transition-transform duration-500 transform hover:scale-105"
-          onClick={redirectToForm}
-        >
-          {/* <Lightbulb className="!w-6 !h-5" strokeWidth={2} /> */}
-          <img src="/assets/form.png" className="w-3"></img>
-          <h1 className=" pr-1">Share Your Ideas</h1>
-        </Button>
-      </div>
-      <div>
-        <h1 className="text-gray-500">With This Google Form.</h1>
+        <GetStartedButton />
       </div>
     </div>
   );

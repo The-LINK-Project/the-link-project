@@ -11,8 +11,6 @@ import {
 import { navLinks } from "../../constants";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { Lightbulb } from "lucide-react";
-import { redirectToForm } from "@/lib/clientUtils";
 import { UserButton } from "@clerk/nextjs";
 import { SignedOut } from "@clerk/clerk-react";
 
@@ -26,13 +24,6 @@ const Header = () => {
       <div className="flex flex-row justify-center items-center gap-10">
         <NavItems className="hidden md:block" />
         <div className="hidden md:block">
-          <Button
-            className="mb-3 cursor-pointer bg-main-blue w-48 h-10 mt-3 hover:bg-main-blue-hover transition-transform duration-500 transform hover:scale-105 flex items- justify-center"
-            onClick={redirectToForm}
-          >
-            <Lightbulb className="!w-6 !h-5" strokeWidth={2} />
-            <h1 className=" pr-1">Share Your Ideas</h1>
-          </Button>
         </div>
         <UserButton />
         <SignedOut>
@@ -53,13 +44,6 @@ const Header = () => {
               </DropdownMenuItem>
             ))}
             <DropdownMenuItem>
-              <Button
-                className="mb-3 cursor-pointer bg-main-blue w-48 h-10 mt-3 hover:bg-main-blue-hover transition-transform duration-500 transform hover:scale-105 flex items- justify-center"
-                onClick={redirectToForm}
-              >
-                <Lightbulb className="!w-6 !h-5 text-white" strokeWidth={2} />
-                <h1 className=" pr-1">Share Your Ideas</h1>
-              </Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

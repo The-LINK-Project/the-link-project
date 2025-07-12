@@ -75,11 +75,11 @@ const QuizComplete = ({ score, selectedAnswers, quiz }: QuizCompleteProps) => {
                 )}
               </div>
 
-              <Link href="/quiz">
+              <Link href="/results">
                 <Button
                   className="px-6 py-3 bg-[rgb(90,199,219)] text-white text-lg font-semibold rounded-xl hover:bg-[rgb(90,199,219)]/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
-                  Return to Quiz Hub
+                  See All Quiz Results
                 </Button>
               </Link>
             </div>
