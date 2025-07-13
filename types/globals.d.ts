@@ -53,3 +53,11 @@ declare type QuizAdmin = {
   updatedAt: string;
 };
 
+declare type QuizResult = {
+  _id: string;
+  userId: string;
+  lessonId: number;
+  score: number;
+  answers: number[];
+  completedAt: string;
+};

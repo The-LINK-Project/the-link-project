@@ -6,8 +6,6 @@ import { auth } from "@clerk/nextjs/server";
 import QuizResult from "@/lib/database/models/quizResult.model";
 import LessonProgress from "@/lib/database/models/lessonProgress.model";
 
-// const TEST_USER_ID = new mongoose.Types.ObjectId("000000000000000000000001");
-
 // submitting and sending over the quiz results to mongodb
 export async function saveQuizResult(formData: FormData) {
   try {

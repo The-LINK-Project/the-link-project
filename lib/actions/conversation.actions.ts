@@ -3,12 +3,6 @@ import { GoogleGenAI } from "@google/genai";
 import OpenAI from "openai";
 import { Type } from "@google/genai";
 
-type Message = {
-  role: string;
-  message: string;
-  audioURL?: string;
-};
-
 function setLessonObjectiveToTrue({
   objectiveIndex,
 }: {

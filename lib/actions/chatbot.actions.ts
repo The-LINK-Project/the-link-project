@@ -1,7 +1,5 @@
 "use server";
-import { GoogleGenAI } from "@google/genai";
 import OpenAI from "openai";
-import { Type } from "@google/genai";
 
 export async function getChatbotResponse(history: ChatMessageType[]) {
   const client = new OpenAI();
