@@ -38,7 +38,7 @@ const QuizResult = ({ result, index }: QuizResultProps) => {
           Simple Present Tense Quiz
         </div>
         <div className="text-xs text-gray-500 mt-1">
-          Lesson {index + 1} • Grammar
+          Lesson {result.lessonId + 1} • Grammar
         </div>
       </div>
 

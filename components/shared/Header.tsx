@@ -24,7 +24,7 @@ const Header = () => {
       <div className="flex flex-row justify-center items-center gap-10">
         <NavItems className="hidden md:block" />
         <div className="hidden md:block">
-        </div>
+        </div> 
         <UserButton />
         <SignedOut>
           <Button asChild>
