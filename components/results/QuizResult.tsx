@@ -1,0 +1,76 @@
+import React from 'react'
+
+type QuizResultProps = {
+  result: QuizResult;
+  index: number;
+};
+
+const QuizResult = ({ result, index }: QuizResultProps) => {
+  return (
+    <div
+      key={result._id.toString()}
+      className="grid grid-cols-12 gap-4 p-6 hover:bg-gray-50 transition-colors cursor-pointer group"
+    >
+      <div className="col-span-4">
+        <div className="text-sm text-gray-900 font-medium">
+          {new Date(result.completedAt).toLocaleDateString(
+            "en-US",
+            {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            }
+          )}
+        </div>
+        <div className="text-xs text-gray-500 mt-1">
+          {new Date(result.completedAt).toLocaleTimeString(
+            "en-US",
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+            }
+          )}
+        </div>
+      </div>
+
+      <div className="col-span-5">
+        <div className="text-sm font-medium text-gray-900 group-hover:text-gray-700">
+          Simple Present Tense Quiz
+        </div>
+        <div className="text-xs text-gray-500 mt-1">
+          Lesson {result.lessonId + 1} • Grammar
+        </div>
+      </div>
+
+      <div className="col-span-2">
+        <div className="text-lg font-bold text-gray-900">
+          {result.score}%
+        </div>
+      </div>
+
+      <div className="col-span-1">
+        <div
+          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+            result.score >= 90
+              ? "bg-gray-900 text-white"
+              : result.score >= 80
+                ? "bg-gray-200 text-gray-800"
+                : result.score >= 70
+                  ? "bg-gray-100 text-gray-700"
+                  : "bg-gray-50 text-gray-600 border border-gray-300"
+          }`}
+        >
+          {result.score >= 90
+            ? "A"
+            : result.score >= 80
+              ? "B"
+              : result.score >= 70
+                ? "C"
+                : "D"}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default QuizResult;

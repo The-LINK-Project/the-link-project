@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createCustomQuiz } from "@/lib/actions/quiz.actions";
-import QuestionBuilder from "./QuestionBuilder";
+import QuestionBuilder from "@/components/admin/quiz/QuestionBuilder";
 import QuizPreview from "./QuizPreview";
 import { Plus, Save, Eye, EyeOff } from "lucide-react";
 

@@ -1,13 +1,10 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
-import UserResult from "@/lib/database/models/quizResult.model";
 import mongoose from "mongoose";
 import { auth } from "@clerk/nextjs/server";
 import QuizResult from "@/lib/database/models/quizResult.model";
 import LessonProgress from "@/lib/database/models/lessonProgress.model";
-
-// const TEST_USER_ID = new mongoose.Types.ObjectId("000000000000000000000001");
 
 // submitting and sending over the quiz results to mongodb
 export async function saveQuizResult(formData: FormData) {
@@ -23,13 +20,11 @@ export async function saveQuizResult(formData: FormData) {
     }
 
     const lessonId = parseInt(formData.get("lessonId") as string);
-    console.log(lessonId);
-    const quizId = formData.get("quizId") as string;
     const score = parseInt(formData.get("score") as string);
     const answersJson = formData.get("answers") as string;
     const answers = JSON.parse(answersJson);
 
-    if (!lessonId || !quizId || isNaN(score) || !answers) {
+    if (!lessonId || isNaN(score) || !answers) {
       throw new Error("Missing required fields");
     }
 
@@ -37,10 +32,9 @@ export async function saveQuizResult(formData: FormData) {
       throw new Error("Score must be a number between 0 and 100");
     }
 
-    const result = await UserResult.create({
+    const result = await QuizResult.create({
       userId: userId,
       lessonId: lessonId,
-      quizId: new mongoose.Types.ObjectId(quizId),
       score,
       answers,
     });
@@ -87,10 +81,7 @@ export async function getUserResults() {
       require("@/lib/database/models/quiz.model");
     }
 
-    const query: any = { userId: userId };
-
-    const results = await QuizResult.find(query)
-      .populate("quizId")
+    const results = await QuizResult.find({ userId: userId })
       .sort({ completedAt: -1 });
 
     const serializedResults = results.map((result) => {
@@ -100,11 +91,6 @@ export async function getUserResults() {
         _id: plainResult._id.toString(),
         userId: plainResult.userId.toString(),
         lessonId: plainResult.lessonId,
-        quizId: plainResult.quizId
-          ? plainResult.quizId._id
-            ? { ...plainResult.quizId, _id: plainResult.quizId._id.toString() }
-            : plainResult.quizId.toString()
-          : null,
         createdAt: plainResult.createdAt
           ? plainResult.createdAt.toISOString()
           : undefined,

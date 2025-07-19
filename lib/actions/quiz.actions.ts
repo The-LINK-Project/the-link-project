@@ -1,25 +1,8 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
-import mongoose, { Model, Document } from "mongoose";
+import mongoose from "mongoose";
 import Quiz from "@/lib/database/models/quiz.model";
-
-// // Define interfaces for TypeScript
-// interface IQuestion {
-//   questionText: string;
-//   options: string[];
-//   correctAnswerIndex: number;
-// }
-
-// // Better model registration pattern for Quiz with proper typing
-// let Quiz: Model<IQuiz>;
-// try {
-//   Quiz = mongoose.model<IQuiz>("Quiz");
-// } catch {
-//   // If model doesn't exist, import and register it
-//   const quizModel = require("@/lib/database/models/quiz.model").default;
-//   Quiz = quizModel;
-// }
 
 export async function getQuizByLessonId(lessonId: number) {
   try {

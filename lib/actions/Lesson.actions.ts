@@ -1,10 +1,6 @@
 "use server";
 
 import { connectToDatabase } from "@/lib/database";
-import { revalidatePath } from "next/cache";
-import User from "@/lib/database/models/user.model";
-import { auth } from "@clerk/nextjs/server";
-import { formatInitialObjectives } from "../utils";
 import Lesson from "../database/models/lesson.model";
 
 export async function createLesson({
