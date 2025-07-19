@@ -12,8 +12,8 @@ export const navLinks = [
     route: "/about",
   },
   {
-    name: "Get Started",
-    route: "/dashboard",
+    name: "Sign in",
+    route: "/sign-in",
   },
 ];
 

@@ -72,19 +72,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
-      <Chatbot></Chatbot>
-      <ClerkProvider>
-        <Header></Header>
-        <html lang="en">
-          <body
-            className={`${openSans.variable} antialiased container mx-auto max-w-7xl`}
-          >
+    <html lang="en" className={`${openSans.variable} antialiased`}>
+      <body className="flex min-h-screen flex-col">
+        <Chatbot />
+        <ClerkProvider>
+          <Header />
+          <main className="flex-grow flex items-center justify-center container mx-auto max-w-7xl px-4">
             {children}
-            <Analytics />
-          </body>
-        </html>
-      </ClerkProvider>
-    </div>
+          </main>
+        </ClerkProvider>
+        <Analytics />
+      </body>
+    </html>
   );
 }
