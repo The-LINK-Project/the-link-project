@@ -15,7 +15,7 @@ export default function Home() {
         title="The LINK Project"
         description="Learn English with personalized, AI-powered lessons built for the real world."
         actions={[
-          { text: "Get Started", href: "/sign-up", variant: "default" },
+          { text: "Get Started", href: "/sign-up" },
           { text: "Learn More", href: "/about" },
         ]}
         image={{

@@ -6,14 +6,6 @@ import { ArrowRightIcon } from "lucide-react";
 import { Mockup, MockupFrame } from "@/components/ui/mockup";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
-
-interface HeroAction {
-  text: string;
-  href: string;
-  icon?: React.ReactNode;
-  variant?: "default" | "glow";
-}
 
 interface HeroProps {
   badge?: {
@@ -25,7 +17,7 @@ interface HeroProps {
   };
   title: string;
   description: string;
-  actions: HeroAction[];
+  actions: { text: string; href: string }[];
   image: {
     light: string;
     dark: string;
@@ -41,64 +33,142 @@ export function HeroSection({
   image,
 }: HeroProps) {
   const { resolvedTheme } = useTheme();
-  const imageSrc = resolvedTheme === "light" ? image.light : image.dark;
+  const imageSrc = resolvedTheme === "dark" ? image.dark : image.light;
 
   return (
     <section
-      className={cn(
-        "bg-background text-foreground relative",
-        "py-0 sm:py-0 md:py-0 px-4",
-        "fade-bottom overflow-hidden pb-0"
-      )}
+      style={{
+        background: "var(--background)",
+        color: "var(--foreground)",
+        padding: "0 1rem",
+        width: "100%",
+      }}
+      className="relative overflow-hidden pb-0"
     >
-      <div className="mx-auto flex max-w-container flex-col gap-12 pt-0 sm:gap-24 relative z-10">
-        <div className="flex flex-col items-center gap-6 text-center sm:gap-12">
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          position: "relative",
+          zIndex: 1,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "3rem",
+          paddingTop: 0,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "1.5rem",
+            textAlign: "center",
+            width: "100%",
+          }}
+        >
           {/* Badge */}
           {badge && (
-            <Badge variant="outline" className="animate-appear gap-2">
-              <span className="text-muted-foreground">{badge.text}</span>
-              <a href={badge.action.href} className="flex items-center gap-1">
+            <Badge variant="hero">
+              <span>{badge.text}</span>
+              <a
+                href={badge.action.href}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  marginLeft: 8,
+                }}
+              >
                 {badge.action.text}
-                <ArrowRightIcon className="h-3 w-3" />
+                <ArrowRightIcon style={{ width: 12, height: 12 }} />
               </a>
             </Badge>
           )}
           {/* Title */}
-          <h1 className="inline-block animate-appear bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-4xl font-semibold leading-tight text-transparent drop-shadow-2xl sm:text-6xl sm:leading-tight md:text-8xl md:leading-tight">
+          <h1
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontWeight: 600,
+              fontSize: "clamp(2.5rem, 8vw, 6rem)",
+              lineHeight: 1.1,
+              color: "var(--foreground)",
+              margin: 0,
+              letterSpacing: "-0.01em",
+              textShadow: "0 2px 16px rgba(0,0,0,0.04)",
+            }}
+          >
             {title}
           </h1>
-
           {/* Description */}
-          <p className="text-md max-w-[550px] animate-appear font-medium text-muted-foreground opacity-0 delay-100 sm:text-xl">
+          <p
+            style={{
+              color: "var(--muted-foreground)",
+              fontFamily: "var(--font-sans)",
+              fontWeight: 500,
+              fontSize: "1.25rem",
+              maxWidth: 550,
+              margin: "0 auto",
+            }}
+          >
             {description}
           </p>
-
           {/* Actions */}
-          <div className="flex animate-appear justify-center gap-4 opacity-0 delay-300">
-            {actions.map((action, index) => (
-              <Button key={index} variant={action.variant} size="lg" asChild>
-                <a href={action.href} className="flex items-center gap-2">
-                  {action.icon}
-                  {action.text}
-                </a>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 16,
+              marginTop: 16,
+            }}
+          >
+            {actions.map((action, idx) => (
+              <Button key={idx} asChild variant="default">
+                <a href={action.href}>{action.text}</a>
               </Button>
             ))}
           </div>
-
           {/* Image */}
-          <div className="relative pt-12">
+          <div
+            style={{
+              position: "relative",
+              paddingTop: 48,
+              width: "100vw",
+              maxWidth: "1400px",
+              margin: "0 auto",
+            }}
+          >
             <MockupFrame
-              className="animate-appear opacity-0 delay-700"
+              className="opacity-100"
               size="small"
+              style={{ width: "100vw", maxWidth: "1400px", margin: "0 auto" }}
             >
-              <Mockup type="responsive">
-                <Image
-                  src={imageSrc}
-                  alt={image.alt}
-                  width={1248}
-                  height={765}
-                  priority
-                />
+              <Mockup
+                type="responsive"
+                style={{ width: "100vw", maxWidth: "1400px", margin: "0 auto" }}
+              >
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    aspectRatio: "1248/765",
+                    minHeight: 320,
+                  }}
+                >
+                  <Image
+                    src={imageSrc}
+                    alt={image.alt}
+                    fill
+                    priority
+                    style={{
+                      borderRadius: "var(--radius-lg)",
+                      objectFit: "cover",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  />
+                </div>
               </Mockup>
             </MockupFrame>
           </div>
