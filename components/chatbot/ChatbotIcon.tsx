@@ -8,7 +8,7 @@ const ChatbotIcon: FC = () => {
       height="50"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#ffffff"
+      stroke="var(--chatbot-icon)"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"

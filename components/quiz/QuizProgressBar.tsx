@@ -1,41 +1,55 @@
-import React from 'react';
+import React from "react";
 
 type QuizProgressBarProps = {
-    selectedAnswers: number[];
-    quiz: QuizData;
-    }
+  selectedAnswers: number[];
+  quiz: QuizData;
+};
 
 const QuizProgressBar = ({ selectedAnswers, quiz }: QuizProgressBarProps) => {
+  const primary = "var(--primary)";
+  const muted = "var(--muted)";
+  const mutedFg = "var(--muted-foreground)";
+  const border = "var(--border)";
+  const card = "var(--card)";
+  const cardFg = "var(--card-foreground)";
 
   return (
-
-    
     <div className="mb-10">
-        <div className="flex justify-between items-center mb-3">
-        <span className="text-sm font-medium text-slate-700">
-            Progress
+      <div className="flex justify-between items-center mb-3">
+        <span className="text-sm font-medium" style={{ color: cardFg }}>
+          Progress
         </span>
-        <span className="text-sm font-medium text-[rgb(90,199,219)]">
-            {selectedAnswers.filter((a) => a !== -1).length} of{" "}
-            {quiz.questions.length} answered
+        <span className="text-sm font-medium" style={{ color: primary }}>
+          {selectedAnswers.filter((a) => a !== -1).length} of{" "}
+          {quiz.questions.length} answered
         </span>
-        </div>
-        <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+      </div>
+      <div
+        style={{
+          width: "100%",
+          background: muted,
+          borderRadius: "9999px",
+          height: 12,
+          overflow: "hidden",
+        }}
+      >
         <div
-            className="bg-[rgb(90,199,219)] h-3 rounded-full transition-all duration-500 ease-out shadow-sm"
-            style={{
+          style={{
+            background: primary,
+            height: 12,
+            borderRadius: "9999px",
             width: `${
-                (selectedAnswers.filter((a) => a !== -1).length /
+              (selectedAnswers.filter((a) => a !== -1).length /
                 quiz.questions.length) *
-                100
+              100
             }%`,
-            }}
+            transition: "width 0.5s ease-out",
+            boxShadow: "var(--shadow-sm)",
+          }}
         />
-        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default QuizProgressBar
-
-  
+export default QuizProgressBar;

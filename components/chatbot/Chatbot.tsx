@@ -66,28 +66,20 @@ const Chatbot = () => {
       <button
         id="chatbot-toggler"
         onClick={() => setShowChatbot((prev) => !prev)}
-        className={`
-          fixed flex items-center justify-center bottom-[30px] right-[20px]
-          h-[50px] w-[50px] border-none cursor-pointer rounded-full
-          bg-[#49BED4] transition-all duration-200 outline-none z-[100]
-          ${showChatbot ? "rotate-90" : ""}
-        `}
-        style={{ WebkitTapHighlightColor: "transparent" }}
+        className={`fixed flex items-center justify-center bottom-[30px] right-[20px] h-[50px] w-[50px] border-none cursor-pointer rounded-full transition-all duration-200 outline-none z-[100] ${showChatbot ? "rotate-90" : ""}`}
+        style={{
+          background: "var(--primary)",
+          WebkitTapHighlightColor: "transparent",
+        }}
       >
         {/* Open/Close text */}
         <span
-          className={`
-            absolute text-white pointer-events-none transition-opacity duration-200
-            ${showChatbot ? "opacity-0" : "opacity-100"}
-          `}
+          className={`absolute text-white pointer-events-none transition-opacity duration-200 ${showChatbot ? "opacity-0" : "opacity-100"}`}
         >
           <ChatbotIcontoggle />
         </span>
         <span
-          className={`
-            absolute text-white pointer-events-none transition-opacity duration-200
-            ${showChatbot ? "opacity-100" : "opacity-0"}
-          `}
+          className={`absolute text-white pointer-events-none transition-opacity duration-200 ${showChatbot ? "opacity-100" : "opacity-0"}`}
         >
           <XIcon />
         </span>
@@ -95,27 +87,24 @@ const Chatbot = () => {
 
       {/* Popup */}
       <div
-        className={`
-          chatbot-popup
-          fixed z-50 bottom-[90px] right-[20px] w-[95vw] max-w-[320px] bg-white
-          rounded-[15px] shadow-[0_0_128px_0_rgba(0,0,0,0.1),0_32px_64px_-48px_rgba(0,0,0,0.5)]
-          transition-all duration-100 origin-bottom-right overflow-hidden
-          ${
-            showChatbot
-              ? "opacity-100 scale-100 pointer-events-auto"
-              : "opacity-0 scale-[0.3] pointer-events-none"
-          }
-          sm:w-[320px] sm:right-[35px] sm:bottom-[90px]
-        `}
+        className={`chatbot-popup fixed z-50 bottom-[90px] right-[20px] w-[95vw] max-w-[320px] bg-[var(--chatbot-primary-bg)] rounded-[15px] shadow-[0_0_128px_0_rgba(0,0,0,0.1),0_32px_64px_-48px_rgba(0,0,0,0.5)] transition-all duration-100 origin-bottom-right overflow-hidden ${showChatbot ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-[0.3] pointer-events-none"} sm:w-[320px] sm:right-[35px] sm:bottom-[90px]`}
       >
         {/* Header */}
-        <div className="chat-header flex items-center justify-between bg-[#49BED4] p-[15px_22px]">
-          <div className="header-info flex gap-[10px] items-center">
-            <span className="h-[35px] w-[35px] p-[6px] bg-white rounded-full flex items-center justify-center">
-              <ChatbotIconteal />
-            </span>
-            <span className="logo-text text-white text-[1.31rem] font-semibold">
-              Chatbot
+        <div
+          className="chat-header flex items-center justify-between"
+          style={{ background: "var(--chatbot-header-bg)" }}
+        >
+          <div className="header-info flex items-center">
+            <span
+              className="logo-text font-semibold"
+              style={{
+                color: "var(--foreground)",
+                fontSize: "1.05rem",
+                marginLeft: "0.5rem",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              LINK Support
             </span>
           </div>
         </div>
@@ -123,16 +112,19 @@ const Chatbot = () => {
         {/* Chat Body */}
         <div
           ref={chatBodyRef}
-          className="
-            chat-body flex flex-col gap-[20px] h-[360px] mb-[82px] overflow-y-auto
-            p-[25px_22px] scrollbar-thin scrollbar-thumb-[#B2E8F1] scrollbar-track-transparent
-          "
+          className="chat-body flex flex-col gap-[20px] h-[360px] mb-[82px] overflow-y-auto p-[25px_22px] scrollbar-thin scrollbar-thumb-[var(--chatbot-scrollbar-thumb)] scrollbar-track-transparent"
         >
           <div className="message bot-message flex gap-[11px] items-center">
-            <span className="h-[35px] w-[35px] p-[6px] bg-[#49BED4] rounded-full flex items-center justify-center">
+            <span
+              className="h-[35px] w-[35px] p-[6px] rounded-full flex items-center justify-center"
+              style={{ background: "var(--chatbot-bot-avatar-bg)" }}
+            >
               <ChatbotIcon />
             </span>
-            <p className="message-text p-[12px_16px] max-w-[75%] break-words whitespace-pre-line text-[0.85rem] bg-[#E6FAFD] rounded-[13px_13px_13px_3px]">
+            <p
+              className="message-text p-[12px_16px] max-w-[75%] break-words whitespace-pre-line text-[0.85rem] rounded-[13px_13px_13px_3px]"
+              style={{ background: "var(--chatbot-bot-bubble-green-bg)" }}
+            >
               Hey there <br /> how can I help you today
             </p>
           </div>
@@ -142,7 +134,10 @@ const Chatbot = () => {
         </div>
 
         {/* Footer */}
-        <div className="chat-footer absolute bottom-0 w-full bg-white p-[15px_22px_20px]">
+        <div
+          className="chat-footer absolute bottom-0 w-full"
+          style={{ background: "var(--chatbot-primary-bg)" }}
+        >
           <ChatForm
             chatHistory={chatHistory}
             setChatHistory={setChatHistory}

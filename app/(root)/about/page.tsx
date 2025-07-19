@@ -1,51 +1,100 @@
-import React from "react";
-import { aboutUsInformation } from "@/constants";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+
+const team = [
+  {
+    name: "Member 1",
+    role: "Founder & CEO",
+    image: "/assets/member1.png",
+    desc: "Visionary leader with a passion for education and technology.",
+  },
+  {
+    name: "Member 2",
+    role: "Lead Developer",
+    image: "/assets/member2.png",
+    desc: "Expert in full-stack development and scalable web solutions.",
+  },
+  {
+    name: "Member 3",
+    role: "Curriculum Designer",
+    image: "/assets/member3.png",
+    desc: "Crafts engaging, effective learning experiences for all ages.",
+  },
+  {
+    name: "Member 4",
+    role: "AI Specialist",
+    image: "/assets/member4.png",
+    desc: "Builds smart, adaptive systems to personalize learning.",
+  },
+];
 
 export default function AboutPage() {
   return (
     <div
-      className="min-h-screen py-16 px-4"
-      style={{
-        background: "linear-gradient(to bottom, white, #49BED4)",
-      }}
+      className="min-h-screen flex flex-col items-center justify-start px-4 py-16"
+      style={{ background: "var(--background)", color: "var(--foreground)" }}
     >
-      <div className="max-w-7xl mx-auto text-center">
+      <div className="max-w-4xl w-full text-center mb-12">
         <h1
-          className="text-5xl font-extrabold mb-4"
-          style={{ color: "#49BED4" }}
+          className="text-4xl font-bold mb-4"
+          style={{ color: "var(--primary)" }}
         >
           About Us
         </h1>
-        <p className="max-w-2xl mx-auto text-lg" style={{ color: "#49BED4" }}>
-          Meet our amazing team dedicated to delivering excellence.
+        <p className="text-lg" style={{ color: "var(--muted-foreground)" }}>
+          We are a passionate team dedicated to making English learning
+          accessible, personalized, and effective for everyone. Our mission is
+          to combine technology and pedagogy to empower learners worldwide.
         </p>
       </div>
-
-      <div className="mt-16 max-w-7xl mx-auto grid gap-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 px-4">
-        {aboutUsInformation.map((person, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col items-center text-center p-6"
+      <div className="w-full flex flex-col gap-6 items-center justify-center sm:grid sm:grid-cols-2 lg:flex lg:flex-row lg:gap-8 lg:justify-center lg:items-stretch max-w-7xl">
+        {team.map((member, idx) => (
+          <Card
+            key={idx}
+            className="flex flex-col items-center justify-between p-4 lg:p-6 w-full max-w-xs lg:max-w-sm min-w-[220px] lg:min-w-[260px] h-[370px] lg:h-[400px] transition-shadow duration-200 bg-card hover:shadow-2xl"
             style={{
-              borderTop: "8px solid #49BED4",
+              border: "1.5px solid var(--about-card-border, var(--border))",
+              background: "var(--about-card-bg, var(--card))",
+              boxShadow: "var(--shadow-lg)",
+              borderRadius: "1.5rem",
             }}
           >
-            <img
-              src={person.image}
-              alt={person.name}
-              className="w-40 h-40 object-cover rounded-full mb-6"
+            <div
+              className="w-[90px] h-[120px] mb-3 flex items-center justify-center rounded-lg overflow-hidden"
               style={{
-                border: "4px solid #49BED4",
+                background: "var(--about-image-bg, var(--muted))",
+                border: "1.5px solid var(--about-card-border, var(--border))",
               }}
-            />
-            <h2 className="text-2xl font-bold" style={{ color: "#49BED4" }}>
-              {person.name}
-            </h2>
-            <p className="font-medium mb-4" style={{ color: "#49BED4" }}>
-              {person.role}
-            </p>
-            <p className="text-gray-600">{person.bio}</p>
-          </div>
+            >
+              {/* Replace with <Image ... /> if using next/image and real images */}
+              <span className="text-4xl text-muted-foreground">🖼️</span>
+            </div>
+            <CardHeader className="items-center p-0 mb-1">
+              <CardTitle
+                className="text-lg font-semibold"
+                style={{ color: "var(--primary)" }}
+              >
+                {member.name}
+              </CardTitle>
+              <CardDescription
+                className="mb-1"
+                style={{ color: "var(--muted-foreground)" }}
+              >
+                {member.role}
+              </CardDescription>
+            </CardHeader>
+            <CardContent
+              className="text-center p-0 text-sm"
+              style={{ color: "var(--foreground)" }}
+            >
+              {member.desc}
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>

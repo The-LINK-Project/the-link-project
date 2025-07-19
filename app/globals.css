@@ -144,6 +144,48 @@
   --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.43);
   --tracking-normal: 0.025em;
   --spacing: 0.25rem;
+  --status-completed-bg: #dcfce7;
+  --status-completed-border: #bbf7d0;
+  --status-completed-text: #166534;
+  --status-completed-icon: #22c55e;
+  --status-inprogress-bg: #fef9c3;
+  --status-inprogress-border: #fde68a;
+  --status-inprogress-text: #854d0e;
+  --status-inprogress-icon: #facc15;
+  --status-notstarted-bg: #f3f4f6;
+  --status-notstarted-border: #e5e7eb;
+  --status-notstarted-text: #374151;
+  --status-notstarted-icon: #6b7280;
+  --dashboard-status-completed-bg: #f0fdf4;
+  --dashboard-status-completed-border: #bbf7d0;
+  --dashboard-status-completed-text: #15803d;
+  --dashboard-status-completed-badge-bg: #dcfce7;
+  --dashboard-status-completed-badge-text: #166534;
+  --dashboard-status-inprogress-bg: #fefce8;
+  --dashboard-status-inprogress-border: #fde68a;
+  --dashboard-status-inprogress-text: #a16207;
+  --dashboard-status-inprogress-badge-bg: #fef9c3;
+  --dashboard-status-inprogress-badge-text: #854d0e;
+  --dashboard-status-notstarted-bg: #f3f4f6;
+  --dashboard-status-notstarted-border: #e5e7eb;
+  --dashboard-status-notstarted-text: #1f2937;
+  --dashboard-status-notstarted-badge-bg: #f3f4f6;
+  --dashboard-status-notstarted-badge-text: #1f2937;
+  --about-card-bg: var(--card);
+  --about-card-border: var(--border);
+  --about-image-bg: var(--muted);
+  --about-card-border-dark: #000;
+  --chatbot-primary-bg: var(--card);
+  --chatbot-header-bg: var(--primary);
+  --chatbot-bot-bubble-bg: #e6fafd;
+  --chatbot-user-bubble-bg: #eaeaea;
+  --chatbot-bot-avatar-bg: var(--primary);
+  --chatbot-scrollbar-thumb: #b2e8f1;
+  --chatbot-outline: var(--primary);
+  --chatbot-input-bg: var(--card);
+  --chatbot-send-bg: var(--primary);
+  --chatbot-icon: var(--primary);
+  --chatbot-bot-bubble-green-bg: #e6faed;
 }
 
 .dark {
