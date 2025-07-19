@@ -1,4 +1,4 @@
-import QuizForm from "@/components/quiz/QuizForm";
+import QuizForm from "@/components/admin/quiz/QuizForm";
 
 export default function CreateQuizPage() {
   return (
