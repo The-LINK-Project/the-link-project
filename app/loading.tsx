@@ -1,10 +1,10 @@
 import React from "react";
-import LoadingSpline from "../components/loadingspline";
+import LoadingAnimation from "@/components/LoadingAnimation";
 
 const LoadingScreen = () => {
   return (
     <div>
-      <LoadingSpline />
+      <LoadingAnimation />
     </div>
   );
 };
