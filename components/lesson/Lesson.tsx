@@ -190,9 +190,7 @@ const Lesson = ({
       // 2. Send to gemini and openai for audio
       const audioResponse = await getResponse(
         base64 || "null",
-        instructionsRef.current || "",
-        lessonObjectives,
-        objectivesMet
+        instructionsRef.current || ""
       );
 
       // Track the current objectives state for database update

@@ -13,9 +13,7 @@ function setLessonObjectiveToTrue({
 
 export async function getResponse(
   audioUrlBase64: string,
-  instructions: string,
-  lessonObjectives: string[],
-  objectivesMet: boolean[]
+  instructions: string
 ) {
   const openai = new OpenAI();
   const geminiKey = process.env.GEMINI_KEY;
@@ -40,21 +38,6 @@ export async function getResponse(
     },
   };
 
-  // Format current learning objectives with their status
-  const formattedObjectives = lessonObjectives
-    .map(
-      (objective, index) =>
-        `INDEX ${index}: ${objective} [${
-          objectivesMet[index] ? "COMPLETED" : "TO BE DONE"
-        }]`
-    )
-    .join(", ");
-
-  // Add learning objectives to the instructions
-  const instructionsWithObjectives = `${instructions}
-
-Learning Objectives: 
-${formattedObjectives}`;
 
   const contents = [
     {
@@ -73,14 +56,14 @@ ${formattedObjectives}`;
 
   try {
     console.log("=== SYSTEM PROMPT ===");
-    console.log(instructionsWithObjectives);
+    console.log(instructions);
     console.log("=== END SYSTEM PROMPT ===\n");
 
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
       contents: contents,
       config: {
-        systemInstruction: instructionsWithObjectives,
+        systemInstruction: instructions,
         tools: [
           {
             functionDeclarations: [setLessonObjectiveToTrueFunctionDeclaration],
