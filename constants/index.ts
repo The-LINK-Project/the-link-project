@@ -11,10 +11,6 @@ export const navLinks = [
     name: "About Us",
     route: "/about",
   },
-  {
-    name: "Get Started",
-    route: "/dashboard",
-  },
 ];
 
 export const frequentlyAskedQuestions = [

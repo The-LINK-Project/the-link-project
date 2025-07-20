@@ -16,7 +16,7 @@ export default function Home() {
         description="Learn English with personalized, AI-powered lessons built for the real world."
         actions={[
           { text: "Get Started", href: "/sign-up" },
-          { text: "Learn More", href: "/about" },
+          { text: "Log in", href: "/sign-in" },
         ]}
         image={{
           light: "/assets/Example3.png",

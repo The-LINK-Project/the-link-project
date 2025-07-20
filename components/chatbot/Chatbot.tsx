@@ -104,7 +104,7 @@ const Chatbot = () => {
                 letterSpacing: "-0.01em",
               }}
             >
-              LINK Support
+              LINK Assistant
             </span>
           </div>
         </div>
