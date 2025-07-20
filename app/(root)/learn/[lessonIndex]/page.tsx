@@ -7,7 +7,6 @@ import { formatConvoHistory, formatInitialObjectives } from "@/lib/utils";
 import { checkIfLessonProgress } from "@/lib/actions/LessonProgress.actions";
 import { getAllLessons } from "@/lib/actions/Lesson.actions";
 import Lesson from "@/components/lesson/Lesson";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 // Server component wrapper (NO "use client", CAN be async)
