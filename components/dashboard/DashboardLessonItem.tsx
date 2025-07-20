@@ -28,8 +28,8 @@ const statusVars = {
     icon: <Play className="h-4 w-4" style={{ color: "var(--primary)" }} />,
   },
   "Not Started": {
-    cardBg: "var(--dashboard-status-notstarted-bg)",
-    cardBorder: "var(--dashboard-status-notstarted-border)",
+    cardBg: "#fff",
+    cardBorder: "#e5e7eb",
     badgeBg: "var(--dashboard-status-notstarted-badge-bg)",
     badgeText: "var(--dashboard-status-notstarted-badge-text)",
     icon: <Clock className="h-4 w-4" style={{ color: "var(--primary)" }} />,
