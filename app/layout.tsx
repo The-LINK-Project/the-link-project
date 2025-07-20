@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "The LINK Project",
     images: [
       {
-        url: "/assets/link_blue.png",
+        url: "/assets/link_green.png",
         width: 600,
         height: 600,
         alt: "The LINK Project Logo",
@@ -66,7 +66,7 @@ export default function RootLayout({
       <html lang="en">
         <body
           className={`${openSans.variable} antialiased container mx-auto max-w-7xl`}
-          >
+        >
           <Chatbot></Chatbot>
           {children}
           <Analytics />
