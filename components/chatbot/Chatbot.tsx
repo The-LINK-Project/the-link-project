@@ -87,20 +87,27 @@ const Chatbot = () => {
 
       {/* Popup */}
       <div
-        className={`chatbot-popup fixed z-50 bottom-[90px] right-[20px] w-[95vw] max-w-[320px] bg-[var(--chatbot-primary-bg)] rounded-[15px] shadow-[0_0_128px_0_rgba(0,0,0,0.1),0_32px_64px_-48px_rgba(0,0,0,0.5)] transition-all duration-100 origin-bottom-right overflow-hidden ${showChatbot ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-[0.3] pointer-events-none"} sm:w-[320px] sm:right-[35px] sm:bottom-[90px]`}
+        className={`chatbot-popup fixed z-50 bottom-[90px] right-[20px] w-[95vw] max-w-[320px] bg-[var(--chatbot-primary-bg)] rounded-[10px] shadow-[0_4px_32px_0_rgba(0,0,0,0.10)] transition-all duration-100 origin-bottom-right overflow-hidden border border-[var(--border)] ${showChatbot ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-[0.3] pointer-events-none"} sm:w-[320px] sm:right-[35px] sm:bottom-[90px]`}
       >
         {/* Header */}
         <div
-          className="chat-header flex items-center justify-between"
-          style={{ background: "var(--chatbot-header-bg)" }}
+          className="chat-header flex items-center justify-between px-4 py-2 border-b border-[var(--border)] bg-[var(--chatbot-header-bg)]"
+          style={{ borderTopLeftRadius: "10px", borderTopRightRadius: "10px" }}
         >
-          <div className="header-info flex items-center">
+          <div className="header-info flex items-center gap-2">
+            <span className="h-8 w-8 p-1 rounded-full flex items-center justify-center bg-white border border-[var(--primary)]">
+              <img
+                src="/assets/link_green.png"
+                alt="LINK Project Logo"
+                className="h-6 w-6 object-contain"
+              />
+            </span>
             <span
               className="logo-text font-semibold"
               style={{
-                color: "var(--foreground)",
+                color: "#fff",
                 fontSize: "1.05rem",
-                marginLeft: "0.5rem",
+                marginLeft: "0.25rem",
                 letterSpacing: "-0.01em",
               }}
             >
@@ -112,17 +119,18 @@ const Chatbot = () => {
         {/* Chat Body */}
         <div
           ref={chatBodyRef}
-          className="chat-body flex flex-col gap-[20px] h-[360px] mb-[82px] overflow-y-auto p-[25px_22px] scrollbar-thin scrollbar-thumb-[var(--chatbot-scrollbar-thumb)] scrollbar-track-transparent"
+          className="chat-body flex flex-col gap-4 h-[340px] mb-[70px] overflow-y-auto px-4 py-4 bg-[var(--chatbot-primary-bg)]"
         >
-          <div className="message bot-message flex gap-[11px] items-center">
-            <span
-              className="h-[35px] w-[35px] p-[6px] rounded-full flex items-center justify-center"
-              style={{ background: "var(--chatbot-bot-avatar-bg)" }}
-            >
-              <ChatbotIcon />
+          <div className="message bot-message flex gap-3 items-center">
+            <span className="h-8 w-8 p-1 rounded-full flex items-center justify-center bg-white border border-[var(--primary)]">
+              <img
+                src="/assets/link_green.png"
+                alt="LINK Project Logo"
+                className="h-6 w-6 object-contain"
+              />
             </span>
             <p
-              className="message-text p-[12px_16px] max-w-[75%] break-words whitespace-pre-line text-[0.85rem] rounded-[13px_13px_13px_3px]"
+              className="message-text p-3 max-w-[75%] break-words whitespace-pre-line text-[0.95rem] rounded-[8px_8px_8px_3px]"
               style={{ background: "var(--chatbot-bot-bubble-green-bg)" }}
             >
               Hey there <br /> how can I help you today
@@ -135,8 +143,11 @@ const Chatbot = () => {
 
         {/* Footer */}
         <div
-          className="chat-footer absolute bottom-0 w-full"
-          style={{ background: "var(--chatbot-primary-bg)" }}
+          className="chat-footer absolute bottom-0 w-full px-3 py-2 border-t border-[var(--border)] bg-[var(--chatbot-primary-bg)]"
+          style={{
+            borderBottomLeftRadius: "10px",
+            borderBottomRightRadius: "10px",
+          }}
         >
           <ChatForm
             chatHistory={chatHistory}

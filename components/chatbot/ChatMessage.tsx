@@ -23,11 +23,12 @@ const ChatMessage: FC<ChatMessageProps> = ({ chat }) => {
   if (chat.role === "model") {
     return (
       <div className="message bot-message flex gap-[11px] items-center">
-        <span
-          className="h-[35px] w-[35px] p-[6px] rounded-full flex items-center justify-center"
-          style={{ background: "var(--chatbot-bot-avatar-bg)" }}
-        >
-          <ChatbotIcon />
+        <span className="h-8 w-8 p-1 rounded-full flex items-center justify-center bg-white border border-[var(--primary)]">
+          <img
+            src="/assets/link_green.png"
+            alt="LINK Project Logo"
+            className="h-6 w-6 object-contain"
+          />
         </span>
         <p
           className={`message-text p-[12px_16px] max-w-[75%] break-words whitespace-pre-line text-[0.85rem] rounded-[13px_13px_13px_3px] ${isError ? "text-red-500" : ""}`}
