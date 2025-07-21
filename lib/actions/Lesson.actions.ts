@@ -57,3 +57,18 @@ export async function getAllLessons(): Promise<Lesson[]> {
     throw error;
   }
 }
+
+export async function getLessonByIndex(lessonIndex: number): Promise<Lesson> {
+  try {
+    await connectToDatabase();
+
+    const lesson = await Lesson.findOne({ lessonIndex: lessonIndex });
+
+    if (!lesson) throw Error("Lesson not found");
+
+    return JSON.parse(JSON.stringify(lesson));
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

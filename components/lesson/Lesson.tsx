@@ -2,8 +2,7 @@
 
 import React, { useRef, useState, useEffect } from "react";
 
-import { getResponse, getUserTranscription } from "@/lib/actions/conversation.actions";
-import { initLessonProgress, updateLessonProgress } from "@/lib/actions/LessonProgress.actions";
+import { processAudioMessage } from "@/lib/actions/conversation.actions";
 
 import LessonInputBar from "./LessonInputBar";
 import LessonMessages from "./LessonMessages";
@@ -17,45 +16,37 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-import { toast } from "sonner";
 import { Loader2, ChevronDown } from "lucide-react";
 
 import Link from "next/link";
 
+
 type LessonProps = {
-  initialInstructions: string;
-  lessonIndex: number;
-  previousConvoHistory: Message[];
-  previousLessonObjectivesProgress: boolean[];
-  lessonObjectives: string[];
-  isLessonProgress: boolean;
-};
+  previousLessonProgress: LessonProgress;
+  lessonInfo: Lesson;
+}
 
 const Lesson = ({
-  initialInstructions,
-  lessonIndex,
-  previousConvoHistory,
-  previousLessonObjectivesProgress,
-  lessonObjectives,
-  isLessonProgress,
+  previousLessonProgress,
+  lessonInfo
 }: LessonProps) => {
 
+
+  const [lessonProgress, setLessonProgress] = useState<LessonProgress>(previousLessonProgress);
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
-  const [objectivesMet, setObjectivesMet] = useState<boolean[]>(previousLessonObjectivesProgress);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [convoHistory, setConvoHistory] = useState<Message[] | []>(previousConvoHistory ?? []);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
-  const instructionsRef = useRef<string>(initialInstructions);
+
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const hasRunRef = useRef(false);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const allAudioElementsRef = useRef<Set<HTMLAudioElement>>(new Set());
-  const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
+  // const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
   
   // Function to stop all currently playing audio
   const stopAllAudio = () => {
@@ -95,24 +86,6 @@ const Lesson = ({
     });
   };
 
-  useEffect(() => {
-    if (!hasRunRef.current) {
-      const runInit = async () => {
-        console.log(`Is previous progress? ${isLessonProgress}`);
-        if (isLessonProgress === false) {
-          console.log("NEWTOMAKe");
-          const startLessonProgress = await initLessonProgress({
-            lessonIndex: lessonIndex,
-            objectives: lessonObjectives,
-          });
-          console.log("✅ Lesson progress initialized");
-        }
-      };
-      runInit();
-      hasRunRef.current = true; // Set the ref so no repeat
-    }
-  }, [isLessonProgress, lessonIndex, lessonObjectives]);
-
   // Scroll detection
   useEffect(() => {
     const scrollArea = scrollAreaRef.current;
@@ -126,14 +99,14 @@ const Lesson = ({
 
     scrollArea.addEventListener("scroll", handleScroll);
     return () => scrollArea.removeEventListener("scroll", handleScroll);
-  }, [convoHistory]);
+  }, [lessonProgress.convoHistory]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
-  }, [convoHistory]);
+  }, [lessonProgress.convoHistory]);
 
   // Cleanup audio on component unmount
   useEffect(() => {
@@ -144,12 +117,11 @@ const Lesson = ({
 
   // checking if all objectives are met and can end the lesson and if they are then maybe have a quick end of lesson progress popup and continue to qiuz
   useEffect(() => {
-    if (objectivesMet.every((objective) => objective)) {
+    if (lessonProgress.objectivesMet.every((objective) => objective)) {
       console.log("All objectives met, ending lesson");
-      // router.push(`/learn/${lessonIndex}/quiz`);
       setIsComplete(true);
     }
-  }, [objectivesMet]);
+  }, [lessonProgress.objectivesMet]);
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -161,91 +133,33 @@ const Lesson = ({
   };
 
   useEffect(() => {
-    if (!audioURL) return; // exit early if not set
-
+    if (!audioURL) return;
+  
     const handleResponse = async () => {
       setIsLoading(true);
-      // 1. Convert recorded audio to base64
+      
       const base64 = await urlToBase64(audioURL);
-
-      const transcriptionUser = await getUserTranscription(base64 || "null");
-      if (transcriptionUser.success) {
-        const userTranscription = transcriptionUser.userTranscription;
-
-        // use ref to keep the value up to date between renders.
-        convoHistoryRef.current = [
-          ...convoHistoryRef.current,
-          {
-            role: "User",
-            message: userTranscription ?? "",
-            audioURL: audioURL,
-          },
-        ];
-        setConvoHistory(convoHistoryRef.current);
-
-        const updatedUserInstructions =
-          (instructionsRef.current ?? "") + "\nUser: " + userTranscription;
-        instructionsRef.current = updatedUserInstructions;
-      }
-      // 2. Send to gemini and openai for audio
-      const audioResponse = await getResponse(
-        base64 || "null",
-        instructionsRef.current || ""
-      );
-
-      // Track the current objectives state for database update
-      let currentObjectivesMet = objectivesMet;
-
-      // 3. If it returns a successful response, play the result
-      if (audioResponse.success) {
-        const ttsBase64 = audioResponse.audioBase64Response;
-        const audioSrc = `data:audio/wav;base64,${ttsBase64}`;
+      // server action that gets the audio from the user and processes it and sends it to gemini and openai for the response
+      const result = await processAudioMessage({
+        audioBase64: base64,
+        lessonProgress
+      });
+  
+      if (result.success) {
+        // Play audio
+        const audioSrc = `data:audio/wav;base64,${result.audioBase64}`;
         const audio = new Audio(audioSrc);
         playAudioSafely(audio);
-        const systemTranscription = audioResponse.systemTranscription;
-        convoHistoryRef.current = [
-          ...convoHistoryRef.current,
-          {
-            role: "System",
-            message: systemTranscription ?? "",
-            audioURL: audioSrc,
-          },
-        ];
-        setConvoHistory(convoHistoryRef.current);
-
-        const updatedSystemInstructions =
-          instructionsRef.current + "\nSystem: " + systemTranscription;
-        instructionsRef.current = updatedSystemInstructions;
-
-        // if objective index was returned by function call update objectivesMet
-        const objectiveIndex = audioResponse.objectiveIndex;
-
-        if (objectiveIndex !== undefined) {
-          currentObjectivesMet = updateObjectivesMet(objectiveIndex);
-          setObjectivesMet(currentObjectivesMet);
-        }
+        
+        // Update state
+        setLessonProgress(result.updatedLessonProgress);
+        
       }
-
-      // removing audio for db
-      const convoHistoryWithoutAudio = convoHistoryRef.current.map(
-        (message) => {
-          // Use object destructuring with rest property to remove audioURL from each message cuz it takes crazy db space
-          const { audioURL, ...messageWithoutAudio } = message;
-          return messageWithoutAudio;
-        }
-      );
-
-      // update lesson progress in mongodb
-      await updateLessonProgress({
-        lessonIndex,
-        objectivesMet: currentObjectivesMet,
-        convoHistory: convoHistoryWithoutAudio,
-      });
-
+  
       setIsLoading(false);
     };
-
-    handleResponse(); // Trigger the async function
+  
+    handleResponse();
   }, [audioURL]);
 
   const handleStartRecording = async () => {
@@ -285,21 +199,6 @@ const Lesson = ({
     setRecording(false);
   };
 
-
-  const updateObjectivesMet = (index: number) => {
-    const updatedObjectivesMet = [...objectivesMet];
-    updatedObjectivesMet[index] = true;
-    setObjectivesMet(updatedObjectivesMet);
-    
-    // Show success toast when objective is completed
-    toast.success("Objective completed!", {
-      description: lessonObjectives[index],
-      duration: 3000,
-    });
-    // here i return it to get the most up to date objectivesMet for adding to the mongodb
-    return updatedObjectivesMet;
-  };
-
   return (
     <>
     <TooltipProvider>
@@ -308,8 +207,8 @@ const Lesson = ({
         <div className="bg-white px-6 py-4 border-b border-gray-100">
           <div className="max-w-4xl mx-auto">
             <LessonObjectivesMet
-              lessonObjectives={lessonObjectives}
-              lessonObjectivesProgress={objectivesMet}
+              lessonObjectives={lessonInfo.objectives}
+              lessonObjectivesProgress={lessonProgress.objectivesMet}
             />
           </div>
         </div>
@@ -325,11 +224,11 @@ const Lesson = ({
                   <div className="flex-1 relative overflow-hidden">
                     <ScrollArea className="h-full" ref={scrollAreaRef}>
                       <div className="p-6">
-                        {convoHistory.length === 0 ? (
+                        {lessonProgress.convoHistory.length === 0 ? (
                           <LessonNotStarted />
                         ) : (
                           <LessonMessages
-                            convoHistory={convoHistory}
+                            convoHistory={lessonProgress.convoHistory}
                             allAudioElementsRef={allAudioElementsRef}
                             currentAudioRef={currentAudioRef}
                           />
@@ -374,7 +273,7 @@ const Lesson = ({
 
         <div className="flex flex-col items-center text-blue-700">
             <div className="flex flex-col items-center text-blue-700">
-              <Link href={`/learn/${lessonIndex}/quiz`}>
+              <Link href={`/learn/${lessonProgress.lessonIndex}/quiz`}>
                 Already know this? Test your knowledge with this quiz!
               </Link>
             </div>
@@ -385,10 +284,8 @@ const Lesson = ({
     <LessonCompleteModal
           isComplete={isComplete}
           setIsComplete={setIsComplete}
-          lessonIndex={lessonIndex}
-          lessonObjectives={lessonObjectives}
-          setObjectivesMet={setObjectivesMet}
-          setConvoHistory={setConvoHistory}
+          lessonIndex={lessonProgress.lessonIndex}
+          lessonObjectives={lessonInfo.objectives}
         />
     </>
   );

@@ -11,13 +11,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+import { deleteLessonProgress } from "@/lib/actions/LessonProgress.actions";
+
 type LessonCompleteModalProps = {
   isComplete: boolean;
   setIsComplete: (value: boolean) => void;
   lessonIndex: number;
   lessonObjectives: string[];
-  setObjectivesMet: (objectives: boolean[]) => void;
-  setConvoHistory: (history: any[]) => void;
 };
 
 const LessonCompleteModal = ({
@@ -25,8 +25,6 @@ const LessonCompleteModal = ({
   setIsComplete,
   lessonIndex,
   lessonObjectives,
-  setObjectivesMet,
-  setConvoHistory,
 }: LessonCompleteModalProps) => {
   const [showStars, setShowStars] = useState([false, false, false]);
   const [showButtons, setShowButtons] = useState(false);
@@ -98,10 +96,10 @@ const LessonCompleteModal = ({
             variant="secondary" 
             className="w-full transform transition-transform hover:scale-105"
             onClick={() => {
-              // Reset progress logic here
-              setObjectivesMet(lessonObjectives.map(() => false));
+              deleteLessonProgress({
+                lessonIndex: lessonIndex,
+              });
               setIsComplete(false);
-              setConvoHistory([]);
             }}
           >
             Reset Progress

@@ -2,6 +2,8 @@
 import { GoogleGenAI } from "@google/genai";
 import OpenAI from "openai";
 import { Type } from "@google/genai";
+import { generateInstructions } from "@/lib/utils";
+import { updateLessonProgress } from "@/lib/actions/LessonProgress.actions";
 
 function setLessonObjectiveToTrue({
   objectiveIndex,
@@ -160,4 +162,71 @@ export async function getUserTranscription(audioUrlBase64: string) {
       success: false,
     };
   }
+}
+
+// gets the audio from the user and processes it and sends it to gemini and openai for the response
+export async function processAudioMessage({
+  audioBase64,
+  lessonProgress
+}: {
+  audioBase64: string;
+  lessonProgress: LessonProgress;
+}) {
+  // get transcription
+  const transcriptionUser = await getUserTranscription(audioBase64);
+  
+  // get up-to-date convo history w/ new user message
+  const newConvoHistory = [
+    ...lessonProgress.convoHistory,
+    {
+      role: "User",
+      message: transcriptionUser.userTranscription ?? "",
+    },
+  ];
+
+  // generate insturcions 
+  const updatedLessonProgress = {
+    ...lessonProgress,
+    convoHistory: newConvoHistory
+  };
+  const instructions = await generateInstructions(updatedLessonProgress);
+
+  // get the response from the model
+  const audioResponse = await getResponse(audioBase64, instructions);
+
+  // update objectives if there was a tool call used by the model
+  let currentObjectivesMet = lessonProgress.objectivesMet;
+  if (audioResponse.objectiveIndex !== undefined) {
+    currentObjectivesMet = [...currentObjectivesMet];
+    currentObjectivesMet[audioResponse.objectiveIndex] = true;
+  }
+
+  // most up to date convo history
+  const finalConvoHistory = audioResponse.success ? [
+    ...newConvoHistory,
+    {
+      role: "System",
+      message: audioResponse.systemTranscription ?? "",
+    }
+  ] : newConvoHistory;
+
+  // update database and first removing the audioURL from the message object
+  const convoHistoryWithoutAudio = finalConvoHistory.map(({ audioURL, ...message }) => message);
+  await updateLessonProgress({
+    lessonIndex: lessonProgress.lessonIndex,
+    objectivesMet: currentObjectivesMet,
+    convoHistory: convoHistoryWithoutAudio,
+  });
+
+  // output is the audio that can be played, and updated lessonProgress that will be used to update the state
+  return {
+    success: audioResponse.success,
+    audioBase64: audioResponse.audioBase64Response,
+    systemTranscription: audioResponse.systemTranscription,
+    updatedLessonProgress: {
+      ...lessonProgress,
+      convoHistory: finalConvoHistory,
+      objectivesMet: currentObjectivesMet
+    },
+  };
 }

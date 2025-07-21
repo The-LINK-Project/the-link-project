@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { instructions } from "@/utils/conversation_config";
 import { getCurrentUser } from "@/lib/actions/user.actions";
+import { getLessonByIndex } from "./actions/Lesson.actions";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -37,7 +38,8 @@ export async function urlToBase64(audioUrl: string): Promise<string> {
   });
 }
 
-export async function generateInstructions(LessonProgress: LessonProgress, Lesson: Lesson) {
+export async function generateInstructions(LessonProgress: LessonProgress) {
+  const Lesson = await getLessonByIndex(LessonProgress.lessonIndex);
   let generatedInstructions = instructions;
   const user = await getCurrentUser();
   const userName = user?.firstName;
@@ -59,11 +61,13 @@ export async function generateInstructions(LessonProgress: LessonProgress, Lesso
     )
     .join(", ");
 
+  const formattedConvoHistory = formatConvoHistory(convoHistory);
+
   generatedInstructions = generatedInstructions.replace("<<NAME>>", userName);
   generatedInstructions = generatedInstructions.replace("<<LESSON_TITLE>>", lessonTitle);
   generatedInstructions = generatedInstructions.replace("<<LESSON_DESCRIPTION>>", lessonDescription);
   generatedInstructions = generatedInstructions.replace("<<OBJECTIVES_MET>>", lessonObjectivesAndCompletionStatus);
-  generatedInstructions = generatedInstructions.replace("<<PREVIOUS_CONVERSATION>>", convoHistory.toString());
+  generatedInstructions = generatedInstructions.replace("<<PREVIOUS_CONVERSATION>>", formattedConvoHistory);
 
   return generatedInstructions;
 }

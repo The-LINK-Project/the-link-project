@@ -1,8 +1,7 @@
 import React from "react";
 
-import { instructions } from "@/utils/conversation_config";
 import { getCurrentUser } from "@/lib/actions/user.actions";
-import { getLessonProgress } from "@/lib/actions/LessonProgress.actions";
+import { getLessonProgress, initLessonProgress } from "@/lib/actions/LessonProgress.actions";
 import { formatConvoHistory, formatInitialObjectives } from "@/lib/utils";
 import { checkIfLessonProgress } from "@/lib/actions/LessonProgress.actions";
 import { getAllLessons } from "@/lib/actions/Lesson.actions";
@@ -20,8 +19,6 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
     return <div>Lesson not found.</div>;
   }
 
-  const lessonTitle = lesson.title;
-  const lessonDescription = lesson.description;
   const lessonObjectives = lesson.objectives;
 
   let lessonConvoHistory: Message[] = [];
@@ -32,8 +29,9 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
     lessonIndex: index,
   });
 
+  let lessonProgress = {} as LessonProgress;
   if (isLessonProgress) {
-    const lessonProgress = await getLessonProgress({
+    lessonProgress = await getLessonProgress({
       lessonIndex: index,
     });
     lessonObjectivesProgress = lessonProgress.objectivesMet;
@@ -44,13 +42,19 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
     }
   } else {
     lessonObjectivesProgress = formatInitialObjectives(lessonObjectives);
+    lessonProgress = await initLessonProgress({
+      lessonIndex: index,
+      objectives: lessonObjectives,
+    });
   }
 
-  let specificInstructions = instructions
-    .replace("<<NAME>>", user?.firstName)
-    .replace("<<LESSON_TITLE>>", lessonTitle)
-    .replace("<<LESSON_DESCRIPTION>>", lessonDescription)
-    .replace("<<PREVIOUS_CONVERSATION>>", formattedConvoHistory ?? "");
+  // const previosuessonProgress: LessonProgress = {
+  //   userId: user?.id,
+  //   lessonIndex: index,
+  //   objectivesMet: lessonObjectivesProgress,
+  //   convoHistory: lessonConvoHistory,
+  //   quizResult: [],
+  // };
 
   return (
     <div className="min-h-screen bg-white">
@@ -69,12 +73,8 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
             </h2>
             
             <Lesson
-                initialInstructions={specificInstructions}
-                lessonIndex={index}
-                previousConvoHistory={lessonConvoHistory}
-                previousLessonObjectivesProgress={lessonObjectivesProgress}
-                lessonObjectives={lessonObjectives}
-                isLessonProgress={isLessonProgress}
+                previousLessonProgress={lessonProgress}
+                lessonInfo={lesson}
             />
 
             <div className="mt-8 flex justify-between">
