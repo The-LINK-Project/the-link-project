@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "The LINK Project",
     images: [
       {
-        url: "/assets/link_green.png",
+        url: "/assets/link_green_nobg.png",
         width: 600,
         height: 600,
         alt: "The LINK Project Logo",
