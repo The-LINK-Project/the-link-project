@@ -2,6 +2,7 @@
 
 import { connectToDatabase } from "@/lib/database";
 import Lesson from "../database/models/lesson.model";
+import { revalidatePath } from "next/cache";
 
 export async function createLesson({
   title,
@@ -73,6 +74,8 @@ export async function getLessonByIndex(lessonIndex: number): Promise<Lesson> {
   } catch (error) {
     console.log(error);
     throw error;
+  }
+}
 
 export async function deleteLesson(
   lessonId: string
