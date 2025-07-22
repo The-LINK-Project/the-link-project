@@ -27,6 +27,7 @@ export async function initLessonProgress({
       throw new Error("User not found");
     }
 
+    // this part is a repeat to be removed later
     const objectivesMet = formatInitialObjectives(objectives);
 
     console.log(`TOINK: ${objectivesMet}`);
@@ -235,5 +236,35 @@ export async function getLessonProgressStats() {
       completedObjectives: 0,
       completionRate: 0,
     };
+  }
+}
+
+export async function deleteLessonProgress({
+  lessonIndex,
+}: {
+  lessonIndex: number;
+}) {
+  try {
+    await connectToDatabase();
+
+    const { sessionClaims } = await auth();
+
+    const userId = sessionClaims?.userId as string;
+
+    if (!userId) {
+      throw new Error("User not found");
+    }
+
+    const deletedLessonProgress = await LessonProgress.findOneAndDelete({
+      userId: userId,
+      lessonIndex: lessonIndex,
+    });
+
+    if (!deletedLessonProgress) throw Error("Failed to delete lesson progress");
+
+    return JSON.parse(JSON.stringify(deletedLessonProgress));
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }

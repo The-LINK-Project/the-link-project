@@ -60,6 +60,20 @@ export async function getAllLessons(): Promise<Lesson[]> {
   }
 }
 
+
+export async function getLessonByIndex(lessonIndex: number): Promise<Lesson> {
+  try {
+    await connectToDatabase();
+
+    const lesson = await Lesson.findOne({ lessonIndex: lessonIndex });
+
+    if (!lesson) throw Error("Lesson not found");
+
+    return JSON.parse(JSON.stringify(lesson));
+  } catch (error) {
+    console.log(error);
+    throw error;
+
 export async function deleteLesson(
   lessonId: string
 ): Promise<{ success: boolean; message: string }> {
@@ -90,5 +104,6 @@ export async function deleteLesson(
       success: false,
       message: "Failed to delete lesson",
     };
+
   }
 }

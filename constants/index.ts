@@ -70,3 +70,8 @@ export const aboutUsInformation = [
     image: "https://source.unsplash.com/300x300/?man,marketing",
   },
 ];
+
+export const defaultConvoHistory = {
+  role: "User",
+  message: "Hello",
+};
