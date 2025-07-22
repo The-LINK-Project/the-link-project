@@ -28,7 +28,6 @@ const QuizPage = async ({ params }: QuizPageProps) => {
         <QuizClient params={{ quiz: quiz }} />
       </div>
     </div>
-
   );
 };
 

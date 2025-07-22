@@ -20,19 +20,15 @@ import { Loader2, ChevronDown } from "lucide-react";
 
 import Link from "next/link";
 
-
 type LessonProps = {
   previousLessonProgress: LessonProgress;
   lessonInfo: Lesson;
-}
+};
 
-const Lesson = ({
-  previousLessonProgress,
-  lessonInfo
-}: LessonProps) => {
-
-
-  const [lessonProgress, setLessonProgress] = useState<LessonProgress>(previousLessonProgress);
+const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
+  const [lessonProgress, setLessonProgress] = useState<LessonProgress>(
+    previousLessonProgress
+  );
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
 
@@ -47,7 +43,7 @@ const Lesson = ({
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const allAudioElementsRef = useRef<Set<HTMLAudioElement>>(new Set());
   // const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
-  
+
   // Function to stop all currently playing audio
   const stopAllAudio = () => {
     // Stop the current main audio if playing
@@ -56,9 +52,9 @@ const Lesson = ({
       currentAudioRef.current.currentTime = 0;
       currentAudioRef.current = null;
     }
-    
+
     // Stop all registered audio elements
-    allAudioElementsRef.current.forEach(audio => {
+    allAudioElementsRef.current.forEach((audio) => {
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;
@@ -70,18 +66,18 @@ const Lesson = ({
   const playAudioSafely = (audioElement: HTMLAudioElement) => {
     stopAllAudio();
     currentAudioRef.current = audioElement;
-    
+
     // Add event listener to clear ref when audio ends
     const handleEnded = () => {
       if (currentAudioRef.current === audioElement) {
         currentAudioRef.current = null;
       }
-      audioElement.removeEventListener('ended', handleEnded);
+      audioElement.removeEventListener("ended", handleEnded);
     };
-    
-    audioElement.addEventListener('ended', handleEnded);
-    audioElement.play().catch(error => {
-      console.warn('Audio play failed:', error);
+
+    audioElement.addEventListener("ended", handleEnded);
+    audioElement.play().catch((error) => {
+      console.warn("Audio play failed:", error);
       currentAudioRef.current = null;
     });
   };
@@ -134,31 +130,30 @@ const Lesson = ({
 
   useEffect(() => {
     if (!audioURL) return;
-  
+
     const handleResponse = async () => {
       setIsLoading(true);
-      
+
       const base64 = await urlToBase64(audioURL);
       // server action that gets the audio from the user and processes it and sends it to gemini and openai for the response
       const result = await processAudioMessage({
         audioBase64: base64,
-        lessonProgress
+        lessonProgress,
       });
-  
+
       if (result.success) {
         // Play audio
         const audioSrc = `data:audio/wav;base64,${result.audioBase64}`;
         const audio = new Audio(audioSrc);
         playAudioSafely(audio);
-        
+
         // Update state
         setLessonProgress(result.updatedLessonProgress);
-        
       }
-  
+
       setIsLoading(false);
     };
-  
+
     handleResponse();
   }, [audioURL]);
 
@@ -167,10 +162,10 @@ const Lesson = ({
       alert("MediaDevices API not supported.");
       return;
     }
-    
+
     // Stop all currently playing audio before starting recording
     stopAllAudio();
-    
+
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
     });
@@ -201,92 +196,91 @@ const Lesson = ({
 
   return (
     <>
-    <TooltipProvider>
-      <div className="min-h-screen bg-white relative">
-        {/* Lesson Objectives */}
-        <div className="bg-white px-6 py-4 border-b border-gray-100">
-          <div className="max-w-4xl mx-auto">
-            <LessonObjectivesMet
-              lessonObjectives={lessonInfo.objectives}
-              lessonObjectivesProgress={lessonProgress.objectivesMet}
-            />
+      <TooltipProvider>
+        <div className="min-h-screen bg-white relative">
+          {/* Lesson Objectives */}
+          <div className="bg-white px-6 py-4 border-b border-gray-100">
+            <div className="max-w-4xl mx-auto">
+              <LessonObjectivesMet
+                lessonObjectives={lessonInfo.objectives}
+                lessonObjectivesProgress={lessonProgress.objectivesMet}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Main Content Area */}
-        <div className="flex flex-col items-center px-6 py-8">
-          <div className="w-full max-w-4xl">
-            {/* Main Conversation Area */}
-            <Card className="shadow-xl border-[rgb(90,199,219)]/20 relative">
-              <CardContent className="p-0">
-                <div className="flex flex-col h-[600px]">
-                  {/* Messages Area */}
-                  <div className="flex-1 relative overflow-hidden">
-                    <ScrollArea className="h-full" ref={scrollAreaRef}>
-                      <div className="p-6">
-                        {lessonProgress.convoHistory.length === 0 ? (
-                          <LessonNotStarted />
-                        ) : (
-                          <LessonMessages
-                            convoHistory={lessonProgress.convoHistory}
-                            allAudioElementsRef={allAudioElementsRef}
-                            currentAudioRef={currentAudioRef}
-                          />
-                        )}
-                        {isLoading && (
-                          <div className="flex justify-center mt-6">
-                            <div className="flex items-center gap-3 text-gray-600">
-                              <Loader2 className="h-6 w-6 animate-spin" />
-                              <span className="text-sm font-medium">
-                                Processing your response...
-                              </span>
+          {/* Main Content Area */}
+          <div className="flex flex-col items-center px-6 py-8">
+            <div className="w-full max-w-4xl">
+              {/* Main Conversation Area */}
+              <Card className="shadow-xl border-[rgb(90,199,219)]/20 relative">
+                <CardContent className="p-0">
+                  <div className="flex flex-col h-[600px]">
+                    {/* Messages Area */}
+                    <div className="flex-1 relative overflow-hidden">
+                      <ScrollArea className="h-full" ref={scrollAreaRef}>
+                        <div className="p-6">
+                          {lessonProgress.convoHistory.length === 0 ? (
+                            <LessonNotStarted />
+                          ) : (
+                            <LessonMessages
+                              convoHistory={lessonProgress.convoHistory}
+                              allAudioElementsRef={allAudioElementsRef}
+                              currentAudioRef={currentAudioRef}
+                            />
+                          )}
+                          {isLoading && (
+                            <div className="flex justify-center mt-6">
+                              <div className="flex items-center gap-3 text-gray-600">
+                                <Loader2 className="h-6 w-6 animate-spin" />
+                                <span className="text-sm font-medium">
+                                  Processing your response...
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </div>
-                    </ScrollArea>
+                          )}
+                        </div>
+                      </ScrollArea>
 
-                    {/* Scroll to Bottom Button */}
-                    {showScrollButton && (
-                      <Button
-                        onClick={scrollToBottom}
-                        size="sm"
-                        className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[rgb(90,199,219)] hover:bg-[rgb(90,199,219)]/90 text-white shadow-lg z-10"
-                      >
-                        <ChevronDown className="h-4 w-4" />
-                      </Button>
-                    )}
+                      {/* Scroll to Bottom Button */}
+                      {showScrollButton && (
+                        <Button
+                          onClick={scrollToBottom}
+                          size="sm"
+                          className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[rgb(90,199,219)] hover:bg-[rgb(90,199,219)]/90 text-white shadow-lg z-10"
+                        >
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    <LessonInputBar
+                      recording={recording}
+                      isLoading={isLoading}
+                      audioURL={audioURL ?? ""}
+                      handleStopRecording={handleStopRecording}
+                      handleStartRecording={handleStartRecording}
+                      playAudioSafely={playAudioSafely}
+                    />
                   </div>
-                  <LessonInputBar
-                    recording={recording}
-                    isLoading={isLoading}
-                    audioURL={audioURL ?? ""}
-                    handleStopRecording={handleStopRecording}
-                    handleStartRecording={handleStartRecording}
-                    playAudioSafely={playAudioSafely}
-                  />
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
 
-        <div className="flex flex-col items-center text-blue-700">
+          <div className="flex flex-col items-center text-blue-700">
             <div className="flex flex-col items-center text-blue-700">
               <Link href={`/learn/${lessonProgress.lessonIndex}/quiz`}>
                 Already know this? Test your knowledge with this quiz!
               </Link>
             </div>
+          </div>
         </div>
-
-      </div>
-    </TooltipProvider>
-    <LessonCompleteModal
-          isComplete={isComplete}
-          setIsComplete={setIsComplete}
-          lessonIndex={lessonProgress.lessonIndex}
-          lessonObjectives={lessonInfo.objectives}
-        />
+      </TooltipProvider>
+      <LessonCompleteModal
+        isComplete={isComplete}
+        setIsComplete={setIsComplete}
+        lessonIndex={lessonProgress.lessonIndex}
+        lessonObjectives={lessonInfo.objectives}
+      />
     </>
   );
 };

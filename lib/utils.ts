@@ -8,9 +8,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatConvoHistory(
-  convoHistory: Message[]
-): string {
+export function formatConvoHistory(convoHistory: Message[]): string {
   return convoHistory
     .map((message) => `${message.role}: ${message.message}`)
     .join("\n");
@@ -64,12 +62,22 @@ export async function generateInstructions(LessonProgress: LessonProgress) {
   const formattedConvoHistory = formatConvoHistory(convoHistory);
 
   generatedInstructions = generatedInstructions.replace("<<NAME>>", userName);
-  generatedInstructions = generatedInstructions.replace("<<LESSON_TITLE>>", lessonTitle);
-  generatedInstructions = generatedInstructions.replace("<<LESSON_DESCRIPTION>>", lessonDescription);
-  generatedInstructions = generatedInstructions.replace("<<OBJECTIVES_MET>>", lessonObjectivesAndCompletionStatus);
-  generatedInstructions = generatedInstructions.replace("<<PREVIOUS_CONVERSATION>>", formattedConvoHistory);
+  generatedInstructions = generatedInstructions.replace(
+    "<<LESSON_TITLE>>",
+    lessonTitle
+  );
+  generatedInstructions = generatedInstructions.replace(
+    "<<LESSON_DESCRIPTION>>",
+    lessonDescription
+  );
+  generatedInstructions = generatedInstructions.replace(
+    "<<OBJECTIVES_MET>>",
+    lessonObjectivesAndCompletionStatus
+  );
+  generatedInstructions = generatedInstructions.replace(
+    "<<PREVIOUS_CONVERSATION>>",
+    formattedConvoHistory
+  );
 
   return generatedInstructions;
 }
-
-

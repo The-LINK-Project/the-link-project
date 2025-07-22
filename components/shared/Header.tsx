@@ -23,8 +23,7 @@ const Header = () => {
       </div>
       <div className="flex flex-row justify-center items-center gap-10">
         <NavItems className="hidden md:block" />
-        <div className="hidden md:block">
-        </div> 
+        <div className="hidden md:block"></div>
         <UserButton />
         <SignedOut>
           <Button asChild>
@@ -43,8 +42,7 @@ const Header = () => {
                 <Link href={navLink.route}>{navLink.name}</Link>
               </DropdownMenuItem>
             ))}
-            <DropdownMenuItem>
-            </DropdownMenuItem>
+            <DropdownMenuItem></DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

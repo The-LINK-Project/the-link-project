@@ -40,7 +40,6 @@ export async function getResponse(
     },
   };
 
-
   const contents = [
     {
       role: "user",
@@ -167,14 +166,14 @@ export async function getUserTranscription(audioUrlBase64: string) {
 // gets the audio from the user and processes it and sends it to gemini and openai for the response
 export async function processAudioMessage({
   audioBase64,
-  lessonProgress
+  lessonProgress,
 }: {
   audioBase64: string;
   lessonProgress: LessonProgress;
 }) {
   // get transcription
   const transcriptionUser = await getUserTranscription(audioBase64);
-  
+
   // get up-to-date convo history w/ new user message
   const newConvoHistory = [
     ...lessonProgress.convoHistory,
@@ -184,10 +183,10 @@ export async function processAudioMessage({
     },
   ];
 
-  // generate insturcions 
+  // generate insturcions
   const updatedLessonProgress = {
     ...lessonProgress,
-    convoHistory: newConvoHistory
+    convoHistory: newConvoHistory,
   };
   const instructions = await generateInstructions(updatedLessonProgress);
 
@@ -202,16 +201,20 @@ export async function processAudioMessage({
   }
 
   // most up to date convo history
-  const finalConvoHistory = audioResponse.success ? [
-    ...newConvoHistory,
-    {
-      role: "System",
-      message: audioResponse.systemTranscription ?? "",
-    }
-  ] : newConvoHistory;
+  const finalConvoHistory = audioResponse.success
+    ? [
+        ...newConvoHistory,
+        {
+          role: "System",
+          message: audioResponse.systemTranscription ?? "",
+        },
+      ]
+    : newConvoHistory;
 
   // update database and first removing the audioURL from the message object
-  const convoHistoryWithoutAudio = finalConvoHistory.map(({ audioURL, ...message }) => message);
+  const convoHistoryWithoutAudio = finalConvoHistory.map(
+    ({ audioURL, ...message }) => message
+  );
   await updateLessonProgress({
     lessonIndex: lessonProgress.lessonIndex,
     objectivesMet: currentObjectivesMet,
@@ -226,7 +229,7 @@ export async function processAudioMessage({
     updatedLessonProgress: {
       ...lessonProgress,
       convoHistory: finalConvoHistory,
-      objectivesMet: currentObjectivesMet
+      objectivesMet: currentObjectivesMet,
     },
   };
 }
