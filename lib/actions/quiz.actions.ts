@@ -170,12 +170,12 @@ export async function getQuizResultStats() {
   try {
     await connectToDatabase();
 
-    if (!mongoose.models.UserResult) {
-      require("@/lib/database/models/userResult.model");
+    if (!mongoose.models.QuizResult) {
+      require("@/lib/database/models/quizResult.model");
     }
 
-    const UserResult = mongoose.models.UserResult;
-    const allResults = await UserResult.find({});
+    const QuizResult = mongoose.models.QuizResult;
+    const allResults = await QuizResult.find({});
 
     if (allResults.length === 0) {
       return {

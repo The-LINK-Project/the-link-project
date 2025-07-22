@@ -249,11 +249,11 @@ const AdminPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="group hover:shadow-lg transition-all duration-300 border-slate-200 hover:border-slate-300 bg-white relative overflow-hidden">
+            <Card className="group hover:shadow-lg transition-all duration-300 border-slate-200 hover:border-green-300 bg-white">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-slate-400 to-slate-500 rounded-lg flex items-center justify-center shadow-md">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-md">
                       <BookOpen className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -261,15 +261,15 @@ const AdminPage = async () => {
                         Lesson Management
                       </CardTitle>
                       <CardDescription className="text-slate-600">
-                        Organize and structure lesson content
+                        Create and manage lesson content
                       </CardDescription>
                     </div>
                   </div>
                   <Badge
                     variant="outline"
-                    className="text-amber-700 border-amber-200 bg-amber-50"
+                    className="text-green-700 border-green-200 bg-green-50"
                   >
-                    Coming Soon
+                    Active
                   </Badge>
                 </div>
               </CardHeader>
@@ -279,21 +279,22 @@ const AdminPage = async () => {
                 </p>
 
                 <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                  <div className="flex items-center gap-4 text-sm text-slate-400">
+                  <div className="flex items-center gap-4 text-sm text-slate-500">
                     <div className="flex items-center gap-1">
                       <Settings className="h-4 w-4" />
                       <span>Structure</span>
                     </div>
                   </div>
 
-                  <Button
-                    disabled
-                    size="sm"
-                    variant="outline"
-                    className="text-slate-400 border-slate-200 cursor-not-allowed"
-                  >
-                    Coming Soon
-                  </Button>
+                  <Link href="/admin/lessons">
+                    <Button
+                      size="sm"
+                      className="bg-green-500 hover:bg-green-600 text-white"
+                    >
+                      Manage
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
