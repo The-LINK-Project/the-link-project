@@ -2,6 +2,7 @@
 
 import { connectToDatabase } from "@/lib/database";
 import Lesson from "../database/models/lesson.model";
+import { revalidatePath } from "next/cache";
 
 export async function createLesson({
   title,
