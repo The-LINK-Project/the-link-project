@@ -61,7 +61,6 @@ export async function getAllLessons(): Promise<Lesson[]> {
   }
 }
 
-
 export async function getLessonByIndex(lessonIndex: number): Promise<Lesson> {
   try {
     await connectToDatabase();
@@ -107,6 +106,5 @@ export async function deleteLesson(
       success: false,
       message: "Failed to delete lesson",
     };
-
   }
 }
