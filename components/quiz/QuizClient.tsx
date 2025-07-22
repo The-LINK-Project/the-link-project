@@ -10,12 +10,13 @@ type QuizClientProps = {
   };
 };
 
-export default function QuizClient({ params}: QuizClientProps) {
+export default function QuizClient({ params }: QuizClientProps) {
   const quiz = params.quiz;
-  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(new Array(quiz.questions.length).fill(-1));
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(
+    new Array(quiz.questions.length).fill(-1)
+  );
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [score, setScore] = useState<number | null>(null);
-
 
   const handleAnswerSelect = (questionIndex: number, answerIndex: number) => {
     setSelectedAnswers((prev) => {
@@ -38,7 +39,7 @@ export default function QuizClient({ params}: QuizClientProps) {
     const calculatedScore = Math.round((correctAnswers / totalQuestions) * 100);
     setScore(calculatedScore);
     setIsSubmitted(true);
-  
+
     const formData = new FormData();
     formData.append("lessonId", quiz.lessonId.toString());
     formData.append("score", calculatedScore.toString());
@@ -55,9 +56,18 @@ export default function QuizClient({ params}: QuizClientProps) {
     <div className="min-h-screen flex justify-center">
       <div className="max-w-4xl w-full px-6 py-12">
         {!isSubmitted ? (
-          <QuizIncomplete quiz={quiz} selectedAnswers={selectedAnswers} handleAnswerSelect={handleAnswerSelect} handleSubmit={handleSubmit} />
+          <QuizIncomplete
+            quiz={quiz}
+            selectedAnswers={selectedAnswers}
+            handleAnswerSelect={handleAnswerSelect}
+            handleSubmit={handleSubmit}
+          />
         ) : (
-          <QuizComplete score={score} selectedAnswers={selectedAnswers} quiz={quiz} />
+          <QuizComplete
+            score={score}
+            selectedAnswers={selectedAnswers}
+            quiz={quiz}
+          />
         )}
       </div>
     </div>

@@ -28,9 +28,12 @@ interface ManageLessonsClientProps {
   initialLessons: LessonData[];
 }
 
-export default function ManageLessonsClient({ initialLessons }: ManageLessonsClientProps) {
+export default function ManageLessonsClient({
+  initialLessons,
+}: ManageLessonsClientProps) {
   const [lessons, setLessons] = useState<LessonData[]>(initialLessons);
-  const [filteredLessons, setFilteredLessons] = useState<LessonData[]>(initialLessons);
+  const [filteredLessons, setFilteredLessons] =
+    useState<LessonData[]>(initialLessons);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("all");
   const [message, setMessage] = useState("");
@@ -73,7 +76,9 @@ export default function ManageLessonsClient({ initialLessons }: ManageLessonsCli
         setMessage("Lesson deleted successfully!");
         setTimeout(() => setMessage(""), 5000);
         // Remove the deleted lesson from state
-        setLessons(prevLessons => prevLessons.filter(lesson => lesson._id !== lessonId));
+        setLessons((prevLessons) =>
+          prevLessons.filter((lesson) => lesson._id !== lessonId)
+        );
       } else {
         setMessage(result.message);
         setTimeout(() => setMessage(""), 5000);
@@ -218,7 +223,9 @@ export default function ManageLessonsClient({ initialLessons }: ManageLessonsCli
                           #{lesson.lessonIndex}
                         </Badge>
                         <Badge
-                          variant={getDifficultyBadgeVariant(lesson.difficulty || "beginner")}
+                          variant={getDifficultyBadgeVariant(
+                            lesson.difficulty || "beginner"
+                          )}
                           className="text-xs"
                         >
                           {lesson.difficulty || "beginner"}

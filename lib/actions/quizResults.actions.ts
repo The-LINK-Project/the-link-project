@@ -81,8 +81,9 @@ export async function getUserResults() {
       require("@/lib/database/models/quiz.model");
     }
 
-    const results = await QuizResult.find({ userId: userId })
-      .sort({ completedAt: -1 });
+    const results = await QuizResult.find({ userId: userId }).sort({
+      completedAt: -1,
+    });
 
     const serializedResults = results.map((result) => {
       const plainResult = result.toObject();

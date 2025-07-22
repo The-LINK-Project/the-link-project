@@ -2,8 +2,14 @@
 
 import React, { useRef, useState, useEffect } from "react";
 
-import { getResponse, getUserTranscription } from "@/lib/actions/conversation.actions";
-import { initLessonProgress, updateLessonProgress } from "@/lib/actions/LessonProgress.actions";
+import {
+  getResponse,
+  getUserTranscription,
+} from "@/lib/actions/conversation.actions";
+import {
+  initLessonProgress,
+  updateLessonProgress,
+} from "@/lib/actions/LessonProgress.actions";
 
 import LessonInputBar from "./LessonInputBar";
 import LessonMessages from "./LessonMessages";
@@ -39,14 +45,17 @@ const Lesson = ({
   lessonObjectives,
   isLessonProgress,
 }: LessonProps) => {
-
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
-  const [objectivesMet, setObjectivesMet] = useState<boolean[]>(previousLessonObjectivesProgress);
+  const [objectivesMet, setObjectivesMet] = useState<boolean[]>(
+    previousLessonObjectivesProgress
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [convoHistory, setConvoHistory] = useState<Message[] | []>(previousConvoHistory ?? []);
+  const [convoHistory, setConvoHistory] = useState<Message[] | []>(
+    previousConvoHistory ?? []
+  );
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
@@ -56,7 +65,7 @@ const Lesson = ({
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const allAudioElementsRef = useRef<Set<HTMLAudioElement>>(new Set());
   const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
-  
+
   // Function to stop all currently playing audio
   const stopAllAudio = () => {
     // Stop the current main audio if playing
@@ -65,9 +74,9 @@ const Lesson = ({
       currentAudioRef.current.currentTime = 0;
       currentAudioRef.current = null;
     }
-    
+
     // Stop all registered audio elements
-    allAudioElementsRef.current.forEach(audio => {
+    allAudioElementsRef.current.forEach((audio) => {
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;
@@ -79,18 +88,18 @@ const Lesson = ({
   const playAudioSafely = (audioElement: HTMLAudioElement) => {
     stopAllAudio();
     currentAudioRef.current = audioElement;
-    
+
     // Add event listener to clear ref when audio ends
     const handleEnded = () => {
       if (currentAudioRef.current === audioElement) {
         currentAudioRef.current = null;
       }
-      audioElement.removeEventListener('ended', handleEnded);
+      audioElement.removeEventListener("ended", handleEnded);
     };
-    
-    audioElement.addEventListener('ended', handleEnded);
-    audioElement.play().catch(error => {
-      console.warn('Audio play failed:', error);
+
+    audioElement.addEventListener("ended", handleEnded);
+    audioElement.play().catch((error) => {
+      console.warn("Audio play failed:", error);
       currentAudioRef.current = null;
     });
   };
@@ -255,10 +264,10 @@ const Lesson = ({
       alert("MediaDevices API not supported.");
       return;
     }
-    
+
     // Stop all currently playing audio before starting recording
     stopAllAudio();
-    
+
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
     });
@@ -287,12 +296,11 @@ const Lesson = ({
     setRecording(false);
   };
 
-
   const updateObjectivesMet = (index: number) => {
     const updatedObjectivesMet = [...objectivesMet];
     updatedObjectivesMet[index] = true;
     setObjectivesMet(updatedObjectivesMet);
-    
+
     // Show success toast when objective is completed
     toast.success("Objective completed!", {
       description: lessonObjectives[index],
@@ -304,94 +312,93 @@ const Lesson = ({
 
   return (
     <>
-    <TooltipProvider>
-      <div className="min-h-screen bg-white relative">
-        {/* Lesson Objectives */}
-        <div className="bg-white px-6 py-4 border-b border-gray-100">
-          <div className="max-w-4xl mx-auto">
-            <LessonObjectivesMet
-              lessonObjectives={lessonObjectives}
-              lessonObjectivesProgress={objectivesMet}
-            />
+      <TooltipProvider>
+        <div className="min-h-screen bg-white relative">
+          {/* Lesson Objectives */}
+          <div className="bg-white px-6 py-4 border-b border-gray-100">
+            <div className="max-w-4xl mx-auto">
+              <LessonObjectivesMet
+                lessonObjectives={lessonObjectives}
+                lessonObjectivesProgress={objectivesMet}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Main Content Area */}
-        <div className="flex flex-col items-center px-6 py-8">
-          <div className="w-full max-w-4xl">
-            {/* Main Conversation Area */}
-            <Card className="shadow-xl border-[rgb(90,199,219)]/20 relative">
-              <CardContent className="p-0">
-                <div className="flex flex-col h-[600px]">
-                  {/* Messages Area */}
-                  <div className="flex-1 relative overflow-hidden">
-                    <ScrollArea className="h-full" ref={scrollAreaRef}>
-                      <div className="p-6">
-                        {convoHistory.length === 0 ? (
-                          <LessonNotStarted />
-                        ) : (
-                          <LessonMessages
-                            convoHistory={convoHistory}
-                            allAudioElementsRef={allAudioElementsRef}
-                            currentAudioRef={currentAudioRef}
-                          />
-                        )}
-                        {isLoading && (
-                          <div className="flex justify-center mt-6">
-                            <div className="flex items-center gap-3 text-gray-600">
-                              <Loader2 className="h-6 w-6 animate-spin" />
-                              <span className="text-sm font-medium">
-                                Processing your response...
-                              </span>
+          {/* Main Content Area */}
+          <div className="flex flex-col items-center px-6 py-8">
+            <div className="w-full max-w-4xl">
+              {/* Main Conversation Area */}
+              <Card className="shadow-xl border-[rgb(90,199,219)]/20 relative">
+                <CardContent className="p-0">
+                  <div className="flex flex-col h-[600px]">
+                    {/* Messages Area */}
+                    <div className="flex-1 relative overflow-hidden">
+                      <ScrollArea className="h-full" ref={scrollAreaRef}>
+                        <div className="p-6">
+                          {convoHistory.length === 0 ? (
+                            <LessonNotStarted />
+                          ) : (
+                            <LessonMessages
+                              convoHistory={convoHistory}
+                              allAudioElementsRef={allAudioElementsRef}
+                              currentAudioRef={currentAudioRef}
+                            />
+                          )}
+                          {isLoading && (
+                            <div className="flex justify-center mt-6">
+                              <div className="flex items-center gap-3 text-gray-600">
+                                <Loader2 className="h-6 w-6 animate-spin" />
+                                <span className="text-sm font-medium">
+                                  Processing your response...
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </div>
-                    </ScrollArea>
+                          )}
+                        </div>
+                      </ScrollArea>
 
-                    {/* Scroll to Bottom Button */}
-                    {showScrollButton && (
-                      <Button
-                        onClick={scrollToBottom}
-                        size="sm"
-                        className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[rgb(90,199,219)] hover:bg-[rgb(90,199,219)]/90 text-white shadow-lg z-10"
-                      >
-                        <ChevronDown className="h-4 w-4" />
-                      </Button>
-                    )}
+                      {/* Scroll to Bottom Button */}
+                      {showScrollButton && (
+                        <Button
+                          onClick={scrollToBottom}
+                          size="sm"
+                          className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[rgb(90,199,219)] hover:bg-[rgb(90,199,219)]/90 text-white shadow-lg z-10"
+                        >
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    <LessonInputBar
+                      recording={recording}
+                      isLoading={isLoading}
+                      audioURL={audioURL ?? ""}
+                      handleStopRecording={handleStopRecording}
+                      handleStartRecording={handleStartRecording}
+                      playAudioSafely={playAudioSafely}
+                    />
                   </div>
-                  <LessonInputBar
-                    recording={recording}
-                    isLoading={isLoading}
-                    audioURL={audioURL ?? ""}
-                    handleStopRecording={handleStopRecording}
-                    handleStartRecording={handleStartRecording}
-                    playAudioSafely={playAudioSafely}
-                  />
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
 
-        <div className="flex flex-col items-center text-blue-700">
+          <div className="flex flex-col items-center text-blue-700">
             <div className="flex flex-col items-center text-blue-700">
               <Link href={`/learn/${lessonIndex}/quiz`}>
                 Already know this? Test your knowledge with this quiz!
               </Link>
             </div>
+          </div>
         </div>
-
-      </div>
-    </TooltipProvider>
-    <LessonCompleteModal
-          isComplete={isComplete}
-          setIsComplete={setIsComplete}
-          lessonIndex={lessonIndex}
-          lessonObjectives={lessonObjectives}
-          setObjectivesMet={setObjectivesMet}
-          setConvoHistory={setConvoHistory}
-        />
+      </TooltipProvider>
+      <LessonCompleteModal
+        isComplete={isComplete}
+        setIsComplete={setIsComplete}
+        lessonIndex={lessonIndex}
+        lessonObjectives={lessonObjectives}
+        setObjectivesMet={setObjectivesMet}
+        setConvoHistory={setConvoHistory}
+      />
     </>
   );
 };

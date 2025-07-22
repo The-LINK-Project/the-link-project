@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 type QuizResultProps = {
   result: QuizResult;
@@ -13,23 +13,17 @@ const QuizResult = ({ result, index }: QuizResultProps) => {
     >
       <div className="col-span-4">
         <div className="text-sm text-gray-900 font-medium">
-          {new Date(result.completedAt).toLocaleDateString(
-            "en-US",
-            {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            }
-          )}
+          {new Date(result.completedAt).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
         </div>
         <div className="text-xs text-gray-500 mt-1">
-          {new Date(result.completedAt).toLocaleTimeString(
-            "en-US",
-            {
-              hour: "2-digit",
-              minute: "2-digit",
-            }
-          )}
+          {new Date(result.completedAt).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </div>
       </div>
 
@@ -43,9 +37,7 @@ const QuizResult = ({ result, index }: QuizResultProps) => {
       </div>
 
       <div className="col-span-2">
-        <div className="text-lg font-bold text-gray-900">
-          {result.score}%
-        </div>
+        <div className="text-lg font-bold text-gray-900">{result.score}%</div>
       </div>
 
       <div className="col-span-1">
@@ -70,7 +62,7 @@ const QuizResult = ({ result, index }: QuizResultProps) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default QuizResult;

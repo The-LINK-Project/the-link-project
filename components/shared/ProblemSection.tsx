@@ -1,8 +1,4 @@
-import {
-  HourglassIcon,
-  Speech,
-  BookOpenCheck,
-} from "lucide-react";
+import { HourglassIcon, Speech, BookOpenCheck } from "lucide-react";
 
 const ProblemSection = () => {
   return (

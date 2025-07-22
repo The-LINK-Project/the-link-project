@@ -31,7 +31,11 @@ export default async function ResultsPage() {
           </p>
         </div>
         {results.length > 0 && (
-          <QuizStats highestScore={highestScore} averageScore={averageScore} totalQuizzes={totalQuizzes} />
+          <QuizStats
+            highestScore={highestScore}
+            averageScore={averageScore}
+            totalQuizzes={totalQuizzes}
+          />
         )}
 
         {/* Results Table */}

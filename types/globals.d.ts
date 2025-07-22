@@ -1,7 +1,5 @@
 // LESSON TYPES
 
-
-
 declare type LessonProgress = {
   userId: string;
   lessonIndex: number;
@@ -17,7 +15,7 @@ declare type Lesson = {
   difficulty: string;
 };
 
-declare type LessonStatus = "Completed" | "In Progress" | "Not Started"; 
+declare type LessonStatus = "Completed" | "In Progress" | "Not Started";
 
 declare type Message = {
   role: string;
