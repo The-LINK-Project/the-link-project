@@ -8,9 +8,7 @@ export class WavStreamPlayer {
      * @param {{sampleRate?: number}} options
      * @returns {WavStreamPlayer}
      */
-    constructor({ sampleRate }?: {
-        sampleRate?: number;
-    });
+    constructor({ sampleRate }?: { sampleRate?: number });
     scriptSrc: any;
     sampleRate: number;
     context: any;
@@ -30,7 +28,11 @@ export class WavStreamPlayer {
      * @param {number} [maxDecibels] default -30
      * @returns {import('./analysis/audio_analysis.js').AudioAnalysisOutputType}
      */
-    getFrequencies(analysisType?: "frequency" | "music" | "voice", minDecibels?: number, maxDecibels?: number): import("./analysis/audio_analysis.js").AudioAnalysisOutputType;
+    getFrequencies(
+        analysisType?: "frequency" | "music" | "voice",
+        minDecibels?: number,
+        maxDecibels?: number,
+    ): import("./analysis/audio_analysis.js").AudioAnalysisOutputType;
     /**
      * Starts audio streaming
      * @private
@@ -44,7 +46,10 @@ export class WavStreamPlayer {
      * @param {string} [trackId]
      * @returns {Int16Array}
      */
-    add16BitPCM(arrayBuffer: ArrayBuffer | Int16Array, trackId?: string): Int16Array;
+    add16BitPCM(
+        arrayBuffer: ArrayBuffer | Int16Array,
+        trackId?: string,
+    ): Int16Array;
     /**
      * Gets the offset (sample count) of the currently playing stream
      * @param {boolean} [interrupt]

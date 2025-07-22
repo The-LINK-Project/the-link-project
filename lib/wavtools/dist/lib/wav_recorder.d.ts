@@ -18,13 +18,21 @@ export class WavRecorder {
      * @param {number} fromSampleRate
      * @returns {Promise<DecodedAudioType>}
      */
-    static decode(audioData: Blob | Float32Array | Int16Array | ArrayBuffer | number[], sampleRate?: number, fromSampleRate?: number): Promise<DecodedAudioType>;
+    static decode(
+        audioData: Blob | Float32Array | Int16Array | ArrayBuffer | number[],
+        sampleRate?: number,
+        fromSampleRate?: number,
+    ): Promise<DecodedAudioType>;
     /**
      * Create a new WavRecorder instance
      * @param {{sampleRate?: number, outputToSpeakers?: boolean, debug?: boolean}} [options]
      * @returns {WavRecorder}
      */
-    constructor({ sampleRate, outputToSpeakers, debug, }?: {
+    constructor({
+        sampleRate,
+        outputToSpeakers,
+        debug,
+    }?: {
         sampleRate?: number;
         outputToSpeakers?: boolean;
         debug?: boolean;
@@ -88,9 +96,13 @@ export class WavRecorder {
      * List all eligible devices for recording, will request permission to use microphone
      * @returns {Promise<Array<MediaDeviceInfo & {default: boolean}>>}
      */
-    listDevices(): Promise<Array<MediaDeviceInfo & {
-        default: boolean;
-    }>>;
+    listDevices(): Promise<
+        Array<
+            MediaDeviceInfo & {
+                default: boolean;
+            }
+        >
+    >;
     /**
      * Begins a recording session and requests microphone permissions if not already granted
      * Microphone recording indicator will appear on browser tab but status will be "paused"
@@ -106,7 +118,11 @@ export class WavRecorder {
      * @param {number} [maxDecibels] default -30
      * @returns {import('./analysis/audio_analysis.js').AudioAnalysisOutputType}
      */
-    getFrequencies(analysisType?: "frequency" | "music" | "voice", minDecibels?: number, maxDecibels?: number): import("./analysis/audio_analysis.js").AudioAnalysisOutputType;
+    getFrequencies(
+        analysisType?: "frequency" | "music" | "voice",
+        minDecibels?: number,
+        maxDecibels?: number,
+    ): import("./analysis/audio_analysis.js").AudioAnalysisOutputType;
     /**
      * Pauses the recording
      * Keeps microphone stream open but halts storage of audio
@@ -119,10 +135,10 @@ export class WavRecorder {
      * @param {number} [chunkSize] chunkProcessor will not be triggered until this size threshold met in mono audio
      * @returns {Promise<true>}
      */
-    record(chunkProcessor?: (data: {
-        mono: Int16Array;
-        raw: Int16Array;
-    }) => any, chunkSize?: number): Promise<true>;
+    record(
+        chunkProcessor?: (data: { mono: Int16Array; raw: Int16Array }) => any,
+        chunkSize?: number,
+    ): Promise<true>;
     _chunkProcessorSize: number;
     /**
      * Clears the audio buffer, empties stored recording

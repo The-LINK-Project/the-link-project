@@ -5,106 +5,106 @@ import Lesson from "../database/models/lesson.model";
 import { revalidatePath } from "next/cache";
 
 export async function createLesson({
-  title,
-  description,
-  objectives,
-  lessonIndex,
-  difficulty,
+    title,
+    description,
+    objectives,
+    lessonIndex,
+    difficulty,
 }: {
-  title: string;
-  description: string;
-  objectives: string[];
-  lessonIndex: Number;
-  difficulty: string;
+    title: string;
+    description: string;
+    objectives: string[];
+    lessonIndex: Number;
+    difficulty: string;
 }): Promise<Lesson> {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    console.log("Making new lesson");
+        console.log("Making new lesson");
 
-    const payload = {
-      title: title,
-      description: description,
-      objectives: objectives,
-      lessonIndex: lessonIndex,
-      difficulty: difficulty,
-    };
+        const payload = {
+            title: title,
+            description: description,
+            objectives: objectives,
+            lessonIndex: lessonIndex,
+            difficulty: difficulty,
+        };
 
-    console.log(`PAYLOAD: `, JSON.stringify(payload, null, 2));
+        console.log(`PAYLOAD: `, JSON.stringify(payload, null, 2));
 
-    const newLesson = await Lesson.create(payload);
+        const newLesson = await Lesson.create(payload);
 
-    if (!newLesson) throw Error("Failed to create new lesson");
+        if (!newLesson) throw Error("Failed to create new lesson");
 
-    console.log(`New Lesson Created: `, JSON.stringify(newLesson, null, 2));
-    return JSON.parse(JSON.stringify(newLesson));
-  } catch (error) {
-    console.log("Error creating lesson:", error);
-    throw error;
-  }
+        console.log(`New Lesson Created: `, JSON.stringify(newLesson, null, 2));
+        return JSON.parse(JSON.stringify(newLesson));
+    } catch (error) {
+        console.log("Error creating lesson:", error);
+        throw error;
+    }
 }
 
 export async function getAllLessons(): Promise<Lesson[]> {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    console.log("Retrieving Lessons");
+        console.log("Retrieving Lessons");
 
-    const lessons = await Lesson.find({});
+        const lessons = await Lesson.find({});
 
-    console.log(`All Lessons Retrieved`);
+        console.log(`All Lessons Retrieved`);
 
-    return JSON.parse(JSON.stringify(lessons));
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+        return JSON.parse(JSON.stringify(lessons));
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
 }
 
 export async function getLessonByIndex(lessonIndex: number): Promise<Lesson> {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    const lesson = await Lesson.findOne({ lessonIndex: lessonIndex });
+        const lesson = await Lesson.findOne({ lessonIndex: lessonIndex });
 
-    if (!lesson) throw Error("Lesson not found");
+        if (!lesson) throw Error("Lesson not found");
 
-    return JSON.parse(JSON.stringify(lesson));
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+        return JSON.parse(JSON.stringify(lesson));
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
 }
 
 export async function deleteLesson(
-  lessonId: string
+    lessonId: string,
 ): Promise<{ success: boolean; message: string }> {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    console.log("Deleting lesson with ID:", lessonId);
+        console.log("Deleting lesson with ID:", lessonId);
 
-    const deletedLesson = await Lesson.findByIdAndDelete(lessonId);
+        const deletedLesson = await Lesson.findByIdAndDelete(lessonId);
 
-    if (!deletedLesson) {
-      return {
-        success: false,
-        message: "Lesson not found",
-      };
+        if (!deletedLesson) {
+            return {
+                success: false,
+                message: "Lesson not found",
+            };
+        }
+
+        console.log("Lesson deleted successfully");
+        revalidatePath("/admin/lessons");
+
+        return {
+            success: true,
+            message: "Lesson deleted successfully",
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            success: false,
+            message: "Failed to delete lesson",
+        };
     }
-
-    console.log("Lesson deleted successfully");
-    revalidatePath("/admin/lessons");
-
-    return {
-      success: true,
-      message: "Lesson deleted successfully",
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      success: false,
-      message: "Failed to delete lesson",
-    };
-  }
 }

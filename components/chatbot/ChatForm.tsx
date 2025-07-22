@@ -6,88 +6,88 @@ import SendIcon from "./ChatbotIconsend";
 type ChatRole = "user" | "model";
 
 interface ChatMessageType {
-  role: ChatRole;
-  text: string;
-  isError?: boolean;
-  hideInChat?: boolean;
+    role: ChatRole;
+    text: string;
+    isError?: boolean;
+    hideInChat?: boolean;
 }
 
 import type { Dispatch, SetStateAction } from "react";
 
 interface ChatFormProps {
-  chatHistory: ChatMessageType[];
-  setChatHistory: Dispatch<SetStateAction<ChatMessageType[]>>;
-  generateBotResponse: (history: ChatMessageType[]) => void | Promise<void>;
+    chatHistory: ChatMessageType[];
+    setChatHistory: Dispatch<SetStateAction<ChatMessageType[]>>;
+    generateBotResponse: (history: ChatMessageType[]) => void | Promise<void>;
 }
 
 const ChatForm: FC<ChatFormProps> = ({
-  chatHistory,
-  setChatHistory,
-  generateBotResponse,
+    chatHistory,
+    setChatHistory,
+    generateBotResponse,
 }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault();
 
-    const userMessage = inputRef.current?.value.trim();
-    if (!userMessage) return;
+        const userMessage = inputRef.current?.value.trim();
+        if (!userMessage) return;
 
-    if (inputRef.current) inputRef.current.value = "";
+        if (inputRef.current) inputRef.current.value = "";
 
-    const updatedHistory: ChatMessageType[] = [
-      ...chatHistory,
-      { role: "user", text: userMessage },
-    ];
+        const updatedHistory: ChatMessageType[] = [
+            ...chatHistory,
+            { role: "user", text: userMessage },
+        ];
 
-    setChatHistory(updatedHistory);
+        setChatHistory(updatedHistory);
 
-    setTimeout(() => {
-      const thinkingMessage: ChatMessageType = {
-        role: "model",
-        text: "Thinking...",
-      };
+        setTimeout(() => {
+            const thinkingMessage: ChatMessageType = {
+                role: "model",
+                text: "Thinking...",
+            };
 
-      const thinkingHistory: ChatMessageType[] = [
-        ...updatedHistory,
-        thinkingMessage,
-      ];
+            const thinkingHistory: ChatMessageType[] = [
+                ...updatedHistory,
+                thinkingMessage,
+            ];
 
-      setChatHistory(thinkingHistory);
+            setChatHistory(thinkingHistory);
 
-      generateBotResponse([
-        ...updatedHistory,
-        {
-          role: "user",
-          text: ` Using the details provided above, please address this query: ${userMessage}`,
-        },
-      ]);
-    }, 600);
-  };
+            generateBotResponse([
+                ...updatedHistory,
+                {
+                    role: "user",
+                    text: ` Using the details provided above, please address this query: ${userMessage}`,
+                },
+            ]);
+        }, 600);
+    };
 
-  return (
-    <form
-      action="#"
-      className="flex items-center bg-white rounded-[32px] outline-1 outline-[#CCCCE5] shadow-[0_0_8px_rgba(0,0,0,0.06)] focus-within:outline-2 focus-within:outline-[#49BED4]"
-      onSubmit={handleFormSubmit}
-    >
-      <input
-        ref={inputRef}
-        type="text"
-        placeholder="Message..."
-        className="border-none outline-none w-full bg-transparent h-[47px] px-[17px] text-[0.95rem]"
-        required
-      />
-      <button
-        type="submit"
-        className="h-[35px] w-[35px] flex items-center justify-center border-none hidden outline-none cursor-pointer flex-shrink-0 mr-1.5 rounded-full bg-[#49BED4] transition-all duration-200 hover:bg-[#49BED4] peer-valid:block [input:valid~&]:block"
-      >
-        <span className="flex items-center justify-center">
-          <SendIcon />
-        </span>
-      </button>
-    </form>
-  );
+    return (
+        <form
+            action="#"
+            className="flex items-center bg-white rounded-[32px] outline-1 outline-[#CCCCE5] shadow-[0_0_8px_rgba(0,0,0,0.06)] focus-within:outline-2 focus-within:outline-[#49BED4]"
+            onSubmit={handleFormSubmit}
+        >
+            <input
+                ref={inputRef}
+                type="text"
+                placeholder="Message..."
+                className="border-none outline-none w-full bg-transparent h-[47px] px-[17px] text-[0.95rem]"
+                required
+            />
+            <button
+                type="submit"
+                className="h-[35px] w-[35px] flex items-center justify-center border-none hidden outline-none cursor-pointer flex-shrink-0 mr-1.5 rounded-full bg-[#49BED4] transition-all duration-200 hover:bg-[#49BED4] peer-valid:block [input:valid~&]:block"
+            >
+                <span className="flex items-center justify-center">
+                    <SendIcon />
+                </span>
+            </button>
+        </form>
+    );
 };
 
 export default ChatForm;

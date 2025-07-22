@@ -24,7 +24,10 @@ export class WavPacker {
      * @param {ArrayBuffer} rightBuffer
      * @returns {ArrayBuffer}
      */
-    static mergeBuffers(leftBuffer: ArrayBuffer, rightBuffer: ArrayBuffer): ArrayBuffer;
+    static mergeBuffers(
+        leftBuffer: ArrayBuffer,
+        rightBuffer: ArrayBuffer,
+    ): ArrayBuffer;
     /**
      * Packs data into an Int16 format
      * @private
@@ -39,11 +42,14 @@ export class WavPacker {
      * @param {{bitsPerSample: number, channels: Array<Float32Array>, data: Int16Array}} audio
      * @returns {WavPackerAudioType}
      */
-    pack(sampleRate: number, audio: {
-        bitsPerSample: number;
-        channels: Array<Float32Array>;
-        data: Int16Array;
-    }): WavPackerAudioType;
+    pack(
+        sampleRate: number,
+        audio: {
+            bitsPerSample: number;
+            channels: Array<Float32Array>;
+            data: Int16Array;
+        },
+    ): WavPackerAudioType;
 }
 /**
  * Raw wav audio file contents

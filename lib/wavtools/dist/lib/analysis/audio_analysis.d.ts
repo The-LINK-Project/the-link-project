@@ -21,7 +21,14 @@ export class AudioAnalysis {
      * @param {number} [maxDecibels] default -30
      * @returns {AudioAnalysisOutputType}
      */
-    static getFrequencies(analyser: AnalyserNode, sampleRate: number, fftResult?: Float32Array, analysisType?: "frequency" | "music" | "voice", minDecibels?: number, maxDecibels?: number): AudioAnalysisOutputType;
+    static getFrequencies(
+        analyser: AnalyserNode,
+        sampleRate: number,
+        fftResult?: Float32Array,
+        analysisType?: "frequency" | "music" | "voice",
+        minDecibels?: number,
+        maxDecibels?: number,
+    ): AudioAnalysisOutputType;
     /**
      * Creates a new AudioAnalysis instance for an HTMLAudioElement
      * @param {HTMLAudioElement} audioElement
@@ -42,7 +49,11 @@ export class AudioAnalysis {
      * @param {number} [maxDecibels] default -30
      * @returns {AudioAnalysisOutputType}
      */
-    getFrequencies(analysisType?: "frequency" | "music" | "voice", minDecibels?: number, maxDecibels?: number): AudioAnalysisOutputType;
+    getFrequencies(
+        analysisType?: "frequency" | "music" | "voice",
+        minDecibels?: number,
+        maxDecibels?: number,
+    ): AudioAnalysisOutputType;
     /**
      * Resume the internal AudioContext if it was suspended due to the lack of
      * user interaction when the AudioAnalysis was instantiated.

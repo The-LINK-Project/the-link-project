@@ -10,7 +10,7 @@ export default async function ResultsPage() {
     results.length > 0
       ? Math.round(
           results.reduce((sum, result) => sum + result.score, 0) /
-            results.length
+            results.length,
         )
       : 0;
 
