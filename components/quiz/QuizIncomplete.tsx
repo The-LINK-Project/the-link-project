@@ -15,16 +15,7 @@ const QuizIncomplete = ({
   handleAnswerSelect,
   handleSubmit,
 }: QuizIncompleteProps) => {
-  const primary = "var(--primary)";
-  const primaryFg = "var(--primary-foreground)";
-  const muted = "var(--muted)";
-  const mutedFg = "var(--muted-foreground)";
-  const border = "var(--border)";
-  const card = "var(--card)";
-  const cardFg = "var(--card-foreground)";
-  const disabledBg = "var(--muted)";
-  const disabledFg = "var(--muted-foreground)";
-
+  const isDisabled = selectedAnswers.includes(-1);
   return (
     <>
       <QuizProgressBar selectedAnswers={selectedAnswers} quiz={quiz} />
@@ -42,36 +33,16 @@ const QuizIncomplete = ({
 
       <div className="flex justify-center mt-10">
         <button
-          disabled={selectedAnswers.includes(-1)}
+          disabled={isDisabled}
           onClick={handleSubmit}
-          style={
-            selectedAnswers.includes(-1)
-              ? {
-                  background: disabledBg,
-                  color: disabledFg,
-                  cursor: "not-allowed",
-                  borderRadius: "var(--radius-xl)",
-                  fontWeight: 600,
-                  fontSize: "1.125rem",
-                  boxShadow: "var(--shadow-lg)",
-                  padding: "0.75rem 2.5rem",
-                  transition: "all 0.3s",
-                }
-              : {
-                  background: primary,
-                  color: primaryFg,
-                  borderRadius: "var(--radius-xl)",
-                  fontWeight: 600,
-                  fontSize: "1.125rem",
-                  boxShadow: "var(--shadow-lg)",
-                  padding: "0.75rem 2.5rem",
-                  transition: "all 0.3s",
-                }
+          className={
+            `rounded-xl font-semibold text-lg shadow-lg px-10 py-3 transition-all duration-300 ` +
+            (isDisabled
+              ? "bg-muted text-muted-foreground cursor-not-allowed opacity-70"
+              : "bg-primary text-primary-foreground hover:scale-105 hover:shadow-xl")
           }
         >
-          {selectedAnswers.includes(-1)
-            ? "Answer All Questions"
-            : "Submit Quiz"}
+          {isDisabled ? "Answer All Questions" : "Submit Quiz"}
         </button>
       </div>
     </>
