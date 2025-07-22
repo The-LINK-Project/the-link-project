@@ -8,7 +8,6 @@ import { getAllLessons } from "@/lib/actions/Lesson.actions";
 import Lesson from "@/components/lesson/Lesson";
 import Link from "next/link";
 
-// Server component wrapper (NO "use client", CAN be async)
 const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
   const lessons = await getAllLessons();
   const user = await getCurrentUser();
