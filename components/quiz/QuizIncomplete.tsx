@@ -36,7 +36,7 @@ const QuizIncomplete = ({
                     onClick={handleSubmit}
                     className={`px-10 py-3 rounded-xl text-lg font-semibold transition-all duration-300 shadow-lg ${selectedAnswers.includes(-1)
                         ? "bg-slate-300 text-slate-600 cursor-not-allowed"
-                        : "bg-[rgb(90,199,219)] text-white hover:bg-[rgb(90,199,219)]/90 hover:shadow-xl transform hover:scale-105"
+                        : "bg-primary text-white hover:bg-primary/90 hover:shadow-xl transform hover:scale-105"
                         }`}
                 >
                     {selectedAnswers.includes(-1)
