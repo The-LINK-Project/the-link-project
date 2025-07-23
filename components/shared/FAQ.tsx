@@ -11,7 +11,7 @@ const FAQ = () => {
     return (
         <div className="py-20">
             <div className="text-center mb-16">
-                <p className="text-main-blue uppercase tracking-wide mb-4">FAQ</p>
+                <p className="text-primary uppercase tracking-wide mb-4">FAQ</p>
                 <h2 className="text-5xl font-semibold tracking-tight mb-12">
                     Frequently Asked Questions
                 </h2>
