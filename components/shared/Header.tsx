@@ -18,7 +18,7 @@ const Header = () => {
     return (
         <div className="flex flex-row mx-24 justify-between h-18 items-center">
             <div className="flex flex-row gap-1">
-                <img src="/assets/link.png" className="w-8 h-8"></img>
+                <img src="/assets/link_green.png" className="w-8 h-8"></img>
                 <h1 className="font-semibold text-lg">The LINK Project</h1>
             </div>
             <div className="flex flex-row justify-center items-center gap-10">
