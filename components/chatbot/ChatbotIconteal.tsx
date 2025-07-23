@@ -8,7 +8,7 @@ const ChatbotIconteal: FC = () => {
             height="32"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#49BED4"
+            stroke="var(--primary)"
             strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
