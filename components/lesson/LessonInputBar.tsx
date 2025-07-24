@@ -35,8 +35,8 @@ const LessonInputBar = ({
                             onClick={recording ? handleStopRecording : handleStartRecording}
                             size="lg"
                             className={`w-12 h-12 rounded-full transition-all duration-300 shadow-lg ${recording
-                                    ? "bg-red-500 hover:bg-red-600 animate-pulse"
-                                    : "bg-[rgb(90,199,219)] hover:bg-[rgb(90,199,219)]/90"
+                                ? "bg-red-500 hover:bg-red-600 animate-pulse"
+                                : "bg-primary hover:bg-primary/90"
                                 }`}
                             disabled={isLoading}
                         >
@@ -65,7 +65,7 @@ const LessonInputBar = ({
                     {isLoading && !recording && (
                         <Badge
                             variant="secondary"
-                            className="bg-blue-50 text-blue-700 border-blue-200 px-4 py-2 text-sm font-medium flex items-center gap-2"
+                            className="bg-green-50 text-green-700 border-green-200 px-4 py-2 text-sm font-medium flex items-center gap-2"
                         >
                             <Loader2 className="h-3 w-3 animate-spin" />
                             Loading...
@@ -94,7 +94,7 @@ const LessonInputBar = ({
                             disabled={!audioURL || isLoading}
                             variant="outline"
                             size="lg"
-                            className="w-12 h-12 rounded-full border-[rgb(90,199,219)] text-[rgb(90,199,219)] hover:bg-[rgb(90,199,219)] hover:text-white disabled:opacity-30 shadow-lg"
+                            className="w-12 h-12 rounded-full border-primary text-primary hover:bg-primary/90 hover:text-white disabled:opacity-30 shadow-lg"
                         >
                             <Play className="h-5 w-5" />
                         </Button>
