@@ -1,10 +1,13 @@
+import React from "react";
 import { getUserResults } from "@/lib/actions/quizResults.actions";
 import QuizResults from "@/components/results/QuizResults";
 import { QuizStats } from "@/components/results/QuizStats";
 import QuizNoResults from "@/components/results/QuizNoResults";
+import { getAllLessons } from "@/lib/actions/Lesson.actions";
 
 export default async function ResultsPage() {
     const results = await getUserResults();
+    const lessons = await getAllLessons();
 
     const averageScore =
         results.length > 0
@@ -42,7 +45,7 @@ export default async function ResultsPage() {
                 {results.length === 0 ? (
                     <QuizNoResults />
                 ) : (
-                    <QuizResults results={results} />
+                    <QuizResults results={results} lessons={lessons} />
                 )}
 
                 {/* Footer Stats */}

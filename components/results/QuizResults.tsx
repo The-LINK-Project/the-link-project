@@ -4,9 +4,10 @@ import QuizResult from "./QuizResult";
 
 type QuizResultsProps = {
     results: QuizResult[];
+    lessons: Lesson[];
 };
 
-const QuizResults = ({ results }: QuizResultsProps) => {
+const QuizResults = ({ results, lessons }: QuizResultsProps) => {
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             {/* Table Header */}
@@ -33,8 +34,8 @@ const QuizResults = ({ results }: QuizResultsProps) => {
                 {results.map((result, index) => (
                     <QuizResult
                         result={result}
-                        index={index}
                         key={result._id.toString()}
+                        lessons={lessons}
                     />
                 ))}
             </div>
