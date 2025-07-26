@@ -22,8 +22,8 @@ const LessonMessages = ({
                 >
                     <div
                         className={`max-w-[75%] rounded-2xl p-4 shadow-sm ${message.role === "User"
-                                ? "bg-[rgb(90,199,219)] text-white"
-                                : "bg-gray-50 text-gray-800 border border-gray-100"
+                            ? "bg-primary text-white"
+                            : "bg-gray-50 text-gray-800 border border-gray-100"
                             }`}
                     >
                         <div className="flex items-center gap-2 mb-3">

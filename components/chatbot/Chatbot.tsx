@@ -69,7 +69,7 @@ const Chatbot = () => {
                 className={`
           fixed flex items-center justify-center bottom-[30px] right-[20px]
           h-[50px] w-[50px] border-none cursor-pointer rounded-full
-          bg-[#49BED4] transition-all duration-200 outline-none z-[100]
+          bg-primary transition-all duration-200 outline-none z-[100]
           ${showChatbot ? "rotate-90" : ""}
         `}
                 style={{ WebkitTapHighlightColor: "transparent" }}
@@ -108,13 +108,13 @@ const Chatbot = () => {
         `}
             >
                 {/* Header */}
-                <div className="chat-header flex items-center justify-between bg-[#49BED4] p-[15px_22px]">
+                <div className="chat-header flex items-center justify-between bg-primary p-[15px_22px]">
                     <div className="header-info flex gap-[10px] items-center">
                         <span className="h-[35px] w-[35px] p-[6px] bg-white rounded-full flex items-center justify-center">
                             <ChatbotIconteal />
                         </span>
                         <span className="logo-text text-white text-[1.31rem] font-semibold">
-                            Chatbot
+                            LINK Assistant
                         </span>
                     </div>
                 </div>
@@ -128,10 +128,10 @@ const Chatbot = () => {
           "
                 >
                     <div className="message bot-message flex gap-[11px] items-center">
-                        <span className="h-[35px] w-[35px] p-[6px] bg-[#49BED4] rounded-full flex items-center justify-center">
+                        <span className="h-[35px] w-[35px] p-[6px] bg-primary rounded-full flex items-center justify-center">
                             <ChatbotIcon />
                         </span>
-                        <p className="message-text p-[12px_16px] max-w-[75%] break-words whitespace-pre-line text-[0.85rem] bg-[#E6FAFD] rounded-[13px_13px_13px_3px]">
+                        <p className="message-text p-[12px_16px] max-w-[75%] break-words whitespace-pre-line text-[0.85rem] bg-green-50 rounded-[13px_13px_13px_3px]">
                             Hey there <br /> how can I help you today
                         </p>
                     </div>

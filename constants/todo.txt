@@ -1,2 +1,3 @@
-1. Fix update lesson progress error (currently just turned array into one true when i press the button)
-2. implement tool calls from gemini properly
+1. Make first message auto call response when entering new lesson e.g hi
+2. Copyrights reserved thing at bottom
+3. Links

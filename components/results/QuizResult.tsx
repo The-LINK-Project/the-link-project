@@ -2,10 +2,10 @@ import React from "react";
 
 type QuizResultProps = {
     result: QuizResult;
-    index: number;
+    lessons: Lesson[];
 };
 
-const QuizResult = ({ result, index }: QuizResultProps) => {
+const QuizResult = ({ result, lessons }: QuizResultProps) => {
     return (
         <div
             key={result._id.toString()}
@@ -29,10 +29,10 @@ const QuizResult = ({ result, index }: QuizResultProps) => {
 
             <div className="col-span-5">
                 <div className="text-sm font-medium text-gray-900 group-hover:text-gray-700">
-                    Simple Present Tense Quiz
+                    {lessons[result.lessonId].title}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">
-                    Lesson {result.lessonId + 1} • Grammar
+                    Lesson {result.lessonId + 1}
                 </div>
             </div>
 
@@ -43,12 +43,12 @@ const QuizResult = ({ result, index }: QuizResultProps) => {
             <div className="col-span-1">
                 <div
                     className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${result.score >= 90
-                        ? "bg-gray-900 text-white"
+                        ? "bg-primary text-white"
                         : result.score >= 80
                             ? "bg-gray-200 text-gray-800"
                             : result.score >= 70
-                                ? "bg-gray-100 text-gray-700"
-                                : "bg-gray-50 text-gray-600 border border-gray-300"
+                                ? "bg-yellow-200 text-gray-700"
+                                : "bg-red-300 text-gray-600 "
                         }`}
                 >
                     {result.score >= 90

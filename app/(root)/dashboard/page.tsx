@@ -6,8 +6,9 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 
 const DashboardPage = async () => {
-  const lessons = await getAllLessons();
-  const lessonStatuses = await getAllLessonStatuses();
+    const lessons = await getAllLessons();
+    const lessonStatuses = await getAllLessonStatuses();
+
 
   const getLessonsByDifficulty = (difficulty: string) => {
     return lessons
@@ -64,6 +65,7 @@ const DashboardPage = async () => {
       </Tabs>
     </section>
   );
+
 };
 
 export default DashboardPage;

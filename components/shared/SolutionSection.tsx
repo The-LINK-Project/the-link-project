@@ -3,10 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 const SolutionSection = () => {
     return (
-        <div className="bg-gray-100 w-full">
+        <div className="bg-green-50 w-full">
             <div className="container mx-auto py-20 px-4">
                 <div className="text-center mb-16">
-                    <p className="text-main-blue uppercase tracking-wide mb-4">
+                    <p className="text-primary uppercase tracking-wide mb-4">
                         THE SOLUTION
                     </p>
                     <h2 className="text-5xl font-semibold tracking-tight mb-12">
@@ -20,7 +20,7 @@ const SolutionSection = () => {
                         <div className="flex flex-row gap-6  w-[750px]">
                             <Card className="bg-gray-50 h-90 gap-3">
                                 <CardHeader>
-                                    <CardTitle className="text-main-blue">
+                                    <CardTitle className="text-primary">
                                         Personalised Learning Journey
                                     </CardTitle>
                                 </CardHeader>
@@ -38,7 +38,7 @@ const SolutionSection = () => {
                             </Card>
                             <Card className="bg-gray-50 h-90 gap-3">
                                 <CardHeader>
-                                    <CardTitle className="text-main-blue">
+                                    <CardTitle className="text-primary">
                                         Guided Learning Objectives
                                     </CardTitle>
                                 </CardHeader>
@@ -58,7 +58,7 @@ const SolutionSection = () => {
                         <div className="flex flex-row w-[750px]">
                             <Card className="flex flex-col bg-gray-50 h-[366px] gap-3">
                                 <CardHeader>
-                                    <CardTitle className="text-main-blue">
+                                    <CardTitle className="text-primary">
                                         Realtime Conversations With Your Personal Assistant
                                     </CardTitle>
                                 </CardHeader>
@@ -82,7 +82,7 @@ const SolutionSection = () => {
                     <div className=" w-[400px] h-[750px] gap-6">
                         <Card className="w-[400px] h-[750px] gap-3 bg-gray-50 overflow-hidden">
                             <CardHeader>
-                                <CardTitle className="text-main-blue">
+                                <CardTitle className="text-primary">
                                     Helpful AI Chatbot
                                 </CardTitle>
                             </CardHeader>

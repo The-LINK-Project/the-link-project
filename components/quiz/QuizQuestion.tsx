@@ -19,7 +19,7 @@ const QuizQuestion = ({
             className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
         >
             <div className="flex items-start gap-3 mb-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-[rgb(90,199,219)] rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md">
+                <div className="flex-shrink-0 w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md">
                     {qIndex + 1}
                 </div>
                 <div className="flex-1">
@@ -34,16 +34,16 @@ const QuizQuestion = ({
                     <button
                         key={optIndex}
                         className={`group p-3 border-2 rounded-lg transition-all duration-200 text-left font-medium ${selectedAnswers[qIndex] === optIndex
-                                ? "bg-[rgb(90,199,219)]/10 border-[rgb(90,199,219)] text-[rgb(90,199,219)] shadow-md transform scale-[1.01]"
-                                : "bg-white border-slate-200 text-slate-700 hover:bg-[rgb(90,199,219)]/5 hover:border-[rgb(90,199,219)]/50 hover:shadow-sm"
+                            ? "bg-primary/10 border-primary text-primary shadow-md transform scale-[1.01]"
+                            : "bg-white border-slate-200 text-slate-700 hover:bg-primary/5 hover:border-primary/50 hover:shadow-sm"
                             }`}
                         onClick={() => handleAnswerSelect(qIndex, optIndex)}
                     >
                         <div className="flex items-center gap-3">
                             <div
                                 className={`w-4 h-4 rounded-full border-2 transition-all duration-200 ${selectedAnswers[qIndex] === optIndex
-                                        ? "bg-[rgb(90,199,219)] border-[rgb(90,199,219)]"
-                                        : "border-slate-300 group-hover:border-[rgb(90,199,219)]"
+                                    ? "bg-primary border-primary"
+                                    : "border-slate-300 group-hover:border-primary"
                                     }`}
                             >
                                 {selectedAnswers[qIndex] === optIndex && (
