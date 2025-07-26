@@ -78,7 +78,7 @@ const DashboardLessonItem = (props: DashboardLessonItemProps) => {
                         <Badge variant="secondary" className={status.badge}>
                             {lessonStatus}
                         </Badge>
-                        <div className="text-xs text-gray-500">Lesson {lessonNum}</div>
+
                     </div>
                 </CardFooter>
             </Card>

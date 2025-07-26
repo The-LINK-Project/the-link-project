@@ -1,10 +1,10 @@
 import React from "react";
-import LoadingSpline from "../components/loadingspline";
 
 const LoadingScreen = () => {
   return (
-    <div>
-      <LoadingSpline />
+    <div className="h-screen flex flex-col items-center justify-center bg-[--color-background]">
+      <div className="w-10 h-10 border-4 border-muted border-t-foreground rounded-full animate-spin" />
+      <p className="mt-4 text-foreground text-lg">Linking...</p>
     </div>
   );
 };
