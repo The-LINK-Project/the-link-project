@@ -1,12 +1,32 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
 
-export default clerkMiddleware();
+// Define routes that should be publicly accessible (not protected)
+const isPublicRoute = createRouteMatcher([
+    '/sign-in',
+    '/sign-in(.*)',
+    '/sign-up',
+    '/sign-up(.*)',
+    '/', // if your homepage is public
+]);
+
+export default clerkMiddleware(async (auth, req) => {
+    if (!isPublicRoute(req)) {
+        const { userId } = await auth();
+        if (!userId) {
+            const signInUrl = new URL('/sign-in', req.url);
+            return NextResponse.redirect(signInUrl);
+        }
+    }
+
+    return NextResponse.next();
+});
 
 export const config = {
     matcher: [
-        // Skip Next.js internals and all static files, unless found in search params
-        "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-        // Always run for API routes
-        "/(api|trpc)(.*)",
+        // Run middleware for everything except static files and Next internals
+        '/((?!_next|[^?]*\\.(?:js|css|jpg|jpeg|png|svg|ico|webp|ttf|woff2?|json|csv|html)).*)',
+        // Also run for API routes
+        '/api/(.*)',
     ],
 };
