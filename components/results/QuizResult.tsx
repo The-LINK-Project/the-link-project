@@ -42,12 +42,12 @@ const QuizResult = ({ result, lessons }: QuizResultProps) => {
 
             <div className="col-span-1">
                 <div
-                    className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${result.score >= 90
-                        ? "bg-primary text-white"
+                    className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium  text-white ${result.score >= 90
+                        ? "bg-primary "
                         : result.score >= 80
-                            ? "bg-gray-200 text-gray-800"
+                            ? "bg-blue-300 text-gray-800"
                             : result.score >= 70
-                                ? "bg-yellow-200 text-gray-700"
+                                ? "bg-yellow-300 text-gray-700"
                                 : "bg-red-300 text-gray-600 "
                         }`}
                 >

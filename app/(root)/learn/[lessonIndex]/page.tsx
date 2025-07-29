@@ -70,7 +70,7 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
                         </h1>
 
                         <p className="text-lg text-gray-700 mb-6">{lesson.description}</p>
-                        <h2 className="text-xl font-semibold text-blue-700 mb-3">
+                        <h2 className="text-xl font-semibold text-green-500 mb-3">
                             Objectives
                         </h2>
 
@@ -83,7 +83,7 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
                             <div>
                                 {index > 1 && (
                                     <Link href={`/learn/${index - 1}`}>
-                                        <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                                        <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-primary hover:cursor-pointer transition">
                                             ← Previous Lesson
                                         </button>
                                     </Link>
@@ -92,7 +92,7 @@ const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
                             <div>
                                 {index < lessons.length && (
                                     <Link href={`/learn/${index + 1}`}>
-                                        <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                                        <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-primary hover:cursor-pointer transition">
                                             Next Lesson →
                                         </button>
                                     </Link>

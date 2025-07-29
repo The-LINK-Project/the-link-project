@@ -34,7 +34,7 @@ const LessonInputBar = ({
                         <Button
                             onClick={recording ? handleStopRecording : handleStartRecording}
                             size="lg"
-                            className={`w-12 h-12 rounded-full transition-all duration-300 shadow-lg ${recording
+                            className={`w-12 h-12 rounded-full transition-all duration-300 shadow-lg text-white ${recording
                                 ? "bg-red-500 hover:bg-red-600 animate-pulse"
                                 : "bg-primary hover:bg-primary/90"
                                 }`}
