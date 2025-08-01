@@ -46,27 +46,23 @@ export const frequentlyAskedQuestions = [
 
 export const aboutUsInformation = [
   {
-    name: "Jane Doe",
+    name: "Adrish Majumder",
     role: "Co-Founder",
-    bio: "Passionate about innovation and leading the team toward success. Dedicated to creating meaningful impact through technology.",
     image: "/assets/mun.jpeg",
   },
   {
-    name: "John Smith",
+    name: "Alexandre Lee",
     role: "Co-Founder",
-    bio: "Tech wizard with a love for solving tough problems. Expert in AI and machine learning technologies.",
-    image: "/assets/Content2.jpeg",
+    image: "/assets/Alex.jgep",
   },
   {
-    name: "Alice Johnson",
+    name: "Ruhan Gupta",
     role: "Co-Founder",
-    bio: "Crafting beautiful user experiences that make technology accessible to everyone. Focused on inclusive design.",
-    image: "/assets/Content3.png",
+    image: "/assets/Ruhan.jpeg",
   },
   {
-    name: "Bob Lee",
+    name: "Videep Agarwal",
     role: "Co-Founder",
-    bio: "Connecting our brand to the world. Building meaningful relationships with our community and stakeholders.",
     image: "/assets/Videep.jpeg",
   },
 ];
