@@ -48,7 +48,7 @@ const DashboardLessonItem = (props: DashboardLessonItemProps) => {
     const status = lessonStatusStyles[lessonStatus] || defaultStyle;
 
     return (
-        <Link href={`/learn/${lessonNum}`} key={lessonNum} className="group">
+        <Link href={`/learn/${lesson.lessonIndex}`} key={lesson.lessonIndex?.toString()} className="group">
             <Card
                 className={`h-full flex flex-col transition-all duration-200 hover:shadow-lg hover:-translate-y-1 cursor-pointer ${status.cardClass}`}
             >

@@ -12,7 +12,7 @@ declare type Lesson = {
     title: string;
     description: string;
     objectives: string[];
-    lessonIndex: Number;
+    lessonIndex: number;
     difficulty: string;
 };
 

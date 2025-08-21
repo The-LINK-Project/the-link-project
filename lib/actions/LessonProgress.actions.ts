@@ -6,8 +6,6 @@ import { auth } from "@clerk/nextjs/server";
 import { getAllLessons } from "./Lesson.actions";
 import { formatInitialObjectives } from "../utils";
 
-const lessons = await getAllLessons();
-
 // when user has never done the lesson before and goes to it make a mongoDB item with convoHistory and objectives met default empty array and false array respectively
 export async function initLessonProgress({
     lessonIndex,
@@ -173,6 +171,8 @@ export async function getAllLessonStatuses(): Promise<LessonStatus[]> {
         if (!userId) {
             throw new Error("User not found");
         }
+
+        const lessons = await getAllLessons();
 
         let completionStatuses: LessonStatus[] = [];
         for (let i = 0; i < lessons.length; i++) {

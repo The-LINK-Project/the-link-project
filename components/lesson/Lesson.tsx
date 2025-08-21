@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from "react";
 
-import { processAudioMessage } from "@/lib/actions/conversation.actions";
+import { processAudioMessage, processInitialMessage } from "@/lib/actions/conversation.actions";
 
 import LessonInputBar from "./LessonInputBar";
 import LessonMessages from "./LessonMessages";
@@ -42,7 +42,9 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const currentAudioRef = useRef<HTMLAudioElement | null>(null);
     const allAudioElementsRef = useRef<Set<HTMLAudioElement>>(new Set());
+    const initialMessageSentRef = useRef<boolean>(false);
     // const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
+
 
     // Function to stop all currently playing audio
     const stopAllAudio = () => {
@@ -82,6 +84,39 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
         });
     };
 
+    useEffect(() => {
+        const handleInitialMessage = async () => {
+            // if the lesson hasn't been started (no conversation history) and we haven't sent initial message yet
+            if (lessonProgress.convoHistory.length === 0 && !initialMessageSentRef.current) {
+                initialMessageSentRef.current = true; // Prevent multiple calls
+                setIsLoading(true);
+
+                // server action that gets the audio from the user and processes it and sends it to gemini and openai for the response
+                const result = await processInitialMessage({
+                    lessonProgress,
+                });
+
+                if (result.success) {
+                    // Play audio
+                    const audioSrc = `data:audio/wav;base64,${result.audioBase64}`;
+                    const audio = new Audio(audioSrc);
+                    playAudioSafely(audio);
+
+                    // Update state with initial message
+                    setLessonProgress(prev => ({
+                        ...prev,
+                        convoHistory: [
+                            { role: "User", message: "Hello" },
+                            { role: "System", message: result.systemTranscription ?? "" }
+                        ]
+                    }));
+                }
+
+                setIsLoading(false);
+            }
+        }
+        handleInitialMessage();
+    }, [lessonProgress.lessonIndex]); // Only run when lesson index changes
     // Scroll detection
     useEffect(() => {
         const scrollArea = scrollAreaRef.current;
