@@ -6,13 +6,35 @@ const SolutionSection = () => {
         <div className="bg-white-50 w-full">
             <div className="container mx-auto py-12 px-4 lg:px-8">
                 {/* Header */}
-                <div className="text-center mb-8">
+                {/* <div className="text-center mb-8">
                     <h2 className="text-4xl font-semibold tracking-tight mb-2">
                         The Solution
                     </h2>
                     <p className="text-gray-600 text-base max-w-xl mx-auto">
                         Personalized learning powered by smart objectives, realtime conversations, and an intelligent chatbot.
                     </p>
+                </div> */}
+                <div className="text-center mb-16">
+                    <p className="text-primary uppercase tracking-wide mb-4">
+                        THE SOLUTION
+                    </p>
+                    <h2 className="text-5xl font-semibold tracking-tight mb-8 max-w-4xl mx-auto leading-tight">
+                        Personalized learning powered by
+                    </h2>
+                    <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-2xl font-medium text-gray-700 mb-12">
+                        <span className="flex items-center">
+                            <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                            Smart objectives
+                        </span>
+                        <span className="flex items-center">
+                            <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                            Realtime conversations
+                        </span>
+                        <span className="flex items-center">
+                            <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                            Intelligent chatbot
+                        </span>
+                    </div>
                 </div>
 
                 <div className="flex flex-col gap-6">
