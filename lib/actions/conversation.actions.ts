@@ -163,6 +163,82 @@ export async function getUserTranscription(audioUrlBase64: string) {
     }
 }
 
+export async function getInitialResponse(
+    instructions: string,
+) {
+    const openai = new OpenAI();
+    const geminiKey = process.env.GEMINI_KEY;
+
+    const ai = new GoogleGenAI({ apiKey: geminiKey });
+
+
+    try {
+        console.log("=== SYSTEM PROMPT ===");
+        console.log(instructions);
+        console.log("=== END SYSTEM PROMPT ===\n");
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.0-flash",
+            contents: "",
+            config: {
+                systemInstruction: instructions,
+            },
+        });
+
+        const transcriptionSystem = response.text;
+
+        const verbalResponse = await openai.audio.speech.create({
+            model: "gpt-4o-mini-tts",
+            voice: "coral",
+            input: response.text || "",
+            instructions: "Speak in a cheerful and positive tone.",
+            response_format: "wav",
+        });
+
+        const audioBuffer = Buffer.from(await verbalResponse.arrayBuffer());
+        const audioBase64 = audioBuffer.toString("base64");
+        return {
+            success: true,
+            audioBase64Response: audioBase64,
+            systemTranscription: transcriptionSystem,
+        };
+    } catch (error) {
+        console.error("Error in getResponse:", error);
+        // Return an error object if something goes wrong
+        return {
+            success: false,
+        };
+    }
+}
+
+export async function processInitialMessage({
+    lessonProgress,
+}: {
+    lessonProgress: LessonProgress;
+}) {
+    const newConvoHistory = [
+        {
+            role: "User",
+            message: "Hello",
+        }
+    ]
+
+    const updatedLessonProgress = {
+        ...lessonProgress,
+        convoHistory: newConvoHistory,
+    };
+    const instructions = await generateInstructions(updatedLessonProgress);
+
+    const audioResponse = await getInitialResponse(instructions);
+
+    return {
+        success: audioResponse.success,
+        audioBase64: audioResponse.audioBase64Response,
+        systemTranscription: audioResponse.systemTranscription,
+    };
+}
+
+
 // gets the audio from the user and processes it and sends it to gemini and openai for the response
 export async function processAudioMessage({
     audioBase64,
