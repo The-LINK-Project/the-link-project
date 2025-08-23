@@ -25,12 +25,12 @@ export const frequentlyAskedQuestions = [
     },
     {
         question: "When will the LINK Project launch",
-        answer: "The core features will be launched in July.",
+        answer: "The core features will be launched in August 2025.",
     },
     {
         question: "How can I contribute towards the LINK Project",
         answer:
-            "You can share your ideas on the google form linked to the website to inform us of what you would like to see and any suggestions you have.",
+            "You can share your ideas on the google form linked to the website to inform us of what you would like to see and any suggestions you have. You can also contact us with any suggestions or questions you may have.",
     },
     {
         question: "Will the LINK Project be free?",
