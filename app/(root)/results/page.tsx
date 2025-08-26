@@ -22,7 +22,7 @@ export default async function ResultsPage() {
         results.length > 0 ? Math.max(...results.map((r) => r.score)) : 0;
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen">
             <div className="max-w-6xl mx-auto p-8">
                 {/* Header Section */}
                 <div className="mb-8">
