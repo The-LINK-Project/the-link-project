@@ -56,7 +56,7 @@ export default function QuizClient({ params }: QuizClientProps) {
 
   return (
     <div className="min-h-screen flex justify-center">
-      <div className="max-w-4xl w-full px-6 py-12">
+      <div className="max-w-4xl w-full px-6 py-6">
         {!isSubmitted ? (
           <QuizIncomplete
             quiz={quiz}
