@@ -17,10 +17,10 @@ import { SignedOut } from "@clerk/clerk-react";
 const Header = () => {
     return (
         <div className="flex flex-row mx-24 justify-between h-18 items-center">
-            <div className="flex flex-row gap-1">
-                <img src="/assets/link_green.png" className="w-8 h-8"></img>
+            <Link href="/" className="flex flex-row gap-1 items-center">
+                <img src="/assets/link_green.png" className="w-8 h-8" />
                 <h1 className="font-semibold text-lg">The LINK Project</h1>
-            </div>
+            </Link>
             <div className="flex flex-row justify-center items-center gap-10">
                 <NavItems className="hidden md:block" />
                 <div className="hidden md:block"></div>

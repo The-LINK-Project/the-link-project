@@ -68,7 +68,7 @@ const ChatForm: FC<ChatFormProps> = ({
     return (
         <form
             action="#"
-            className="flex items-center bg-white rounded-[32px] outline-1 outline-[#CCCCE5] shadow-[0_0_8px_rgba(0,0,0,0.06)] focus-within:outline-2 focus-within:outline-[#49BED4]"
+            className="flex items-center bg-white rounded-[32px] outline-1 outline-[#CCCCE5] shadow-[0_0_8px_rgba(0,0,0,0.06)] focus-within:outline-2 focus-within:outline-[#8FE0B1]"
             onSubmit={handleFormSubmit}
         >
             <input
@@ -80,7 +80,7 @@ const ChatForm: FC<ChatFormProps> = ({
             />
             <button
                 type="submit"
-                className="h-[35px] w-[35px] flex items-center justify-center border-none hidden outline-none cursor-pointer flex-shrink-0 mr-1.5 rounded-full bg-[#49BED4] transition-all duration-200 hover:bg-[#49BED4] peer-valid:block [input:valid~&]:block"
+                className="h-[35px] w-[35px] flex items-center justify-center border-none hidden outline-none cursor-pointer flex-shrink-0 mr-1.5 rounded-full bg-[#8FE0B1] transition-all duration-200 hover:bg-[#49BED4] peer-valid:block [input:valid~&]:block"
             >
                 <span className="flex items-center justify-center">
                     <SendIcon />
