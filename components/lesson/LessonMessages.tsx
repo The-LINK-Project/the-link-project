@@ -34,7 +34,11 @@ const LessonMessages = ({
                             )}
                             <span className="font-medium text-sm">{message.role}</span>
                         </div>
-                        <p className="text-sm leading-relaxed mb-3">{message.message}</p>
+                        <p
+                            className={`text-sm leading-relaxed mb-3 ${message.role === "User" ? "text-right" : "text-left"}`}
+                            >
+                            {message.message}
+                        </p>
                         {message.audioURL && (
                             <audio
                                 src={message.audioURL}
