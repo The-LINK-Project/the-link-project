@@ -16,7 +16,7 @@ export const navLinks = [
     route: "/results",
   },
   {
-    name: "Get Started",
+    name: "Dashboard",
     route: "/dashboard",
   },
 ];
