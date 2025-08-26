@@ -92,9 +92,9 @@ export async function getResponse(
 
         const verbalResponse = await openai.audio.speech.create({
             model: "gpt-4o-mini-tts",
-            voice: "coral",
+            voice: "shimmer",
             input: response.text || "",
-            instructions: "Speak in a cheerful and positive tone.",
+            instructions: "Speak in an enthusiastic but calm and positive tone.",
             response_format: "wav",
         });
 
@@ -189,9 +189,9 @@ export async function getInitialResponse(
 
         const verbalResponse = await openai.audio.speech.create({
             model: "gpt-4o-mini-tts",
-            voice: "coral",
+            voice: "shimmer",
             input: response.text || "",
-            instructions: "Speak in a cheerful and positive tone.",
+            instructions: "Speak in an enthusiastic but calm and positive tone.",
             response_format: "wav",
         });
 
