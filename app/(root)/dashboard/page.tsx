@@ -3,12 +3,13 @@ import { getAllLessonStatuses } from "@/lib/actions/LessonProgress.actions";
 import { getAllLessons } from "@/lib/actions/Lesson.actions";
 import DashboardLessonItem from "@/components/dashboard/DashboardLessonItem";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { BarChart3 } from "lucide-react";
 
 const DashboardPage = async () => {
-    const lessons = await getAllLessons();
-    const lessonStatuses = await getAllLessonStatuses();
-
+  const lessons = await getAllLessons();
+  const lessonStatuses = await getAllLessonStatuses();
 
   const getLessonsByDifficulty = (difficulty: string) => {
     return lessons
@@ -21,7 +22,7 @@ const DashboardPage = async () => {
         <DashboardLessonItem
           key={i}
           lesson={lesson}
-          lessonNum={i + 1} 
+          lessonNum={i + 1}
           lessonStatus={status}
         />
       ));
@@ -29,13 +30,21 @@ const DashboardPage = async () => {
 
   return (
     <section className="p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Your Learning Journey
-        </h1>
-        <p className="text-gray-600">
-          Continue where you left off or start a new lesson:
-        </p>
+      <div className="mb-8 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Your Learning Journey
+          </h1>
+          <p className="text-gray-600">
+            Continue where you left off or start a new lesson:
+          </p>
+        </div>
+        <Button asChild size="lg" className="flex items-center gap-2">
+          <Link href="/results">
+            <BarChart3 className="h-4 w-4" />
+            View Results
+          </Link>
+        </Button>
       </div>
 
       <Tabs defaultValue="beginner" className="w-full">
@@ -65,7 +74,6 @@ const DashboardPage = async () => {
       </Tabs>
     </section>
   );
-
 };
 
 export default DashboardPage;
