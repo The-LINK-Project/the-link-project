@@ -38,6 +38,7 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
 
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunks = useRef<Blob[]>([]);
+    const recordingCancelledRef = useRef<boolean>(false);
 
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const currentAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -201,6 +202,9 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
         // Stop all currently playing audio before starting recording
         stopAllAudio();
 
+        // Reset cancelled flag
+        recordingCancelledRef.current = false;
+
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
         });
@@ -214,10 +218,15 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
         };
 
         mediaRecorderRef.current.onstop = () => {
-            const audioBlob = new Blob(audioChunks.current, {
-                type: "audio/webm",
-            });
-            setAudioURL(URL.createObjectURL(audioBlob));
+            // Only process the audio if recording wasn't cancelled
+            if (!recordingCancelledRef.current && audioChunks.current.length > 0) {
+                const audioBlob = new Blob(audioChunks.current, {
+                    type: "audio/webm",
+                });
+                setAudioURL(URL.createObjectURL(audioBlob));
+            }
+            // Reset the cancelled flag
+            recordingCancelledRef.current = false;
         };
 
         mediaRecorderRef.current.start();
@@ -227,6 +236,34 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
     const handleStopRecording = async () => {
         mediaRecorderRef.current?.stop();
         setRecording(false);
+    };
+
+    const handleCancelRecording = async () => {
+        if (mediaRecorderRef.current && recording) {
+            // Set cancelled flag to prevent processing
+            recordingCancelledRef.current = true;
+
+            // Stop the media recorder
+            mediaRecorderRef.current.stop();
+
+            // Stop all tracks to release microphone access
+            const stream = mediaRecorderRef.current.stream;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+
+            // Clear audio chunks to prevent processing
+            audioChunks.current = [];
+
+            // Reset recording state
+            setRecording(false);
+
+            // Clear any existing audio URL
+            if (audioURL) {
+                URL.revokeObjectURL(audioURL);
+                setAudioURL(null);
+            }
+        }
     };
 
     return (
@@ -293,6 +330,7 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                                             audioURL={audioURL ?? ""}
                                             handleStopRecording={handleStopRecording}
                                             handleStartRecording={handleStartRecording}
+                                            handleCancelRecording={handleCancelRecording}
                                             playAudioSafely={playAudioSafely}
                                         />
                                     </div>

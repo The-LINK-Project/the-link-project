@@ -6,7 +6,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "../ui/button";
-import { Mic, MicOff, Play, Loader2 } from "lucide-react";
+import { Mic, MicOff, Play, Loader2, X } from "lucide-react";
 import { Badge } from "../ui/badge";
 
 type LessonInputBarProps = {
@@ -15,6 +15,7 @@ type LessonInputBarProps = {
     audioURL: string;
     handleStopRecording: () => void;
     handleStartRecording: () => void;
+    handleCancelRecording: () => void;
     playAudioSafely: (audio: HTMLAudioElement) => void;
 };
 const LessonInputBar = ({
@@ -23,12 +24,13 @@ const LessonInputBar = ({
     audioURL,
     handleStopRecording,
     handleStartRecording,
+    handleCancelRecording,
     playAudioSafely,
 }: LessonInputBarProps) => {
     return (
         <div className="border-t border-gray-100 p-4 bg-gray-50/50">
             <div className="flex items-center gap-3">
-                {/* Record Button */}
+                {/* Record/Stop Button */}
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button
@@ -51,6 +53,26 @@ const LessonInputBar = ({
                         <p>{recording ? "Stop recording" : "Click this to speak"}</p>
                     </TooltipContent>
                 </Tooltip>
+
+                {/* Cancel Button - Only visible when recording */}
+                {recording && (
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                onClick={handleCancelRecording}
+                                size="lg"
+                                variant="outline"
+                                className="w-12 h-12 rounded-full border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400 shadow-lg transition-all duration-300"
+                                disabled={isLoading}
+                            >
+                                <X className="h-5 w-5" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Cancel recording</p>
+                        </TooltipContent>
+                    </Tooltip>
+                )}
 
                 {/* Status Area */}
                 <div className="flex-1 flex justify-center">
