@@ -30,6 +30,7 @@ const Chatbot = () => {
     ]);
 
     const [showChatbot, setShowChatbot] = useState<boolean>(false);
+    const [isRateLimited, setIsRateLimited] = useState<boolean>(false);
 
     const chatBodyRef = useRef<HTMLDivElement>(null); // <-- useRef instead of useState
 
@@ -44,8 +45,28 @@ const Chatbot = () => {
         try {
             const apiResponseText = await getChatbotResponse(history);
             updateHistory(apiResponseText ?? "Sorry, no response.");
+            setIsRateLimited(false); // Reset rate limit state on successful response
         } catch (error: any) {
-            updateHistory(error.message, true);
+            // Handle rate limit errors with user-friendly messages
+            if (error.message.includes("Rate limit exceeded")) {
+                setIsRateLimited(true);
+                updateHistory(
+                    "⏰ You've reached the chat limit for this minute. Please wait a moment before sending another message.",
+                    true
+                );
+                // Auto-reset rate limit state after 60 seconds
+                setTimeout(() => setIsRateLimited(false), 60000);
+            } else if (error.message.includes("Authentication required")) {
+                updateHistory(
+                    "🔒 Please sign in to use the chatbot.",
+                    true
+                );
+            } else {
+                updateHistory(
+                    `❌ Sorry, I encountered an error: ${error.message}`,
+                    true
+                );
+            }
         }
     };
 
@@ -146,6 +167,7 @@ const Chatbot = () => {
                         chatHistory={chatHistory}
                         setChatHistory={setChatHistory}
                         generateBotResponse={generateBotResponse}
+                        isDisabled={isRateLimited}
                     />
                 </div>
             </div>
