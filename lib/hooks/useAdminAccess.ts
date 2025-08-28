@@ -33,7 +33,7 @@ export function useAdminAccess() {
     isAuthorized,
     isChecking,
     user,
-    isLoaded
+    isLoaded,
   };
 }
 
@@ -53,6 +53,6 @@ export function useIsAdmin() {
   return {
     isAdmin,
     isLoaded,
-    user
+    user,
   };
 }
