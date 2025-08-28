@@ -2,25 +2,46 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 const isPublicRoute = createRouteMatcher([
-    "/",
-    "/sign-in(.*)",
-    "/sign-up(.*)",
-    "/api/webhook/clerk",
-    // "/api/uploadthing"
-])
+  "/",
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/api/webhook/clerk",
+]);
+
+// Define admin routes that require special authorization
+const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-    if (!isPublicRoute(req) && !(await auth()).userId) {
-        return NextResponse.redirect(new URL("/sign-in", req.url));
+  const { userId } = await auth();
+
+  // Handle admin routes
+  if (isAdminRoute(req)) {
+    if (!userId) {
+      const signInUrl = new URL("/sign-in", req.url);
+      return NextResponse.redirect(signInUrl);
     }
+
+    // For admin routes, we need to check if user email is in whitelist
+    // This will be done at the page level for better UX and to avoid repeated API calls
     return NextResponse.next();
+  }
+
+  // Handle other protected routes
+  if (!isPublicRoute(req)) {
+    if (!userId) {
+      const signInUrl = new URL("/sign-in", req.url);
+      return NextResponse.redirect(signInUrl);
+    }
+  }
+
+  return NextResponse.next();
 });
 
 export const config = {
-    matcher: [
-        // Skip Next.js internals and all static files, unless found in search params
-        '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-        // Always run for API routes
-        '/(api|trpc)(.*)',
-    ],
+  matcher: [
+    // Run middleware for everything except static files and Next internals
+    "/((?!_next|[^?]*\\.(?:js|css|jpg|jpeg|png|svg|ico|webp|ttf|woff2?|json|csv|html)).*)",
+    // Also run for API and TRPC routes
+    "/(api|trpc)(.*)",
+  ],
 };
