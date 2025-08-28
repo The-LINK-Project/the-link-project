@@ -58,11 +58,11 @@ export async function POST(req: Request) {
     console.log("Webhook body:", body);
 
     if (eventType === "user.created") {
-        const { id, email_addresses, image_url, first_name, last_name, username } =
+        const { id: clerkUserId, email_addresses, image_url, first_name, last_name, username } =
             evt.data;
 
         const user = {
-            clerkId: id,
+            clerkId: clerkUserId,
             email: email_addresses[0].email_address,
             username: username!,
             firstName: first_name!,
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
 
         if (newUser) {
             const client = await clerkClient();
-            await client.users.updateUserMetadata(id, {
+            await client.users.updateUserMetadata(clerkUserId, {
                 publicMetadata: {
                     userId: newUser._id, // link the Clerk user to the user in mongodb
                 },
