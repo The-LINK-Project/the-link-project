@@ -5,7 +5,7 @@ import { createUser, updateUser, deleteUser } from "@/lib/actions/user.actions";
 import { NextResponse } from "next/server";
 export async function POST(req: Request) {
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
-    const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
+    const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
     if (!WEBHOOK_SECRET) {
         throw new Error(
@@ -58,11 +58,11 @@ export async function POST(req: Request) {
     console.log("Webhook body:", body);
 
     if (eventType === "user.created") {
-        const { id: clerkUserId, email_addresses, image_url, first_name, last_name, username } =
+        const { id, email_addresses, image_url, first_name, last_name, username } =
             evt.data;
 
         const user = {
-            clerkId: clerkUserId,
+            clerkId: id,
             email: email_addresses[0].email_address,
             username: username!,
             firstName: first_name!,
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
 
         if (newUser) {
             const client = await clerkClient();
-            await client.users.updateUserMetadata(clerkUserId, {
+            await client.users.updateUserMetadata(id, {
                 publicMetadata: {
                     userId: newUser._id, // link the Clerk user to the user in mongodb
                 },
