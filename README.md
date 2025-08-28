@@ -34,3 +34,24 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Development Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Install VS Code Prettier extension for auto-formatting:
+   - Search "Prettier - Code formatter" in VS Code extensions
+   - Install it
+
+3. Available commands:
+
+```bash
+npm run format        # Format all files
+npm run format:check  # Check if files are formatted
+```
+
+Files will auto-format on save if you have the Prettier extension installed!
