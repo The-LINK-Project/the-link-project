@@ -11,10 +11,11 @@ import { getAllLessons } from "@/lib/actions/Lesson.actions";
 import Lesson from "@/components/lesson/Lesson";
 import Link from "next/link";
 
-const LessonPage = async ({ params }: { params: { lessonIndex: string } }) => {
+const LessonPage = async ({ params }: { params: Promise<{ lessonIndex: string }> }) => {
+    const { lessonIndex } = await params;
     const lessons = await getAllLessons();
     const user = await getCurrentUser();
-    const index = parseInt(params.lessonIndex, 10);
+    const index = parseInt(lessonIndex, 10);
     const lesson = lessons[index - 1];
 
     if (!lesson) {

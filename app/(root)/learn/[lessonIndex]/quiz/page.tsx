@@ -3,12 +3,13 @@ import QuizClient from "@/components/quiz/QuizClient";
 import { getQuizByLessonId } from "@/lib/actions/quiz.actions";
 
 type QuizPageProps = {
-    params: {
+    params: Promise<{
         lessonIndex: string
-    };
+    }>;
 };
 const QuizPage = async ({ params }: QuizPageProps) => {
-    const index = parseInt(params.lessonIndex, 10);
+    const { lessonIndex } = await params;
+    const index = parseInt(lessonIndex, 10);
     const quiz = await getQuizByLessonId(index);
 
     return (
