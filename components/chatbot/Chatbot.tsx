@@ -25,16 +25,19 @@ const Chatbot = () => {
             hideInChat: true,
             role: "model",
             text: chatbotInstructions,
-            isError: false, // ✅ Add this
+            isError: false,
         },
     ]);
 
     const [showChatbot, setShowChatbot] = useState<boolean>(false);
     const [isRateLimited, setIsRateLimited] = useState<boolean>(false);
+    const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false); 
 
-    const chatBodyRef = useRef<HTMLDivElement>(null); // <-- useRef instead of useState
+    const chatBodyRef = useRef<HTMLDivElement>(null);
 
     const generateBotResponse = async (history: ChatMessageType[]) => {
+        setIsWaitingForResponse(true); 
+
         const updateHistory = (text: string, isError = false) => {
             setChatHistory((prev) => [
                 ...prev.filter((msg) => msg.text !== "Thinking..."),
@@ -45,28 +48,22 @@ const Chatbot = () => {
         try {
             const apiResponseText = await getChatbotResponse(history);
             updateHistory(apiResponseText ?? "Sorry, no response.");
-            setIsRateLimited(false); // Reset rate limit state on successful response
+            setIsRateLimited(false);
         } catch (error: any) {
-            // Handle rate limit errors with user-friendly messages
             if (error.message.includes("Rate limit exceeded")) {
                 setIsRateLimited(true);
                 updateHistory(
                     "⏰ You've reached the chat limit for this minute. Please wait a moment before sending another message.",
                     true
                 );
-                // Auto-reset rate limit state after 60 seconds
                 setTimeout(() => setIsRateLimited(false), 60000);
             } else if (error.message.includes("Authentication required")) {
-                updateHistory(
-                    "🔒 Please sign in to use the chatbot.",
-                    true
-                );
+                updateHistory("🔒 Please sign in to use the chatbot.", true);
             } else {
-                updateHistory(
-                    `❌ Sorry, I encountered an error: ${error.message}`,
-                    true
-                );
+                updateHistory(`❌ Sorry, I encountered an error: ${error.message}`, true);
             }
+        } finally {
+            setIsWaitingForResponse(false); 
         }
     };
 
@@ -88,27 +85,27 @@ const Chatbot = () => {
                 id="chatbot-toggler"
                 onClick={() => setShowChatbot((prev) => !prev)}
                 className={`
-          fixed flex items-center justify-center bottom-[30px] right-[20px]
-          h-[50px] w-[50px] border-none cursor-pointer rounded-full
-          bg-primary transition-all duration-200 outline-none z-[100]
-          ${showChatbot ? "rotate-90" : ""}
-        `}
+                    fixed flex items-center justify-center bottom-[30px] right-[20px]
+                    h-[50px] w-[50px] border-none cursor-pointer rounded-full
+                    bg-primary transition-all duration-200 outline-none z-[100]
+                    ${showChatbot ? "rotate-90" : ""}
+                `}
                 style={{ WebkitTapHighlightColor: "transparent" }}
             >
                 {/* Open/Close text */}
                 <span
                     className={`
-            absolute text-white pointer-events-none transition-opacity duration-200
-            ${showChatbot ? "opacity-0" : "opacity-100"}
-          `}
+                        absolute text-white pointer-events-none transition-opacity duration-200
+                        ${showChatbot ? "opacity-0" : "opacity-100"}
+                    `}
                 >
                     <ChatbotIcontoggle />
                 </span>
                 <span
                     className={`
-            absolute text-white pointer-events-none transition-opacity duration-200
-            ${showChatbot ? "opacity-100" : "opacity-0"}
-          `}
+                        absolute text-white pointer-events-none transition-opacity duration-200
+                        ${showChatbot ? "opacity-100" : "opacity-0"}
+                    `}
                 >
                     <XIcon />
                 </span>
@@ -117,16 +114,16 @@ const Chatbot = () => {
             {/* Popup */}
             <div
                 className={`
-          chatbot-popup
-          fixed z-50 bottom-[90px] right-[20px] w-[95vw] max-w-[320px] bg-white
-          rounded-[15px] shadow-[0_0_128px_0_rgba(0,0,0,0.1),0_32px_64px_-48px_rgba(0,0,0,0.5)]
-          transition-all duration-100 origin-bottom-right overflow-hidden
-          ${showChatbot
+                    chatbot-popup
+                    fixed z-50 bottom-[90px] right-[20px] w-[95vw] max-w-[320px] bg-white
+                    rounded-[15px] shadow-[0_0_128px_0_rgba(0,0,0,0.1),0_32px_64px_-48px_rgba(0,0,0,0.5)]
+                    transition-all duration-100 origin-bottom-right overflow-hidden
+                    ${showChatbot
                         ? "opacity-100 scale-100 pointer-events-auto"
                         : "opacity-0 scale-[0.3] pointer-events-none"
                     }
-          sm:w-[320px] sm:right-[35px] sm:bottom-[90px]
-        `}
+                    sm:w-[320px] sm:right-[35px] sm:bottom-[90px]
+                `}
             >
                 {/* Header */}
                 <div className="chat-header flex items-center justify-between bg-primary p-[15px_22px]">
@@ -144,9 +141,9 @@ const Chatbot = () => {
                 <div
                     ref={chatBodyRef}
                     className="
-            chat-body flex flex-col gap-[20px] h-[360px] mb-[82px] overflow-y-auto
-            p-[25px_22px] scrollbar-thin scrollbar-thumb-[#B2E8F1] scrollbar-track-transparent
-          "
+                        chat-body flex flex-col gap-[20px] h-[360px] mb-[82px] overflow-y-auto
+                        p-[25px_22px] scrollbar-thin scrollbar-thumb-[#B2E8F1] scrollbar-track-transparent
+                    "
                 >
                     <div className="message bot-message flex gap-[11px] items-center">
                         <span className="h-[35px] w-[35px] p-[6px] bg-primary rounded-full flex items-center justify-center">
@@ -167,7 +164,7 @@ const Chatbot = () => {
                         chatHistory={chatHistory}
                         setChatHistory={setChatHistory}
                         generateBotResponse={generateBotResponse}
-                        isDisabled={isRateLimited}
+                        isDisabled={isRateLimited || isWaitingForResponse} 
                     />
                 </div>
             </div>

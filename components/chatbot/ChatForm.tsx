@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { FC } from "react";
 import SendIcon from "./ChatbotIconsend";
 
@@ -28,12 +28,12 @@ const ChatForm: FC<ChatFormProps> = ({
     isDisabled = false,
 }) => {
     const inputRef = useRef<HTMLInputElement>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false); 
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
 
-        // Prevent submission if rate limited
-        if (isDisabled) return;
+        if (isDisabled || isSubmitting) return;
 
         const userMessage = inputRef.current?.value.trim();
         if (!userMessage) return;
@@ -46,6 +46,8 @@ const ChatForm: FC<ChatFormProps> = ({
         ];
 
         setChatHistory(updatedHistory);
+
+        setIsSubmitting(true);
 
         setTimeout(() => {
             const thinkingMessage: ChatMessageType = {
@@ -60,34 +62,40 @@ const ChatForm: FC<ChatFormProps> = ({
 
             setChatHistory(thinkingHistory);
 
-            generateBotResponse([
-                ...updatedHistory,
-                {
-                    role: "user",
-                    text: ` Using the details provided above, please address this query: ${userMessage}`,
-                },
-            ]);
+            Promise.resolve(
+                generateBotResponse([
+                    ...updatedHistory,
+                    {
+                        role: "user",
+                        text: ` Using the details provided above, please address this query: ${userMessage}`,
+                    },
+                ])
+            ).finally(() => {
+                setIsSubmitting(false);
+            });
         }, 600);
     };
+
+    const disabledState = isDisabled || isSubmitting; 
 
     return (
         <form
             action="#"
-            className={`flex items-center bg-white rounded-[32px] outline-1 outline-[#CCCCE5] shadow-[0_0_8px_rgba(0,0,0,0.06)] focus-within:outline-2 focus-within:outline-[#8FE0B1] ${isDisabled ? "opacity-50" : ""}`}
+            className={`flex items-center bg-white rounded-[32px] outline-1 outline-[#CCCCE5] shadow-[0_0_8px_rgba(0,0,0,0.06)] focus-within:outline-2 focus-within:outline-[#8FE0B1] ${disabledState ? "opacity-50" : ""}`}
             onSubmit={handleFormSubmit}
         >
             <input
                 ref={inputRef}
                 type="text"
-                placeholder={isDisabled ? "Rate limited - please wait..." : "Message..."}
+                placeholder={disabledState ? "Please wait..." : "Message..."}
                 className="border-none outline-none w-full bg-transparent h-[47px] px-[17px] text-[0.95rem]"
                 required
-                disabled={isDisabled}
+                disabled={disabledState}
             />
             <button
                 type="submit"
-                disabled={isDisabled}
-                className={`h-[35px] w-[35px] items-center justify-center border-none hidden outline-none flex-shrink-0 mr-1.5 rounded-full transition-all duration-200 peer-valid:flex [input:valid~&]:flex ${isDisabled ? "bg-gray-400 cursor-not-allowed" : "bg-[#8FE0B1] cursor-pointer hover:bg-[#49BED4]"}`}
+                disabled={disabledState}
+                className={`h-[35px] w-[35px] items-center justify-center border-none hidden outline-none flex-shrink-0 mr-1.5 rounded-full transition-all duration-200 peer-valid:flex [input:valid~&]:flex ${disabledState ? "bg-gray-400 cursor-not-allowed" : "bg-[#8FE0B1] cursor-pointer hover:bg-[#49BED4]"}`}
             >
                 <span className="flex items-center justify-center">
                     <SendIcon />
