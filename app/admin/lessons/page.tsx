@@ -1,6 +1,3 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,24 +20,16 @@ interface LessonData {
   difficulty: string;
 }
 
-const LessonsMainPage = () => {
-  const [lessons, setLessons] = useState<LessonData[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchLessons();
-  }, []);
-
-  const fetchLessons = async () => {
-    try {
-      const fetchedLessons = await getAllLessons();
-      setLessons(fetchedLessons as LessonData[]);
-    } catch (error) {
-      console.error("Error fetching lessons:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+export default async function LessonsMainPage() {
+  // Fetch lessons server-side (faster and more reliable)
+  let lessons: LessonData[] = [];
+  try {
+    const fetchedLessons = await getAllLessons();
+    lessons = fetchedLessons as LessonData[];
+  } catch (error) {
+    console.error("Error fetching lessons:", error);
+    // lessons remains empty array
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -60,7 +49,7 @@ const LessonsMainPage = () => {
               variant="secondary"
               className="bg-green-50 text-green-700 border-green-200"
             >
-              {loading ? "..." : `${lessons.length} Lessons`}
+              {`${lessons.length} Lessons`}
             </Badge>
           </div>
         </div>
@@ -158,7 +147,7 @@ const LessonsMainPage = () => {
                   variant="outline"
                   className="text-blue-700 border-blue-200 bg-blue-50"
                 >
-                  {loading ? "..." : `${lessons.length} Items`}
+                  {`${lessons.length} Items`}
                 </Badge>
               </div>
             </CardHeader>
@@ -206,7 +195,7 @@ const LessonsMainPage = () => {
         </div>
 
         {/* Quick Stats */}
-        {!loading && lessons.length > 0 && (
+        {lessons.length > 0 && (
           <div className="mt-12 max-w-4xl mx-auto">
             <h2 className="text-xl font-semibold text-slate-900 mb-6">
               Quick Overview
@@ -262,5 +251,3 @@ const LessonsMainPage = () => {
     </div>
   );
 };
-
-export default LessonsMainPage;
