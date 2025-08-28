@@ -1,32 +1,31 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server';
+// middleware.ts
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-// Define routes that should be publicly accessible (not protected)
-const isPublicRoute = createRouteMatcher([
-    '/sign-in',
-    '/sign-in(.*)',
-    '/sign-up',
-    '/sign-up(.*)',
-    '/',
+const isPublic = createRouteMatcher([
+    "/",
+    "/sign-in(.*)",
+    "/sign-up(.*)",
 ]);
 
+// Webhook must bypass auth/redirects
+const isWebhook = createRouteMatcher(["/api/webhook/clerk"]);
+
 export default clerkMiddleware(async (auth, req) => {
-    if (!isPublicRoute(req)) {
-        const { userId } = await auth();
-        if (!userId) {
-            const signInUrl = new URL('/sign-in', req.url);
-            return NextResponse.redirect(signInUrl);
-        }
+    if (isWebhook(req)) return NextResponse.next();
+
+    const { userId } = await auth();
+
+    if (!isPublic(req) && !userId) {
+        return NextResponse.redirect(new URL("/sign-in", req.url));
     }
 
     return NextResponse.next();
 });
 
+// Run on everything except Next internals/static and the webhook
 export const config = {
     matcher: [
-        // Run middleware for everything except static files and Next internals
-        '/((?!_next|[^?]*\\.(?:js|css|jpg|jpeg|png|svg|ico|webp|ttf|woff2?|json|csv|html)).*)',
-        // Also run for API routes
-        '/api/(.*)',
+        "/((?!api/webhook/clerk|_next/static|_next/image|favicon.ico).*)",
     ],
 };
