@@ -82,7 +82,8 @@ export async function POST(req: Request) {
             });
         }
 
-        redirect("/dashboard");
+        // Note: redirect() in webhook context - client will handle navigation
+        // Cannot use redirect() here as it would prevent the response from being sent
 
         return NextResponse.json({ message: "OK", user: newUser });
     }
