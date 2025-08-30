@@ -18,7 +18,7 @@ export async function createUser(user: {
         await connectToDatabase();
 
         // Wait 10 seconds on purpose
-        await new Promise(resolve => setTimeout(resolve, 10000));
+        // await new Promise(resolve => setTimeout(resolve, 10000));
 
         const newUser = await User.create(user);
 

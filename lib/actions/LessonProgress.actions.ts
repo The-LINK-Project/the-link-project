@@ -169,7 +169,7 @@ export async function getAllLessonStatuses(): Promise<LessonStatus[]> {
         const userId = sessionClaims?.userId as string;
 
         if (!userId) {
-            throw new Error("User not found");
+            return [];
         }
 
         const lessons = await getAllLessons();
