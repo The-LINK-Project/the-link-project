@@ -1,5 +1,7 @@
 import React from "react";
 import { Trophy } from "lucide-react";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 const QuizNoResults = () => {
     return (
@@ -10,12 +12,6 @@ const QuizNoResults = () => {
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 No results yet
             </h3>
-            <p className="text-gray-600 mb-6">
-                Complete your first quiz to see your results here
-            </p>
-            <button className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors cursor-pointer">
-                Take a Quiz
-            </button>
         </div>
     );
 };
