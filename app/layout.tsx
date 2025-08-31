@@ -66,6 +66,7 @@ export default function RootLayout({
             <html lang="en">
                 <body
                     className={`${openSans.variable} antialiased container mx-auto max-w-7xl`}
+                    suppressHydrationWarning={true}
                 >
                     <Chatbot></Chatbot>
                     {children}
