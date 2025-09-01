@@ -3,6 +3,7 @@
 import { connectToDatabase } from "@/lib/database";
 import Lesson from "../database/models/lesson.model";
 import { revalidatePath } from "next/cache";
+import mongoose from "mongoose";
 
 export async function createLesson({
   title,
