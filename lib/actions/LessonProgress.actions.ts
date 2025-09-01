@@ -28,8 +28,6 @@ export async function initLessonProgress({
     // this part is a repeat to be removed later
     const objectivesMet = formatInitialObjectives(objectives);
 
-    console.log(`TOINK: ${objectivesMet}`);
-
     const payload = {
       userId: userId,
       lessonIndex: lessonIndex,
@@ -37,12 +35,11 @@ export async function initLessonProgress({
       convoHistory: [],
       quizResult: [],
     };
-    console.log(`PAYLOAD: ${payload}`);
+
     const newLessonProgress = await LessonProgress.create(payload);
 
     if (!newLessonProgress) throw Error("Failed to create new lesson progress");
 
-    console.log(`NEWLESSONPROG: ${newLessonProgress}`);
     return JSON.parse(JSON.stringify(newLessonProgress));
   } catch (error) {
     console.log(error);
@@ -70,12 +67,11 @@ export async function getLessonProgress({
       userId: userId,
       lessonIndex: lessonIndex,
     });
-    console.log(`PROOG: ${lessonProgress}`);
 
     if (!lessonProgress) {
       console.log("No Lesson Progress found");
     }
-    console.log(`PARSED: ${JSON.stringify(lessonProgress, null, 4)}`);
+
     return JSON.parse(JSON.stringify(lessonProgress));
   } catch (error) {
     console.log(error);
@@ -134,10 +130,6 @@ export async function updateLessonProgress({
       throw new Error("User not found");
     }
 
-    console.log(`Updating lesson progress for lesson ${lessonIndex}`);
-    console.log(`Objectives to save: ${JSON.stringify(objectivesMet)}`);
-    console.log(`Conversation history length: ${convoHistory.length}`);
-
     const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
       {
         userId: userId,
@@ -158,11 +150,6 @@ export async function updateLessonProgress({
     if (!updatedLessonProgress) {
       throw Error("Failed to update lesson progress");
     }
-
-    console.log(`Database updated successfully`);
-    console.log(
-      `Saved objectives: ${JSON.stringify(updatedLessonProgress.objectivesMet)}`
-    );
 
     return JSON.parse(JSON.stringify(updatedLessonProgress));
   } catch (error) {

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { CheckCircle, Circle } from "lucide-react";
 
 type Props = {
@@ -10,15 +10,6 @@ const LessonObjectivesMet = ({
   lessonObjectives,
   lessonObjectivesProgress,
 }: Props) => {
-  // Debug logging for objective state changes
-  useEffect(() => {
-    console.log("Objectives UI Update:", {
-      objectives: lessonObjectives,
-      progress: lessonObjectivesProgress,
-      completedCount: lessonObjectivesProgress.filter(Boolean).length,
-    });
-  }, [lessonObjectives, lessonObjectivesProgress]);
-
   return (
     <div className="flex flex-wrap justify-center gap-6 max-w-4xl">
       {lessonObjectives.map((objective: string, index: number) => {

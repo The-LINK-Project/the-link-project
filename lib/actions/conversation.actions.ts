@@ -10,8 +10,6 @@ function setLessonObjectiveToTrue({
 }: {
   objectiveIndex: number;
 }) {
-  console.log(`Tool Call: Marking objective ${objectiveIndex} as complete`);
-
   // Validate the index
   if (typeof objectiveIndex !== "number" || objectiveIndex < 0) {
     console.warn(`Invalid objective index: ${objectiveIndex}`);
@@ -64,10 +62,6 @@ export async function getResponse(
   ];
 
   try {
-    console.log("=== SYSTEM PROMPT ===");
-    console.log(instructions);
-    console.log("=== END SYSTEM PROMPT ===\n");
-
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
       contents: contents,
@@ -86,21 +80,12 @@ export async function getResponse(
     if (response.functionCalls && response.functionCalls.length > 0) {
       const functionCall = response.functionCalls[0]; // Assuming one function call
       if (functionCall.args) {
-        console.log("Raw function call args:", functionCall.args);
-        console.log(
-          `OBJECTIVE COMPLETED: Index ${functionCall.args.objectiveIndex}`
-        );
-
         objectiveIndex = setLessonObjectiveToTrue(
           functionCall.args as { objectiveIndex: number }
         );
-
-        console.log(`Processed objective index: ${objectiveIndex}`);
       } else {
         console.warn("Function call found but no args provided");
       }
-    } else {
-      console.log("No function calls in this response");
     }
 
     const transcriptionSystem = response.text || "";
@@ -108,13 +93,8 @@ export async function getResponse(
     // Only create TTS if there's actual text content
     let audioBase64 = "";
     let finalTranscription = transcriptionSystem;
-    
-    if (transcriptionSystem.trim()) {
-      console.log(
-        "Creating TTS for text:",
-        transcriptionSystem.substring(0, 100) + "..."
-      );
 
+    if (transcriptionSystem.trim()) {
       const verbalResponse = await openai.audio.speech.create({
         model: "gpt-4o-mini-tts",
         voice: "shimmer",
@@ -126,11 +106,9 @@ export async function getResponse(
       const audioBuffer = Buffer.from(await verbalResponse.arrayBuffer());
       audioBase64 = audioBuffer.toString("base64");
     } else {
-      console.log("No text response from Gemini, skipping TTS generation");
       // Generate a simple confirmation audio when objective is marked but no text response
       if (objectiveIndex !== undefined) {
         const confirmationText = "Great work! That objective is now complete.";
-        console.log("Generating confirmation TTS:", confirmationText);
 
         // Update the final transcription to include our confirmation
         finalTranscription = confirmationText;
@@ -196,10 +174,6 @@ export async function getUserTranscription(audioUrlBase64: string) {
     });
     const transcriptionUser = transcription.text;
 
-    console.log("=== USER TRANSCRIPTION ===");
-    console.log(transcriptionUser);
-    console.log("=== END USER TRANSCRIPTION ===\n");
-
     return {
       success: true,
       userTranscription: transcriptionUser,
@@ -220,10 +194,6 @@ export async function getInitialResponse(instructions: string) {
   const ai = new GoogleGenAI({ apiKey: geminiKey });
 
   try {
-    console.log("=== SYSTEM PROMPT ===");
-    console.log(instructions);
-    console.log("=== END SYSTEM PROMPT ===\n");
-
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
       contents: "",
@@ -293,18 +263,8 @@ export async function processAudioMessage({
   audioBase64: string;
   lessonProgress: LessonProgress;
 }) {
-  console.log("=== PROCESSING AUDIO MESSAGE ===");
-  console.log("Audio base64 length:", audioBase64.length);
-  console.log("Current lesson progress:", {
-    lessonIndex: lessonProgress.lessonIndex,
-    objectivesMet: lessonProgress.objectivesMet,
-    convoHistoryLength: lessonProgress.convoHistory.length,
-  });
-
   // get transcription
-  console.log("Getting user transcription...");
   const transcriptionUser = await getUserTranscription(audioBase64);
-  console.log("User transcription:", transcriptionUser.userTranscription);
 
   // get up-to-date convo history w/ new user message
   const newConvoHistory = [
@@ -321,20 +281,10 @@ export async function processAudioMessage({
     convoHistory: newConvoHistory,
   };
 
-  console.log("Generating instructions...");
   const instructions = await generateInstructions(updatedLessonProgress);
-  console.log("Instructions length:", instructions.length);
 
   // get the response from the model
-  console.log("Getting response from model...");
   const audioResponse = await getResponse(audioBase64, instructions);
-  console.log("Audio response:", {
-    success: audioResponse.success,
-    hasAudio: !!audioResponse.audioBase64Response,
-    audioLength: audioResponse.audioBase64Response?.length || 0,
-    systemTranscription: audioResponse.systemTranscription,
-    objectiveIndex: audioResponse.objectiveIndex,
-  });
 
   // update objectives if there was a tool call used by the model
   let currentObjectivesMet = [...lessonProgress.objectivesMet]; // Create new array
@@ -343,18 +293,12 @@ export async function processAudioMessage({
     audioResponse.objectiveIndex !== undefined &&
     audioResponse.objectiveIndex !== null
   ) {
-    console.log(
-      `MARKING OBJECTIVE ${audioResponse.objectiveIndex} AS COMPLETE`
-    );
-    console.log("Before:", currentObjectivesMet);
-
     // Validate index bounds
     if (
       audioResponse.objectiveIndex >= 0 &&
       audioResponse.objectiveIndex < currentObjectivesMet.length
     ) {
       currentObjectivesMet[audioResponse.objectiveIndex] = true;
-      console.log("After:", currentObjectivesMet);
     } else {
       console.warn(
         `Invalid objective index: ${audioResponse.objectiveIndex}. Valid range: 0-${currentObjectivesMet.length - 1}`

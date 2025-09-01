@@ -155,7 +155,6 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
   // checking if all objectives are met and can end the lesson and if they are then maybe have a quick end of lesson progress popup and continue to qiuz
   useEffect(() => {
     if (lessonProgress.objectivesMet.every((objective) => objective)) {
-      console.log("All objectives met, ending lesson");
       setIsComplete(true);
     }
   }, [lessonProgress.objectivesMet]);
@@ -170,22 +169,13 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
   };
 
   useEffect(() => {
-    console.log("useEffect triggered, audioURL:", audioURL);
-    if (!audioURL) {
-      console.log("No audioURL, skipping processing");
-      return;
-    }
-
-    console.log("Audio URL created:", audioURL);
-    console.log("Starting audio processing...");
+    if (!audioURL) return;
 
     const handleResponse = async () => {
       setIsLoading(true);
 
       try {
-        console.log("Converting URL to base64...");
         const base64 = await urlToBase64(audioURL);
-        console.log("Converted audio to base64, length:", base64.length);
 
         if (!base64 || base64.length === 0) {
           throw new Error(
@@ -194,7 +184,6 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
         }
 
         // server action that gets the audio from the user and processes it and sends it to gemini and openai for the response
-        console.log("Calling processAudioMessage...");
         const result = await processAudioMessage({
           audioBase64: base64,
           lessonProgress,
@@ -208,17 +197,9 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
             const audioSrc = `data:audio/wav;base64,${result.audioBase64}`;
             const audio = new Audio(audioSrc);
             playAudioSafely(audio);
-          } else {
-            console.log("No audio response from server");
           }
 
           // Force state update with new object reference
-          console.log("Updating lesson progress state...");
-          console.log(
-            "Updated objectives:",
-            result.updatedLessonProgress.objectivesMet
-          );
-
           setLessonProgress((prevProgress) => ({
             ...prevProgress,
             ...result.updatedLessonProgress,
@@ -241,8 +222,6 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
   }, [audioURL]);
 
   const handleStartRecording = async () => {
-    console.log("Starting recording...");
-
     if (!navigator.mediaDevices) {
       alert("MediaDevices API not supported.");
       return;
@@ -250,7 +229,6 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
 
     // Clear any previous audio URL
     if (audioURL) {
-      console.log("Clearing previous audio URL");
       URL.revokeObjectURL(audioURL);
       setAudioURL(null);
     }
@@ -265,49 +243,36 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
-      console.log("Got media stream:", stream);
 
       mediaRecorderRef.current = new MediaRecorder(stream);
       audioChunks.current = [];
 
       mediaRecorderRef.current.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          console.log("Audio chunk received, size:", event.data.size);
           audioChunks.current.push(event.data);
         }
       };
 
       mediaRecorderRef.current.onstop = () => {
-        console.log("MediaRecorder stopped");
-        console.log("Recording cancelled?", recordingCancelledRef.current);
-        console.log("Audio chunks count:", audioChunks.current.length);
-
         // Only process the audio if recording wasn't cancelled
         if (!recordingCancelledRef.current && audioChunks.current.length > 0) {
           const audioBlob = new Blob(audioChunks.current, {
             type: "audio/webm",
           });
-          console.log("Created audio blob, size:", audioBlob.size, "bytes");
 
           // Validate that the blob has content
           if (audioBlob.size > 0) {
             const audioUrl = URL.createObjectURL(audioBlob);
-            console.log("Created audio URL:", audioUrl);
             setAudioURL(audioUrl);
           } else {
             console.error("Audio blob is empty, not setting audioURL");
           }
-        } else {
-          console.log(
-            "Skipping audio processing - recording was cancelled or no audio data"
-          );
         }
         // Reset the cancelled flag
         recordingCancelledRef.current = false;
       };
 
       mediaRecorderRef.current.start();
-      console.log("MediaRecorder started");
       setRecording(true);
     } catch (error) {
       console.error("Error starting recording:", error);
@@ -315,10 +280,8 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
   };
 
   const handleStopRecording = async () => {
-    console.log("Stopping recording...");
     mediaRecorderRef.current?.stop();
     setRecording(false);
-    console.log("Recording stopped");
   };
 
   const handleCancelRecording = async () => {
