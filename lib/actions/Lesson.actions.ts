@@ -6,85 +6,86 @@ import { revalidatePath } from "next/cache";
 import mongoose from "mongoose";
 
 export async function createLesson({
-  title,
-  description,
-  objectives,
-  lessonIndex,
-  difficulty,
+    title,
+    description,
+    objectives,
+    lessonIndex,
+    difficulty,
 }: {
-  title: string;
-  description: string;
-  objectives: string[];
-  lessonIndex: Number;
-  difficulty: string;
+    title: string;
+    description: string;
+    objectives: string[];
+    lessonIndex: Number;
+    difficulty: string;
 }): Promise<Lesson> {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    const payload = {
-      title: title,
-      description: description,
-      objectives: objectives,
-      lessonIndex: lessonIndex,
-      difficulty: difficulty,
-    };
+        const payload = {
+            title: title,
+            description: description,
+            objectives: objectives,
+            lessonIndex: lessonIndex,
+            difficulty: difficulty,
+        };
 
-    const newLesson = await Lesson.create(payload);
+        const newLesson = await Lesson.create(payload);
 
-    if (!newLesson) throw Error("Failed to create new lesson");
+        if (!newLesson) throw Error("Failed to create new lesson");
 
-    return JSON.parse(JSON.stringify(newLesson));
-  } catch (error) {
-    console.log("Error creating lesson:", error);
-    throw error;
-  }
+        return JSON.parse(JSON.stringify(newLesson));
+    } catch (error) {
+        console.log("Error creating lesson:", error);
+        throw error;
+    }
 }
 
 export async function getAllLessons(): Promise<Lesson[]> {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    const lessons = await Lesson.find();
+        const lessons = await Lesson.find();
 
-    return JSON.parse(JSON.stringify(lessons));
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+        return JSON.parse(JSON.stringify(lessons));
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
 }
 
 export async function getLessonByIndex(lessonIndex: number): Promise<Lesson> {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    const lesson = await Lesson.findOne({ lessonIndex: lessonIndex });
+        const lesson = await Lesson.findOne({ lessonIndex: lessonIndex });
 
-    if (!lesson) throw Error("Lesson not found");
+        if (!lesson) throw Error("Lesson not found");
 
-    return JSON.parse(JSON.stringify(lesson));
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+        return JSON.parse(JSON.stringify(lesson));
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
 }
 
-export async function deleteLesson(lessonId: string): Promise<void> {
-  try {
-    await connectToDatabase();
+export async function deleteLesson(lessonId: string): Promise<{ success: boolean; message: string }> {
+    try {
+        await connectToDatabase();
 
-    if (!mongoose.isValidObjectId(lessonId)) {
-      throw new Error("Invalid lesson ID format");
+        if (!mongoose.isValidObjectId(lessonId)) {
+            return { success: false, message: "Invalid lesson ID format" };
+        }
+
+        const deletedLesson = await Lesson.findByIdAndDelete(lessonId);
+
+        if (!deletedLesson) {
+            return { success: false, message: "Lesson not found" };
+        }
+
+        revalidatePath("/admin/lessons/manage");
+        return { success: true, message: "Lesson deleted successfully" };
+    } catch (error) {
+        console.log(error);
+        return { success: false, message: "Failed to delete lesson" };
     }
-
-    const deletedLesson = await Lesson.findByIdAndDelete(lessonId);
-
-    if (!deletedLesson) {
-      throw new Error("Lesson not found");
-    }
-
-    return;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
 }
