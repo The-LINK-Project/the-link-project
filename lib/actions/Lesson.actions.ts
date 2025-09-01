@@ -3,6 +3,7 @@
 import { connectToDatabase } from "@/lib/database";
 import Lesson from "../database/models/lesson.model";
 import { revalidatePath } from "next/cache";
+import mongoose from "mongoose";
 
 export async function createLesson({
     title,
@@ -20,8 +21,6 @@ export async function createLesson({
     try {
         await connectToDatabase();
 
-        console.log("Making new lesson");
-
         const payload = {
             title: title,
             description: description,
@@ -30,13 +29,10 @@ export async function createLesson({
             difficulty: difficulty,
         };
 
-        console.log(`PAYLOAD: `, JSON.stringify(payload, null, 2));
-
         const newLesson = await Lesson.create(payload);
 
         if (!newLesson) throw Error("Failed to create new lesson");
 
-        console.log(`New Lesson Created: `, JSON.stringify(newLesson, null, 2));
         return JSON.parse(JSON.stringify(newLesson));
     } catch (error) {
         console.log("Error creating lesson:", error);
@@ -48,11 +44,7 @@ export async function getAllLessons(): Promise<Lesson[]> {
     try {
         await connectToDatabase();
 
-        console.log("Retrieving Lessons");
-
-        const lessons = await Lesson.find({});
-
-        console.log(`All Lessons Retrieved`);
+        const lessons = await Lesson.find();
 
         return JSON.parse(JSON.stringify(lessons));
     } catch (error) {
@@ -76,35 +68,24 @@ export async function getLessonByIndex(lessonIndex: number): Promise<Lesson> {
     }
 }
 
-export async function deleteLesson(
-    lessonId: string,
-): Promise<{ success: boolean; message: string }> {
+export async function deleteLesson(lessonId: string): Promise<{ success: boolean; message: string }> {
     try {
         await connectToDatabase();
 
-        console.log("Deleting lesson with ID:", lessonId);
+        if (!mongoose.isValidObjectId(lessonId)) {
+            return { success: false, message: "Invalid lesson ID format" };
+        }
 
         const deletedLesson = await Lesson.findByIdAndDelete(lessonId);
 
         if (!deletedLesson) {
-            return {
-                success: false,
-                message: "Lesson not found",
-            };
+            return { success: false, message: "Lesson not found" };
         }
 
-        console.log("Lesson deleted successfully");
-        revalidatePath("/admin/lessons");
-
-        return {
-            success: true,
-            message: "Lesson deleted successfully",
-        };
+        revalidatePath("/admin/lessons/manage");
+        return { success: true, message: "Lesson deleted successfully" };
     } catch (error) {
         console.log(error);
-        return {
-            success: false,
-            message: "Failed to delete lesson",
-        };
+        return { success: false, message: "Failed to delete lesson" };
     }
 }
