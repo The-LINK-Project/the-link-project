@@ -13,9 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CheckCircle2, Trophy, RotateCcw } from "lucide-react";
-
-import { deleteLessonProgress } from "@/lib/actions/LessonProgress.actions";
+import { CheckCircle2, Trophy } from "lucide-react";
 
 type LessonCompleteModalProps = {
   isComplete: boolean;
@@ -150,19 +148,6 @@ const LessonCompleteModal = ({
               Take the Quiz
             </Button>
           </Link>
-          <Button
-            variant="ghost"
-            className="w-full text-gray-600 hover:text-gray-900"
-            onClick={() => {
-              deleteLessonProgress({
-                lessonIndex: lessonIndex,
-              });
-              setIsComplete(false);
-            }}
-          >
-            <RotateCcw className="h-4 w-4 mr-2" />
-            Reset Progress
-          </Button>
         </div>
       </DialogContent>
     </Dialog>

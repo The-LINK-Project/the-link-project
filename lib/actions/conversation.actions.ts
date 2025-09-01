@@ -19,9 +19,96 @@ function setLessonObjectiveToTrue({
   return objectiveIndex;
 }
 
+// Helper function to automatically generate progression prompts
+function generateProgressionPrompt(
+  originalResponse: string,
+  completedObjectiveIndex: number,
+  currentObjectives: boolean[],
+  lessonObjectives: string[]
+): string {
+  // Find the next incomplete objective
+  const nextObjectiveIndex = currentObjectives.findIndex(
+    (met, index) => !met && index > completedObjectiveIndex
+  );
+
+  if (nextObjectiveIndex === -1) {
+    // No more objectives, let the original response stand
+    return originalResponse;
+  }
+
+  const nextObjective = lessonObjectives[nextObjectiveIndex];
+
+  // Generate specific prompts based on the type of objective
+  const progressionPrompts = [
+    `Great work! Now let's practice something different. ${nextObjective} - Can you think of a situation where you might need this skill?`,
+    `Perfect! Let's move on to the next skill: ${nextObjective} - What would you say if you were in that situation?`,
+    `Excellent! Now let's try: ${nextObjective} - How would you handle this scenario?`,
+    `Well done! Time for our next challenge: ${nextObjective} - Can you give this a try?`,
+  ];
+
+  // Select a progression prompt (could be randomized or based on context)
+  const selectedPrompt = progressionPrompts[0];
+
+  // If the original response is very short or just praise, replace it entirely
+  const responseWords = originalResponse.trim().split(" ");
+  const isShortResponse = responseWords.length < 10;
+  const isPurepraise =
+    /^(great|good|excellent|perfect|well done|nice)[\s!.]*$/i.test(
+      originalResponse.trim()
+    );
+
+  if (isShortResponse || isPurepraise) {
+    return selectedPrompt;
+  }
+
+  // Otherwise, append the progression
+  return `${originalResponse} ${selectedPrompt}`;
+}
+
+// Helper function to ensure responses always end with forward momentum
+function ensureProgression(
+  response: string,
+  currentObjectives: boolean[],
+  lessonObjectives: string[]
+): string {
+  // Check if response ends with a question
+  const endsWithQuestion = /\?[\s]*$/.test(response.trim());
+  if (endsWithQuestion) {
+    return response; // Already has forward momentum
+  }
+
+  // Check if it's just praise without progression
+  const lastSentence = response.trim().split(/[.!]/).pop()?.trim() || "";
+  const isPurepraise =
+    /^(great|good|excellent|perfect|well done|nice|amazing|fantastic)/i.test(
+      lastSentence
+    );
+
+  if (isPurepraise || lastSentence.length < 5) {
+    // Find the next incomplete objective
+    const nextObjectiveIndex = currentObjectives.findIndex((met) => !met);
+
+    if (nextObjectiveIndex !== -1) {
+      const nextObjective = lessonObjectives[nextObjectiveIndex];
+
+      const followUpQuestions = [
+        `Now, can you show me how you'd handle this: ${nextObjective}?`,
+        `Let's practice this next: ${nextObjective} - What would you do?`,
+        `Great! Now let's work on: ${nextObjective} - How would you approach this?`,
+      ];
+
+      return `${response} ${followUpQuestions[0]}`;
+    }
+  }
+
+  return response;
+}
+
 export async function getResponse(
   audioUrlBase64: string,
-  instructions: string
+  instructions: string,
+  currentObjectivesMet: boolean[],
+  lessonObjectives: string[]
 ) {
   const openai = new OpenAI();
   const geminiKey = process.env.GEMINI_KEY;
@@ -88,7 +175,30 @@ export async function getResponse(
       }
     }
 
-    const transcriptionSystem = response.text || "";
+    let transcriptionSystem = response.text || "";
+
+    // If an objective was just completed, automatically prompt for the next one
+    if (objectiveIndex !== undefined && objectiveIndex !== null) {
+      const updatedObjectives = [...currentObjectivesMet];
+      if (objectiveIndex >= 0 && objectiveIndex < updatedObjectives.length) {
+        updatedObjectives[objectiveIndex] = true;
+      }
+
+      // Use the helper function to generate appropriate progression
+      transcriptionSystem = generateProgressionPrompt(
+        transcriptionSystem,
+        objectiveIndex,
+        updatedObjectives,
+        lessonObjectives
+      );
+    } else {
+      // Even if no objective was completed, ensure the response has forward momentum
+      transcriptionSystem = ensureProgression(
+        transcriptionSystem,
+        currentObjectivesMet,
+        lessonObjectives
+      );
+    }
 
     // Only create TTS if there's actual text content
     let audioBase64 = "";
@@ -283,8 +393,17 @@ export async function processAudioMessage({
 
   const instructions = await generateInstructions(updatedLessonProgress);
 
+  // Get lesson objectives from the lesson data
+  const { getLessonByIndex } = await import("./Lesson.actions");
+  const lessonData = await getLessonByIndex(lessonProgress.lessonIndex);
+
   // get the response from the model
-  const audioResponse = await getResponse(audioBase64, instructions);
+  const audioResponse = await getResponse(
+    audioBase64,
+    instructions,
+    lessonProgress.objectivesMet,
+    lessonData.objectives
+  );
 
   // update objectives if there was a tool call used by the model
   let currentObjectivesMet = [...lessonProgress.objectivesMet]; // Create new array
