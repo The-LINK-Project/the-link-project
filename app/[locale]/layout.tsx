@@ -11,6 +11,9 @@ import {
     UserButton,
 } from "@clerk/nextjs";
 import Chatbot from "@/components/chatbot/Chatbot";
+import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
 
 const openSans = Open_Sans({
     variable: "--font-open-sans",
@@ -55,11 +58,19 @@ export const metadata: Metadata = {
     },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
+    params,
 }: Readonly<{
     children: React.ReactNode;
+    params: Promise<{ locale: string }>;
 }>) {
+    const { locale } = await params;
+
+    if (!hasLocale(routing.locales, locale)) {
+        notFound();
+    }
+
     return (
         <ClerkProvider>
             <Header></Header>
@@ -68,9 +79,11 @@ export default function RootLayout({
                     className={`${openSans.variable} antialiased container mx-auto max-w-7xl`}
                     suppressHydrationWarning={true}
                 >
-                    <Chatbot></Chatbot>
-                    {children}
-                    <Analytics />
+                    <NextIntlClientProvider>
+                        <Chatbot></Chatbot>
+                        {children}
+                        <Analytics />
+                    </NextIntlClientProvider>
                 </body>
             </html>
         </ClerkProvider>
