@@ -2,4 +2,10 @@ https://www.youtube.com/watch?v=XRS1hRGAEIU
 
 Replace link with ipmort {Link} from @navigation
 
-up to 6:08 of the video
+up to 8:42 done
+
+Todo:
+    1. translate static stuff (i18 setup and usage)
+    2. follow rest of vid for the component, package json etc
+    3. database restructuring
+        - tonne of changes everywhere 
