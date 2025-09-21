@@ -12,6 +12,7 @@ import {
 } from "@clerk/nextjs";
 import Chatbot from "@/components/chatbot/Chatbot";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 
@@ -58,6 +59,10 @@ export const metadata: Metadata = {
     },
 };
 
+export function generateStaticParams() {
+    return routing.locales.map((locale) => ({ locale }));
+}
+
 export default async function RootLayout({
     children,
     params,
@@ -71,15 +76,16 @@ export default async function RootLayout({
         notFound();
     }
 
+    setRequestLocale(locale);
     return (
         <ClerkProvider>
-            <Header></Header>
             <html lang="en">
                 <body
                     className={`${openSans.variable} antialiased container mx-auto max-w-7xl`}
                     suppressHydrationWarning={true}
                 >
                     <NextIntlClientProvider>
+                        <Header></Header>
                         <Chatbot></Chatbot>
                         {children}
                         <Analytics />

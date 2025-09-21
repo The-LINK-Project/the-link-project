@@ -1,10 +1,12 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import createMiddleware from "next-intl/middleware";
-import { NextResponse } from "next/server";
-import { routing } from "./i18n/routing"; // you're already using defineRouting() — keep it!
+import { NextRequest, NextResponse } from "next/server";
+import { routing } from "./i18n/routing";
 
-const intl = createMiddleware(routing);
+// Create the intl middleware
+const intlMiddleware = createMiddleware(routing);
 
+// Define public routes (these should match the actual paths without locale prefixes)
 const isPublicRoute = createRouteMatcher([
     "/",
     "/sign-in(.*)",
@@ -14,50 +16,78 @@ const isPublicRoute = createRouteMatcher([
     "/about"
 ]);
 
+// Define admin routes
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
-function stripLocale(req: Request & { nextUrl: URL }) {
-    const url = new URL(req.url);
-    const segments = url.pathname.split("/");
-    const hasLocale = routing.locales.includes(segments[1] as any);
-    const locale = hasLocale ? segments[1] : routing.defaultLocale;
+export default clerkMiddleware(async (auth, req: NextRequest) => {
+    const { pathname } = req.nextUrl;
 
-    if (hasLocale) {
-        url.pathname = "/" + segments.slice(2).join("/");
-        if (url.pathname === "//") url.pathname = "/";
-    }
-
-    return {
-        locale,
-        reqWithoutLocale: { ...req, nextUrl: url } as any,
-    };
-}
-
-export default clerkMiddleware(async (auth, req) => {
-    // 1. Run next-intl's locale logic first
-    const intlResult = intl(req);
-    if (intlResult && intlResult.status !== 200) return intlResult;
-
-    // 2. Then run your route auth logic
-    const { userId } = await auth();
-    const { locale, reqWithoutLocale } = stripLocale(req);
-
-    if (isAdminRoute(reqWithoutLocale)) {
-        if (!userId) {
-            return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.url));
-        }
+    // Skip API routes, static files, and Next.js internals
+    if (
+        pathname.startsWith("/api/") ||
+        pathname.startsWith("/_next/") ||
+        pathname.startsWith("/_vercel/") ||
+        pathname.includes(".") && !pathname.endsWith("/")
+    ) {
         return NextResponse.next();
     }
 
-    if (!isPublicRoute(reqWithoutLocale)) {
+    // Handle internationalization first
+    const intlResponse = intlMiddleware(req);
+
+    // If intl middleware returns a redirect, handle auth logic with the redirected URL
+    if (intlResponse && intlResponse.status >= 300 && intlResponse.status < 400) {
+        // Let the intl middleware handle the redirect
+        return intlResponse;
+    }
+
+    // Extract locale from pathname for auth redirects
+    let locale = routing.defaultLocale;
+    const segments = pathname.split("/").filter(Boolean);
+
+    if (segments.length > 0 && routing.locales.includes(segments[0] as any)) {
+        locale = segments[0] as any;
+    }
+
+    // Get auth info
+    const { userId } = await auth();
+
+    // Create a request object for route matching (without locale prefix)
+    const pathForMatching = segments.length > 0 && routing.locales.includes(segments[0] as any)
+        ? "/" + segments.slice(1).join("/")
+        : pathname;
+
+    const matchingRequest = {
+        ...req,
+        nextUrl: {
+            ...req.nextUrl,
+            pathname: pathForMatching || "/"
+        }
+    } as NextRequest;
+
+    // Check admin routes
+    if (isAdminRoute(matchingRequest)) {
         if (!userId) {
-            return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.url));
+            const signInUrl = new URL(`/${locale}/sign-in`, req.url);
+            return NextResponse.redirect(signInUrl);
         }
     }
 
-    return NextResponse.next();
+    // Check protected routes
+    else if (!isPublicRoute(matchingRequest)) {
+        if (!userId) {
+            const signInUrl = new URL(`/${locale}/sign-in`, req.url);
+            return NextResponse.redirect(signInUrl);
+        }
+    }
+
+    // Return the intl response or continue
+    return intlResponse || NextResponse.next();
 });
 
 export const config = {
-    matcher: ["/((?!api|trpc|_next|_vercel|.*\\..*).*)"]
+    matcher: [
+        // Skip all internal paths (_next, _vercel) and API routes
+        "/((?!api|_next|_vercel|.*\\..*).*)",
+    ]
 };

@@ -1,1 +1,10 @@
-{}
+{
+  "herosection": {
+    "announcement": "Announcement",
+    "announcement_text": "Introducing The LINK Project",
+    "getstartedbutton": "Start Learning Now!",
+    "header1": "Learn English with personalized,",
+    "header2": "AI-powered lessons built for the real world.",
+    "name": "The LINK Project"
+  }
+}
