@@ -7,8 +7,8 @@ export default getRequestConfig(({requestLocale}) => {
     ? requestLocale
     : routing.defaultLocale;
 
-  return {
-    locale,
-    messages: require(`../messages/${locale}.json`)
-  };
+    return {
+        locale,
+        messages: (await import(`../messages/${locale}.json`)).default,
+    };
 });

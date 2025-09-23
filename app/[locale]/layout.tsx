@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 
@@ -17,38 +18,38 @@ export const metadata: Metadata = {
 };
 
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
+    return routing.locales.map((locale) => ({ locale }));
 }
 
 export default async function RootLayout({
-  children,
-  params: { locale }
-}: {
-  children: React.ReactNode;
-  params: { locale: string };
-}) {
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
+    children,
+    params,
+}: Readonly<{
+    children: React.ReactNode;
+    params: Promise<{ locale: string }>;
+}>) {
+    const { locale } = await params;
 
-  // ✅ Stick to manual import
-  const messages = (await import(`@/messages/${locale}.json`)).default;
+    if (!hasLocale(routing.locales, locale)) {
+        notFound();
+    }
 
-  console.log("Locale from params:", locale);
-  console.log("First message check:", messages?.herosection?.announcement);
-
-  return (
-    <html lang={locale}>
-      <body className={openSans.variable}>
-        {/* ✅ Ensure we explicitly pass messages so client doesn’t override */}
-        <NextIntlClientProvider
-          locale={locale}
-          messages={messages}
-          timeZone="Asia/Singapore"
-        >
-          {children}
-        </NextIntlClientProvider>
-      </body>
-    </html>
-  );
+    setRequestLocale(locale);
+    return (
+        <ClerkProvider>
+            <html lang="en">
+                <body
+                    className={`${openSans.variable} antialiased container mx-auto max-w-7xl`}
+                    suppressHydrationWarning={true}
+                >
+                    <NextIntlClientProvider>
+                        <Header></Header>
+                        <Chatbot></Chatbot>
+                        {children}
+                        <Analytics />
+                    </NextIntlClientProvider>
+                </body>
+            </html>
+        </ClerkProvider>
+    );
 }
