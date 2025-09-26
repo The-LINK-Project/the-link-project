@@ -18,7 +18,8 @@ export default function LocaleSwitcher() {
     return (
         <select
             value={locale}
-            onChange={e => switchLocale(e.target.value)}>
+            onChange={e => switchLocale(e.target.value)}
+            className="text-sm border border-gray-300 rounded px-2 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-green-500">
             <option value="en">EN</option>
             <option value="bn">BN</option>
             <option value="ta">TA</option>
