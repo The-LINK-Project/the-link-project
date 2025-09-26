@@ -32,7 +32,7 @@ type LessonProps = {
 };
 
 const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
-    const t = useTranslations("lessoninput");
+    const t = useTranslations("lesson");
     const [lessonProgress, setLessonProgress] = useState<LessonProgress>(
         previousLessonProgress
     );
