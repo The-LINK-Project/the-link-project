@@ -1,6 +1,11 @@
 import React from "react";
 import { Trophy } from "lucide-react";
+
 import { useTranslations } from "next-intl";
+
+
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 
 const QuizNoResults = () => {
@@ -13,6 +18,7 @@ const QuizNoResults = () => {
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 {t("info1")}
             </h3>
+
             <p className="text-gray-600 mb-6">
                 {t("info2")}
             </p>
