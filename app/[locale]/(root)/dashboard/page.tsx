@@ -6,10 +6,12 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BarChart3 } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 const DashboardPage = async () => {
     const lessons = await getAllLessons();
     const lessonStatuses = await getAllLessonStatuses();
+    const t = await getTranslations("dashboard");
 
     const getLessonsByDifficulty = (difficulty: string) => {
         return lessons
@@ -33,25 +35,25 @@ const DashboardPage = async () => {
             <div className="mb-8 flex justify-between items-start">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                        Your Learning Journey
+                        {t("headerCall")}
                     </h1>
                     <p className="text-gray-600">
-                        Continue where you left off or start a new lesson:
+                        {t("headerCall2")}
                     </p>
                 </div>
                 <Button asChild size="lg" className="flex items-center gap-2">
                     <Link href="/results">
                         <BarChart3 className="h-4 w-4" />
-                        View Results
+                        {t("viewResultsButton")}
                     </Link>
                 </Button>
             </div>
 
             <Tabs defaultValue="beginner" className="w-full">
                 <TabsList className="mb-4">
-                    <TabsTrigger value="beginner">Beginner</TabsTrigger>
-                    <TabsTrigger value="intermediate">Intermediate</TabsTrigger>
-                    <TabsTrigger value="advanced">Advanced</TabsTrigger>
+                    <TabsTrigger value="beginner">{t("beginnerTab")}</TabsTrigger>
+                    <TabsTrigger value="intermediate">{t("intermediateTab")}</TabsTrigger>
+                    <TabsTrigger value="advanced">{t("advancedTab")}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="beginner">
