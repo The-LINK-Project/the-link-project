@@ -1,7 +1,8 @@
 import React from "react";
 import { Card, CardContent } from "../ui/card";
-
+import { useTranslations } from "next-intl";
 const SolutionSection = () => {
+    const t = useTranslations("solutionsection");
     return (
         <div className="bg-white-50 w-full">
             <div className="container mx-auto py-12 px-4 lg:px-8">
@@ -16,23 +17,23 @@ const SolutionSection = () => {
                 </div> */}
                 <div className="text-center mb-16">
                     <p className="text-primary uppercase tracking-wide mb-4">
-                        THE SOLUTION
+                        {t("subtitle")}
                     </p>
                     <h2 className="text-5xl font-semibold tracking-tight mb-8 max-w-4xl mx-auto leading-tight">
-                        Personalized learning powered by
+                        {t("title")}
                     </h2>
                     <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-2xl font-medium text-gray-700 mb-12">
                         <span className="flex items-center">
                             <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                            Smart objectives
+                            {t("part1")}
                         </span>
                         <span className="flex items-center">
                             <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                            Realtime conversations
+                            {t("part2")}
                         </span>
                         <span className="flex items-center">
                             <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                            Intelligent chatbot
+                            {t("part3")}
                         </span>
                     </div>
                 </div>
