@@ -49,11 +49,11 @@ export const navLinks = [
 // ];
 
 export const frequentlyAskedQuestions = [
-    { questionKey: "faq.q1", answerKey: "faq.a1" },
-    { questionKey: "faq.q2", answerKey: "faq.a2" },
-    { questionKey: "faq.q3", answerKey: "faq.a3" },
-    { questionKey: "faq.q4", answerKey: "faq.a4" },
-    { questionKey: "faq.q5", answerKey: "faq.a5" },
+    { questionKey: "q1", answerKey: "a1" },
+    { questionKey: "q2", answerKey: "a2" },
+    { questionKey: "q3", answerKey: "a3" },
+    { questionKey: "q4", answerKey: "a4" },
+    { questionKey: "q5", answerKey: "a5" },
 ];
 
 export const aboutUsInformation = [
