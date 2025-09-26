@@ -106,6 +106,9 @@
         "statQuizzes": "সম্পন্ন কুইজ"
     },
     "quizComplete": {
+        "quizComplete": "কুইজ সম্পন্ন!",
+        "youscored": "আপনি স্কোর",
+        "outof": "মোট",
         "numberCorrect": "সঠিক প্রশ্ন",
         "encouragement1": "অসাধারণ পারফরম্যান্স!",
         "encouragement2": "দারুণ কাজ! এভাবেই চালিয়ে যান!",

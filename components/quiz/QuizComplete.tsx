@@ -17,7 +17,7 @@ const QuizComplete = ({
     quiz,
     lessonIndex,
 }: QuizCompleteProps) => {
-    const t = useTranslations("quizcomplete");
+    const t = useTranslations("quizComplete");
     return (
         <div className="flex justify-center">
             <div className="max-w-2xl w-full">
@@ -39,7 +39,7 @@ const QuizComplete = ({
                     </div>
 
                     <h2 className="text-2xl font-bold text-primary mb-4">
-                        {t("complete")}
+                        {t("quizComplete")}
                     </h2>
 
                     <div className="bg-primary/15 rounded-xl p-4 mb-4">
@@ -47,7 +47,7 @@ const QuizComplete = ({
                             {score ?? 0}%
                         </div>
                         <p className="text-base text-slate-700 font-medium">
-                            {t("youscored")}{" "}
+                            {t("youscored")}
                             <span className="font-bold text-primary">
                                 {
                                     selectedAnswers.filter(
@@ -55,37 +55,37 @@ const QuizComplete = ({
                                     ).length
                                 }
                             </span>{" "}
-                            out of{" "}
+                            {t("outof")}
                             <span className="font-bold text-primary">
                                 {quiz.questions.length}
                             </span>{" "}
-                            questions correctly
+                            {t("numberCorrect")}
                         </p>
                     </div>
 
                     <div className="mb-4">
                         {(score ?? 0) >= 90 ? (
                             <p className="text-primary text-base font-semibold">
-                                Outstanding performance!
+                                {t("encouragement1")}
                             </p>
                         ) : (score ?? 0) >= 70 ? (
                             <p className="text-primary text-base font-semibold">
-                                Great job! Keep it up!
+                                {t("encouragement2")}
                             </p>
                         ) : (score ?? 0) >= 50 ? (
                             <p className="text-yellow-600 text-base font-semibold">
-                                Good effort! Room for improvement
+                                {t("encouragement3")}
                             </p>
                         ) : (
                             <p className="text-destructive/50 text-base font-semibold">
-                                Keep studying and try again!
+                                {t("encouragement4")}
                             </p>
                         )}
                     </div>
 
                     <Link href="/results">
                         <Button className="px-6 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 hover:cursor-grabbing transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                            See All Quiz Results
+                            {t("seeResults")}
                         </Button>
                     </Link>
                 </div>
@@ -99,13 +99,13 @@ const QuizComplete = ({
                             disabled={lessonIndex < 0}
                         >
                             <ChevronLeft className="h-4 w-4" />
-                            Back to Previous Lesson
+                            {t("backButton")}
                         </Button>
                     </Link>
 
                     <Link href={`/learn/${lessonIndex + 1}`}>
                         <Button className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2">
-                            Next Lesson
+                            {t("nextButton")}
                             <ChevronRight className="h-4 w-4" />
                         </Button>
                     </Link>

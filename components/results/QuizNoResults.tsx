@@ -2,6 +2,7 @@ import React from "react";
 import { Trophy } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+
 const QuizNoResults = () => {
     const t = useTranslations("quizNoResults");
     return (
@@ -16,7 +17,7 @@ const QuizNoResults = () => {
                 {t("info2")}
             </p>
             <button className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors cursor-pointer">
-                Take a Quiz
+                {t("info3")}
             </button>
         </div>
     );

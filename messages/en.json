@@ -106,6 +106,9 @@
         "statQuizzes": "Quizzes Completed"
     },
     "quizComplete": {
+        "quizComplete": "Quiz Complete!",
+        "youscored": "You scored",
+        "outof": "out of",
         "numberCorrect": "questions correctly",
         "encouragement1": "Outstanding performance!",
         "encouragement2": "Great job! Keep it up!",
