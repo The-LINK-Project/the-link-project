@@ -10,7 +10,9 @@
   "lessoninput": {
     "cancel": "Cancel recording",
     "loading": "Loading...",
-    "recording": "Recording..."
+    "recording": "Recording...",
+    "ready": "Ready to record",
+    "hear": "Hear your recording"
   },
   "lessonmodal": {
     "actualcomplete": "Complete",
@@ -19,6 +21,10 @@
     "objectivesdone": "Objectives Completed",
     "returnbutton": "Return to Dashboard",
     "takequiz": "Take the Quiz"
+  },
+  "lessonnotstarted": {
+    "ready": "Ready to start your lesson!",
+    "clickmicrophone": "Click the microphone below to begin speaking"
   },
   "lesson": {
     "processing": "Processing your response...",
@@ -90,6 +96,5 @@
     "statAverage": "Average Score",
     "statQuizzes": "Quizzes Completed"
   }
-
-
 }
+
