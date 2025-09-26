@@ -95,5 +95,23 @@
     "statHighest": "உயர் மதிப்பு",
     "statAverage": "சராசரி மதிப்பு",
     "statQuizzes": "சர்வே முடித்தது"
+  },
+  "quizComplete": {
+    "numberCorrect": "சரியான கேள்விகள்",
+    "encouragement1": "சிறந்த செயல்திறன்!",
+    "encouragement2": "நன்று செய்தீர்கள்! தொடருங்கள்!",
+    "encouragement3": "நல்ல முயற்சி! மேம்படுத்தும் இடம் உள்ளது",
+    "encouragement4": "கற்றலையே தொடருங்கள் மற்றும் மீண்டும் முயற்சிக்கவும்!",
+    "seeResults": "அனைத்து க்விஸ் முடிவுகளைப் பார்க்கவும்",
+    "backButton": "முந்தைய பாடத்திற்கு மீண்டும் செல்லவும்",
+    "nextButton": "அடுத்த பாடம்"
+  },
+  "quizIncomplete": {
+    "cannotSubmitButton": "எல்லா கேள்விகளுக்கும் பதில் அளிக்கவும்",
+    "canSubmitButton": "க்விஸ் சமர்ப்பிக்கவும்"
+  },
+  "quizProgressBar": {
+    "title": "முன்னேற்றம்",
+    "answered": "பதிலளிக்கப்பட்டது"
   }
 }

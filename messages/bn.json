@@ -95,5 +95,23 @@
     "statHighest": "সর্বোচ্চ স্কোর",
     "statAverage": "গড় স্কোর",
     "statQuizzes": "সম্পন্ন কুইজ"
+  },
+  "quizComplete": {
+    "numberCorrect": "সঠিক প্রশ্ন",
+    "encouragement1": "অসাধারণ পারফরম্যান্স!",
+    "encouragement2": "দারুণ কাজ! এভাবেই চালিয়ে যান!",
+    "encouragement3": "ভাল চেষ্টা! উন্নতির সুযোগ আছে",
+    "encouragement4": "পড়াশোনা চালিয়ে যান এবং আবার চেষ্টা করুন!",
+    "seeResults": "সব কুইজ ফলাফল দেখুন",
+    "backButton": "পূর্ববর্তী পাঠে ফিরে যান",
+    "nextButton": "পরবর্তী পাঠ"
+  },
+  "quizIncomplete": {
+    "cannotSubmitButton": "সব প্রশ্নের উত্তর দিন",
+    "canSubmitButton": "কুইজ জমা দিন"
+  },
+  "quizProgressBar": {
+    "title": "প্রগতি",
+    "answered": "উত্তর দেওয়া হয়েছে"
   }
 }
