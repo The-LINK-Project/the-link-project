@@ -7,6 +7,7 @@
     "header2": "AI-powered lessons built for the real world.",
     "name": "The LINK Project"
   },
+
   "getstartedbutton":{
     "start": "Start Learning Now!"
   },
@@ -15,6 +16,7 @@
     "makeBetter": "Help Make The LINK Project Better",
     "shareIdeas": "Share Your Ideas"
   },
+
   "lessoninput": {
     "cancel": "Cancel recording",
     "loading": "Loading...",
@@ -74,7 +76,9 @@
     "headerCall": "Your Learning Journey",
     "headerCall2": "Continue where you left off or start a new lesson:",
     "viewResultsButton": "View Results",
-    "beginnerTab": "Begginer",
+
+    "beginnerTab": "Beginner",
+
     "intermediateTab": "Intermediate",
     "advancedTab": "Advanced"
   },
@@ -82,6 +86,7 @@
     "badge": "Interactive Quiz",
     "headerCall": "Test your knowledge and track your progress"
   },
+
   "resultspage":{
     "headerTitle": "Quiz Results",
     "headerCall": "Track your learning progress and performance",
@@ -90,6 +95,7 @@
     "keepPractice": "Keep practicing to improve your scores!"
   },
   "quizResults": {
+
     "columnDate": "Date & Time",
     "columnQuiz": "Quiz Title",
     "columnScore": "Score",
@@ -99,13 +105,31 @@
     "info1": "No results yet",
     "info2": "Complete your first quiz to see your results here", 
     "info3": "Take a Quiz"
-
   },
   "quizStats": {
     "statHighest": "Highest Score",
     "statAverage": "Average Score",
     "statQuizzes": "Quizzes Completed"
   },
+  "quizComplete": {
+    "numberCorrect": "questions correctly",
+    "encouragement1": "Outstanding performance!",
+    "encouragement2": "Great job! Keep it up!",
+    "encouragement3": "Good effort! Room for improvement",
+    "encouragement4": "Keep studying and try again!",
+    "seeResults": "See All Quiz Results",
+    "backButton": "Back to Previous Lesson",
+    "nextButton": "Next Lesson"
+  },
+  "quizIncomplete": {
+    "cannotSubmitButton": "Answer All Questions",
+    "canSubmitButton": "Submit Quiz"
+  },
+  "quizProgressBar": {
+    "title": "Progress",
+    "answered": "answered"
+  }
+}
   "faq": {
     "q1": "What is the LINK Project?",
     "a1": "The LINK Project supports English learning for migrant workers in Singapore...",
