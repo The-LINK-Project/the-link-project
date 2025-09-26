@@ -51,5 +51,50 @@
     "part3": "Intelligent chatbot",
     "subtitle": "THE SOLUTION",
     "title": "Personalized learning powered by"
+  },
+  "aboutUs": {
+    "headerCall": "Meet the team",
+    "headerTitle": "About Us",
+    "headerDescription": "We're passionate about making English learning accessible and effective for everyone. Our dedicated team works tirelessly to create innovative solutions that empower migrant workers.",
+    "role": "Co-Founder"
+  },
+  "contactUs": {
+    "headerCall": "Let's Talk",
+    "headerTitle": "Contact Us",
+    "headerDescription": "We value your feedback and inquiries. Feel free to reach out to us using the form below, and we’ll get back to you as soon as possible.",
+    "placeholderName": "Name",
+    "placeholderEmail": "Email",
+    "placeholderMessage": "Message",
+    "submitButton": "Submit"
+  },
+  "dashboard": {
+    "headerCall": "Your Learning Journey",
+    "headerCall2": "Continue where you left off or start a new lesson:",
+    "viewResultsButton": "View Results",
+    "beginnerTab": "Begginer",
+    "intermediateTab": "Intermediate",
+    "advancedTab": "Advanced"
+  },
+  "quizMain": {
+    "badge": "Interactive Quiz",
+    "headerCall": "Test your knowledge and track your progress"
+  },
+  "quizResults": {
+    "headerTitle": "Quiz Results",
+    "headerCall": "Track your learning progress and performance",
+    "columnDate": "Date & Time",
+    "columnQuiz": "Quiz Title",
+    "columnScore": "Score",
+    "columnGrade": "Grade"
+  },
+  "quizNoResults": {
+    "info1": "No results yet",
+    "info2": "Complete your first quiz to see your results here"
+  },
+  "quizStats": {
+    "statHighest": "Highest Score",
+    "statAverage": "Average Score",
+    "statQuizzes": "Quizzes Completed"
   }
 }
+

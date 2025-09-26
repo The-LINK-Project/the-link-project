@@ -55,7 +55,7 @@ export default function AboutPage() {
                                         variant="secondary"
                                         className="text-sm px-4 py-1 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors duration-300"
                                     >
-                                        {person.role}
+                                        Co-Founder
                                     </Badge>
                                 </div>
                             </CardHeader>
