@@ -1,99 +1,121 @@
 {
-    "herosection": {
-        "announcement": "Announcement",
-        "announcement_text": "Introducing The LINK Project",
-        "getstartedbutton": "Start Learning Now!",
-        "header1": "Learn English with personalized,",
-        "header2": "AI-powered lessons built for the real world.",
-        "name": "The LINK Project"
-    },
-    "lessoninput": {
-        "cancel": "Cancel recording",
-        "loading": "Loading...",
-        "recording": "Recording...",
-        "ready": "Ready to record",
-        "hear": "Hear your recording"
-    },
-    "lessonmodal": {
-        "actualcomplete": "Complete",
-        "complete": "Lesson Complete!",
-        "congrats": "Congratulations! You've successfully completed all lesson objectives.",
-        "objectivesdone": "Objectives Completed",
-        "returnbutton": "Return to Dashboard",
-        "takequiz": "Take the Quiz"
-    },
-    "lessonnotstarted": {
-        "ready": "Ready to start your lesson!",
-        "clickmicrophone": "Click the microphone below to begin speaking"
-    },
-    "lesson": {
-        "processing": "Processing your response...",
-        "testknowledge": "Already know this? Test your knowledge with this quiz!"
-    },
-    "problemsection": {
-        "part1body": "Despite understanding some English, speaking clearly in daily life or at work can still feel stressful or uncertain.",
-        "part1title": "Confidence in Speaking",
-        "part2body": "With busy working hours and changing schedules, finding time to attend classes or stay consistent with learning can be difficult.",
-        "part2title": "Finding Time",
-        "part3body": "Many learning tools focus on exams or formal English, making it hard to apply what’s learned to real conversations and everyday situations.",
-        "part3title": "Lessons Aren't Practical",
-        "subtitle": "THE CHALLENGE",
-        "title": "Learning English takes time and support."
-    },
-    "shareideas": {
-        "button": "Share Your Ideas",
-        "subtitle": "TELL US WHAT YOU THINK",
-        "title": "Help Make The LINK Project Better."
-    },
-    "solutionsection": {
-        "part1": "Smart objectives",
-        "part2": "Realtime conversations",
-        "part3": "Intelligent chatbot",
-        "subtitle": "THE SOLUTION",
-        "title": "Personalized learning powered by"
-    },
-    "aboutUs": {
-        "headerCall": "Meet the team",
-        "headerTitle": "About Us",
-        "headerDescription": "We're passionate about making English learning accessible and effective for everyone. Our dedicated team works tirelessly to create innovative solutions that empower migrant workers.",
-        "role": "Co-Founder"
-    },
-    "contactUs": {
-        "headerCall": "Let's Talk",
-        "headerTitle": "Contact Us",
-        "headerDescription": "We value your feedback and inquiries. Feel free to reach out to us using the form below, and we’ll get back to you as soon as possible.",
-        "placeholderName": "Name",
-        "placeholderEmail": "Email",
-        "placeholderMessage": "Message",
-        "submitButton": "Submit"
-    },
-    "dashboard": {
-        "headerCall": "Your Learning Journey",
-        "headerCall2": "Continue where you left off or start a new lesson:",
-        "viewResultsButton": "View Results",
-        "beginnerTab": "Beginner",
-        "intermediateTab": "Intermediate",
-        "advancedTab": "Advanced"
-    },
-    "quizMain": {
-        "badge": "Interactive Quiz",
-        "headerCall": "Test your knowledge and track your progress"
-    },
-    "quizResults": {
-        "headerTitle": "Quiz Results",
-        "headerCall": "Track your learning progress and performance",
-        "columnDate": "Date & Time",
-        "columnQuiz": "Quiz Title",
-        "columnScore": "Score",
-        "columnGrade": "Grade"
-    },
-    "quizNoResults": {
-        "info1": "No results yet",
-        "info2": "Complete your first quiz to see your results here"
-    },
-    "quizStats": {
-        "statHighest": "Highest Score",
-        "statAverage": "Average Score",
-        "statQuizzes": "Quizzes Completed"
-    }
+  "herosection": {
+    "announcement": "Announcement",
+    "announcement_text": "Introducing The LINK Project",
+    "getstartedbutton": "Start Learning Now!",
+    "header1": "Learn English with personalized,",
+    "header2": "AI-powered lessons built for the real world.",
+    "name": "The LINK Project"
+  },
+  "getstartedbutton":{
+    "start": "Start Learning Now!"
+  },
+  "shareideas":{
+    "tellUs": "TELL US WHAT YOU THINK",
+    "makeBetter": "Help Make The LINK Project Better",
+    "shareIdeas": "Share Your Ideas"
+  },
+  "lessoninput": {
+    "cancel": "Cancel recording",
+    "loading": "Loading...",
+    "recording": "Recording...",
+    "ready": "Ready to record",
+    "hear": "Hear your recording"
+  },
+  "lessonmodal": {
+    "actualcomplete": "Complete",
+    "complete": "Lesson Complete!",
+    "congrats": "Congratulations! You've successfully completed all lesson objectives.",
+    "objectivesdone": "Objectives Completed",
+    "returnbutton": "Return to Dashboard",
+    "takequiz": "Take the Quiz"
+  },
+  "lessonnotstarted": {
+    "ready": "Ready to start your lesson!",
+    "clickmicrophone": "Click the microphone below to begin speaking"
+  },
+  "lesson": {
+    "processing": "Processing your response...",
+    "testknowledge": "Already know this? Test your knowledge with this quiz!"
+  },
+  "problemsection": {
+    "part1body": "Despite understanding some English, speaking clearly in daily life or at work can still feel stressful or uncertain.",
+    "part1title": "Confidence in Speaking",
+    "part2body": "With busy working hours and changing schedules, finding time to attend classes or stay consistent with learning can be difficult.",
+    "part2title": "Finding Time",
+    "part3body": "Many learning tools focus on exams or formal English, making it hard to apply what’s learned to real conversations and everyday situations.",
+    "part3title": "Lessons Aren't Practical",
+    "subtitle": "THE CHALLENGE",
+    "title": "Learning English takes time and support."
+  },
+  "solutionsection": {
+    "part1": "Smart objectives",
+    "part2": "Realtime conversations",
+    "part3": "Intelligent chatbot",
+    "subtitle": "THE SOLUTION",
+    "title": "Personalized learning powered by"
+  },
+  "aboutUs": {
+    "headerCall": "Meet the team",
+    "headerTitle": "About Us",
+    "headerDescription": "We're passionate about making English learning accessible and effective for everyone. Our dedicated team works tirelessly to create innovative solutions that empower migrant workers.",
+    "role": "Co-Founder"
+  },
+  "contactUs": {
+    "headerCall": "Let's Talk",
+    "headerTitle": "Contact Us",
+    "headerDescription": "We value your feedback and inquiries. Feel free to reach out to us using the form below, and we’ll get back to you as soon as possible.",
+    "placeholderName": "Name",
+    "placeholderEmail": "Email",
+    "placeholderMessage": "Message",
+    "submitButton": "Submit"
+  },
+  "dashboard": {
+    "headerCall": "Your Learning Journey",
+    "headerCall2": "Continue where you left off or start a new lesson:",
+    "viewResultsButton": "View Results",
+    "beginnerTab": "Begginer",
+    "intermediateTab": "Intermediate",
+    "advancedTab": "Advanced"
+  },
+  "quizMain": {
+    "badge": "Interactive Quiz",
+    "headerCall": "Test your knowledge and track your progress"
+  },
+  "resultspage":{
+    "headerTitle": "Quiz Results",
+    "headerCall": "Track your learning progress and performance",
+    "showing": "Showing",
+    "result": "result",
+    "keepPractice": "Keep practicing to improve your scores!"
+  },
+  "quizResults": {
+    "columnDate": "Date & Time",
+    "columnQuiz": "Quiz Title",
+    "columnScore": "Score",
+    "columnGrade": "Grade"
+  },
+  "quizNoResults": {
+    "info1": "No results yet",
+    "info2": "Complete your first quiz to see your results here", 
+    "info3": "Take a Quiz"
+
+  },
+  "quizStats": {
+    "statHighest": "Highest Score",
+    "statAverage": "Average Score",
+    "statQuizzes": "Quizzes Completed"
+  },
+  "faq": {
+    "q1": "What is the LINK Project?",
+    "a1": "The LINK Project supports English learning for migrant workers in Singapore...",
+    "q2": "When will the LINK Project launch?",
+    "a2": "The core features will be launched in August 2025.",
+    "q3": "How can I contribute towards the LINK Project?",
+    "a3": "You can share your ideas on the Google form...",
+    "q4": "Will the LINK Project be free?",
+    "a4": "Yes, the LINK Project is completely free and no payment will be required.",
+    "q5": "What kind of support does the LINK Project provide?",
+    "a5": "The LINK Project gives you a free AI voice assistant..."
+  }
 }
