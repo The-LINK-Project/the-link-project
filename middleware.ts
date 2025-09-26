@@ -1,50 +1,93 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import createMiddleware from "next-intl/middleware";
+import { NextRequest, NextResponse } from "next/server";
+import { routing } from "./i18n/routing";
 
+// Create the intl middleware
+const intlMiddleware = createMiddleware(routing);
+
+// Define public routes (these should match the actual paths without locale prefixes)
 const isPublicRoute = createRouteMatcher([
-  "/",
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/api/webhook/clerk",
-  "/contact",
-  "/about",
+    "/",
+    "/sign-in(.*)",
+    "/sign-up(.*)",
+    "/api/webhook/clerk",
+    "/contact",
+    "/about"
 ]);
 
-// Define admin routes that require special authorization
+// Define admin routes
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
-export default clerkMiddleware(async (auth, req) => {
-  const { userId } = await auth();
+export default clerkMiddleware(async (auth, req: NextRequest) => {
+    const { pathname } = req.nextUrl;
 
-  // Handle admin routes
-  if (isAdminRoute(req)) {
-    if (!userId) {
-      const signInUrl = new URL("/sign-in", req.url);
-      return NextResponse.redirect(signInUrl);
+    // Skip API routes, static files, and Next.js internals
+    if (
+        pathname.startsWith("/api/") ||
+        pathname.startsWith("/_next/") ||
+        pathname.startsWith("/_vercel/") ||
+        pathname.includes(".") && !pathname.endsWith("/")
+    ) {
+        return NextResponse.next();
     }
 
-    // For admin routes, we need to check if user email is in whitelist
-    // This will be done at the page level for better UX and to avoid repeated API calls
-    return NextResponse.next();
-  }
+    // Handle internationalization first
+    const intlResponse = intlMiddleware(req);
 
-  // Handle other protected routes
-  if (!isPublicRoute(req)) {
-    if (!userId) {
-      const signInUrl = new URL("/sign-in", req.url);
-      return NextResponse.redirect(signInUrl);
+    // If intl middleware returns a redirect, handle auth logic with the redirected URL
+    if (intlResponse && intlResponse.status >= 300 && intlResponse.status < 400) {
+        // Let the intl middleware handle the redirect
+        return intlResponse;
     }
-  }
 
-  return NextResponse.next();
+    // Extract locale from pathname for auth redirects
+    let locale = routing.defaultLocale;
+    const segments = pathname.split("/").filter(Boolean);
+
+    if (segments.length > 0 && routing.locales.includes(segments[0] as any)) {
+        locale = segments[0] as any;
+    }
+
+    // Get auth info
+    const { userId } = await auth();
+
+    // Create a request object for route matching (without locale prefix)
+    const pathForMatching = segments.length > 0 && routing.locales.includes(segments[0] as any)
+        ? "/" + segments.slice(1).join("/")
+        : pathname;
+
+    const matchingRequest = {
+        ...req,
+        nextUrl: {
+            ...req.nextUrl,
+            pathname: pathForMatching || "/"
+        }
+    } as NextRequest;
+
+    // Check admin routes
+    if (isAdminRoute(matchingRequest)) {
+        if (!userId) {
+            const signInUrl = new URL(`/${locale}/sign-in`, req.url);
+            return NextResponse.redirect(signInUrl);
+        }
+    }
+
+    // Check protected routes
+    else if (!isPublicRoute(matchingRequest)) {
+        if (!userId) {
+            const signInUrl = new URL(`/${locale}/sign-in`, req.url);
+            return NextResponse.redirect(signInUrl);
+        }
+    }
+
+    // Return the intl response or continue
+    return intlResponse || NextResponse.next();
 });
 
 export const config = {
-  matcher: [
-    // Only run middleware on paths that are NOT:
-    // - api/webhook/clerk
-    // - static files
-    // - _next internals
-    "/((?!api/webhook/clerk|_next|.*\\..*).*)",
-  ],
+    matcher: [
+        // Skip all internal paths (_next, _vercel) and API routes
+        "/((?!api|_next|_vercel|.*\\..*).*)",
+    ]
 };

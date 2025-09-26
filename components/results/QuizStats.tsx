@@ -1,5 +1,6 @@
 import React from "react";
 import { Trophy, Target, Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type QuizStatsProps = {
     highestScore: number;
@@ -12,6 +13,7 @@ export const QuizStats = ({
     averageScore,
     totalQuizzes,
 }: QuizStatsProps) => {
+    const t = useTranslations("quizStats");
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -20,7 +22,7 @@ export const QuizStats = ({
                         <Trophy className="h-6 w-6 text-gray-700" />
                     </div>
                     <div>
-                        <p className="text-sm text-gray-600">Highest Score</p>
+                        <p className="text-sm text-gray-600">{t("statHighest")}</p>
                         <p className="text-2xl font-bold text-gray-900">{highestScore}%</p>
                     </div>
                 </div>
@@ -32,7 +34,7 @@ export const QuizStats = ({
                         <Target className="h-6 w-6 text-gray-700" />
                     </div>
                     <div>
-                        <p className="text-sm text-gray-600">Average Score</p>
+                        <p className="text-sm text-gray-600">{t("statAverage")}</p>
                         <p className="text-2xl font-bold text-gray-900">{averageScore}%</p>
                     </div>
                 </div>
@@ -44,7 +46,7 @@ export const QuizStats = ({
                         <Clock className="h-6 w-6 text-gray-700" />
                     </div>
                     <div>
-                        <p className="text-sm text-gray-600">Quizzes Completed</p>
+                        <p className="text-sm text-gray-600">{t("statQuizzes")}</p>
                         <p className="text-2xl font-bold text-gray-900">{totalQuizzes}</p>
                     </div>
                 </div>

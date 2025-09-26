@@ -2,21 +2,21 @@ import React from "react";
 import { aboutUsInformation } from "@/constants";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useTranslations } from "next-intl";
 
 export default function AboutPage() {
+    const t = useTranslations("aboutUs");
     return (
         <div className="min-h-screen bg-background pt-20 px-5">
             <div className="max-w-7xl mx-auto">
                 {/* Header Section */}
                 <div className="text-center mb-16">
                     <p className="text-primary font-semibold uppercase mb-2">
-                        Meet The Team
+                        {t("headerCall")}
                     </p>
-                    <h1 className="text-3xl font-bold mb-4">About Us</h1>
+                    <h1 className="text-3xl font-bold mb-4">{t("headerTitle")}</h1>
                     <p className="text-gray-700 max-w-2xl mx-auto">
-                        We're passionate about making English learning accessible and
-                        effective for everyone. Our dedicated team works tirelessly to
-                        create innovative solutions that empower migrant workers.
+                        {t("headerDescription")}
                     </p>
                 </div>
 
@@ -55,7 +55,7 @@ export default function AboutPage() {
                                         variant="secondary"
                                         className="text-sm px-4 py-1 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors duration-300"
                                     >
-                                        {person.role}
+                                        {t("role")}
                                     </Badge>
                                 </div>
                             </CardHeader>

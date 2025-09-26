@@ -8,6 +8,7 @@ import {
 import { Button } from "../ui/button";
 import { Mic, MicOff, Play, Loader2, X } from "lucide-react";
 import { Badge } from "../ui/badge";
+import { useTranslations } from "next-intl";
 
 type LessonInputBarProps = {
     recording: boolean;
@@ -27,6 +28,7 @@ const LessonInputBar = ({
     handleCancelRecording,
     playAudioSafely,
 }: LessonInputBarProps) => {
+    const t = useTranslations("lessoninput");
     return (
         <div className="border-t border-gray-100 p-4 bg-gray-50/50">
             <div className="flex items-center gap-3">
@@ -69,7 +71,7 @@ const LessonInputBar = ({
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent>
-                            <p>Cancel recording</p>
+                            <p>{t("cancel")}</p>
                         </TooltipContent>
                     </Tooltip>
                 )}
@@ -81,7 +83,7 @@ const LessonInputBar = ({
                             variant="secondary"
                             className="bg-red-50 text-red-700 border-red-200 px-4 py-2 text-sm font-medium"
                         >
-                            Recording...
+                            {t("recording")}
                         </Badge>
                     )}
                     {isLoading && !recording && (
@@ -90,7 +92,7 @@ const LessonInputBar = ({
                             className="bg-green-50 text-green-700 border-green-200 px-4 py-2 text-sm font-medium flex items-center gap-2"
                         >
                             <Loader2 className="h-3 w-3 animate-spin" />
-                            Loading...
+                            {t("loading")}
                         </Badge>
                     )}
                     {!recording && !isLoading && (
@@ -98,7 +100,7 @@ const LessonInputBar = ({
                             variant="secondary"
                             className="bg-green-50 text-green-700 border-green-200 px-4 py-2 text-sm font-medium"
                         >
-                            Ready to record
+                            {t("ready")}
                         </Badge>
                     )}
                 </div>
@@ -122,7 +124,7 @@ const LessonInputBar = ({
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <p>Hear your recording</p>
+                        <p>{t("hear")}</p>
                     </TooltipContent>
                 </Tooltip>
             </div>

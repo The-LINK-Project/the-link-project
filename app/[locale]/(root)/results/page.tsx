@@ -4,8 +4,10 @@ import QuizResults from "@/components/results/QuizResults";
 import { QuizStats } from "@/components/results/QuizStats";
 import QuizNoResults from "@/components/results/QuizNoResults";
 import { getAllLessons } from "@/lib/actions/Lesson.actions";
+import { getTranslations } from "next-intl/server";
 
 export default async function ResultsPage() {
+    const t = await getTranslations("resultspage");
     const results = await getUserResults();
     const lessons = await getAllLessons();
 
@@ -27,10 +29,10 @@ export default async function ResultsPage() {
                 {/* Header Section */}
                 <div className="mb-8">
                     <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                        Quiz Results
+                        {t("headerTitle")}
                     </h1>
                     <p className="text-lg text-gray-600">
-                        Track your learning progress and performance
+                        {t("headerCall")}
                     </p>
                 </div>
                 {results.length > 0 && (
@@ -52,8 +54,8 @@ export default async function ResultsPage() {
                 {results.length > 0 && (
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-500">
-                            Showing {results.length} result{results.length !== 1 ? "s" : ""} •
-                            Keep practicing to improve your scores!
+                            {t("showing")} {results.length} {t("result")}{results.length !== 1 ? t("results") : ""} •
+                            {t("keepPractice")}
                         </p>
                     </div>
                 )}
