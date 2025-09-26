@@ -1,6 +1,7 @@
 import React from "react";
 import { Calendar } from "lucide-react";
 import QuizResult from "./QuizResult";
+import { useTranslations } from "next-intl";
 
 type QuizResultsProps = {
     results: QuizResult[];
@@ -8,6 +9,7 @@ type QuizResultsProps = {
 };
 
 const QuizResults = ({ results, lessons }: QuizResultsProps) => {
+    const t = useTranslations("quizResults");
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             {/* Table Header */}
@@ -15,16 +17,16 @@ const QuizResults = ({ results, lessons }: QuizResultsProps) => {
                 <div className="grid grid-cols-12 gap-4 p-6">
                     <div className="col-span-4 flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-gray-500" />
-                        <span className="font-semibold text-gray-900">Date & Time</span>
+                        <span className="font-semibold text-gray-900">{t("columnDate")}</span>
                     </div>
                     <div className="col-span-5">
-                        <span className="font-semibold text-gray-900">Quiz Title</span>
+                        <span className="font-semibold text-gray-900">{t("columnQuiz")}</span>
                     </div>
                     <div className="col-span-2">
-                        <span className="font-semibold text-gray-900">Score</span>
+                        <span className="font-semibold text-gray-900">{t("columnScore")}</span>
                     </div>
                     <div className="col-span-1">
-                        <span className="font-semibold text-gray-900">Grade</span>
+                        <span className="font-semibold text-gray-900">{t("columnGrade")}</span>
                     </div>
                 </div>
             </div>
