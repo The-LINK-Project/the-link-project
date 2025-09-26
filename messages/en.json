@@ -7,6 +7,14 @@
     "header2": "AI-powered lessons built for the real world.",
     "name": "The LINK Project"
   },
+  "getstartedbutton":{
+    "start": "Start Learning Now!"
+  },
+  "shareideas":{
+    "tellUs": "TELL US WHAT YOU THINK",
+    "makeBetter": "Help Make The LINK Project Better",
+    "shareIdeas": "Share Your Ideas"
+  },
   "lessoninput": {
     "cancel": "Cancel recording",
     "loading": "Loading...",
@@ -39,11 +47,6 @@
     "part3title": "Lessons Aren't Practical",
     "subtitle": "THE CHALLENGE",
     "title": "Learning English takes time and support."
-  },
-  "shareideas": {
-    "button": "Share Your Ideas",
-    "subtitle": "TELL US WHAT YOU THINK",
-    "title": "Help Make The LINK Project Better."
   },
   "solutionsection": {
     "part1": "Smart objectives",
@@ -79,9 +82,14 @@
     "badge": "Interactive Quiz",
     "headerCall": "Test your knowledge and track your progress"
   },
-  "quizResults": {
+  "resultspage":{
     "headerTitle": "Quiz Results",
     "headerCall": "Track your learning progress and performance",
+    "showing": "Showing",
+    "result": "result",
+    "keepPractice": "Keep practicing to improve your scores!"
+  },
+  "quizResults": {
     "columnDate": "Date & Time",
     "columnQuiz": "Quiz Title",
     "columnScore": "Score",
@@ -89,12 +97,27 @@
   },
   "quizNoResults": {
     "info1": "No results yet",
-    "info2": "Complete your first quiz to see your results here"
+    "info2": "Complete your first quiz to see your results here", 
+    "info3": "Take a Quiz"
+
   },
   "quizStats": {
     "statHighest": "Highest Score",
     "statAverage": "Average Score",
     "statQuizzes": "Quizzes Completed"
+  },
+  "faq": {
+    "q1": "What is the LINK Project?",
+    "a1": "The LINK Project supports English learning for migrant workers in Singapore...",
+    "q2": "When will the LINK Project launch?",
+    "a2": "The core features will be launched in August 2025.",
+    "q3": "How can I contribute towards the LINK Project?",
+    "a3": "You can share your ideas on the Google form...",
+    "q4": "Will the LINK Project be free?",
+    "a4": "Yes, the LINK Project is completely free and no payment will be required.",
+    "q5": "What kind of support does the LINK Project provide?",
+    "a5": "The LINK Project gives you a free AI voice assistant..."
   }
 }
+
 
