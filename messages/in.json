@@ -1,0 +1,120 @@
+{
+  "herosection": {
+    "announcement": "Pengumuman",
+    "announcement_text": "Memperkenalkan Proyek LINK",
+    "getstartedbutton": "Mulai Belajar Sekarang!",
+    "header1": "Belajar Bahasa Inggris secara personal,",
+    "header2": "dengan pelajaran berbasis AI untuk kehidupan nyata.",
+    "name": "Proyek LINK"
+  },
+  "getstartedbutton": {
+    "start": "Mulai Belajar Sekarang!"
+  },
+  "shareideas": {
+    "tellUs": "BERITAHU KAMI PENDAPAT ANDA",
+    "makeBetter": "Bantu Tingkatkan Proyek LINK",
+    "shareIdeas": "Bagikan Ide Anda"
+  },
+  "lessoninput": {
+    "cancel": "Batalkan rekaman",
+    "loading": "Memuat...",
+    "recording": "Sedang merekam...",
+    "ready": "Siap untuk merekam",
+    "hear": "Dengarkan rekaman Anda"
+  },
+  "lessonmodal": {
+    "actualcomplete": "Selesai",
+    "complete": "Pelajaran Selesai!",
+    "congrats": "Selamat! Anda telah berhasil menyelesaikan semua tujuan pelajaran.",
+    "objectivesdone": "Tujuan Terselesaikan",
+    "returnbutton": "Kembali ke Dasbor",
+    "takequiz": "Ikuti Kuis"
+  },
+  "lessonnotstarted": {
+    "ready": "Siap memulai pelajaran Anda!",
+    "clickmicrophone": "Klik mikrofon di bawah ini untuk mulai berbicara"
+  },
+  "lesson": {
+    "processing": "Memproses jawaban Anda...",
+    "testknowledge": "Sudah tahu materinya? Uji pengetahuan Anda dengan kuis ini!"
+  },
+  "problemsection": {
+    "part1body": "Meskipun sudah memahami sebagian Bahasa Inggris, berbicara dengan jelas dalam kehidupan sehari-hari atau di tempat kerja sering kali terasa sulit atau membuat gugup.",
+    "part1title": "Percaya Diri dalam Berbicara",
+    "part2body": "Dengan jadwal kerja yang padat dan sering berubah, sulit untuk menemukan waktu mengikuti kelas atau belajar secara konsisten.",
+    "part2title": "Menemukan Waktu",
+    "part3body": "Banyak alat belajar berfokus pada ujian atau Bahasa Inggris formal, sehingga sulit diterapkan dalam percakapan nyata dan situasi sehari-hari.",
+    "part3title": "Pelajaran Kurang Praktis",
+    "subtitle": "TANTANGANNYA",
+    "title": "Belajar Bahasa Inggris membutuhkan waktu dan dukungan."
+  },
+  "solutionsection": {
+    "part1": "Tujuan yang Cerdas",
+    "part2": "Percakapan Waktu Nyata",
+    "part3": "Chatbot Cerdas",
+    "subtitle": "SOLUSINYA",
+    "title": "Pembelajaran personal dengan dukungan"
+  },
+  "aboutUs": {
+    "headerCall": "Kenali tim kami",
+    "headerTitle": "Tentang Kami",
+    "headerDescription": "Kami bersemangat untuk membuat pembelajaran Bahasa Inggris dapat diakses dan efektif bagi semua orang. Tim kami bekerja keras untuk menciptakan solusi inovatif yang memberdayakan pekerja migran.",
+    "role": "Co-Founder"
+  },
+  "contactUs": {
+    "headerCall": "Mari Berbicara",
+    "headerTitle": "Hubungi Kami",
+    "headerDescription": "Kami menghargai masukan dan pertanyaan Anda. Silakan hubungi kami melalui formulir di bawah ini, dan kami akan segera membalas.",
+    "placeholderName": "Nama",
+    "placeholderEmail": "Email",
+    "placeholderMessage": "Pesan",
+    "submitButton": "Kirim"
+  },
+  "dashboard": {
+    "headerCall": "Perjalanan Belajar Anda",
+    "headerCall2": "Lanjutkan dari terakhir atau mulai pelajaran baru:",
+    "viewResultsButton": "Lihat Hasil",
+    "beginnerTab": "Pemula",
+    "intermediateTab": "Menengah",
+    "advancedTab": "Lanjutan"
+  },
+  "quizMain": {
+    "badge": "Kuis Interaktif",
+    "headerCall": "Uji pengetahuan Anda dan pantau kemajuan belajar"
+  },
+  "resultspage": {
+    "headerTitle": "Hasil Kuis",
+    "headerCall": "Pantau perkembangan dan performa belajar Anda",
+    "showing": "Menampilkan",
+    "result": "hasil",
+    "keepPractice": "Terus berlatih untuk meningkatkan nilai Anda!"
+  },
+  "quizResults": {
+    "columnDate": "Tanggal & Waktu",
+    "columnQuiz": "Judul Kuis",
+    "columnScore": "Nilai",
+    "columnGrade": "Peringkat"
+  },
+  "quizNoResults": {
+    "info1": "Belum ada hasil",
+    "info2": "Selesaikan kuis pertama Anda untuk melihat hasil di sini",
+    "info3": "Ikuti Kuis"
+  },
+  "quizStats": {
+    "statHighest": "Nilai Tertinggi",
+    "statAverage": "Nilai Rata-Rata",
+    "statQuizzes": "Kuis Diselesaikan"
+  },
+  "faq": {
+    "q1": "Apa itu Proyek LINK?",
+    "a1": "Proyek LINK mendukung pembelajaran Bahasa Inggris bagi pekerja migran di Singapura...",
+    "q2": "Kapan Proyek LINK akan diluncurkan?",
+    "a2": "Fitur utama akan diluncurkan pada Agustus 2025.",
+    "q3": "Bagaimana saya bisa berkontribusi pada Proyek LINK?",
+    "a3": "Anda dapat berbagi ide melalui formulir Google...",
+    "q4": "Apakah Proyek LINK gratis?",
+    "a4": "Ya, Proyek LINK sepenuhnya gratis dan tidak memerlukan pembayaran.",
+    "q5": "Dukungan apa yang diberikan oleh Proyek LINK?",
+    "a5": "Proyek LINK menyediakan asisten suara AI gratis untuk membantu Anda berlatih Bahasa Inggris."
+  }
+}
