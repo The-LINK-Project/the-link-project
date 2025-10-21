@@ -128,8 +128,7 @@
   "quizProgressBar": {
     "title": "Progress",
     "answered": "answered"
-  }
-}
+  },
   "faq": {
     "q1": "What is the LINK Project?",
     "a1": "The LINK Project supports English learning for migrant workers in Singapore...",
@@ -143,3 +142,5 @@
     "a5": "The LINK Project gives you a free AI voice assistant..."
   }
 }
+  
+

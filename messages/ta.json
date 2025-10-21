@@ -117,8 +117,7 @@
   },
   "quizProgressBar": {
     "title": "முன்னேற்றம்",
-    "answered": "பதிலளிக்கப்பட்டது"
-
+    "answered": "பதிலளிக்கப்பட்டது",
     "statHighest": "அதிகபட்ச மதிப்பெண்",
     "statAverage": "சராசரி மதிப்பெண்",
     "statQuizzes": "முடித்த வினாடி வினாக்கள்"
