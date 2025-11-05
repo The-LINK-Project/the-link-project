@@ -2,267 +2,233 @@
 
 import { connectToDatabase } from "@/lib/database";
 import LessonProgress from "../database/models/lessonProgress.model";
-import { auth } from "@clerk/nextjs/server";
 import { getAllLessons } from "./Lesson.actions";
 import { formatInitialObjectives } from "../utils";
+import { ensureUser } from "./user.actions";
 
 // when user has never done the lesson before and goes to it make a mongoDB item with convoHistory and objectives met default empty array and false array respectively
 export async function initLessonProgress({
-  lessonIndex,
-  objectives,
+    lessonIndex,
+    objectives,
 }: {
-  lessonIndex: number;
-  objectives: string[];
+    lessonIndex: number;
+    objectives: string[];
 }) {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    const { sessionClaims } = await auth();
+        const { _id: userId } = await ensureUser();
 
-    const userId = sessionClaims?.userId as string;
+        // this part is a repeat to be removed later
+        const objectivesMet = formatInitialObjectives(objectives);
 
-    if (!userId) {
-      throw new Error("User not found");
+        const payload = {
+            userId: userId,
+            lessonIndex: lessonIndex,
+            objectivesMet: objectivesMet,
+            convoHistory: [],
+            quizResult: [],
+        };
+
+        const newLessonProgress = await LessonProgress.create(payload);
+
+        if (!newLessonProgress) throw Error("Failed to create new lesson progress");
+
+        return JSON.parse(JSON.stringify(newLessonProgress));
+    } catch (error) {
+        console.log(error);
+        throw error;
     }
-
-    // this part is a repeat to be removed later
-    const objectivesMet = formatInitialObjectives(objectives);
-
-    const payload = {
-      userId: userId,
-      lessonIndex: lessonIndex,
-      objectivesMet: objectivesMet,
-      convoHistory: [],
-      quizResult: [],
-    };
-
-    const newLessonProgress = await LessonProgress.create(payload);
-
-    if (!newLessonProgress) throw Error("Failed to create new lesson progress");
-
-    return JSON.parse(JSON.stringify(newLessonProgress));
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
 }
 
 export async function getLessonProgress({
-  lessonIndex,
+    lessonIndex,
 }: {
-  lessonIndex: number;
+    lessonIndex: number;
 }): Promise<LessonProgress> {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    const { sessionClaims } = await auth();
+        const { _id: userId } = await ensureUser();
 
-    const userId = sessionClaims?.userId as string;
+        const lessonProgress = await LessonProgress.findOne({
+            userId: userId,
+            lessonIndex: lessonIndex,
+        });
 
-    if (!userId) {
-      throw new Error("User not found");
+        if (!lessonProgress) {
+            console.log("No Lesson Progress found");
+        }
+
+        return JSON.parse(JSON.stringify(lessonProgress));
+    } catch (error) {
+        console.log(error);
+        throw error;
     }
-
-    const lessonProgress = await LessonProgress.findOne({
-      userId: userId,
-      lessonIndex: lessonIndex,
-    });
-
-    if (!lessonProgress) {
-      console.log("No Lesson Progress found");
-    }
-
-    return JSON.parse(JSON.stringify(lessonProgress));
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
 }
 
 // this is used right when the user first opens the lesson, checks if they've done any part of the lesson before
 export async function checkIfLessonProgress({
-  lessonIndex,
+    lessonIndex,
 }: {
-  lessonIndex: number;
+    lessonIndex: number;
 }) {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    const { sessionClaims } = await auth();
+        console.log("Checking if lesson progress 2");
 
-    const userId = sessionClaims?.userId as string;
+        const { _id: userId } = await ensureUser();
 
-    if (!userId) {
-      throw new Error("User not found");
+        const lessonProgress = await LessonProgress.findOne({
+            userId,
+            lessonIndex,
+        });
+
+        // will return true if user has touched the lesson b4
+        return !!lessonProgress;
+    } catch (error) {
+        console.log(error);
+        throw error;
     }
-
-    const lessonProgress = await LessonProgress.findOne({
-      userId,
-      lessonIndex,
-    });
-
-    // will return true if user has touched the lesson b4
-    return !!lessonProgress;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
 }
 
 // this runs when the user clicks disconnect or unnaturally disconnects such as exiting tab
 export async function updateLessonProgress({
-  lessonIndex,
-  objectivesMet,
-  convoHistory,
+    lessonIndex,
+    objectivesMet,
+    convoHistory,
 }: {
-  lessonIndex: number;
-  objectivesMet: boolean[];
-  convoHistory: Message[];
+    lessonIndex: number;
+    objectivesMet: boolean[];
+    convoHistory: Message[];
 }) {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    const { sessionClaims } = await auth();
+        const { _id: userId } = await ensureUser();
 
-    const userId = sessionClaims?.userId as string;
+        const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
+            {
+                userId: userId,
+                lessonIndex: lessonIndex,
+            },
+            {
+                $set: {
+                    objectivesMet: objectivesMet,
+                    convoHistory: convoHistory,
+                },
+            },
+            {
+                upsert: true,
+                new: true,
+            }
+        );
 
-    if (!userId) {
-      throw new Error("User not found");
+        if (!updatedLessonProgress) {
+            throw Error("Failed to update lesson progress");
+        }
+
+        return JSON.parse(JSON.stringify(updatedLessonProgress));
+    } catch (error) {
+        console.log(error);
+        throw error;
     }
-
-    const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
-      {
-        userId: userId,
-        lessonIndex: lessonIndex,
-      },
-      {
-        $set: {
-          objectivesMet: objectivesMet,
-          convoHistory: convoHistory,
-        },
-      },
-      {
-        upsert: true,
-        new: true,
-      }
-    );
-
-    if (!updatedLessonProgress) {
-      throw Error("Failed to update lesson progress");
-    }
-
-    return JSON.parse(JSON.stringify(updatedLessonProgress));
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
 }
 
 export async function getAllLessonStatuses(): Promise<LessonStatus[]> {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    const { sessionClaims } = await auth();
+        const { _id: userId } = await ensureUser();
 
-    const userId = sessionClaims?.userId as string;
+        const lessons = await getAllLessons();
 
-    if (!userId) {
-      return [];
-    }
+        let completionStatuses: LessonStatus[] = [];
+        for (let i = 0; i < lessons.length; i++) {
+            console.log(i);
 
-    const lessons = await getAllLessons();
+            const lessonProgress = await LessonProgress.findOne({
+                userId: userId,
+                lessonIndex: i + 1,
+            });
 
-    let completionStatuses: LessonStatus[] = [];
-    for (let i = 0; i < lessons.length; i++) {
-      console.log(i);
-
-      const lessonProgress = await LessonProgress.findOne({
-        userId: userId,
-        lessonIndex: i + 1,
-      });
-
-      if (lessonProgress) {
-        if (lessonProgress.objectivesMet.every((met: boolean) => met)) {
-          completionStatuses[i] = "Completed";
-        } else {
-          completionStatuses[i] = "In Progress";
+            if (lessonProgress) {
+                if (lessonProgress.objectivesMet.every((met: boolean) => met)) {
+                    completionStatuses[i] = "Completed";
+                } else {
+                    completionStatuses[i] = "In Progress";
+                }
+            } else {
+                completionStatuses[i] = "Not Started";
+            }
         }
-      } else {
-        completionStatuses[i] = "Not Started";
-      }
+        console.log(`Completion Statuses: ${completionStatuses}`);
+        return completionStatuses;
+    } catch (error) {
+        console.log(error);
+        throw error;
     }
-    console.log(`Completion Statuses: ${completionStatuses}`);
-    return completionStatuses;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
 }
 
 export async function getLessonProgressStats() {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    const allProgress = await LessonProgress.find({});
+        const allProgress = await LessonProgress.find({});
 
-    const totalSessions = allProgress.length;
-    const completedObjectives = allProgress.reduce((total, progress) => {
-      return (
-        total + progress.objectivesMet.filter((met: boolean) => met).length
-      );
-    }, 0);
+        const totalSessions = allProgress.length;
+        const completedObjectives = allProgress.reduce((total, progress) => {
+            return (
+                total + progress.objectivesMet.filter((met: boolean) => met).length
+            );
+        }, 0);
 
-    const completedLessons = allProgress.filter((progress) =>
-      progress.objectivesMet.every((met: boolean) => met)
-    ).length;
+        const completedLessons = allProgress.filter((progress) =>
+            progress.objectivesMet.every((met: boolean) => met)
+        ).length;
 
-    const completionRate =
-      totalSessions > 0
-        ? Math.round((completedLessons / totalSessions) * 100)
-        : 0;
+        const completionRate =
+            totalSessions > 0
+                ? Math.round((completedLessons / totalSessions) * 100)
+                : 0;
 
-    return {
-      totalSessions,
-      completedObjectives,
-      completionRate,
-    };
-  } catch (error) {
-    console.log(error);
-    // Return default values if error
-    return {
-      totalSessions: 0,
-      completedObjectives: 0,
-      completionRate: 0,
-    };
-  }
+        return {
+            totalSessions,
+            completedObjectives,
+            completionRate,
+        };
+    } catch (error) {
+        console.log(error);
+        // Return default values if error
+        return {
+            totalSessions: 0,
+            completedObjectives: 0,
+            completionRate: 0,
+        };
+    }
 }
 
 export async function deleteLessonProgress({
-  lessonIndex,
+    lessonIndex,
 }: {
-  lessonIndex: number;
+    lessonIndex: number;
 }) {
-  try {
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    const { sessionClaims } = await auth();
+        const { _id: userId } = await ensureUser();
 
-    const userId = sessionClaims?.userId as string;
+        const deletedLessonProgress = await LessonProgress.findOneAndDelete({
+            userId: userId,
+            lessonIndex: lessonIndex,
+        });
 
-    if (!userId) {
-      throw new Error("User not found");
+        if (!deletedLessonProgress) throw Error("Failed to delete lesson progress");
+
+        return JSON.parse(JSON.stringify(deletedLessonProgress));
+    } catch (error) {
+        console.log(error);
+        throw error;
     }
-
-    const deletedLessonProgress = await LessonProgress.findOneAndDelete({
-      userId: userId,
-      lessonIndex: lessonIndex,
-    });
-
-    if (!deletedLessonProgress) throw Error("Failed to delete lesson progress");
-
-    return JSON.parse(JSON.stringify(deletedLessonProgress));
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
 }

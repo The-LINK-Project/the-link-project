@@ -2,22 +2,16 @@
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
 import mongoose from "mongoose";
-import { auth } from "@clerk/nextjs/server";
 import QuizResult from "@/lib/database/models/quizResult.model";
 import LessonProgress from "@/lib/database/models/lessonProgress.model";
+import { ensureUser } from "./user.actions";
 
 // submitting and sending over the quiz results to mongodb
 export async function saveQuizResult(formData: FormData) {
     try {
         await connectToDatabase();
 
-        const { sessionClaims } = await auth();
-
-        const userId = sessionClaims?.userId as string;
-
-        if (!userId) {
-            throw new Error("User not found");
-        }
+        const { _id: userId } = await ensureUser();
 
         const lessonId = parseInt(formData.get("lessonId") as string);
         const score = parseInt(formData.get("score") as string);
@@ -68,13 +62,7 @@ export async function getUserResults() {
     try {
         await connectToDatabase();
 
-        const { sessionClaims } = await auth();
-
-        const userId = sessionClaims?.userId as string;
-
-        if (!userId) {
-            throw new Error("User not found");
-        }
+        const { _id: userId } = await ensureUser();
 
         // Ensure Quiz model is registered before populate
         if (!mongoose.models.Quiz) {
