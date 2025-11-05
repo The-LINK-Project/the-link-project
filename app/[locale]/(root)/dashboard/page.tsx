@@ -1,6 +1,7 @@
 import React from "react";
 import { getAllLessonStatuses } from "@/lib/actions/LessonProgress.actions";
 import { getAllLessons } from "@/lib/actions/Lesson.actions";
+import { ensureUser } from "@/lib/actions/user.actions";
 import DashboardLessonItem from "@/components/dashboard/DashboardLessonItem";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,8 @@ import { BarChart3 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 const DashboardPage = async () => {
+    await ensureUser();
+
     const lessons = await getAllLessons();
     const lessonStatuses = await getAllLessonStatuses();
     const t = await getTranslations("dashboard");
