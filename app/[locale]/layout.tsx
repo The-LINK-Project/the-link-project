@@ -15,6 +15,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import LanguageGate from "@/components/shared/LanguageGate";
 
 const openSans = Open_Sans({
     variable: "--font-open-sans",
@@ -85,10 +86,12 @@ export default async function RootLayout({
                     suppressHydrationWarning={true}
                 >
                     <NextIntlClientProvider>
-                        <Header></Header>
-                        <Chatbot></Chatbot>
-                        {children}
-                        <Analytics />
+                        <LanguageGate>
+                            <Header></Header>
+                            <Chatbot></Chatbot>
+                            {children}
+                            <Analytics />
+                        </LanguageGate>
                     </NextIntlClientProvider>
                 </body>
             </html>
