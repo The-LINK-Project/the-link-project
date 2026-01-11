@@ -11,10 +11,19 @@ import {
 import { navLinks } from "../../constants";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useAuth } from "@clerk/nextjs";
 import { SignedOut } from "@clerk/clerk-react";
 
 const Header = () => {
+  const { isSignedIn } = useAuth();
+  
+  // Filter out Contact and About Us when user is logged in
+  const filteredNavLinks = isSignedIn
+    ? navLinks.filter(
+          (link) => link.name !== "Contact" && link.name !== "About Us"
+      )
+    : navLinks;
+
   return (
     <div className="flex flex-row mx-24 justify-between h-18 items-center">
       <Link href="/" className="flex flex-row gap-1 items-center">
@@ -42,7 +51,7 @@ const Header = () => {
             <MenuIcon />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {navLinks.map((navLink) => (
+            {filteredNavLinks.map((navLink) => (
               <DropdownMenuItem key={navLink.name} asChild>
                 <Link href={navLink.route}>{navLink.name}</Link>
               </DropdownMenuItem>

@@ -2,6 +2,7 @@
 
 import { connectToDatabase } from "@/lib/database";
 import LessonProgress from "../database/models/lessonProgress.model";
+import QuizResult from "../database/models/quizResult.model";
 import { auth } from "@clerk/nextjs/server";
 import { getAllLessons } from "./Lesson.actions";
 import { formatInitialObjectives } from "../utils";
@@ -178,17 +179,31 @@ export async function getAllLessonStatuses(): Promise<LessonStatus[]> {
         for (let i = 0; i < lessons.length; i++) {
             console.log(i);
 
+            const lessonIndex = i + 1;
             const lessonProgress = await LessonProgress.findOne({
                 userId: userId,
-                lessonIndex: i + 1,
+                lessonIndex: lessonIndex,
             });
 
-            if (lessonProgress) {
-                if (lessonProgress.objectivesMet.every((met: boolean) => met)) {
-                    completionStatuses[i] = "Completed";
-                } else {
-                    completionStatuses[i] = "In Progress";
-                }
+            // Check if lesson is completed via objectives
+            const objectivesCompleted = lessonProgress && 
+                lessonProgress.objectivesMet.every((met: boolean) => met);
+
+            // Check if lesson is completed via quiz (score >= 80)
+            const quizResult = await QuizResult.findOne({
+                userId: userId,
+                lessonId: lessonIndex,
+                score: { $gte: 80 },
+            });
+
+            const quizCompleted = !!quizResult;
+
+            // Lesson is completed if either objectives are met OR quiz score >= 80
+            if (objectivesCompleted || quizCompleted) {
+                completionStatuses[i] = "Completed";
+            } else if (lessonProgress) {
+                // Lesson is in progress if lessonProgress exists but not completed
+                completionStatuses[i] = "In Progress";
             } else {
                 completionStatuses[i] = "Not Started";
             }
