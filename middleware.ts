@@ -76,8 +76,12 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     // Check protected routes
     else if (!isPublicRoute(matchingRequest)) {
         if (!userId) {
-            const signInUrl = new URL(`/${locale}/sign-in`, req.url);
-            return NextResponse.redirect(signInUrl);
+            const isDashboardRoute =
+                pathForMatching === "/dashboard" ||
+                pathForMatching.startsWith("/dashboard/");
+            const redirectPath = isDashboardRoute ? `/${locale}/sign-up` : `/${locale}/sign-in`;
+            const redirectUrl = new URL(redirectPath, req.url);
+            return NextResponse.redirect(redirectUrl);
         }
     }
 
