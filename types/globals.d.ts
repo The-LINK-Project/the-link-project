@@ -4,6 +4,7 @@ declare type LessonProgress = {
     userId: string;
     lessonIndex: number;
     objectivesMet: boolean[];
+    completed: boolean;
     convoHistory: Message[];
     quizResult: QuizResult[];
 };

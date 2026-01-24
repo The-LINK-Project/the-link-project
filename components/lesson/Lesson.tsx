@@ -156,12 +156,15 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
         };
     }, []);
 
-    // checking if all objectives are met and can end the lesson and if they are then maybe have a quick end of lesson progress popup and continue to qiuz
+    // checking if lesson is complete by objectives or explicit completion flag
     useEffect(() => {
-        if (lessonProgress.objectivesMet.every((objective) => objective)) {
+        if (
+            lessonProgress.completed ||
+            lessonProgress.objectivesMet.every((objective) => objective)
+        ) {
             setIsComplete(true);
         }
-    }, [lessonProgress.objectivesMet]);
+    }, [lessonProgress.completed, lessonProgress.objectivesMet]);
 
     const scrollToBottom = () => {
         if (scrollAreaRef.current) {

@@ -10,6 +10,7 @@ const LessonProgressSchema = new Schema({
     },
     lessonIndex: { type: Number, required: true, unique: false },
     objectivesMet: { type: [Boolean], required: true, unique: false },
+    completed: { type: Boolean, required: true, default: false },
     convoHistory: {
         type: [
             {
