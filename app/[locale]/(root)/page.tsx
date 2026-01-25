@@ -4,16 +4,21 @@ import VideoDisplay from "@/components/shared/VideoDisplay";
 import SolutionSection from "@/components/shared/SolutionSection";
 import FAQ from "@/components/shared/FAQ";
 import ShareIdeasSection from "@/components/shared/ShareIdeasSection";
+import LanguageOverlay from "@/components/shared/LanguageOverlay";
 
 export default function Home() {
-    return (
-        <div className="mt-24">
-            <HeroSection />
-            <VideoDisplay />
-            <ProblemSection />
-            <SolutionSection />
-            <FAQ />
-            <ShareIdeasSection />
-        </div>
-    );
+  return (
+    <>
+      <LanguageOverlay />
+
+      <div className="mt-24">
+        <HeroSection />
+        <VideoDisplay />
+        <ProblemSection />
+        <SolutionSection />
+        <FAQ />
+        <ShareIdeasSection />
+      </div>
+    </>
+  );
 }

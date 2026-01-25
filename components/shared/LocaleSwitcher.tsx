@@ -29,10 +29,12 @@ export default function LocaleSwitcher() {
 
     const switchLocale = (newLocale: string) => {
         if (newLocale !== locale) {
+            localStorage.setItem('preferred-locale', newLocale);
             router.replace(pathname, { locale: newLocale });
             router.refresh();
         }
     };
+
 
     const currentLabel =
         LOCALES.find((item) => item.value === locale)?.label ?? locale.toUpperCase();
