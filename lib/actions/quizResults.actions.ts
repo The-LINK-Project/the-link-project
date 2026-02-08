@@ -35,11 +35,30 @@ export async function saveQuizResult(formData: FormData) {
 
         console.log(result);
 
-        // here I am adding the quiz result to the lesson progress
-        const lessonProgress = await LessonProgress.findOneAndUpdate(
-            { userId: userId, lessonIndex: lessonId },
-            { $push: { quizResult: result._id } },
-        );
+        // add quiz result to lesson progress and mark completed if score >= 80
+        const lessonProgress = await LessonProgress.findOne({
+            userId: userId,
+            lessonIndex: lessonId,
+        });
+        const updatePayload: {
+            $push: { quizResult: mongoose.Types.ObjectId };
+            $set?: { completed: boolean };
+        } = {
+            $push: { quizResult: result._id },
+        };
+
+        if (score >= 80) {
+            updatePayload.$set = {
+                completed: true,
+            };
+        }
+
+        if (lessonProgress) {
+            await LessonProgress.findOneAndUpdate(
+                { userId: userId, lessonIndex: lessonId },
+                updatePayload,
+            );
+        }
 
         revalidatePath("/quiz/results");
         return {

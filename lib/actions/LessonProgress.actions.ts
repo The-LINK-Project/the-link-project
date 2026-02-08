@@ -2,6 +2,7 @@
 
 import { connectToDatabase } from "@/lib/database";
 import LessonProgress from "../database/models/lessonProgress.model";
+import QuizResult from "../database/models/quizResult.model";
 import { getAllLessons } from "./Lesson.actions";
 import { formatInitialObjectives } from "../utils";
 import { ensureUser } from "./user.actions";
@@ -26,6 +27,7 @@ export async function initLessonProgress({
             userId: userId,
             lessonIndex: lessonIndex,
             objectivesMet: objectivesMet,
+            completed: objectivesMet.every((met: boolean) => met),
             convoHistory: [],
             quizResult: [],
         };
@@ -108,20 +110,32 @@ export async function updateLessonProgress({
 
         const { _id: userId } = await ensureUser();
 
+        const setUpdates: {
+            objectivesMet: boolean[];
+            convoHistory: Message[];
+            completed?: boolean;
+        } = {
+            objectivesMet: objectivesMet,
+            convoHistory: convoHistory,
+        };
+
+        if (objectivesMet.every((met: boolean) => met)) {
+            setUpdates.completed = true;
+        }
+
         const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
             {
                 userId: userId,
                 lessonIndex: lessonIndex,
             },
             {
-                $set: {
-                    objectivesMet: objectivesMet,
-                    convoHistory: convoHistory,
-                },
+                $set: setUpdates,
+                $setOnInsert: { completed: false },
             },
             {
                 upsert: true,
                 new: true,
+                setDefaultsOnInsert: true,
             }
         );
 
@@ -154,13 +168,31 @@ export async function getAllLessonStatuses(): Promise<LessonStatus[]> {
             });
 
             if (lessonProgress) {
-                if (lessonProgress.objectivesMet.every((met: boolean) => met)) {
+                const objectivesCompleted = lessonProgress.objectivesMet.every(
+                    (met: boolean) => met,
+                );
+                const hasCompletedFlag = !!lessonProgress.completed;
+                const quizPassed =
+                    !hasCompletedFlag && !objectivesCompleted
+                        ? await QuizResult.exists({
+                              userId,
+                              lessonId: i + 1,
+                              score: { $gte: 80 },
+                          })
+                        : false;
+
+                if (hasCompletedFlag || objectivesCompleted || quizPassed) {
                     completionStatuses[i] = "Completed";
                 } else {
                     completionStatuses[i] = "In Progress";
                 }
             } else {
-                completionStatuses[i] = "Not Started";
+                const quizPassed = await QuizResult.exists({
+                    userId,
+                    lessonId: i + 1,
+                    score: { $gte: 80 },
+                });
+                completionStatuses[i] = quizPassed ? "Completed" : "Not Started";
             }
         }
         console.log(`Completion Statuses: ${completionStatuses}`);
@@ -184,9 +216,21 @@ export async function getLessonProgressStats() {
             );
         }, 0);
 
-        const completedLessons = allProgress.filter((progress) =>
-            progress.objectivesMet.every((met: boolean) => met)
-        ).length;
+        const completionChecks = await Promise.all(
+            allProgress.map(async (progress) => {
+                if (progress.completed) return true;
+                if (progress.objectivesMet.every((met: boolean) => met)) {
+                    return true;
+                }
+                const quizPassed = await QuizResult.exists({
+                    userId: progress.userId,
+                    lessonId: progress.lessonIndex,
+                    score: { $gte: 80 },
+                });
+                return !!quizPassed;
+            }),
+        );
+        const completedLessons = completionChecks.filter(Boolean).length;
 
         const completionRate =
             totalSessions > 0

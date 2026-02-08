@@ -9,13 +9,20 @@ import {
     DropdownMenuItem,
 } from "../ui/dropdown-menu";
 import { navLinks } from "../../constants";
-import { Link, usePathname } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { Button } from "../ui/button";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useAuth } from "@clerk/nextjs";
 import { SignedOut } from "@clerk/clerk-react";
 import LocaleSwitcher from "./LocaleSwitcher";
 
 const Header = () => {
+    const { isSignedIn } = useAuth();
+    const filteredLinks = isSignedIn
+        ? navLinks.filter(
+              (link) => link.name !== "Contact" && link.name !== "About Us",
+          )
+        : navLinks;
+
     return (
         <div className="flex flex-row mx-4 sm:mx-8 lg:mx-24 justify-between h-16 sm:h-18 items-center py-2">
             <Link href="/" className="flex flex-row gap-1 sm:gap-2 items-center">
@@ -62,7 +69,7 @@ const Header = () => {
                         <MenuIcon className="w-5 h-5" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
-                        {navLinks.map((navLink) => (
+                        {filteredLinks.map((navLink) => (
                             <DropdownMenuItem key={navLink.name} asChild>
                                 <Link href={navLink.route} className="w-full">
                                     {navLink.name}
