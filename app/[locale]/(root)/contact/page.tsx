@@ -30,13 +30,15 @@ export default function ContactForm() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col md:flex-row pt-20 justify-center px-5">
-            <div className="md:w-1/2 max-w-full">
-                <p className="text-primary font-semibold uppercase mb-2">
+        <div className="flex min-h-screen flex-col justify-center px-5 pt-20 font-body text-ink md:flex-row">
+            <div className="max-w-full md:w-1/2">
+                <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-eyebrow">
                     {t("headerCall")}
                 </p>
-                <h1 className="text-3xl font-bold mb-4">{t("headerTitle")}</h1>
-                <p className="text-gray-700 mb-6">
+                <h1 className="mb-4 font-heading text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+                    {t("headerTitle")}
+                </h1>
+                <p className="mb-6 text-lg leading-relaxed text-ink-soft">
                     {t("headerDescription")}
                 </p>
 
@@ -46,25 +48,25 @@ export default function ContactForm() {
                         name="user_name"
                         placeholder={t("placeholderName")}
                         required
-                        className="w-full border p-3 rounded"
+                        className="w-full rounded-lg border border-hairline bg-surface p-3 outline-none transition-colors focus:border-primary"
                     />
                     <input
                         type="email"
                         name="user_email"
                         placeholder={t("placeholderEmail")}
                         required
-                        className="w-full border p-3 rounded"
+                        className="w-full rounded-lg border border-hairline bg-surface p-3 outline-none transition-colors focus:border-primary"
                     />
                     <textarea
                         name="message"
                         placeholder={t("placeholderMessage")}
                         required
                         rows={6}
-                        className="w-full border p-3 rounded"
+                        className="w-full rounded-lg border border-hairline bg-surface p-3 outline-none transition-colors focus:border-primary"
                     />
                     <button
                         type="submit"
-                        className="bg-primary hover:bg-primary-hover hover:cursor-grab  transition-transform duration-500 transform hover:scale-105 text-white px-6 py-2 rounded hover:opacity-90"
+                        className="cursor-pointer rounded-lg bg-ink px-7 py-3 font-semibold text-white transition-transform duration-500 hover:scale-105 hover:bg-ink-deep"
                     >
                         {t("submitButton")}
                     </button>

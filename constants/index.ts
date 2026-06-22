@@ -21,36 +21,8 @@ export const navLinks = [
     },
 ];
 
-// export const frequentlyAskedQuestions = [
-//   {
-//     question: "What is the LINK Project?",
-//     answer:
-//       "The LINK Project supports English learning for migrant workers in Singapore through a personalized AI voice assistant, helping improve daily communication and confidence.",
-//   },
-//   {
-//     question: "When will the LINK Project launch",
-//     answer: "The core features will be launched in August 2025.",
-//   },
-//   {
-//     question: "How can I contribute towards the LINK Project",
-//     answer:
-//       "You can share your ideas on the google form linked to the website to inform us of what you would like to see and any suggestions you have. You can also contact us with any suggestions or questions you may have.",
-//   },
-//   {
-//     question: "Will the LINK Project be free?",
-//     answer:
-//       "Yes, the LINK Project is completely free and no payment will be required.",
-//   },
-//   {
-//     question: "What kind of support does the LINK Project provide?",
-//     answer:
-//       "The Link Project gives you a free AI voice assistant to help improve your English anytime, anywhere. It helps you learn words, speak clearly, and feel more confident talking to your boss or in daily life.",
-//   },
-// ];
-
 export const frequentlyAskedQuestions = [
     { questionKey: "q1", answerKey: "a1" },
-    { questionKey: "q2", answerKey: "a2" },
     { questionKey: "q3", answerKey: "a3" },
     { questionKey: "q4", answerKey: "a4" },
     { questionKey: "q5", answerKey: "a5" },
@@ -77,6 +49,21 @@ export const aboutUsInformation = [
         role: "Co-Founder",
         image: "/assets/about-us/Videep.jpeg",
     },
+];
+
+// Photos shown in the International Migrants Day gallery on the landing page.
+// Files live in `public/assets/events/migrants-day/`. To add or swap photos,
+// drop the image into that folder and add/replace its path below (paths are
+// relative to `public/`). Use lowercase extensions — production servers are
+// case-sensitive. Tiles are square (object-cover), so center the subject.
+export const migrantsDayPhotos = [
+    "/assets/events/migrants-day/photo-1.jpg",
+    "/assets/events/migrants-day/photo-2.jpg",
+    "/assets/events/migrants-day/photo-3.jpg",
+    "/assets/events/migrants-day/photo-4.jpg",
+    "/assets/events/migrants-day/photo-5.jpg",
+    "/assets/events/migrants-day/photo-6.jpg",
+    "/assets/events/migrants-day/photo-7.jpg",
 ];
 
 export const defaultConvoHistory = {

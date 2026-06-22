@@ -1,21 +1,23 @@
 import React from "react";
 import { aboutUsInformation } from "@/constants";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useTranslations } from "next-intl";
 
 export default function AboutPage() {
     const t = useTranslations("aboutUs");
     return (
-        <div className="min-h-screen bg-background pt-20 px-5">
-            <div className="max-w-7xl mx-auto">
+        <div className="min-h-screen bg-background px-5 pt-20 font-body text-ink">
+            <div className="mx-auto max-w-7xl">
                 {/* Header Section */}
-                <div className="text-center mb-16">
-                    <p className="text-primary font-semibold uppercase mb-2">
+                <div className="mb-16 text-center">
+                    <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-eyebrow">
                         {t("headerCall")}
                     </p>
-                    <h1 className="text-3xl font-bold mb-4">{t("headerTitle")}</h1>
-                    <p className="text-gray-700 max-w-2xl mx-auto">
+                    <h1 className="mb-4 font-heading text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+                        {t("headerTitle")}
+                    </h1>
+                    <p className="mx-auto max-w-2xl text-lg leading-relaxed text-ink-soft">
                         {t("headerDescription")}
                     </p>
                 </div>
@@ -48,7 +50,7 @@ export default function AboutPage() {
                                 </div>
 
                                 <div className="text-center relative z-10">
-                                    <h3 className="text-2xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">
+                                    <h3 className="mb-3 font-heading text-2xl font-bold text-ink transition-colors duration-300 group-hover:text-primary">
                                         {person.name}
                                     </h3>
                                     <Badge
@@ -64,7 +66,6 @@ export default function AboutPage() {
                 </div>
 
                 {/* Decorative elements */}
-
             </div>
         </div>
     );

@@ -1,38 +1,48 @@
 import React from "react";
-import { ArrowRight, Bell } from "lucide-react";
-import { Badge } from "../ui/badge";
 import GetStartedButton from "./GetStartedButton";
+import AwardBadge from "./AwardBadge";
 import { useTranslations } from "next-intl";
 
 const HeroSection = () => {
     const t = useTranslations("herosection");
+
+    // The wordmark gets a hand-torn "tape" highlight behind the word LINK.
+    // We split the translated name on that word so non-Latin locales (which
+    // localise the brand) simply render the plain wordmark with no markup.
+    const name = t("name");
+    const [before, after, ...rest] = name.split("LINK");
+    const hasLink = rest.length === 0 && after !== undefined;
+
     return (
-        <div className="flex flex-col items-center gap-7">
-            <div>
-                <Badge className="bg-primary h-9 rounded-4xl">
-                    <Badge className="bg-white h-6 rounded-4xl mr-0.5">
-                        <Bell className="text-primary !h-4 !w-4"></Bell>
-                        <h1 className=" text-primary">{t("announcement")}</h1>
-                    </Badge>
-                    <h1 className="text-white font-semibold">{t("announcement_text")}</h1>
-                    <ArrowRight className="text-white !h-4 !w-4 ml-1"></ArrowRight>
-                </Badge>
-            </div>
-            <h1 className="text-6xl font-semibold pt-3 text-center">
-                {t("name")}
+        <section className="flex min-h-[68vh] flex-col items-center justify-center px-6 pb-6 pt-16 text-center sm:pb-8 sm:pt-20">
+            <AwardBadge />
+
+            <h1 className="mt-8 font-heading text-[clamp(2.75rem,9vw,7.5rem)] font-extrabold leading-none tracking-[-0.035em] text-ink">
+                {hasLink ? (
+                    <>
+                        {before}
+                        <span className="relative inline-block">
+                            <span
+                                aria-hidden
+                                className="absolute -left-3 -right-3 top-1/2 -z-0 h-[0.62em] -translate-y-1/2 -rotate-3 bg-primary shadow-[0_9px_20px_rgba(30,39,35,0.18)]"
+                            />
+                            <span className="relative z-[1]">LINK</span>
+                        </span>
+                        {after}
+                    </>
+                ) : (
+                    name
+                )}
             </h1>
-            <div className="text-center flex flex-col gap-4">
-                <h1 className="text-gray-500 text-xl">
-                    {t("header1")}
-                </h1>
-                <h1 className="text-gray-500 text-xl">
-                    {t("header2")}
-                </h1>
-            </div>
-            <div>
+
+            <p className="mt-9 max-w-xl text-lg leading-relaxed text-ink-soft sm:text-xl">
+                {t("header1")} {t("header2")}
+            </p>
+
+            <div className="mt-9">
                 <GetStartedButton />
             </div>
-        </div>
+        </section>
     );
 };
 

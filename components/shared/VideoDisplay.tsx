@@ -1,18 +1,24 @@
 import React from "react";
-import { Card, CardContent } from "../ui/card";
 
+/**
+ * Hero product preview framed in a browser-style chrome (traffic-light dots
+ * + rounded card) to echo the in-app dashboard. Image is unchanged.
+ */
 const VideoDisplay = () => {
     return (
-        <div className="pt-20 flex flex-row justify-center">
-            <Card className="max-w-6xl w-full flex flex-row items-center justify-center">
-                <CardContent className="flex flex-row items-center justify-center p-4">
-                    <img
-                        src="/assets/Problemsection.png"
-                        alt="Problem Section"
-                        className="w-full h-auto rounded-xl object-contain"
-                    />
-                </CardContent>
-            </Card>
+        <div className="px-4 pb-16 pt-2 sm:px-8">
+            <div className="mx-auto max-w-5xl rounded-2xl border border-hairline bg-surface p-3.5 shadow-[0_30px_70px_rgba(30,39,35,0.12)]">
+                <div className="flex gap-1.5 px-2 pb-3 pt-1">
+                    <span className="h-3 w-3 rounded-full bg-[#e6786b]" />
+                    <span className="h-3 w-3 rounded-full bg-[#e7c25e]" />
+                    <span className="h-3 w-3 rounded-full bg-primary" />
+                </div>
+                <img
+                    src="/assets/Problemsection.png"
+                    alt="Problem Section"
+                    className="block w-full rounded-xl object-contain"
+                />
+            </div>
         </div>
     );
 };

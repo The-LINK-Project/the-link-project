@@ -1,81 +1,70 @@
 import React from "react";
-import { Card, CardContent } from "../ui/card";
 import { useTranslations } from "next-intl";
+
 const SolutionSection = () => {
     const t = useTranslations("solutionsection");
+
+    const steps = [t("part1"), t("part2"), t("part3")];
+
     return (
-        <div className="bg-white-50 w-full">
-            <div className="container mx-auto py-12 px-4 lg:px-8">
-                {/* Header */}
-                {/* <div className="text-center mb-8">
-                    <h2 className="text-4xl font-semibold tracking-tight mb-2">
-                        The Solution
-                    </h2>
-                    <p className="text-gray-600 text-base max-w-xl mx-auto">
-                        Personalized learning powered by smart objectives, realtime conversations, and an intelligent chatbot.
-                    </p>
-                </div> */}
-                <div className="text-center mb-16">
-                    <p className="text-primary uppercase tracking-wide mb-4">
-                        {t("subtitle")}
-                    </p>
-                    <h2 className="text-5xl font-semibold tracking-tight mb-8 max-w-4xl mx-auto leading-tight">
-                        {t("title")}
-                    </h2>
-                    <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-2xl font-medium text-gray-700 mb-12">
-                        <span className="flex items-center">
-                            <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                            {t("part1")}
-                        </span>
-                        <span className="flex items-center">
-                            <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                            {t("part2")}
-                        </span>
-                        <span className="flex items-center">
-                            <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                            {t("part3")}
-                        </span>
+        <div className="w-full bg-surface">
+            <div className="mx-auto max-w-6xl px-6 py-24">
+                <div className="grid items-center gap-14 lg:grid-cols-[1fr_1.3fr]">
+                    {/* Editorial copy + numbered objectives */}
+                    <div>
+                        <p className="text-xs font-bold uppercase tracking-[0.22em] text-eyebrow">
+                            {t("subtitle")}
+                        </p>
+                        <h2 className="mt-4 max-w-md font-heading text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-5xl">
+                            {t("title")}
+                        </h2>
+
+                        <div className="mt-8 flex flex-col gap-6">
+                            {steps.map((step, i) => (
+                                <div
+                                    key={step}
+                                    className="flex items-baseline gap-5"
+                                >
+                                    <span className="font-heading text-3xl font-bold text-primary">
+                                        {String(i + 1).padStart(2, "0")}
+                                    </span>
+                                    <h3 className="text-lg font-semibold text-ink">
+                                        {step}
+                                    </h3>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
 
-                <div className="flex flex-col gap-6">
-                    {/* Objectives - Wide Banner */}
-                    <Card className="bg-gray-50 overflow-hidden rounded-2xl shadow-md">
-                        <CardContent className="p-0">
-                            <img
-                                src="/assets/Objectives.png"
-                                alt="Learning Objectives"
-                                className="w-full object-contain"
-                                style={{ aspectRatio: "2000 / 302" }}
-                            />
-                        </CardContent>
-                    </Card>
-
-                    {/* Conversation + Chatbot */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* Conversation */}
-                        <Card className="lg:col-span-2 bg-gray-50 overflow-hidden rounded-2xl shadow-md">
-                            <CardContent className="p-0">
+                    {/* Product imagery */}
+                    <div className="flex flex-col gap-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1.4fr_1fr]">
+                            <div className="rounded-2xl border border-[#e7e5dd] bg-surface p-2.5 shadow-[0_18px_44px_rgba(30,39,35,0.1)]">
                                 <img
                                     src="/assets/Conversation.png"
                                     alt="Realtime Conversation"
-                                    className="w-full object-contain"
+                                    className="block w-full rounded-lg object-contain"
                                     style={{ aspectRatio: "1480 / 1118" }}
                                 />
-                            </CardContent>
-                        </Card>
-
-                        {/* Chatbot */}
-                        <Card className="bg-gray-50 overflow-hidden rounded-2xl shadow-md">
-                            <CardContent className="p-0 flex items-center justify-center">
+                            </div>
+                            <div className="flex items-center rounded-2xl border border-[#e7e5dd] bg-surface p-2.5 shadow-[0_18px_44px_rgba(30,39,35,0.1)]">
                                 <img
                                     src="/assets/Chatbot.png"
                                     alt="AI Chatbot"
-                                    className="w-full object-contain"
+                                    className="block w-full rounded-lg object-contain"
                                     style={{ aspectRatio: "594 / 996" }}
                                 />
-                            </CardContent>
-                        </Card>
+                            </div>
+                        </div>
+
+                        <div className="overflow-hidden rounded-2xl border border-[#e7e5dd] bg-surface p-2.5 shadow-[0_18px_44px_rgba(30,39,35,0.1)]">
+                            <img
+                                src="/assets/Objectives.png"
+                                alt="Learning Objectives"
+                                className="block w-full rounded-lg object-contain"
+                                style={{ aspectRatio: "2000 / 302" }}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

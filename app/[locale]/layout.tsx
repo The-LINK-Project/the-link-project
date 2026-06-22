@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Open_Sans } from "next/font/google";
+import { Open_Sans, Schibsted_Grotesk, Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/shared/Header";
 import { Analytics } from "@vercel/analytics/react";
@@ -18,6 +18,20 @@ import { routing } from "@/i18n/routing";
 
 const openSans = Open_Sans({
     variable: "--font-open-sans",
+    subsets: ["latin"],
+});
+
+// Landing page typography: Schibsted Grotesk for display headings and
+// Nunito Sans for body copy, exposed as CSS variables and consumed via the
+// `font-heading` / `font-body` Tailwind utilities (see globals.css @theme).
+const schibstedGrotesk = Schibsted_Grotesk({
+    variable: "--font-schibsted",
+    subsets: ["latin"],
+    weight: ["600", "700", "800"],
+});
+
+const nunitoSans = Nunito_Sans({
+    variable: "--font-nunito",
     subsets: ["latin"],
 });
 
@@ -81,7 +95,7 @@ export default async function RootLayout({
         <ClerkProvider>
             <html lang="en">
                 <body
-                    className={`${openSans.variable} antialiased container mx-auto max-w-7xl`}
+                    className={`${openSans.variable} ${schibstedGrotesk.variable} ${nunitoSans.variable} antialiased container mx-auto max-w-7xl`}
                     suppressHydrationWarning={true}
                 >
                     <NextIntlClientProvider>
