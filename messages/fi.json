@@ -80,7 +80,12 @@
         "viewResultsButton": "Tingnan ang mga Resulta",
         "beginnerTab": "Nagsisimula",
         "intermediateTab": "Katamtamang Antas",
-        "advancedTab": "Mataas na Antas"
+        "advancedTab": "Mataas na Antas",
+        "gamesTitle": "Mga Laro",
+        "gamesSubtitle": "Magsanay ng English gamit ang masasayang laro:",
+        "wordMatchDescription": "Pindutin ang dalawang card na magkatugma",
+        "pictureStoryDescription": "Tingnan ang mga larawan at piliin ang tamang pangungusap",
+        "playButton": "Maglaro"
     },
     "quizMain": {
         "badge": "Interaktibong Pagsusulit",

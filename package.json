@@ -11,7 +11,8 @@
     "relay": "nodemon ./relay-server/index.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "migration:backfill-lesson-completed": "tsx scripts/backfill-lesson-completed.ts"
+    "migration:backfill-lesson-completed": "tsx scripts/backfill-lesson-completed.ts",
+    "seed:games": "tsx scripts/seed-games.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.20.1",

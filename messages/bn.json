@@ -80,7 +80,12 @@
         "viewResultsButton": "ফলাফল দেখুন",
         "beginnerTab": "শুরুর স্তর",
         "intermediateTab": "মধ্যম স্তর",
-        "advancedTab": "উন্নত স্তর"
+        "advancedTab": "উন্নত স্তর",
+        "gamesTitle": "গেমস",
+        "gamesSubtitle": "মজার গেম দিয়ে ইংরেজি অনুশীলন করুন:",
+        "wordMatchDescription": "মিলে যায় এমন দুটি কার্ডে চাপ দিন",
+        "pictureStoryDescription": "ছবি দেখে সঠিক বাক্যটি বেছে নিন",
+        "playButton": "খেলুন"
     },
     "quizMain": {
         "badge": "ইন্টারেক্টিভ কুইজ",

@@ -260,3 +260,27 @@ body {
         animation: none;
     }
 }
+
+/* Mini-games: brief shake on a wrong answer/match. */
+@keyframes game-shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-4px);
+    }
+    75% {
+        transform: translateX(4px);
+    }
+}
+
+.game-shake {
+    animation: game-shake 0.25s ease-in-out 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .game-shake {
+        animation: none;
+    }
+}

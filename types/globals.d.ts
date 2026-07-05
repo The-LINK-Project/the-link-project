@@ -61,3 +61,45 @@ declare type QuizResult = {
     answers: number[];
     completedAt: string;
 };
+
+// WORD MATCH GAME TYPES
+
+declare type WordMatchTileContent = {
+    text?: string;
+    imageUrl?: string;
+};
+
+declare type WordMatchPair = {
+    left: WordMatchTileContent;
+    right: WordMatchTileContent;
+};
+
+declare type WordMatchRoundData = {
+    title: string;
+    pairs: WordMatchPair[];
+};
+
+declare type WordMatchRoundAdmin = WordMatchRoundData & {
+    _id: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+// PICTURE STORY GAME TYPES
+
+declare type PictureStoryQuestion = {
+    sequence: string[];
+    options: string[];
+    correctAnswerIndex: number;
+};
+
+declare type PictureStorySetData = {
+    title: string;
+    questions: PictureStoryQuestion[];
+};
+
+declare type PictureStorySetAdmin = PictureStorySetData & {
+    _id: string;
+    createdAt: string;
+    updatedAt: string;
+};

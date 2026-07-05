@@ -80,7 +80,12 @@
         "viewResultsButton": "View Results",
         "beginnerTab": "Beginner",
         "intermediateTab": "Intermediate",
-        "advancedTab": "Advanced"
+        "advancedTab": "Advanced",
+        "gamesTitle": "Games",
+        "gamesSubtitle": "Practice English with fun games:",
+        "wordMatchDescription": "Tap two cards that match",
+        "pictureStoryDescription": "Look at the pictures and pick the right sentence",
+        "playButton": "Play"
     },
     "quizMain": {
         "badge": "Interactive Quiz",

@@ -6,7 +6,7 @@ import DashboardLessonItem from "@/components/dashboard/DashboardLessonItem";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { BarChart3 } from "lucide-react";
+import { BarChart3, ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 const DashboardPage = async () => {
@@ -77,6 +77,45 @@ const DashboardPage = async () => {
                     </div>
                 </TabsContent>
             </Tabs>
+
+            <div className="mt-12">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    {t("gamesTitle")}
+                </h2>
+                <p className="text-gray-600 mb-4">{t("gamesSubtitle")}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Link
+                        href="/games/word-match"
+                        className="group flex items-center gap-4 rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary hover:shadow-md"
+                    >
+                        <span className="text-4xl">🃏</span>
+                        <span className="flex-1">
+                            <span className="block text-lg font-semibold text-foreground">
+                                Word Match
+                            </span>
+                            <span className="block text-sm text-muted-foreground">
+                                {t("wordMatchDescription")}
+                            </span>
+                        </span>
+                        <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
+                    </Link>
+                    <Link
+                        href="/games/picture-story"
+                        className="group flex items-center gap-4 rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary hover:shadow-md"
+                    >
+                        <span className="text-4xl">📖</span>
+                        <span className="flex-1">
+                            <span className="block text-lg font-semibold text-foreground">
+                                Picture Story
+                            </span>
+                            <span className="block text-sm text-muted-foreground">
+                                {t("pictureStoryDescription")}
+                            </span>
+                        </span>
+                        <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
+                    </Link>
+                </div>
+            </div>
         </section>
     );
 };

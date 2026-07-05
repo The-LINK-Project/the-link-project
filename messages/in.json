@@ -80,7 +80,12 @@
         "viewResultsButton": "Lihat Hasil",
         "beginnerTab": "Pemula",
         "intermediateTab": "Menengah",
-        "advancedTab": "Lanjutan"
+        "advancedTab": "Lanjutan",
+        "gamesTitle": "Permainan",
+        "gamesSubtitle": "Latih bahasa Inggris dengan permainan seru:",
+        "wordMatchDescription": "Ketuk dua kartu yang cocok",
+        "pictureStoryDescription": "Lihat gambar dan pilih kalimat yang benar",
+        "playButton": "Main"
     },
     "quizMain": {
         "badge": "Kuis Interaktif",

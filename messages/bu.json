@@ -80,7 +80,12 @@
         "viewResultsButton": "ရလဒ်များကို မြင်ပါ",
         "beginnerTab": "အစပျိုး",
         "intermediateTab": "အလယ်အလတ်",
-        "advancedTab": "တိုးတက်သော"
+        "advancedTab": "တိုးတက်သော",
+        "gamesTitle": "ဂိမ်းများ",
+        "gamesSubtitle": "ပျော်စရာဂိမ်းများဖြင့် အင်္ဂလိပ်စာ လေ့ကျင့်ပါ:",
+        "wordMatchDescription": "တူညီသော ကတ်နှစ်ခုကို နှိပ်ပါ",
+        "pictureStoryDescription": "ပုံများကိုကြည့်ပြီး မှန်ကန်သော စာကြောင်းကို ရွေးပါ",
+        "playButton": "ကစားမည်"
     },
     "quizMain": {
         "badge": "အင်တာနက်ကွစ်",

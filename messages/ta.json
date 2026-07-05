@@ -80,7 +80,12 @@
         "viewResultsButton": "முடிவுகளைப் பாருங்கள்",
         "beginnerTab": "தொடக்க நிலை",
         "intermediateTab": "இடைநிலை",
-        "advancedTab": "மேம்பட்ட நிலை"
+        "advancedTab": "மேம்பட்ட நிலை",
+        "gamesTitle": "விளையாட்டுகள்",
+        "gamesSubtitle": "வேடிக்கையான விளையாட்டுகளுடன் ஆங்கிலம் பயிற்சி செய்யுங்கள்:",
+        "wordMatchDescription": "பொருந்தும் இரண்டு அட்டைகளைத் தட்டவும்",
+        "pictureStoryDescription": "படங்களைப் பார்த்து சரியான வாக்கியத்தைத் தேர்ந்தெடுக்கவும்",
+        "playButton": "விளையாடு"
     },
     "quizMain": {
         "badge": "இணைய வினாடி வினா",
