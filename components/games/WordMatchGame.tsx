@@ -1,14 +1,15 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { saveWordMatchResult } from "@/lib/actions/wordMatch.actions";
 import { Button } from "@/components/ui/button";
 import {
-    Check,
-    Timer,
-    RotateCcw,
+    ArrowLeft,
     ArrowRight,
-    Trophy,
+    Check,
+    ChevronRight,
     Play,
+    RotateCcw,
+    Timer,
+    Trophy,
 } from "lucide-react";
 
 type GameTile = {
@@ -16,15 +17,24 @@ type GameTile = {
     pairIndex: number;
     text?: string;
     imageUrl?: string;
+    /** The other half of the pair, revealed on a picture tile once matched. */
+    partnerText?: string;
 };
 
 type WordMatchGameProps = {
-    rounds: WordMatchRoundAdmin[];
+    rounds: WordMatchGameRound[];
+    categories: WordMatchCategory[];
 };
 
-type GamePhase = "start" | "playing" | "finished";
+type GamePhase = "categories" | "rounds" | "playing" | "finished";
 
 const WRONG_FLASH_MS = 700;
+
+const DIFFICULTY_STYLES: Record<GameDifficulty, string> = {
+    easy: "bg-emerald-100 text-emerald-700",
+    medium: "bg-amber-100 text-amber-700",
+    hard: "bg-rose-100 text-rose-700",
+};
 
 function shuffle<T>(items: T[]): T[] {
     const result = [...items];
@@ -35,11 +45,21 @@ function shuffle<T>(items: T[]): T[] {
     return result;
 }
 
-function buildTiles(round: WordMatchRoundAdmin): GameTile[] {
+function buildTiles(round: WordMatchGameRound): GameTile[] {
     const tiles: GameTile[] = [];
     round.pairs.forEach((pair, pairIndex) => {
-        tiles.push({ id: `${pairIndex}-left`, pairIndex, ...pair.left });
-        tiles.push({ id: `${pairIndex}-right`, pairIndex, ...pair.right });
+        tiles.push({
+            id: `${pairIndex}-left`,
+            pairIndex,
+            ...pair.left,
+            partnerText: pair.right.text,
+        });
+        tiles.push({
+            id: `${pairIndex}-right`,
+            pairIndex,
+            ...pair.right,
+            partnerText: pair.left.text,
+        });
     });
     return shuffle(tiles);
 }
@@ -51,9 +71,24 @@ function formatTime(ms: number) {
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
-export default function WordMatchGame({ rounds }: WordMatchGameProps) {
+function DifficultyBadge({ difficulty }: { difficulty: GameDifficulty }) {
+    return (
+        <span
+            className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${DIFFICULTY_STYLES[difficulty]}`}
+        >
+            {difficulty}
+        </span>
+    );
+}
+
+export default function WordMatchGame({
+    rounds,
+    categories,
+}: WordMatchGameProps) {
+    const [phase, setPhase] = useState<GamePhase>("categories");
+    const [categoryId, setCategoryId] = useState<string | null>(null);
     const [roundIndex, setRoundIndex] = useState(0);
-    const [phase, setPhase] = useState<GamePhase>("start");
+
     const [tiles, setTiles] = useState<GameTile[]>([]);
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [matchedPairs, setMatchedPairs] = useState<number[]>([]);
@@ -62,11 +97,16 @@ export default function WordMatchGame({ rounds }: WordMatchGameProps) {
     const [elapsedMs, setElapsedMs] = useState(0);
     const [finalTimeMs, setFinalTimeMs] = useState(0);
     const [score, setScore] = useState(0);
+
     const startTimeRef = useRef(0);
     const wrongTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const round = rounds[roundIndex];
-    const hasNextRound = roundIndex + 1 < rounds.length;
+    const categoryRounds = categoryId
+        ? rounds.filter((round) => round.category === categoryId)
+        : [];
+    const round = categoryRounds[roundIndex];
+    const category = categories.find((item) => item.id === categoryId);
+    const hasNextRound = roundIndex + 1 < categoryRounds.length;
 
     // Tick the visible timer while a round is being played
     useEffect(() => {
@@ -85,8 +125,10 @@ export default function WordMatchGame({ rounds }: WordMatchGameProps) {
 
     const startRound = (index: number) => {
         if (wrongTimeoutRef.current) clearTimeout(wrongTimeoutRef.current);
+        const next = categoryRounds[index];
+        if (!next) return;
         setRoundIndex(index);
-        setTiles(buildTiles(rounds[index]));
+        setTiles(buildTiles(next));
         setSelectedId(null);
         setMatchedPairs([]);
         setWrongIds([]);
@@ -97,25 +139,14 @@ export default function WordMatchGame({ rounds }: WordMatchGameProps) {
     };
 
     const finishRound = (finalWrongAttempts: number) => {
-        const timeMs = Date.now() - startTimeRef.current;
-        const finalScore = Math.max(0, 100 - finalWrongAttempts * 10);
-        setFinalTimeMs(timeMs);
-        setScore(finalScore);
+        setFinalTimeMs(Date.now() - startTimeRef.current);
+        setScore(Math.max(0, 100 - finalWrongAttempts * 10));
         setPhase("finished");
-
-        // Fire-and-forget: the game keeps working even if saving fails
-        saveWordMatchResult({
-            roundId: round._id,
-            score: finalScore,
-            timeMs,
-            wrongAttempts: finalWrongAttempts,
-        }).catch((error) => {
-            console.error("Error saving word match result:", error);
-        });
+        // Nothing is saved — results are not stored for the focus group.
     };
 
     const handleTileTap = (tile: GameTile) => {
-        if (phase !== "playing") return;
+        if (phase !== "playing" || !round) return;
         if (wrongIds.length > 0) return; // locked while the wrong flash is showing
         if (matchedPairs.includes(tile.pairIndex)) return;
 
@@ -153,33 +184,96 @@ export default function WordMatchGame({ rounds }: WordMatchGameProps) {
         }
     };
 
-    if (!round) return null;
+    // ---------------------------------------------------------- category grid
 
-    if (phase === "start") {
+    if (phase === "categories") {
         return (
-            <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
-                <div className="mb-4 text-5xl">🃏</div>
-                <h2 className="mb-2 text-2xl font-bold text-foreground">
-                    {round.title}
-                </h2>
-                <p className="mb-2 text-lg text-muted-foreground">
-                    👆 Tap two cards that match.
+            <div>
+                <p className="mb-4 text-center text-lg font-medium text-foreground">
+                    👇 Choose a topic.
                 </p>
-                <p className="mb-8 text-sm text-muted-foreground">
-                    Round {roundIndex + 1} of {rounds.length} ·{" "}
-                    {round.pairs.length} pairs
-                </p>
-                <Button
-                    size="lg"
-                    className="h-14 w-full max-w-xs text-lg font-semibold"
-                    onClick={() => startRound(roundIndex)}
-                >
-                    <Play className="mr-2 h-5 w-5" />
-                    Start
-                </Button>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+                    {categories.map((item) => {
+                        const count = rounds.filter(
+                            (r) => r.category === item.id,
+                        ).length;
+                        return (
+                            <button
+                                key={item.id}
+                                type="button"
+                                onClick={() => {
+                                    setCategoryId(item.id);
+                                    setRoundIndex(0);
+                                    setPhase("rounds");
+                                }}
+                                className="flex min-h-32 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-border bg-card p-4 text-center shadow-sm transition-all hover:border-primary active:scale-95"
+                            >
+                                <span className="text-4xl">{item.emoji}</span>
+                                <span className="text-base font-semibold leading-snug text-foreground">
+                                    {item.label}
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                    {count} {count === 1 ? "round" : "rounds"}
+                                </span>
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
         );
     }
+
+    // ----------------------------------------------------------- round picker
+
+    if (phase === "rounds") {
+        return (
+            <div>
+                <button
+                    type="button"
+                    onClick={() => setPhase("categories")}
+                    className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
+                >
+                    <ArrowLeft className="h-4 w-4" />
+                    All topics
+                </button>
+
+                <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-foreground">
+                    <span>{category?.emoji}</span>
+                    {category?.label}
+                </h2>
+
+                <div className="space-y-3">
+                    {categoryRounds.map((item, index) => (
+                        <button
+                            key={item._id}
+                            type="button"
+                            onClick={() => startRound(index)}
+                            className="group flex w-full items-center gap-4 rounded-2xl border-2 border-border bg-card p-5 text-left shadow-sm transition-all hover:border-primary active:scale-[0.98]"
+                        >
+                            <span className="flex-1">
+                                <span className="mb-1 flex items-center gap-2">
+                                    <span className="text-lg font-semibold text-foreground">
+                                        {item.title}
+                                    </span>
+                                    <DifficultyBadge
+                                        difficulty={item.difficulty}
+                                    />
+                                </span>
+                                <span className="block text-sm text-muted-foreground">
+                                    {item.pairs.length} pairs
+                                </span>
+                            </span>
+                            <ChevronRight className="h-6 w-6 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
+                        </button>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
+    if (!round) return null;
+
+    // -------------------------------------------------------- results screen
 
     if (phase === "finished") {
         return (
@@ -212,7 +306,7 @@ export default function WordMatchGame({ rounds }: WordMatchGameProps) {
                         <RotateCcw className="mr-2 h-5 w-5" />
                         Play again
                     </Button>
-                    {hasNextRound && (
+                    {hasNextRound ? (
                         <Button
                             size="lg"
                             className="h-14 text-lg font-semibold"
@@ -221,18 +315,36 @@ export default function WordMatchGame({ rounds }: WordMatchGameProps) {
                             Next round
                             <ArrowRight className="ml-2 h-5 w-5" />
                         </Button>
+                    ) : (
+                        <Button
+                            size="lg"
+                            className="h-14 text-lg font-semibold"
+                            onClick={() => setPhase("categories")}
+                        >
+                            More topics
+                            <ArrowRight className="ml-2 h-5 w-5" />
+                        </Button>
                     )}
                 </div>
             </div>
         );
     }
 
+    // --------------------------------------------------------------- playing
+
     return (
         <div>
             <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-sm">
-                <span className="truncate font-semibold text-foreground">
-                    {round.title}
-                </span>
+                <button
+                    type="button"
+                    onClick={() => setPhase("rounds")}
+                    className="flex min-w-0 items-center gap-2 text-left"
+                >
+                    <ArrowLeft className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    <span className="truncate font-semibold text-foreground">
+                        {round.title}
+                    </span>
+                </button>
                 <div className="flex shrink-0 items-center gap-4 text-sm font-medium text-muted-foreground">
                     <span className="flex items-center gap-1">
                         <Check className="h-4 w-4 text-emerald-600" />
@@ -244,6 +356,10 @@ export default function WordMatchGame({ rounds }: WordMatchGameProps) {
                     </span>
                 </div>
             </div>
+
+            <p className="mb-4 text-center text-lg font-medium text-foreground">
+                👆 Tap two cards that match.
+            </p>
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
                 {tiles.map((tile) => {
@@ -271,19 +387,27 @@ export default function WordMatchGame({ rounds }: WordMatchGameProps) {
                             onClick={() => handleTileTap(tile)}
                             disabled={isMatched}
                             aria-pressed={isSelected}
-                            className={`flex min-h-24 w-full select-none flex-col items-center justify-center gap-2 rounded-2xl border-2 p-3 text-center transition-all duration-200 sm:min-h-28 ${stateClasses}`}
+                            className={`flex min-h-28 w-full select-none flex-col items-center justify-center gap-2 rounded-2xl border-2 p-3 text-center transition-all duration-200 sm:min-h-32 ${stateClasses}`}
                         >
                             {tile.imageUrl && (
                                 // eslint-disable-next-line @next/next/no-img-element
                                 <img
                                     src={tile.imageUrl}
-                                    alt={tile.text || "Picture tile"}
+                                    alt={tile.partnerText || "Picture"}
                                     className="h-16 w-16 object-contain sm:h-20 sm:w-20"
                                 />
                             )}
                             {tile.text && (
-                                <span className="break-words text-lg font-semibold leading-snug sm:text-xl">
+                                <span className="break-words text-base font-semibold leading-snug sm:text-lg">
                                     {tile.text}
+                                </span>
+                            )}
+                            {/* The word is revealed only once the pair is
+                                matched — captioning a picture tile up front
+                                would print the answer on the card. */}
+                            {isMatched && tile.imageUrl && tile.partnerText && (
+                                <span className="break-words text-sm font-semibold leading-tight text-emerald-700 sm:text-base">
+                                    {tile.partnerText}
                                 </span>
                             )}
                             {isMatched && (

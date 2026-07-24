@@ -1,13 +1,13 @@
 import React from "react";
 import PictureStoryGame from "@/components/games/PictureStoryGame";
-import { getAllPictureStorySets } from "@/lib/actions/pictureStory.actions";
+import { PICTURE_STORY_SETS } from "@/constants/games/pictureStory";
 
-// Always read the latest sets from MongoDB so new admin content shows up
+// Content is a static import, so this page makes no database or network
+// calls. Kept dynamic (rather than prerendered) to match the rest of the
+// app's rendering behaviour — the cost is nil, there is nothing to fetch.
 export const dynamic = "force-dynamic";
 
-const PictureStoryPage = async () => {
-    const sets = await getAllPictureStorySets();
-
+const PictureStoryPage = () => {
     return (
         <div className="min-h-screen flex flex-col items-center">
             <div className="w-full max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
@@ -23,16 +23,7 @@ const PictureStoryPage = async () => {
                     </p>
                 </div>
 
-                {sets.length === 0 ? (
-                    <div className="rounded-2xl border border-border bg-card p-10 text-center shadow-sm">
-                        <div className="mb-4 text-5xl">📖</div>
-                        <p className="text-lg text-muted-foreground">
-                            No stories yet. Please check back soon!
-                        </p>
-                    </div>
-                ) : (
-                    <PictureStoryGame sets={sets} />
-                )}
+                <PictureStoryGame sets={PICTURE_STORY_SETS} />
             </div>
         </div>
     );

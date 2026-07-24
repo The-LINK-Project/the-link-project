@@ -114,6 +114,22 @@ const DashboardPage = async () => {
                         </span>
                         <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
                     </Link>
+                    <Link
+                        href="/games/focus-group"
+                        className="group flex items-center gap-4 rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary hover:shadow-md md:col-span-2"
+                    >
+                        <span className="text-4xl">🏁</span>
+                        <span className="flex-1">
+                            <span className="block text-lg font-semibold text-foreground">
+                                Focus Group July 2026
+                            </span>
+                            <span className="block text-sm text-muted-foreground">
+                                15 stages, played straight through. A time
+                                trial.
+                            </span>
+                        </span>
+                        <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
+                    </Link>
                 </div>
             </div>
         </section>

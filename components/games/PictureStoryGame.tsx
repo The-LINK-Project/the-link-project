@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
-import { savePictureStoryResult } from "@/lib/actions/pictureStory.actions";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import PicturePanel from "@/components/games/PicturePanel";
 import {
+    ArrowLeft,
     ArrowRight,
     Check,
     ChevronRight,
@@ -11,35 +12,106 @@ import {
     X,
 } from "lucide-react";
 
+function shuffle<T>(items: T[]): T[] {
+    const result = [...items];
+    for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+}
+
 type PictureStoryGameProps = {
-    sets: PictureStorySetAdmin[];
+    sets: PictureStoryGameSet[];
 };
 
-const isImageUrl = (item: string) => /^https?:\/\//.test(item);
+const DIFFICULTY_STYLES: Record<GameDifficulty, string> = {
+    easy: "bg-emerald-100 text-emerald-700",
+    medium: "bg-amber-100 text-amber-700",
+    hard: "bg-rose-100 text-rose-700",
+};
 
 export default function PictureStoryGame({ sets }: PictureStoryGameProps) {
     const [activeSetIndex, setActiveSetIndex] = useState<number | null>(null);
     const [questionIndex, setQuestionIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
+    const [orderPicks, setOrderPicks] = useState<number[]>([]);
     const [correctCount, setCorrectCount] = useState(0);
     const [isFinished, setIsFinished] = useState(false);
+    // Bumped on replay so the shuffles below recompute
+    const [nonce, setNonce] = useState(0);
 
     const activeSet = activeSetIndex !== null ? sets[activeSetIndex] : null;
+    const question = activeSet?.questions[questionIndex];
+
+    // The content bank always stores the correct answer at index 0, so the
+    // options MUST be shuffled here or the answer is always the first button.
+    const shuffledOptions = useMemo(() => {
+        if (!question) return [];
+        return shuffle(
+            question.options.map((text, originalIndex) => ({
+                text,
+                originalIndex,
+            })),
+        );
+    }, [question, nonce]);
+
+    // For "order" questions the sequence is stored in the CORRECT order.
+    const shuffledPanels = useMemo(() => {
+        if (!question || question.type !== "order") return [];
+        return shuffle(
+            question.sequence.map((src, correctIndex) => ({
+                src,
+                correctIndex,
+            })),
+        );
+    }, [question, nonce]);
+
+    const isOrder = question?.type === "order";
+    const hasAnswered = isOrder
+        ? orderPicks.length === shuffledPanels.length && shuffledPanels.length > 0
+        : selectedOption !== null;
+
+    const isCorrect = isOrder
+        ? orderPicks.every(
+              (panelIndex, position) =>
+                  shuffledPanels[panelIndex]?.correctIndex === position,
+          )
+        : selectedOption !== null &&
+          shuffledOptions[selectedOption]?.originalIndex ===
+              question?.correctAnswerIndex;
 
     const startSet = (index: number) => {
         setActiveSetIndex(index);
         setQuestionIndex(0);
         setSelectedOption(null);
+        setOrderPicks([]);
         setCorrectCount(0);
         setIsFinished(false);
+        setNonce((n) => n + 1);
     };
 
-    const handleOptionTap = (optionIndex: number) => {
-        if (!activeSet || selectedOption !== null) return;
-        setSelectedOption(optionIndex);
-        const question = activeSet.questions[questionIndex];
-        if (optionIndex === question.correctAnswerIndex) {
+    const handleOptionTap = (shuffledIndex: number) => {
+        if (!question || hasAnswered) return;
+        setSelectedOption(shuffledIndex);
+        if (
+            shuffledOptions[shuffledIndex]?.originalIndex ===
+            question.correctAnswerIndex
+        ) {
             setCorrectCount((prev) => prev + 1);
+        }
+    };
+
+    const handlePanelTap = (panelIndex: number) => {
+        if (hasAnswered || orderPicks.includes(panelIndex)) return;
+        const next = [...orderPicks, panelIndex];
+        setOrderPicks(next);
+        if (next.length === shuffledPanels.length) {
+            const allRight = next.every(
+                (idx, position) =>
+                    shuffledPanels[idx]?.correctIndex === position,
+            );
+            if (allRight) setCorrectCount((prev) => prev + 1);
         }
     };
 
@@ -48,24 +120,21 @@ export default function PictureStoryGame({ sets }: PictureStoryGameProps) {
         if (questionIndex + 1 < activeSet.questions.length) {
             setQuestionIndex((prev) => prev + 1);
             setSelectedOption(null);
+            setOrderPicks([]);
         } else {
             setIsFinished(true);
-
-            // Fire-and-forget: the game keeps working even if saving fails
-            savePictureStoryResult({
-                setId: activeSet._id,
-                score: correctCount,
-                totalQuestions: activeSet.questions.length,
-            }).catch((error) => {
-                console.error("Error saving picture story result:", error);
-            });
+            // Nothing is saved — results are not stored for the focus group.
         }
     };
 
-    // Set picker / start screen
+    // ------------------------------------------------------------ set picker
+
     if (!activeSet) {
         return (
             <div className="space-y-4">
+                <p className="mb-4 text-center text-lg font-medium text-foreground">
+                    👇 Choose a story.
+                </p>
                 {sets.map((set, index) => (
                     <button
                         key={set._id}
@@ -75,8 +144,15 @@ export default function PictureStoryGame({ sets }: PictureStoryGameProps) {
                     >
                         <span className="text-4xl">📖</span>
                         <span className="flex-1">
-                            <span className="block text-lg font-semibold text-foreground">
-                                {set.title}
+                            <span className="mb-1 flex flex-wrap items-center gap-2">
+                                <span className="text-lg font-semibold text-foreground">
+                                    {set.title}
+                                </span>
+                                <span
+                                    className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${DIFFICULTY_STYLES[set.difficulty]}`}
+                                >
+                                    {set.difficulty}
+                                </span>
                             </span>
                             <span className="block text-sm text-muted-foreground">
                                 {set.questions.length} questions
@@ -89,7 +165,8 @@ export default function PictureStoryGame({ sets }: PictureStoryGameProps) {
         );
     }
 
-    // Final score screen
+    // ----------------------------------------------------------- score screen
+
     if (isFinished) {
         const total = activeSet.questions.length;
         const percentage = Math.round((correctCount / total) * 100);
@@ -131,10 +208,9 @@ export default function PictureStoryGame({ sets }: PictureStoryGameProps) {
         );
     }
 
-    const question = activeSet.questions[questionIndex];
+    if (!question) return null;
+
     const total = activeSet.questions.length;
-    const hasAnswered = selectedOption !== null;
-    const isCorrect = selectedOption === question.correctAnswerIndex;
     const isLastQuestion = questionIndex + 1 === total;
 
     return (
@@ -142,6 +218,14 @@ export default function PictureStoryGame({ sets }: PictureStoryGameProps) {
             {/* Progress */}
             <div className="mb-4">
                 <div className="mb-2 flex items-center justify-between text-sm font-medium text-muted-foreground">
+                    <button
+                        type="button"
+                        onClick={() => setActiveSetIndex(null)}
+                        className="flex items-center gap-1 hover:text-foreground"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Stories
+                    </button>
                     <span>
                         Question {questionIndex + 1} / {total}
                     </span>
@@ -160,104 +244,208 @@ export default function PictureStoryGame({ sets }: PictureStoryGameProps) {
                 </div>
             </div>
 
-            {/* Picture / emoji sequence */}
-            <div className="mb-5 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-border bg-card p-6 shadow-sm sm:gap-3 sm:p-8">
-                {question.sequence.map((item, index) => (
-                    <span
-                        key={index}
-                        className="flex items-center gap-2 sm:gap-3"
-                    >
-                        {index > 0 && (
-                            <span
-                                aria-hidden="true"
-                                className="text-2xl text-muted-foreground"
+            {isOrder ? (
+                /* ---------------------------------------- order-the-pictures */
+                <>
+                    <p className="mb-4 text-center text-lg font-medium text-foreground">
+                        👆 {question.prompt ?? "Put the pictures in the right order."}
+                    </p>
+
+                    <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        {shuffledPanels.map((panel, panelIndex) => {
+                            const position = orderPicks.indexOf(panelIndex);
+                            const picked = position !== -1;
+                            const rightSpot =
+                                hasAnswered && panel.correctIndex === position;
+
+                            let stateClasses =
+                                "border-border bg-card hover:border-primary/60 active:scale-95";
+                            if (hasAnswered) {
+                                stateClasses = rightSpot
+                                    ? "border-emerald-500 bg-emerald-50"
+                                    : "border-red-400 bg-red-50";
+                            } else if (picked) {
+                                stateClasses =
+                                    "border-primary bg-primary/10 ring-2 ring-primary";
+                            }
+
+                            return (
+                                <button
+                                    key={panelIndex}
+                                    type="button"
+                                    onClick={() => handlePanelTap(panelIndex)}
+                                    disabled={hasAnswered || picked}
+                                    className={`relative flex min-h-36 items-center justify-center rounded-2xl border-2 p-3 pt-8 shadow-sm transition-all duration-200 ${stateClasses}`}
+                                >
+                                    <PicturePanel
+                                        item={panel.src}
+                                        caption={
+                                            question.captions?.[
+                                                panel.correctIndex
+                                            ]
+                                        }
+                                        wide
+                                    />
+                                    {picked && (
+                                        <span className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                                            {position + 1}
+                                        </span>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {!hasAnswered && orderPicks.length > 0 && (
+                        <div className="mb-4 text-center">
+                            <Button
+                                variant="outline"
+                                onClick={() => setOrderPicks([])}
                             >
-                                →
-                            </span>
-                        )}
-                        {isImageUrl(item) ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                                src={item}
-                                alt="Story picture"
-                                className="h-20 w-20 object-contain sm:h-24 sm:w-24"
-                            />
-                        ) : (
-                            <span className="text-5xl sm:text-6xl">{item}</span>
-                        )}
-                    </span>
-                ))}
-            </div>
+                                <RotateCcw className="mr-2 h-4 w-4" />
+                                Start again
+                            </Button>
+                        </div>
+                    )}
 
-            <p className="mb-4 text-center text-lg font-medium text-foreground">
-                👆 Tap the correct sentence.
-            </p>
-
-            {/* Answer options */}
-            <div className="space-y-3">
-                {question.options.map((option, optionIndex) => {
-                    const isCorrectOption =
-                        optionIndex === question.correctAnswerIndex;
-                    const isSelectedOption = optionIndex === selectedOption;
-
-                    let stateClasses =
-                        "border-border bg-card shadow-sm hover:border-primary/60 active:scale-[0.98]";
-                    if (hasAnswered) {
-                        if (isCorrectOption) {
-                            stateClasses =
-                                "border-emerald-500 bg-emerald-50 text-emerald-800";
-                        } else if (isSelectedOption) {
-                            stateClasses =
-                                "border-red-400 bg-red-50 text-red-700 game-shake";
-                        } else {
-                            stateClasses = "border-border bg-card opacity-50";
-                        }
-                    }
-
-                    return (
-                        <button
-                            key={optionIndex}
-                            type="button"
-                            onClick={() => handleOptionTap(optionIndex)}
-                            disabled={hasAnswered}
-                            className={`flex min-h-14 w-full items-center justify-between gap-3 rounded-2xl border-2 p-4 text-left text-lg font-medium transition-all duration-200 ${stateClasses}`}
-                        >
-                            <span>{option}</span>
-                            {hasAnswered && isCorrectOption && (
-                                <Check className="h-6 w-6 shrink-0 text-emerald-600" />
-                            )}
-                            {hasAnswered &&
-                                isSelectedOption &&
-                                !isCorrectOption && (
-                                    <X className="h-6 w-6 shrink-0 text-red-500" />
+                    {hasAnswered && !isCorrect && (
+                        <div className="mb-4 rounded-2xl border border-border bg-muted/50 p-4">
+                            <p className="mb-3 text-center text-sm font-semibold text-muted-foreground">
+                                The right order is:
+                            </p>
+                            <div className="flex flex-wrap items-start justify-center gap-2">
+                                {question.sequence.map((item, index) => (
+                                    <span
+                                        key={index}
+                                        className="flex items-start gap-2"
+                                    >
+                                        {index > 0 && (
+                                            <span
+                                                aria-hidden="true"
+                                                className="mt-5 text-xl text-muted-foreground sm:mt-6"
+                                            >
+                                                →
+                                            </span>
+                                        )}
+                                        <PicturePanel
+                                            item={item}
+                                            size="sm"
+                                            caption={question.captions?.[index]}
+                                        />
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </>
+            ) : (
+                /* ------------------------------------------- multiple choice */
+                <>
+                    <div className="mb-5 flex flex-wrap items-start justify-center gap-2 rounded-2xl border border-border bg-card p-6 shadow-sm sm:gap-3 sm:p-8">
+                        {question.sequence.map((item, index) => (
+                            <span
+                                key={index}
+                                className="flex items-start gap-2 sm:gap-3"
+                            >
+                                {index > 0 && (
+                                    <span
+                                        aria-hidden="true"
+                                        className="mt-8 text-2xl text-muted-foreground sm:mt-10"
+                                    >
+                                        →
+                                    </span>
                                 )}
-                        </button>
-                    );
-                })}
-            </div>
+                                <PicturePanel item={item} />
+                            </span>
+                        ))}
+                    </div>
 
-            {/* Feedback + next */}
+                    <p className="mb-4 text-center text-lg font-medium text-foreground">
+                        👆 {question.prompt ?? "Tap the correct sentence."}
+                    </p>
+
+                    <div className="space-y-3">
+                        {shuffledOptions.map((option, shuffledIndex) => {
+                            const isCorrectOption =
+                                option.originalIndex ===
+                                question.correctAnswerIndex;
+                            const isSelectedOption =
+                                shuffledIndex === selectedOption;
+
+                            let stateClasses =
+                                "border-border bg-card shadow-sm hover:border-primary/60 active:scale-[0.98]";
+                            if (hasAnswered) {
+                                if (isCorrectOption) {
+                                    stateClasses =
+                                        "border-emerald-500 bg-emerald-50 text-emerald-800";
+                                } else if (isSelectedOption) {
+                                    stateClasses =
+                                        "border-red-400 bg-red-50 text-red-700 game-shake";
+                                } else {
+                                    stateClasses =
+                                        "border-border bg-card opacity-50";
+                                }
+                            }
+
+                            return (
+                                <button
+                                    key={shuffledIndex}
+                                    type="button"
+                                    onClick={() =>
+                                        handleOptionTap(shuffledIndex)
+                                    }
+                                    disabled={hasAnswered}
+                                    className={`flex min-h-14 w-full items-center justify-between gap-3 rounded-2xl border-2 p-4 text-left text-lg font-medium transition-all duration-200 ${stateClasses}`}
+                                >
+                                    <span>{option.text}</span>
+                                    {hasAnswered && isCorrectOption && (
+                                        <Check className="h-6 w-6 shrink-0 text-emerald-600" />
+                                    )}
+                                    {hasAnswered &&
+                                        isSelectedOption &&
+                                        !isCorrectOption && (
+                                            <X className="h-6 w-6 shrink-0 text-red-500" />
+                                        )}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </>
+            )}
+
+            {/* Feedback + explanation + next */}
             {hasAnswered && (
-                <div className="mt-5 text-center">
-                    <p className="mb-4 text-xl font-semibold">
+                <div className="mt-5">
+                    <p className="mb-3 text-center text-xl font-semibold">
                         {isCorrect ? (
                             <span className="text-emerald-600">
                                 ✅ Correct!
                             </span>
                         ) : (
                             <span className="text-red-500">
-                                ❌ The green one is correct.
+                                ❌ Not quite.
                             </span>
                         )}
                     </p>
-                    <Button
-                        size="lg"
-                        className="h-14 w-full text-lg font-semibold sm:w-auto sm:px-12"
-                        onClick={handleNext}
-                    >
-                        {isLastQuestion ? "See score" : "Next"}
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
+
+                    {question.explanation && (
+                        <div className="mb-5 rounded-2xl border border-border bg-muted/50 p-5 text-center">
+                            <p className="text-base leading-relaxed text-foreground sm:text-lg">
+                                💡 {question.explanation}
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="text-center">
+                        <Button
+                            size="lg"
+                            className="h-14 w-full text-lg font-semibold sm:w-auto sm:px-12"
+                            onClick={handleNext}
+                        >
+                            {isLastQuestion ? "See score" : "Next"}
+                            <ArrowRight className="ml-2 h-5 w-5" />
+                        </Button>
+                    </div>
                 </div>
             )}
         </div>

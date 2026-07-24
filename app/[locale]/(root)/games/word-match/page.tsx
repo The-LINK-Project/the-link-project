@@ -1,12 +1,17 @@
 import React from "react";
 import WordMatchGame from "@/components/games/WordMatchGame";
-import { getAllWordMatchRounds } from "@/lib/actions/wordMatch.actions";
+import {
+    WORD_MATCH_ROUNDS,
+    getWordMatchCategories,
+} from "@/constants/games/wordMatch";
 
-// Always read the latest rounds from MongoDB so new admin content shows up
+// Content is a static import, so this page makes no database or network
+// calls. Kept dynamic (rather than prerendered) to match the rest of the
+// app's rendering behaviour — the cost is nil, there is nothing to fetch.
 export const dynamic = "force-dynamic";
 
-const WordMatchPage = async () => {
-    const rounds = await getAllWordMatchRounds();
+const WordMatchPage = () => {
+    const categories = getWordMatchCategories();
 
     return (
         <div className="min-h-screen flex flex-col items-center">
@@ -23,16 +28,10 @@ const WordMatchPage = async () => {
                     </p>
                 </div>
 
-                {rounds.length === 0 ? (
-                    <div className="rounded-2xl border border-border bg-card p-10 text-center shadow-sm">
-                        <div className="mb-4 text-5xl">🃏</div>
-                        <p className="text-lg text-muted-foreground">
-                            No rounds yet. Please check back soon!
-                        </p>
-                    </div>
-                ) : (
-                    <WordMatchGame rounds={rounds} />
-                )}
+                <WordMatchGame
+                    rounds={WORD_MATCH_ROUNDS}
+                    categories={categories}
+                />
             </div>
         </div>
     );
