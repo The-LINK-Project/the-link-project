@@ -62,6 +62,46 @@ declare type QuizResult = {
     completedAt: string;
 };
 
+// SHARED GAME TYPES
+
+declare type GameDifficulty = "easy" | "medium" | "hard";
+
+// Static, repo-hosted game content (constants/games/*). Deliberately separate
+// from the *Admin types below, which describe MongoDB documents.
+declare type WordMatchGameRound = {
+    _id: string;
+    title: string;
+    category: string;
+    difficulty: GameDifficulty;
+    pairs: WordMatchPair[];
+};
+
+declare type WordMatchCategory = {
+    id: string;
+    label: string;
+    emoji: string;
+};
+
+/** One stage of the Focus Group time-trial run. */
+declare type FocusGroupStage =
+    | {
+          kind: "word-match";
+          label: string;
+          round: WordMatchGameRound;
+      }
+    | {
+          kind: "picture";
+          label: string;
+          question: PictureStoryQuestion;
+      };
+
+declare type PictureStoryGameSet = {
+    _id: string;
+    title: string;
+    difficulty: GameDifficulty;
+    questions: PictureStoryQuestion[];
+};
+
 // WORD MATCH GAME TYPES
 
 declare type WordMatchTileContent = {
@@ -77,6 +117,10 @@ declare type WordMatchPair = {
 declare type WordMatchRoundData = {
     title: string;
     pairs: WordMatchPair[];
+    // Optional so existing admin/database rounds still satisfy the type
+    category?: string;
+    difficulty?: GameDifficulty;
+    order?: number;
 };
 
 declare type WordMatchRoundAdmin = WordMatchRoundData & {
@@ -87,15 +131,29 @@ declare type WordMatchRoundAdmin = WordMatchRoundData & {
 
 // PICTURE STORY GAME TYPES
 
+declare type PictureStoryQuestionType = "sentence" | "order" | "next" | "say";
+
 declare type PictureStoryQuestion = {
     sequence: string[];
     options: string[];
     correctAnswerIndex: number;
+    // Optional so existing admin/database questions still satisfy the type
+    type?: PictureStoryQuestionType;
+    prompt?: string;
+    explanation?: string;
+    /**
+     * Per-panel captions, parallel to `sequence`. Overrides the generic icon
+     * label from constants/games/iconLabels.ts. Used by "order" questions,
+     * where each panel is a step ("register at the counter") rather than just
+     * an object ("counter").
+     */
+    captions?: string[];
 };
 
 declare type PictureStorySetData = {
     title: string;
     questions: PictureStoryQuestion[];
+    difficulty?: GameDifficulty;
 };
 
 declare type PictureStorySetAdmin = PictureStorySetData & {
