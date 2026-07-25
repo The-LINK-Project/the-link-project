@@ -2,11 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import PicturePanel from "@/components/games/PicturePanel";
-import {
-    FOCUS_GROUP_STAGES,
-    FREEZE_MS,
-    REVEAL_AFTER_WRONG,
-} from "@/constants/games/focusGroup";
+import { FREEZE_MS, REVEAL_AFTER_WRONG } from "@/constants/games/focusGroup";
 import { MATCH_COOLDOWN_MS } from "@/constants/games/wordMatch";
 import { Check, Play, Timer, Trophy } from "lucide-react";
 
@@ -455,7 +451,11 @@ function PictureStage({
 
 // ------------------------------------------------------------------ the run
 
-export default function FocusGroupRun() {
+export default function FocusGroupRun({
+    stages,
+}: {
+    stages: FocusGroupStage[];
+}) {
     const [phase, setPhase] = useState<RunPhase>("start");
     const [teamName, setTeamName] = useState("");
     const [stageIndex, setStageIndex] = useState(0);
@@ -472,8 +472,8 @@ export default function FocusGroupRun() {
     const startRef = useRef(0);
     const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-    const stage = FOCUS_GROUP_STAGES[stageIndex];
-    const totalStages = FOCUS_GROUP_STAGES.length;
+    const stage = stages[stageIndex];
+    const totalStages = stages.length;
 
     const later = (fn: () => void, ms: number) => {
         timers.current.push(setTimeout(fn, ms));
