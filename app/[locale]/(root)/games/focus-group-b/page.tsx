@@ -1,14 +1,15 @@
 import React from "react";
+import { notFound } from "next/navigation";
 import FocusGroupRun from "@/components/games/FocusGroupRun";
-import {
-    FOCUS_GROUP_STAGES,
-    FOCUS_GROUP_TITLE,
-} from "@/constants/games/focusGroup";
+import { getFocusGroupSet } from "@/constants/games/focusGroup";
 
 // Static content, no database or network calls.
 export const dynamic = "force-dynamic";
 
-const FocusGroupPage = () => {
+const FocusGroupSetBPage = () => {
+    const set = getFocusGroupSet("b");
+    if (!set) notFound();
+
     return (
         <div className="min-h-screen flex flex-col items-center">
             <div className="w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
@@ -17,18 +18,17 @@ const FocusGroupPage = () => {
                         Time trial
                     </div>
                     <h1 className="mb-2 text-3xl font-bold text-primary sm:text-4xl">
-                        {FOCUS_GROUP_TITLE}
+                        {set.title}
                     </h1>
                     <p className="text-lg text-slate-600">
-                        {FOCUS_GROUP_STAGES.length} stages. Finish as fast as
-                        you can.
+                        {set.stages.length} stages. Finish as fast as you can.
                     </p>
                 </div>
 
-                <FocusGroupRun />
+                <FocusGroupRun stages={set.stages} />
             </div>
         </div>
     );
 };
 
-export default FocusGroupPage;
+export default FocusGroupSetBPage;

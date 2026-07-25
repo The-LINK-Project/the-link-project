@@ -403,13 +403,26 @@ Awaiting your review of this document. On approval, work starts at §10 step 1 �
 
 ---
 
-## 14. Focus Group July 2026 — the time-trial run
+## 14. Focus Group July 2026 — the time-trial run (two sets)
 
 A third game at `/games/focus-group`, added for the session itself. Built from
 the same content bank; no new questions.
 
-**Shape.** 10 stages played straight through with no menus or choices: 5 Word
-Match rounds, then 5 Picture Story questions. Start screen → stages → final
+**Two sets, A and B.** There are now TWO independent runs, shown as separate
+dashboard cards ("Focus Group Set A", "Focus Group Set B") at
+`/games/focus-group-a` and `/games/focus-group-b`. Same game, same mechanics;
+Set B is entirely different content (verified zero shared words and zero shared
+questions with Set A) so a second group, or a re-run, plays fresh. Both are
+defined in `constants/games/focusGroup.ts` as `FOCUS_GROUP_SETS`; the page and
+`FocusGroupRun` are parameterised by the set's stage list.
+
+Set A: kitchen / laundry / market / transport / cleaning, then kitchen-order /
+laundry-next / hawker-next / MRT-order / clinic-order.
+Set B: hawker / the flat / weather / fresh food / time, then boil-water-next /
+cook-order / wash-order / fold-next / market-order.
+
+**Shape.** Each set is 10 stages played straight through with no menus or
+choices: 5 Word Match rounds, then 5 Picture Story questions. Start screen → stages → final
 time. Designed for players who are not confident with technology, so there is
 nothing to navigate.
 

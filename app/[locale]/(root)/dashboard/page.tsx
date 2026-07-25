@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BarChart3, ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { FOCUS_GROUP_STAGES } from "@/constants/games/focusGroup";
+import { FOCUS_GROUP_SETS } from "@/constants/games/focusGroup";
 
 const DashboardPage = async () => {
     await ensureUser();
@@ -115,22 +115,25 @@ const DashboardPage = async () => {
                         </span>
                         <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
                     </Link>
-                    <Link
-                        href="/games/focus-group"
-                        className="group flex items-center gap-4 rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary hover:shadow-md md:col-span-2"
-                    >
-                        <span className="text-4xl">🏁</span>
-                        <span className="flex-1">
-                            <span className="block text-lg font-semibold text-foreground">
-                                Focus Group July 2026
+                    {FOCUS_GROUP_SETS.map((set) => (
+                        <Link
+                            key={set.slug}
+                            href={`/games/focus-group-${set.slug}`}
+                            className="group flex items-center gap-4 rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary hover:shadow-md"
+                        >
+                            <span className="text-4xl">🏁</span>
+                            <span className="flex-1">
+                                <span className="block text-lg font-semibold text-foreground">
+                                    {set.title}
+                                </span>
+                                <span className="block text-sm text-muted-foreground">
+                                    {set.stages.length} stages, played straight
+                                    through. A time trial.
+                                </span>
                             </span>
-                            <span className="block text-sm text-muted-foreground">
-                                {FOCUS_GROUP_STAGES.length} stages, played
-                                straight through. A time trial.
-                            </span>
-                        </span>
-                        <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
-                    </Link>
+                            <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
+                        </Link>
+                    ))}
                 </div>
             </div>
         </section>
