@@ -1,15 +1,21 @@
 // Focus Group July 2026 — the time-trial run.
 //
-// 15 stages, played straight through with no menus: 5 Word Match rounds then
-// 10 Picture Story questions.
+// 10 stages, played straight through with no menus: 5 Word Match rounds then
+// 5 Picture Story questions.
 //
 // The sequence is FIXED and identical for every team. Both teams play the same
 // stages in the same order, so the only variable is how fast they get through
 // it. Do not randomise this list.
 //
-// Stages are drawn from as many different topics as possible: the 5 Word Match
-// rounds come from 5 different categories, and the 10 questions are spread
-// across all 4 story sets and all 4 question types.
+// NO GRAMMAR MINIMAL-PAIR QUESTIONS. Questions whose four options are near
+// identical sentences differing by one word ("in / on / under / at the
+// machine", "is cooking / cooked / will cook") are deliberately excluded — in
+// a race they cost repeated 5-second freezes on a subtle distinction, which
+// frustrates rather than teaches. Those questions still exist in the full
+// Picture Story game; they are just not used here.
+//
+// What is left is meaning-based: ordering a sequence of pictures, and working
+// out what happens next. Each stage is a different topic.
 
 import { WORD_MATCH_ROUNDS } from "./wordMatch";
 import { PICTURE_STORY_SETS } from "./pictureStory";
@@ -49,17 +55,12 @@ export const FOCUS_GROUP_STAGES: FocusGroupStage[] = [
         round: round("cleaning-actions"),
     },
 
-    // --- Part 2: ten questions across all four stories --------------------
-    { kind: "picture", label: "Kitchen", question: question("morning-kitchen", 1) },
-    { kind: "picture", label: "Laundry", question: question("laundry-day", 1) },
-    { kind: "picture", label: "Market", question: question("market-hawker", 1) },
-    { kind: "picture", label: "Out and about", question: question("out-and-about", 1) },
+    // --- Part 2: five picture questions, ordering and what-happens-next ----
     { kind: "picture", label: "Kitchen", question: question("morning-kitchen", 3) },
     { kind: "picture", label: "Laundry", question: question("laundry-day", 4) },
-    { kind: "picture", label: "Hawker centre", question: question("market-hawker", 4) },
-    { kind: "picture", label: "At the doctor", question: question("out-and-about", 6) },
-    { kind: "picture", label: "Ironing", question: question("laundry-day", 9) },
-    { kind: "picture", label: "Telling the time", question: question("out-and-about", 10) },
+    { kind: "picture", label: "Hawker centre", question: question("market-hawker", 7) },
+    { kind: "picture", label: "Getting around", question: question("out-and-about", 2) },
+    { kind: "picture", label: "At the doctor", question: question("out-and-about", 9) },
 ];
 
 /** Seconds the screen stays red and locked after a wrong answer. */

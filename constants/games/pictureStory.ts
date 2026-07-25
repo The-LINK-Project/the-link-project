@@ -62,7 +62,7 @@ export const PICTURE_STORY_SETS: PictureStoryGameSet[] = [
                     "fill the kettle",
                     "switch it on",
                     "the water boils",
-                    "pour the water",
+                    "pour the water out of the kettle",
                 ],
                 prompt: "Put the pictures in the right order.",
                 options: [],

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BarChart3, ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { FOCUS_GROUP_STAGES } from "@/constants/games/focusGroup";
 
 const DashboardPage = async () => {
     await ensureUser();
@@ -124,8 +125,8 @@ const DashboardPage = async () => {
                                 Focus Group July 2026
                             </span>
                             <span className="block text-sm text-muted-foreground">
-                                15 stages, played straight through. A time
-                                trial.
+                                {FOCUS_GROUP_STAGES.length} stages, played
+                                straight through. A time trial.
                             </span>
                         </span>
                         <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />

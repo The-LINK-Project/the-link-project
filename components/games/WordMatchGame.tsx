@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { MATCH_COOLDOWN_MS } from "@/constants/games/wordMatch";
 import {
     ArrowLeft,
     ArrowRight,
@@ -101,6 +102,14 @@ export default function WordMatchGame({
     const startTimeRef = useRef(0);
     const wrongTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+    // Taps can arrive faster than React re-renders, so selection state is read
+    // through refs. Reading it from state meant a tap landing right after a
+    // match still saw the just-matched tile as selected and scored it wrong.
+    const selectedRef = useRef<string | null>(null);
+    const matchedRef = useRef<number[]>([]);
+    const coolingRef = useRef(false);
+    const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     const categoryRounds = categoryId
         ? rounds.filter((round) => round.category === categoryId)
         : [];
@@ -120,6 +129,7 @@ export default function WordMatchGame({
     useEffect(() => {
         return () => {
             if (wrongTimeoutRef.current) clearTimeout(wrongTimeoutRef.current);
+            if (cooldownRef.current) clearTimeout(cooldownRef.current);
         };
     }, []);
 
@@ -131,6 +141,9 @@ export default function WordMatchGame({
         setTiles(buildTiles(next));
         setSelectedId(null);
         setMatchedPairs([]);
+        selectedRef.current = null;
+        matchedRef.current = [];
+        coolingRef.current = false;
         setWrongIds([]);
         setWrongAttempts(0);
         setElapsedMs(0);
@@ -148,36 +161,42 @@ export default function WordMatchGame({
     const handleTileTap = (tile: GameTile) => {
         if (phase !== "playing" || !round) return;
         if (wrongIds.length > 0) return; // locked while the wrong flash is showing
-        if (matchedPairs.includes(tile.pairIndex)) return;
+        if (coolingRef.current) return; // brief pause after a correct match
+        if (matchedRef.current.includes(tile.pairIndex)) return;
 
         // Tapping the selected tile again deselects it
-        if (selectedId === tile.id) {
+        if (selectedRef.current === tile.id) {
+            selectedRef.current = null;
             setSelectedId(null);
             return;
         }
 
-        if (!selectedId) {
+        if (!selectedRef.current) {
+            selectedRef.current = tile.id;
             setSelectedId(tile.id);
             return;
         }
 
-        const firstTile = tiles.find((t) => t.id === selectedId);
-        if (!firstTile) {
-            setSelectedId(tile.id);
-            return;
-        }
+        const firstTile = tiles.find((t) => t.id === selectedRef.current);
+        selectedRef.current = null;
+        setSelectedId(null);
+        if (!firstTile) return;
 
         if (firstTile.pairIndex === tile.pairIndex) {
-            const newMatched = [...matchedPairs, tile.pairIndex];
+            coolingRef.current = true;
+            cooldownRef.current = setTimeout(() => {
+                coolingRef.current = false;
+            }, MATCH_COOLDOWN_MS);
+
+            const newMatched = [...matchedRef.current, tile.pairIndex];
+            matchedRef.current = newMatched;
             setMatchedPairs(newMatched);
-            setSelectedId(null);
             if (newMatched.length === round.pairs.length) {
                 finishRound(wrongAttempts);
             }
         } else {
             setWrongIds([firstTile.id, tile.id]);
             setWrongAttempts((prev) => prev + 1);
-            setSelectedId(null);
             wrongTimeoutRef.current = setTimeout(() => {
                 setWrongIds([]);
             }, WRONG_FLASH_MS);
@@ -367,17 +386,15 @@ export default function WordMatchGame({
                     const isWrong = wrongIds.includes(tile.id);
                     const isSelected = selectedId === tile.id;
 
-                    let stateClasses =
-                        "border-border bg-card shadow-sm hover:border-primary/60 active:scale-95";
-                    if (isMatched) {
-                        stateClasses =
-                            "border-emerald-400 bg-emerald-50 opacity-70 scale-95";
-                    } else if (isWrong) {
-                        stateClasses =
-                            "border-red-400 bg-red-50 text-red-600 game-shake";
+                    // Front-face look before the card is matched
+                    let frontClasses =
+                        "border-border bg-card shadow-sm hover:border-primary/60";
+                    if (isWrong) {
+                        frontClasses =
+                            "border-red-400 bg-red-50 text-red-600";
                     } else if (isSelected) {
-                        stateClasses =
-                            "border-primary bg-primary/10 ring-2 ring-primary shadow-md scale-[1.03]";
+                        frontClasses =
+                            "border-primary bg-primary/10 ring-2 ring-primary shadow-md";
                     }
 
                     return (
@@ -387,32 +404,44 @@ export default function WordMatchGame({
                             onClick={() => handleTileTap(tile)}
                             disabled={isMatched}
                             aria-pressed={isSelected}
-                            className={`flex min-h-28 w-full select-none flex-col items-center justify-center gap-2 rounded-2xl border-2 p-3 text-center transition-all duration-200 sm:min-h-32 ${stateClasses}`}
+                            className={`flip-scene h-28 w-full select-none sm:h-32 ${
+                                isWrong ? "game-shake" : ""
+                            }`}
                         >
-                            {tile.imageUrl && (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img
-                                    src={tile.imageUrl}
-                                    alt={tile.partnerText || "Picture"}
-                                    className="h-16 w-16 object-contain sm:h-20 sm:w-20"
-                                />
-                            )}
-                            {tile.text && (
-                                <span className="break-words text-base font-semibold leading-snug sm:text-lg">
-                                    {tile.text}
+                            <span
+                                className={`flip-card ${isMatched ? "is-flipped" : ""}`}
+                            >
+                                {/* Front: the picture or the word */}
+                                <span className={`flip-face ${frontClasses}`}>
+                                    {tile.imageUrl && (
+                                        // eslint-disable-next-line @next/next/no-img-element
+                                        <img
+                                            src={tile.imageUrl}
+                                            alt={tile.partnerText || "Picture"}
+                                            className="h-16 w-16 object-contain sm:h-20 sm:w-20"
+                                        />
+                                    )}
+                                    {tile.text && (
+                                        <span className="break-words text-base font-semibold leading-snug sm:text-lg">
+                                            {tile.text}
+                                        </span>
+                                    )}
                                 </span>
-                            )}
-                            {/* The word is revealed only once the pair is
-                                matched — captioning a picture tile up front
-                                would print the answer on the card. */}
-                            {isMatched && tile.imageUrl && tile.partnerText && (
-                                <span className="break-words text-sm font-semibold leading-tight text-emerald-700 sm:text-base">
-                                    {tile.partnerText}
+
+                                {/* Back: the "Matched" face, plus the word the
+                                    picture stood for, revealed only now. */}
+                                <span className="flip-face flip-back border-emerald-400 bg-emerald-50 text-emerald-700">
+                                    <Check className="h-6 w-6" />
+                                    <span className="text-base font-bold sm:text-lg">
+                                        Matched
+                                    </span>
+                                    {tile.imageUrl && tile.partnerText && (
+                                        <span className="break-words text-sm font-semibold leading-tight sm:text-base">
+                                            {tile.partnerText}
+                                        </span>
+                                    )}
                                 </span>
-                            )}
-                            {isMatched && (
-                                <Check className="h-5 w-5 text-emerald-600" />
-                            )}
+                            </span>
                         </button>
                     );
                 })}
