@@ -408,10 +408,17 @@ Awaiting your review of this document. On approval, work starts at §10 step 1 �
 A third game at `/games/focus-group`, added for the session itself. Built from
 the same content bank; no new questions.
 
-**Shape.** 15 stages played straight through with no menus or choices: 5 Word
-Match rounds, then 10 Picture Story questions. Start screen → stages → final
+**Shape.** 10 stages played straight through with no menus or choices: 5 Word
+Match rounds, then 5 Picture Story questions. Start screen → stages → final
 time. Designed for players who are not confident with technology, so there is
 nothing to navigate.
+
+**No grammar minimal pairs.** Questions whose four options are near-identical
+sentences differing by one word (in/on/under/at, is cooking/cooked/will cook)
+are excluded from the run. In a race they cost repeated 5-second freezes on a
+subtle distinction. The 5 picture stages are 3 ordering and 2 what-happens-next
+questions, all meaning-based. The excluded questions remain in the full Picture
+Story game.
 
 **Fixed sequence.** Both teams get the identical stage list in the identical
 order (`constants/games/focusGroup.ts`). It must not be randomised — the whole
@@ -423,8 +430,10 @@ types.
 pauses. Teams play on separate laptops and are never compared on screen — the
 platform just reports one team's time, and the facilitator compares them.
 
-**Wrong answers.** The screen goes fully red and locks for 5 seconds with a
-visible countdown. The answer is *not* shown — it is a race. After 5 wrong
+**Wrong answers.** A soft red wash covers the screen and locks it for 5 seconds,
+with a small card reading "Wrong" and a countdown. A correct answer gets the
+same treatment in green. Both are deliberately low-contrast rather than
+full-screen colour. The answer is *not* shown — it is a race. After 5 wrong
 answers on the same stage the answer is revealed so nobody can get stranded:
 the correct option is highlighted, or in Word Match one matching pair is shown.
 That reveal is also why there is no skip button.
@@ -434,3 +443,23 @@ The final screen asks the player to show it to the facilitator.
 
 **Tunable in one place:** `FREEZE_MS` and `REVEAL_AFTER_WRONG` at the bottom of
 `constants/games/focusGroup.ts`.
+
+**Input timing.** After a correct match, taps are ignored for
+`MATCH_COOLDOWN_MS` (400ms, in `constants/games/wordMatch.ts`). Selection state
+is also read through refs rather than React state: a tap arriving before the
+next render used to be compared against the tile that had just been matched and
+scored as a wrong answer nobody had made. The same fix is applied to the
+standalone Word Match game, which had the identical bug.
+
+**Flash-card flip.** A matched Word Match pair flips over (CSS `game-flip` in
+globals.css) as it settles into its completed green state — in both the
+standalone game and the Focus Group run. Respects `prefers-reduced-motion`.
+
+**Icon clarity pass.** Several icons that were too abstract were redrawn to be
+literal and unmistakable, and clearly distinct from their near-neighbours: mop
+(hanging strands, vs broom's fanned bristles), sweep, vacuum (upright with
+hose, no longer camera-like), dust (a feather duster), and wet-market (stall
+with awning and produce). Source in the icon generator; output in
+public/games/icons/.
+
+**End screen.** Removed the "show this screen to the facilitator" line.

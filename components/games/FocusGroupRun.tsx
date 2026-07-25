@@ -7,6 +7,7 @@ import {
     FREEZE_MS,
     REVEAL_AFTER_WRONG,
 } from "@/constants/games/focusGroup";
+import { MATCH_COOLDOWN_MS } from "@/constants/games/wordMatch";
 import { Check, Play, Timer, Trophy } from "lucide-react";
 
 type RunPhase = "start" | "running" | "finished";
@@ -61,6 +62,16 @@ function WordMatchStage({
     const [matched, setMatched] = useState<number[]>([]);
     const [hintPair, setHintPair] = useState<number | null>(null);
 
+    // State is read through refs because taps can arrive faster than React
+    // re-renders. Reading `selectedId` from state meant a tap landing straight
+    // after a match still saw the just-matched tile as selected, compared
+    // against it, and scored a wrong answer nobody had made.
+    const selectedRef = useRef<string | null>(null);
+    const matchedRef = useRef<number[]>([]);
+    const coolingRef = useRef(false);
+    const doneRef = useRef(false);
+    const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     useEffect(() => {
         const built: Tile[] = [];
         round.pairs.forEach((pair, pairIndex) => {
@@ -81,7 +92,17 @@ function WordMatchStage({
         setSelectedId(null);
         setMatched([]);
         setHintPair(null);
+        selectedRef.current = null;
+        matchedRef.current = [];
+        coolingRef.current = false;
+        doneRef.current = false;
     }, [round]);
+
+    useEffect(() => {
+        return () => {
+            if (cooldownTimer.current) clearTimeout(cooldownTimer.current);
+        };
+    }, []);
 
     // Reveal shows ONE unmatched pair rather than solving the whole board.
     useEffect(() => {
@@ -97,37 +118,48 @@ function WordMatchStage({
     }, [revealNonce, round]);
 
     const tap = (tile: Tile) => {
-        if (locked || matched.includes(tile.pairIndex)) return;
+        if (locked || doneRef.current || coolingRef.current) return;
+        if (matchedRef.current.includes(tile.pairIndex)) return;
 
-        if (selectedId === tile.id) {
+        if (selectedRef.current === tile.id) {
+            selectedRef.current = null;
             setSelectedId(null);
             return;
         }
-        if (!selectedId) {
+        if (!selectedRef.current) {
+            selectedRef.current = tile.id;
             setSelectedId(tile.id);
             return;
         }
 
-        const first = tiles.find((t) => t.id === selectedId);
-        if (!first) {
-            setSelectedId(tile.id);
-            return;
-        }
-
+        const first = tiles.find((t) => t.id === selectedRef.current);
+        selectedRef.current = null;
         setSelectedId(null);
+        if (!first) return;
 
         if (first.pairIndex !== tile.pairIndex) {
             onWrong();
             return;
         }
 
-        const next = [...matched, tile.pairIndex];
+        // Correct: briefly ignore input so a fast follow-up tap is not read as
+        // the start of a new, mismatched pair.
+        coolingRef.current = true;
+        cooldownTimer.current = setTimeout(() => {
+            coolingRef.current = false;
+        }, MATCH_COOLDOWN_MS);
+
+        const next = [...matchedRef.current, tile.pairIndex];
+        matchedRef.current = next;
         setMatched(next);
         if (hintPair === tile.pairIndex) {
             setHintPair(null);
             onHintUsed();
         }
-        if (next.length === round.pairs.length) onComplete();
+        if (next.length === round.pairs.length) {
+            doneRef.current = true;
+            onComplete();
+        }
     };
 
     return (
@@ -141,17 +173,14 @@ function WordMatchStage({
                     const isSelected = selectedId === tile.id;
                     const isHinted = hintPair === tile.pairIndex && !isMatched;
 
-                    let state =
-                        "border-border bg-card shadow-sm active:scale-95";
-                    if (isMatched) {
-                        state =
-                            "border-emerald-400 bg-emerald-50 opacity-70 scale-95";
-                    } else if (isHinted) {
-                        state =
+                    let frontClasses =
+                        "border-border bg-card shadow-sm";
+                    if (isHinted) {
+                        frontClasses =
                             "border-amber-400 bg-amber-50 ring-2 ring-amber-400";
                     } else if (isSelected) {
-                        state =
-                            "border-primary bg-primary/10 ring-2 ring-primary shadow-md scale-[1.03]";
+                        frontClasses =
+                            "border-primary bg-primary/10 ring-2 ring-primary shadow-md";
                     }
 
                     return (
@@ -160,26 +189,41 @@ function WordMatchStage({
                             type="button"
                             onClick={() => tap(tile)}
                             disabled={isMatched || locked}
-                            className={`flex min-h-28 w-full select-none flex-col items-center justify-center gap-2 rounded-2xl border-2 p-3 text-center transition-all duration-200 sm:min-h-32 ${state}`}
+                            className="flip-scene h-28 w-full select-none sm:h-32"
                         >
-                            {tile.imageUrl && (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img
-                                    src={tile.imageUrl}
-                                    alt={tile.partnerText || "Picture"}
-                                    className="h-16 w-16 object-contain sm:h-20 sm:w-20"
-                                />
-                            )}
-                            {tile.text && (
-                                <span className="break-words text-base font-semibold leading-snug sm:text-lg">
-                                    {tile.text}
+                            <span
+                                className={`flip-card ${isMatched ? "is-flipped" : ""}`}
+                            >
+                                {/* Front: the picture or the word */}
+                                <span className={`flip-face ${frontClasses}`}>
+                                    {tile.imageUrl && (
+                                        // eslint-disable-next-line @next/next/no-img-element
+                                        <img
+                                            src={tile.imageUrl}
+                                            alt={tile.partnerText || "Picture"}
+                                            className="h-16 w-16 object-contain sm:h-20 sm:w-20"
+                                        />
+                                    )}
+                                    {tile.text && (
+                                        <span className="break-words text-base font-semibold leading-snug sm:text-lg">
+                                            {tile.text}
+                                        </span>
+                                    )}
                                 </span>
-                            )}
-                            {isMatched && tile.imageUrl && tile.partnerText && (
-                                <span className="break-words text-sm font-semibold leading-tight text-emerald-700">
-                                    {tile.partnerText}
+
+                                {/* Back: the "Matched" face */}
+                                <span className="flip-face flip-back border-emerald-400 bg-emerald-50 text-emerald-700">
+                                    <Check className="h-6 w-6" />
+                                    <span className="text-base font-bold sm:text-lg">
+                                        Matched
+                                    </span>
+                                    {tile.imageUrl && tile.partnerText && (
+                                        <span className="break-words text-sm font-semibold leading-tight">
+                                            {tile.partnerText}
+                                        </span>
+                                    )}
                                 </span>
-                            )}
+                            </span>
                         </button>
                     );
                 })}
@@ -206,6 +250,9 @@ function PictureStage({
     const [selected, setSelected] = useState<number | null>(null);
     const [picks, setPicks] = useState<number[]>([]);
     const [wrongFlash, setWrongFlash] = useState<number | null>(null);
+    // Set the moment the stage is answered, so a tap during the green
+    // confirmation is not scored against the next stage.
+    const doneRef = useRef(false);
 
     const options = useMemo(
         () =>
@@ -237,6 +284,7 @@ function PictureStage({
         setSelected(null);
         setPicks([]);
         setWrongFlash(null);
+        doneRef.current = false;
     }, [question]);
 
     // Clear the red highlight on the wrong option once the freeze ends
@@ -245,9 +293,10 @@ function PictureStage({
     }, [locked]);
 
     const tapOption = (index: number) => {
-        if (locked) return;
+        if (locked || doneRef.current) return;
         if (options[index].originalIndex === question.correctAnswerIndex) {
             setSelected(index);
+            doneRef.current = true;
             onComplete();
         } else {
             setWrongFlash(index);
@@ -256,7 +305,7 @@ function PictureStage({
     };
 
     const tapPanel = (index: number) => {
-        if (locked || picks.includes(index)) return;
+        if (locked || doneRef.current || picks.includes(index)) return;
         const next = [...picks, index];
         // Wrong the moment a panel goes in the wrong slot — no waiting
         if (panels[index].correctIndex !== picks.length) {
@@ -265,7 +314,10 @@ function PictureStage({
             return;
         }
         setPicks(next);
-        if (next.length === panels.length) onComplete();
+        if (next.length === panels.length) {
+            doneRef.current = true;
+            onComplete();
+        }
     };
 
     return (
@@ -559,9 +611,6 @@ export default function FocusGroupRun() {
                         {totalStages} stages
                     </p>
                 </div>
-                <p className="text-base text-muted-foreground">
-                    Please show this screen to the facilitator.
-                </p>
             </div>
         );
     }
@@ -621,23 +670,26 @@ export default function FocusGroupRun() {
             {frozen && (
                 <div
                     role="alert"
-                    className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-red-600/95 text-white"
+                    className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-red-500/20"
                 >
-                    <div className="mb-6 text-8xl">✗</div>
-                    <p className="mb-2 text-4xl font-bold">Wrong</p>
-                    <p className="mb-8 text-xl opacity-90">Wait…</p>
-                    <p className="text-7xl font-bold tabular-nums">
-                        {freezeLeft}
-                    </p>
+                    <div className="rounded-2xl bg-white/90 px-10 py-6 text-center shadow-lg ring-1 ring-red-200">
+                        <p className="text-3xl font-bold text-red-600">
+                            Wrong
+                        </p>
+                        <p className="mt-2 text-lg font-medium tabular-nums text-red-500/80">
+                            {freezeLeft}
+                        </p>
+                    </div>
                 </div>
             )}
 
             {/* Correct: a brief green confirmation before the next stage */}
             {correctFlash && (
-                <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-emerald-500/90 text-white">
-                    <div className="text-center">
-                        <div className="mb-4 text-8xl">✓</div>
-                        <p className="text-4xl font-bold">Correct!</p>
+                <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-emerald-500/20">
+                    <div className="rounded-2xl bg-white/90 px-10 py-6 text-center shadow-lg ring-1 ring-emerald-200">
+                        <p className="text-3xl font-bold text-emerald-600">
+                            Correct
+                        </p>
                     </div>
                 </div>
             )}

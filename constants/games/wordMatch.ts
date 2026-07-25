@@ -263,3 +263,11 @@ export const getWordMatchRoundsByCategory = (
     categoryId: string,
 ): WordMatchGameRound[] =>
     WORD_MATCH_ROUNDS.filter((round) => round.category === categoryId);
+
+/**
+ * Input is ignored for this long after a correct match.
+ *
+ * Without it, a fast tap landing in the same frame as a match is compared
+ * against the tile that was just matched and is scored wrong.
+ */
+export const MATCH_COOLDOWN_MS = 400;
