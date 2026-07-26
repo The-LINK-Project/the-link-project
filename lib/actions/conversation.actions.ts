@@ -150,7 +150,7 @@ export async function getResponse(
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-3.1-flash-lite",
       contents: contents,
       config: {
         systemInstruction: instructions,
@@ -276,7 +276,7 @@ export async function getUserTranscription(audioUrlBase64: string) {
   try {
     const transcription = await ai.models.generateContent({
       // Use a model that supports audio input, like gemini-1.5-flash
-      model: "gemini-2.0-flash",
+      model: "gemini-3.1-flash-lite",
       contents: contents,
       config: {
         systemInstruction: "Transcribe this speech to text accurately.",
@@ -305,7 +305,7 @@ export async function getInitialResponse(instructions: string) {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-3.1-flash-lite",
       contents: "",
       config: {
         systemInstruction: instructions,
