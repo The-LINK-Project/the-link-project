@@ -2,7 +2,12 @@
 export const ADMIN_CONFIG = {
   // Email addresses allowed to access admin routes
   // Update these with your actual email addresses for production
-  adminEmails: ["adrishmajumder7@gmail.com", "alexanderkmlee@gmail.com", "ruhangupta01@gmail.com"],
+  adminEmails: [
+    "adrishmajumder7@gmail.com",
+    "alexanderkmlee@gmail.com",
+    "ruhangupta01@gmail.com",
+    "goutammajumder@yahoo.co.in",
+  ],
 
   // Redirect paths
   redirectPaths: {
