@@ -41,7 +41,7 @@
  * The survey currently open. `null` means no survey is open: no banner, and
  * /survey explains there is nothing to fill in right now.
  */
-export const ACTIVE_SURVEY_ID: string | null = "workshop-2026-07";
+export const ACTIVE_SURVEY_ID: string | null = "workshop-2026-07b";
 
 const ABOUT_YOU: SurveySection = {
     id: "about-you",
@@ -181,14 +181,11 @@ const THE_APP: SurveySection = {
         {
             id: "use-at-home",
             exportKey: "q18_use_at_home",
-            kind: "scale",
+            kind: "single",
             prompt: "Will you use the app by yourself at home?",
-            labels: [
-                "I will not use it",
-                "Maybe not",
-                "Not sure",
-                "Maybe yes",
-                "Yes, often",
+            options: [
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
             ],
         },
     ],
@@ -240,14 +237,11 @@ const NEXT: SurveySection = {
         {
             id: "would-recommend",
             exportKey: "q23_would_recommend",
-            kind: "scale",
+            kind: "single",
             prompt: "Would you tell a friend to come to the next workshop?",
-            labels: [
-                "No",
-                "Probably not",
-                "Not sure",
-                "Probably yes",
-                "Yes, for sure",
+            options: [
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
             ],
         },
     ],
@@ -257,14 +251,6 @@ const YOUR_WORDS: SurveySection = {
     id: "your-words",
     title: "Your words",
     questions: [
-        {
-            id: "best-part",
-            exportKey: "q24_best_part",
-            kind: "text",
-            required: true,
-            prompt: "What was the best part of today?",
-            hint: ANY_LANGUAGE_HINT,
-        },
         {
             id: "change-next-time",
             exportKey: "q25_change_next_time",
@@ -277,7 +263,7 @@ const YOUR_WORDS: SurveySection = {
 };
 
 const WORKSHOP_2026_07: SurveyDefinition = {
-    id: "workshop-2026-07",
+    id: "workshop-2026-07b",
     title: "Tell us about today",
     timeEstimate: "about 5 minutes",
     consent: {
