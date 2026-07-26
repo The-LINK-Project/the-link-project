@@ -249,6 +249,7 @@ export async function getResponse(
     // Return an error object if something goes wrong
     return {
       success: false,
+      error: error instanceof Error ? error.message : String(error),
     };
   }
 }
@@ -293,6 +294,7 @@ export async function getUserTranscription(audioUrlBase64: string) {
     // Return an error object if something goes wrong
     return {
       success: false,
+      error: error instanceof Error ? error.message : String(error),
     };
   }
 }
@@ -306,7 +308,8 @@ export async function getInitialResponse(instructions: string) {
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3.1-flash-lite",
-      contents: "",
+      contents:
+        "Hello, please greet me by name and start the lesson as instructed.",
       config: {
         systemInstruction: instructions,
       },
@@ -330,10 +333,11 @@ export async function getInitialResponse(instructions: string) {
       systemTranscription: transcriptionSystem,
     };
   } catch (error) {
-    console.error("Error in getResponse:", error);
+    console.error("Error in getInitialResponse:", error);
     // Return an error object if something goes wrong
     return {
       success: false,
+      error: error instanceof Error ? error.message : String(error),
     };
   }
 }
@@ -360,6 +364,7 @@ export async function processInitialMessage({
 
   return {
     success: audioResponse.success,
+    error: (audioResponse as { error?: string }).error,
     audioBase64: audioResponse.audioBase64Response,
     systemTranscription: audioResponse.systemTranscription,
   };
@@ -449,6 +454,9 @@ export async function processAudioMessage({
   // output is the audio that can be played, and updated lessonProgress that will be used to update the state
   return {
     success: audioResponse.success,
+    error:
+      (audioResponse as { error?: string }).error ??
+      (transcriptionUser as { error?: string }).error,
     audioBase64: audioResponse.audioBase64Response,
     systemTranscription: audioResponse.systemTranscription,
     updatedLessonProgress: {

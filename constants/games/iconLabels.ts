@@ -165,6 +165,37 @@ export const ICON_LABELS: Record<string, string> = {
     "clock-330": "half past 3",
     "clock-915": "quarter past 9",
 
+    // fruits (Set C)
+    apple: "apple",
+    banana: "banana",
+    orange: "orange",
+    grapes: "grapes",
+    watermelon: "watermelon",
+    pineapple: "pineapple",
+
+    // clothes (Set C)
+    shirt: "shirt",
+    trousers: "trousers",
+    shoes: "shoes",
+    socks: "socks",
+    cap: "cap",
+    dress: "dress",
+
+    // bathroom (Set C)
+    toothbrush: "toothbrush",
+    toothpaste: "toothpaste",
+    soap: "soap",
+    towel: "towel",
+    mirror: "mirror",
+    comb: "comb",
+
+    // body (Set C)
+    head: "head",
+    eye: "eye",
+    ear: "ear",
+    nose: "nose",
+    mouth: "mouth",
+
     // misc
     hand: "hand",
     question: "?",
