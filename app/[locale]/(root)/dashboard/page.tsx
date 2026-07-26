@@ -2,7 +2,9 @@ import React from "react";
 import { getAllLessonStatuses } from "@/lib/actions/LessonProgress.actions";
 import { getAllLessons } from "@/lib/actions/Lesson.actions";
 import { ensureUser } from "@/lib/actions/user.actions";
+import { getSurveyBannerState } from "@/lib/actions/survey.actions";
 import DashboardLessonItem from "@/components/dashboard/DashboardLessonItem";
+import SurveyBanner from "@/components/survey/SurveyBanner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -15,6 +17,7 @@ const DashboardPage = async () => {
 
     const lessons = await getAllLessons();
     const lessonStatuses = await getAllLessonStatuses();
+    const surveyBannerState = await getSurveyBannerState();
     const t = await getTranslations("dashboard");
 
     const getLessonsByDifficulty = (difficulty: string) => {
@@ -36,6 +39,8 @@ const DashboardPage = async () => {
 
     return (
         <section className="p-6">
+            <SurveyBanner state={surveyBannerState} />
+
             <div className="mb-8 flex justify-between items-start">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">

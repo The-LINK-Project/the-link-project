@@ -19,6 +19,7 @@ import {
   Target,
   TrendingUp,
   Gamepad2,
+  MessageSquareText,
 } from "lucide-react";
 import { getAllLessons } from "@/lib/actions/Lesson.actions";
 import { getAllQuizzes, getQuizResultStats } from "@/lib/actions/quiz.actions";
@@ -343,6 +344,57 @@ const AdminPage = async () => {
                       className="bg-purple-500 hover:bg-purple-600 text-white"
                     >
                       Manage
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-lg transition-all duration-300 border-slate-200 hover:border-amber-300 bg-white">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center shadow-md">
+                      <MessageSquareText className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl font-semibold text-slate-900">
+                        Survey Results
+                      </CardTitle>
+                      <CardDescription className="text-slate-600">
+                        Workshop feedback and CSV export
+                      </CardDescription>
+                    </div>
+                  </div>
+                  <Badge
+                    variant="outline"
+                    className="text-green-700 border-green-200 bg-green-50"
+                  >
+                    Active
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <p className="text-slate-600 mb-6 leading-relaxed text-sm">
+                  See started vs finished counts and download every response
+                  as a spreadsheet.
+                </p>
+
+                <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                  <div className="flex items-center gap-4 text-sm text-slate-500">
+                    <div className="flex items-center gap-1">
+                      <BarChart3 className="h-4 w-4" />
+                      <span>Anonymous</span>
+                    </div>
+                  </div>
+
+                  <Link href="/admin/surveys">
+                    <Button
+                      size="sm"
+                      className="bg-amber-500 hover:bg-amber-600 text-white"
+                    >
+                      View
                       <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                   </Link>
