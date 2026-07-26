@@ -88,7 +88,9 @@ export default function CreateLessonForm() {
             const result = await createLesson({
                 title: formData.title,
                 description: formData.description,
-                objectives: formData.objectives.filter((obj) => obj.trim() !== ""),
+                objectives: formData.objectives.filter(
+                    (obj) => obj.trim() !== "",
+                ),
                 lessonIndex: formData.lessonIndex as unknown as Number,
                 difficulty: formData.difficulty,
             });
@@ -110,7 +112,8 @@ export default function CreateLessonForm() {
         } catch (error) {
             console.error("Error creating lesson:", error);
             setMessage(
-                `Failed to create lesson: ${error instanceof Error ? error.message : "Unknown error"
+                `Failed to create lesson: ${
+                    error instanceof Error ? error.message : "Unknown error"
                 }`,
             );
         } finally {
@@ -119,30 +122,30 @@ export default function CreateLessonForm() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="min-h-screen bg-white">
             {/* Header */}
-            <div className="bg-white border-b border-slate-200 shadow-sm">
-                <div className="max-w-7xl mx-auto px-6 py-8">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <Link href="/admin/lessons">
-                                <Button variant="outline" size="sm">
-                                    <ArrowLeft className="h-4 w-4 mr-2" />
-                                    Back to Lessons
-                                </Button>
-                            </Link>
-                            <div>
-                                <h1 className="text-3xl font-bold text-slate-900">
-                                    Create New Lesson
-                                </h1>
-                                <p className="text-slate-600 mt-2">
-                                    Add a new educational lesson to your content library
-                                </p>
-                            </div>
+            <div className="bg-white border-b border-slate-200">
+                <div className="max-w-7xl mx-auto px-6 py-6">
+                    <Link
+                        href="/admin/lessons"
+                        className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors mb-3"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back to Lesson Management
+                    </Link>
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                        <div>
+                            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+                                Create New Lesson
+                            </h1>
+                            <p className="text-sm text-slate-500 mt-1">
+                                Add a new educational lesson to your content
+                                library
+                            </p>
                         </div>
                         <Badge
                             variant="secondary"
-                            className="bg-green-50 text-green-700 border-green-200"
+                            className="bg-[rgb(90,199,219)]/10 text-[rgb(70,179,199)] border-[rgb(90,199,219)]/20"
                         >
                             Content Creator
                         </Badge>
@@ -154,16 +157,22 @@ export default function CreateLessonForm() {
             <div className="max-w-4xl mx-auto px-6 py-12">
                 {message && (
                     <div
-                        className={`mb-6 p-4 rounded-md border ${message.includes("Error") || message.includes("Failed")
+                        className={`mb-6 p-4 rounded-md border ${
+                            message.includes("Error") ||
+                            message.includes("Failed")
                                 ? "bg-red-50 border-red-200 text-red-700"
                                 : "bg-green-50 border-green-200 text-green-700"
-                            }`}
+                        }`}
                     >
                         <div className="flex items-center justify-between">
                             <span>{message}</span>
                             {isSuccess && (
                                 <Link href="/admin/lessons/manage">
-                                    <Button size="sm" variant="outline" className="ml-4">
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="ml-4"
+                                    >
                                         View Lessons
                                     </Button>
                                 </Link>
@@ -186,16 +195,24 @@ export default function CreateLessonForm() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <form onSubmit={handleSubmit} className="space-y-6">
+                                <form
+                                    onSubmit={handleSubmit}
+                                    className="space-y-6"
+                                >
                                     {/* Title */}
                                     <div className="space-y-2">
-                                        <Label htmlFor="title">Lesson Title</Label>
+                                        <Label htmlFor="title">
+                                            Lesson Title
+                                        </Label>
                                         <Input
                                             id="title"
                                             type="text"
                                             value={formData.title}
                                             onChange={(e) =>
-                                                setFormData({ ...formData, title: e.target.value })
+                                                setFormData({
+                                                    ...formData,
+                                                    title: e.target.value,
+                                                })
                                             }
                                             placeholder="Enter a descriptive lesson title"
                                             required
@@ -204,7 +221,9 @@ export default function CreateLessonForm() {
 
                                     {/* Description */}
                                     <div className="space-y-2">
-                                        <Label htmlFor="description">Description</Label>
+                                        <Label htmlFor="description">
+                                            Description
+                                        </Label>
                                         <Textarea
                                             id="description"
                                             value={formData.description}
@@ -223,7 +242,9 @@ export default function CreateLessonForm() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         {/* Lesson Index */}
                                         <div className="space-y-2">
-                                            <Label htmlFor="lessonIndex">Lesson Number</Label>
+                                            <Label htmlFor="lessonIndex">
+                                                Lesson Number
+                                            </Label>
                                             <Input
                                                 id="lessonIndex"
                                                 type="number"
@@ -231,7 +252,10 @@ export default function CreateLessonForm() {
                                                 onChange={(e) =>
                                                     setFormData({
                                                         ...formData,
-                                                        lessonIndex: parseInt(e.target.value) || 0,
+                                                        lessonIndex:
+                                                            parseInt(
+                                                                e.target.value,
+                                                            ) || 0,
                                                     })
                                                 }
                                                 placeholder="1"
@@ -242,8 +266,13 @@ export default function CreateLessonForm() {
 
                                         {/* Difficulty */}
                                         <div className="space-y-2">
-                                            <Label htmlFor="difficulty">Difficulty Level</Label>
-                                            <Popover open={open} onOpenChange={setOpen}>
+                                            <Label htmlFor="difficulty">
+                                                Difficulty Level
+                                            </Label>
+                                            <Popover
+                                                open={open}
+                                                onOpenChange={setOpen}
+                                            >
                                                 <PopoverTrigger asChild>
                                                     <Button
                                                         variant="outline"
@@ -253,9 +282,12 @@ export default function CreateLessonForm() {
                                                     >
                                                         {formData.difficulty
                                                             ? difficulties.find(
-                                                                (difficulty) =>
-                                                                    difficulty.value === formData.difficulty,
-                                                            )?.label
+                                                                  (
+                                                                      difficulty,
+                                                                  ) =>
+                                                                      difficulty.value ===
+                                                                      formData.difficulty,
+                                                              )?.label
                                                             : "Select difficulty..."}
                                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                     </Button>
@@ -264,34 +296,55 @@ export default function CreateLessonForm() {
                                                     <Command>
                                                         <CommandInput placeholder="Search difficulty..." />
                                                         <CommandList>
-                                                            <CommandEmpty>No difficulty found.</CommandEmpty>
+                                                            <CommandEmpty>
+                                                                No difficulty
+                                                                found.
+                                                            </CommandEmpty>
                                                             <CommandGroup>
-                                                                {difficulties.map((difficulty) => (
-                                                                    <CommandItem
-                                                                        key={difficulty.value}
-                                                                        value={difficulty.value}
-                                                                        onSelect={(currentValue) => {
-                                                                            setFormData({
-                                                                                ...formData,
-                                                                                difficulty:
-                                                                                    currentValue === formData.difficulty
-                                                                                        ? ""
-                                                                                        : currentValue,
-                                                                            });
-                                                                            setOpen(false);
-                                                                        }}
-                                                                    >
-                                                                        <Check
-                                                                            className={cn(
-                                                                                "mr-2 h-4 w-4",
-                                                                                formData.difficulty === difficulty.value
-                                                                                    ? "opacity-100"
-                                                                                    : "opacity-0",
-                                                                            )}
-                                                                        />
-                                                                        {difficulty.label}
-                                                                    </CommandItem>
-                                                                ))}
+                                                                {difficulties.map(
+                                                                    (
+                                                                        difficulty,
+                                                                    ) => (
+                                                                        <CommandItem
+                                                                            key={
+                                                                                difficulty.value
+                                                                            }
+                                                                            value={
+                                                                                difficulty.value
+                                                                            }
+                                                                            onSelect={(
+                                                                                currentValue,
+                                                                            ) => {
+                                                                                setFormData(
+                                                                                    {
+                                                                                        ...formData,
+                                                                                        difficulty:
+                                                                                            currentValue ===
+                                                                                            formData.difficulty
+                                                                                                ? ""
+                                                                                                : currentValue,
+                                                                                    },
+                                                                                );
+                                                                                setOpen(
+                                                                                    false,
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            <Check
+                                                                                className={cn(
+                                                                                    "mr-2 h-4 w-4",
+                                                                                    formData.difficulty ===
+                                                                                        difficulty.value
+                                                                                        ? "opacity-100"
+                                                                                        : "opacity-0",
+                                                                                )}
+                                                                            />
+                                                                            {
+                                                                                difficulty.label
+                                                                            }
+                                                                        </CommandItem>
+                                                                    ),
+                                                                )}
                                                             </CommandGroup>
                                                         </CommandList>
                                                     </Command>
@@ -304,21 +357,28 @@ export default function CreateLessonForm() {
                                     <div className="space-y-2">
                                         <Label>Learning Objectives</Label>
                                         <div className="space-y-3">
-                                            {formData.objectives.map((objective, index) => (
-                                                <div key={index}>
-                                                    <Input
-                                                        type="text"
-                                                        value={objective}
-                                                        onChange={(e) =>
-                                                            handleObjectiveChange(index, e.target.value)
-                                                        }
-                                                        placeholder={`Learning objective ${index + 1}`}
-                                                    />
-                                                </div>
-                                            ))}
+                                            {formData.objectives.map(
+                                                (objective, index) => (
+                                                    <div key={index}>
+                                                        <Input
+                                                            type="text"
+                                                            value={objective}
+                                                            onChange={(e) =>
+                                                                handleObjectiveChange(
+                                                                    index,
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
+                                                            placeholder={`Learning objective ${index + 1}`}
+                                                        />
+                                                    </div>
+                                                ),
+                                            )}
                                         </div>
                                         <p className="text-sm text-slate-500">
-                                            Add up to 3 specific learning objectives for this lesson
+                                            Add up to 3 specific learning
+                                            objectives for this lesson
                                         </p>
                                     </div>
 
@@ -328,10 +388,15 @@ export default function CreateLessonForm() {
                                             disabled={isSubmitting}
                                             className="flex-1"
                                         >
-                                            {isSubmitting ? "Creating Lesson..." : "Create Lesson"}
+                                            {isSubmitting
+                                                ? "Creating Lesson..."
+                                                : "Create Lesson"}
                                         </Button>
                                         <Link href="/admin/lessons">
-                                            <Button variant="outline" type="button">
+                                            <Button
+                                                variant="outline"
+                                                type="button"
+                                            >
                                                 Cancel
                                             </Button>
                                         </Link>
@@ -345,8 +410,12 @@ export default function CreateLessonForm() {
                     <div className="lg:col-span-1">
                         <Card className="bg-white border-slate-200 sticky top-6">
                             <CardHeader>
-                                <CardTitle className="text-lg">Preview</CardTitle>
-                                <CardDescription>How your lesson will appear</CardDescription>
+                                <CardTitle className="text-lg">
+                                    Preview
+                                </CardTitle>
+                                <CardDescription>
+                                    How your lesson will appear
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div>
@@ -363,7 +432,8 @@ export default function CreateLessonForm() {
                                         DESCRIPTION
                                     </Label>
                                     <p className="text-sm text-slate-600">
-                                        {formData.description || "No description provided"}
+                                        {formData.description ||
+                                            "No description provided"}
                                     </p>
                                 </div>
 
@@ -372,7 +442,9 @@ export default function CreateLessonForm() {
                                         <Label className="text-xs font-medium text-slate-500">
                                             NUMBER
                                         </Label>
-                                        <Badge variant="outline">#{formData.lessonIndex}</Badge>
+                                        <Badge variant="outline">
+                                            #{formData.lessonIndex}
+                                        </Badge>
                                     </div>
                                     <div>
                                         <Label className="text-xs font-medium text-slate-500">
@@ -381,11 +453,13 @@ export default function CreateLessonForm() {
                                         {formData.difficulty && (
                                             <Badge
                                                 variant={
-                                                    formData.difficulty === "beginner"
+                                                    formData.difficulty ===
+                                                    "beginner"
                                                         ? "default"
-                                                        : formData.difficulty === "intermediate"
-                                                            ? "secondary"
-                                                            : "destructive"
+                                                        : formData.difficulty ===
+                                                            "intermediate"
+                                                          ? "secondary"
+                                                          : "destructive"
                                                 }
                                             >
                                                 {formData.difficulty}
@@ -402,17 +476,23 @@ export default function CreateLessonForm() {
                                         {formData.objectives
                                             .filter((obj) => obj.trim())
                                             .map((objective, index) => (
-                                                <li key={index} className="flex items-start">
-                                                    <span className="mr-2">•</span>
+                                                <li
+                                                    key={index}
+                                                    className="flex items-start"
+                                                >
+                                                    <span className="mr-2">
+                                                        •
+                                                    </span>
                                                     <span>{objective}</span>
                                                 </li>
                                             ))}
-                                        {formData.objectives.filter((obj) => obj.trim()).length ===
-                                            0 && (
-                                                <p className="text-slate-400 italic">
-                                                    No objectives added
-                                                </p>
-                                            )}
+                                        {formData.objectives.filter((obj) =>
+                                            obj.trim(),
+                                        ).length === 0 && (
+                                            <p className="text-slate-400 italic">
+                                                No objectives added
+                                            </p>
+                                        )}
                                     </ul>
                                 </div>
                             </CardContent>

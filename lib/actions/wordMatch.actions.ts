@@ -138,6 +138,44 @@ export async function deleteWordMatchRound(roundId: string) {
     }
 }
 
+export async function getWordMatchStats() {
+    try {
+        await connectToDatabase();
+
+        const totalRounds = await WordMatchRound.countDocuments();
+
+        const [aggregate] = await WordMatchResult.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalPlays: { $sum: 1 },
+                    averageScore: { $avg: "$score" },
+                    averageTimeMs: { $avg: "$timeMs" },
+                    averageWrongAttempts: { $avg: "$wrongAttempts" },
+                },
+            },
+        ]);
+
+        return {
+            totalRounds,
+            totalPlays: aggregate?.totalPlays ?? 0,
+            averageScore: Math.round(aggregate?.averageScore ?? 0),
+            averageTimeMs: Math.round(aggregate?.averageTimeMs ?? 0),
+            averageWrongAttempts:
+                Math.round((aggregate?.averageWrongAttempts ?? 0) * 10) / 10,
+        };
+    } catch (error) {
+        console.error("Error getting word match stats:", error);
+        return {
+            totalRounds: 0,
+            totalPlays: 0,
+            averageScore: 0,
+            averageTimeMs: 0,
+            averageWrongAttempts: 0,
+        };
+    }
+}
+
 export async function saveWordMatchResult(resultData: {
     roundId: string;
     score: number;

@@ -48,8 +48,12 @@ export default function ManageLessonsClient({
         if (searchTerm) {
             filtered = filtered.filter(
                 (lesson) =>
-                    lesson.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    lesson.description.toLowerCase().includes(searchTerm.toLowerCase()),
+                    lesson.title
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                    lesson.description
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()),
             );
         }
 
@@ -104,36 +108,39 @@ export default function ManageLessonsClient({
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="min-h-screen bg-white">
             {/* Header */}
-            <div className="bg-white border-b border-slate-200 shadow-sm">
-                <div className="max-w-7xl mx-auto px-6 py-8">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <Link href="/admin/lessons">
-                                <Button variant="outline" size="sm">
-                                    <ArrowLeft className="h-4 w-4 mr-2" />
-                                    Back to Lessons
-                                </Button>
-                            </Link>
-                            <div>
-                                <h1 className="text-3xl font-bold text-slate-900">
-                                    Manage Lessons
-                                </h1>
-                                <p className="text-slate-600 mt-2">
-                                    View, edit, and organize your lesson content
-                                </p>
-                            </div>
+            <div className="bg-white border-b border-slate-200">
+                <div className="max-w-7xl mx-auto px-6 py-6">
+                    <Link
+                        href="/admin/lessons"
+                        className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors mb-3"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back to Lesson Management
+                    </Link>
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                        <div>
+                            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+                                Manage Lessons
+                            </h1>
+                            <p className="text-sm text-slate-500 mt-1">
+                                View, edit, and organize your lesson content
+                            </p>
                         </div>
                         <div className="flex items-center gap-3">
                             <Badge
                                 variant="secondary"
-                                className="bg-blue-50 text-blue-700 border-blue-200"
+                                className="bg-[rgb(90,199,219)]/10 text-[rgb(70,179,199)] border-[rgb(90,199,219)]/20"
                             >
-                                {filteredLessons.length} of {lessons.length} lessons
+                                {filteredLessons.length} of {lessons.length}{" "}
+                                lessons
                             </Badge>
                             <Link href="/admin/lessons/create">
-                                <Button size="sm" className="bg-green-500 hover:bg-green-600">
+                                <Button
+                                    size="sm"
+                                    className="bg-[rgb(90,199,219)] hover:bg-[rgb(70,179,199)] text-white"
+                                >
                                     <Plus className="h-4 w-4 mr-2" />
                                     Add Lesson
                                 </Button>
@@ -147,10 +154,12 @@ export default function ManageLessonsClient({
             <div className="max-w-7xl mx-auto px-6 py-12">
                 {message && (
                     <div
-                        className={`mb-6 p-4 rounded-md border ${message.includes("Error") || message.includes("Failed")
+                        className={`mb-6 p-4 rounded-md border ${
+                            message.includes("Error") ||
+                            message.includes("Failed")
                                 ? "bg-red-50 border-red-200 text-red-700"
                                 : "bg-green-50 border-green-200 text-green-700"
-                            }`}
+                        }`}
                     >
                         {message}
                     </div>
@@ -159,7 +168,9 @@ export default function ManageLessonsClient({
                 {/* Filters */}
                 <Card className="mb-8 bg-white border-slate-200">
                     <CardHeader>
-                        <CardTitle className="text-lg">Filters & Search</CardTitle>
+                        <CardTitle className="text-lg">
+                            Filters & Search
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -169,7 +180,9 @@ export default function ManageLessonsClient({
                                     <Input
                                         placeholder="Search lessons by title or description..."
                                         value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        onChange={(e) =>
+                                            setSearchTerm(e.target.value)
+                                        }
                                         className="pl-10"
                                     />
                                 </div>
@@ -177,12 +190,18 @@ export default function ManageLessonsClient({
                             <div>
                                 <select
                                     value={selectedDifficulty}
-                                    onChange={(e) => setSelectedDifficulty(e.target.value)}
+                                    onChange={(e) =>
+                                        setSelectedDifficulty(e.target.value)
+                                    }
                                     className="w-full p-2 border border-slate-200 rounded-md bg-white"
                                 >
-                                    <option value="all">All Difficulties</option>
+                                    <option value="all">
+                                        All Difficulties
+                                    </option>
                                     <option value="beginner">Beginner</option>
-                                    <option value="intermediate">Intermediate</option>
+                                    <option value="intermediate">
+                                        Intermediate
+                                    </option>
                                     <option value="advanced">Advanced</option>
                                 </select>
                             </div>
@@ -218,16 +237,21 @@ export default function ManageLessonsClient({
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-2">
-                                                <Badge variant="outline" className="text-xs">
+                                                <Badge
+                                                    variant="outline"
+                                                    className="text-xs"
+                                                >
                                                     #{lesson.lessonIndex}
                                                 </Badge>
                                                 <Badge
                                                     variant={getDifficultyBadgeVariant(
-                                                        lesson.difficulty || "beginner",
+                                                        lesson.difficulty ||
+                                                            "beginner",
                                                     )}
                                                     className="text-xs"
                                                 >
-                                                    {lesson.difficulty || "beginner"}
+                                                    {lesson.difficulty ||
+                                                        "beginner"}
                                                 </Badge>
                                             </div>
                                             <CardTitle className="text-lg leading-tight">
@@ -246,15 +270,27 @@ export default function ManageLessonsClient({
                                             Learning Objectives:
                                         </p>
                                         <ul className="text-xs text-slate-600 space-y-1">
-                                            {lesson.objectives.slice(0, 2).map((objective, index) => (
-                                                <li key={index} className="flex items-start">
-                                                    <span className="mr-2 text-slate-400">•</span>
-                                                    <span className="line-clamp-1">{objective}</span>
-                                                </li>
-                                            ))}
+                                            {lesson.objectives
+                                                .slice(0, 2)
+                                                .map((objective, index) => (
+                                                    <li
+                                                        key={index}
+                                                        className="flex items-start"
+                                                    >
+                                                        <span className="mr-2 text-slate-400">
+                                                            •
+                                                        </span>
+                                                        <span className="line-clamp-1">
+                                                            {objective}
+                                                        </span>
+                                                    </li>
+                                                ))}
                                             {lesson.objectives.length > 2 && (
                                                 <li className="text-slate-400 text-xs">
-                                                    +{lesson.objectives.length - 2} more...
+                                                    +
+                                                    {lesson.objectives.length -
+                                                        2}{" "}
+                                                    more...
                                                 </li>
                                             )}
                                         </ul>
@@ -264,7 +300,12 @@ export default function ManageLessonsClient({
                                         <Button
                                             variant="destructive"
                                             size="sm"
-                                            onClick={() => handleDelete(lesson._id, lesson.title)}
+                                            onClick={() =>
+                                                handleDelete(
+                                                    lesson._id,
+                                                    lesson.title,
+                                                )
+                                            }
                                             className="w-full"
                                         >
                                             <Trash2 className="h-4 w-4 mr-2" />

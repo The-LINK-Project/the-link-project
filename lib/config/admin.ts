@@ -7,6 +7,7 @@ export const ADMIN_CONFIG = {
     "alexanderkmlee@gmail.com",
     "ruhangupta01@gmail.com",
     "goutammajumder@yahoo.co.in",
+    "agarw76685@gapps.uwcsea.edu.sg",
   ],
 
   // Redirect paths

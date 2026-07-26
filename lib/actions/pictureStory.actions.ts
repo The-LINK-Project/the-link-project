@@ -143,6 +143,44 @@ export async function deletePictureStorySet(setId: string) {
     }
 }
 
+export async function getPictureStoryStats() {
+    try {
+        await connectToDatabase();
+
+        const totalSets = await PictureStorySet.countDocuments();
+
+        const [aggregate] = await PictureStoryResult.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalPlays: { $sum: 1 },
+                    totalScore: { $sum: "$score" },
+                    totalQuestions: { $sum: "$totalQuestions" },
+                },
+            },
+        ]);
+
+        const totalQuestions = aggregate?.totalQuestions ?? 0;
+
+        return {
+            totalSets,
+            totalPlays: aggregate?.totalPlays ?? 0,
+            averageAccuracy: totalQuestions
+                ? Math.round(
+                      ((aggregate?.totalScore ?? 0) / totalQuestions) * 100,
+                  )
+                : 0,
+        };
+    } catch (error) {
+        console.error("Error getting picture story stats:", error);
+        return {
+            totalSets: 0,
+            totalPlays: 0,
+            averageAccuracy: 0,
+        };
+    }
+}
+
 export async function savePictureStoryResult(resultData: {
     setId: string;
     score: number;

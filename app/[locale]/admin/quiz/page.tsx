@@ -1,51 +1,48 @@
-import { ActionButton } from "@/components/ui/actionbutton";
 import { Database, Plus } from "lucide-react";
+import { getAllQuizzes, getQuizResultStats } from "@/lib/actions/quiz.actions";
+import {
+    AdminPageShell,
+    AdminManagementCard,
+} from "@/components/admin/AdminPageShell";
 
-export default function AdminQuizPage() {
-  return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-slate-900 mb-4">
-            Quiz Administration
-          </h1>
-          <p className="text-lg text-slate-600">
-            Manage and create quizzes for the platform
-          </p>
-        </div>
+export default async function AdminQuizPage() {
+    const [quizzes, quizStats] = await Promise.all([
+        getAllQuizzes().catch(() => []),
+        getQuizResultStats().catch(() => ({
+            totalAttempts: 0,
+            averageScore: 0,
+            highPerformers: 0,
+            needSupport: 0,
+        })),
+    ]);
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="bg-white rounded-xl p-6 shadow-lg">
-            <h2 className="text-xl font-semibold mb-4 text-[rgb(90,199,219)]">
-              Create New Quiz
-            </h2>
-            <ActionButton
-              label="Create Quiz"
-              icon={<Plus className="h-5 w-5" />}
-              href="/admin/quiz/create"
-              variant="default"
-            />
-            <p className="text-sm text-slate-500 mt-3">
-              Create a custom quiz with your own questions
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl p-6 shadow-lg">
-            <h2 className="text-xl font-semibold mb-4 text-slate-800">
-              Quiz Database
-            </h2>
-            <ActionButton
-              label="View All Quizzes"
-              icon={<Database className="h-5 w-5" />}
-              href="/admin/quiz/manage"
-              variant="secondary"
-            />
-            <p className="text-sm text-slate-500 mt-3">
-              View and manage existing quizzes
-            </p>
-          </div>
-        </div>
-      </div>
-    </main>
-  );
+    return (
+        <AdminPageShell
+            title="Quiz Management"
+            description="Create and manage comprehension quizzes for the platform"
+            backHref="/admin"
+            backLabel="Back to Dashboard"
+        >
+            <div className="grid gap-4 md:grid-cols-2">
+                <AdminManagementCard
+                    href="/admin/quiz/create"
+                    title="Create New Quiz"
+                    description="Build a quiz with multiple-choice questions"
+                    stat="Linked to a lesson on creation"
+                    cta="Create"
+                    icon={Plus}
+                    accent="violet"
+                />
+                <AdminManagementCard
+                    href="/admin/quiz/manage"
+                    title="Quiz Database"
+                    description="View, inspect and delete existing quizzes"
+                    stat={`${quizzes.length} quizzes · ${quizStats.totalAttempts} attempts`}
+                    cta="Manage"
+                    icon={Database}
+                    accent="blue"
+                />
+            </div>
+        </AdminPageShell>
+    );
 }
