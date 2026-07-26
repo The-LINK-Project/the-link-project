@@ -31,6 +31,10 @@ export const WORD_MATCH_CATEGORIES: WordMatchCategory[] = [
     { id: "weather", label: "Weather & going out", emoji: "🌧️" },
     { id: "time", label: "Time & schedule", emoji: "🕐" },
     { id: "talking", label: "Everyday talking", emoji: "💬" },
+    { id: "fruits", label: "Fruits", emoji: "🍎" },
+    { id: "clothes", label: "Clothes & dressing", emoji: "👗" },
+    { id: "bathroom", label: "In the bathroom", emoji: "🪥" },
+    { id: "body", label: "Parts of the body", emoji: "🧍" },
 ];
 
 export const WORD_MATCH_ROUNDS: WordMatchGameRound[] = [
@@ -249,6 +253,70 @@ export const WORD_MATCH_ROUNDS: WordMatchGameRound[] = [
                 "You want to ask something",
                 "Excuse me, can I ask you something?",
             ),
+        ],
+    },
+
+    // --- Set C (harder) --------------------------------------------------
+    // Deliberately DIFFERENT topics from Sets A and B (which cover kitchen,
+    // laundry, cleaning, market, hawker, the flat, weather, time, transport and
+    // the clinic). Set C is about you and your morning: fruits, getting
+    // dressed, the bathroom, feeling unwell and parts of the body. The
+    // "doctor-feeling" round above supplies the fifth (feeling unwell) topic.
+    // All icons here are their own clear drawings — none are reused from A or B.
+    {
+        _id: "fruits",
+        title: "Fruits",
+        category: "fruits",
+        difficulty: "medium",
+        pairs: [
+            pic("apple", "apple"),
+            pic("banana", "banana"),
+            pic("orange", "orange"),
+            pic("grapes", "grapes"),
+            pic("watermelon", "watermelon"),
+            pic("pineapple", "pineapple"),
+        ],
+    },
+    {
+        _id: "getting-dressed",
+        title: "Getting dressed",
+        category: "clothes",
+        difficulty: "medium",
+        pairs: [
+            pic("shirt", "shirt"),
+            pic("trousers", "trousers"),
+            pic("shoes", "shoes"),
+            pic("socks", "socks"),
+            pic("cap", "cap"),
+            pic("dress", "dress"),
+        ],
+    },
+    {
+        _id: "bathroom-things",
+        title: "In the bathroom",
+        category: "bathroom",
+        difficulty: "medium",
+        pairs: [
+            pic("toothbrush", "toothbrush"),
+            pic("toothpaste", "toothpaste"),
+            pic("soap", "soap"),
+            pic("towel", "towel"),
+            pic("mirror", "mirror"),
+            pic("comb", "comb"),
+        ],
+    },
+    {
+        _id: "body-parts",
+        title: "Parts of the body",
+        category: "body",
+        difficulty: "medium",
+        pairs: [
+            pic("head", "head"),
+            pic("eye", "eye"),
+            pic("ear", "ear"),
+            pic("nose", "nose"),
+            pic("mouth", "mouth"),
+            pic("hand", "hand"),
         ],
     },
 ];

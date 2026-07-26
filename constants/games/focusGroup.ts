@@ -1,20 +1,25 @@
 // Focus Group July 2026 — the time-trial run.
 //
-// TWO sets, A and B, of the SAME game. Each is 10 stages played straight
+// THREE sets, A, B and C, of the SAME game. Each is 10 stages played straight
 // through with no menus: 5 Word Match rounds then 5 Picture Story questions.
 // Set B exists so a second group (or a re-run, if there is time) plays entirely
-// different words and stories — there is no content overlap with Set A.
+// different words and stories — there is no content overlap with Set A. Set C
+// is a harder third run for teams that clear A and B (see its note below).
 //
 // Each set's sequence is FIXED and identical for every team that plays it. Do
 // not randomise these lists — the only variable is how fast a team gets
 // through it.
 //
-// NO GRAMMAR MINIMAL-PAIR QUESTIONS. Questions whose four options are near
-// identical sentences differing by one word ("in / on / under / at the
-// machine", "is cooking / cooked / will cook") are deliberately excluded — in
-// a race they cost repeated 5-second freezes on a subtle distinction. Both
-// sets use only meaning-based picture questions: ordering a sequence, and
-// working out what happens next.
+// SETS A AND B: NO GRAMMAR MINIMAL-PAIR QUESTIONS. Questions whose four options
+// are near identical sentences differing by one word ("in / on / under / at the
+// machine", "is cooking / cooked / will cook") are excluded from A and B — in a
+// race they cost repeated 5-second freezes on a subtle distinction. A and B use
+// only meaning-based picture questions: ordering a sequence, and working out
+// what happens next.
+//
+// SET C IS THE EXCEPTION. It is the hard set and its five picture questions are
+// grammar minimal-pairs ON PURPOSE — same picture, four near-identical options,
+// only one grammatically correct. That difficulty is the whole point of C.
 
 import { WORD_MATCH_ROUNDS } from "./wordMatch";
 import { PICTURE_STORY_SETS } from "./pictureStory";
@@ -75,6 +80,31 @@ const SET_B_STAGES: FocusGroupStage[] = [
     { kind: "picture", label: "At the market", question: question("market-hawker", 3) },
 ];
 
+// --- Set C ---------------------------------------------------------------
+// The HARD set. Deliberately DIFFERENT topics from A and B — it is about you
+// and your morning (fruits, getting dressed, the bathroom, feeling unwell,
+// parts of the body), and every icon is its own clear drawing not shared with
+// A or B. Two things make it harder:
+//   • Word Match uses fresh, less everyday vocabulary.
+//   • The five picture questions BREAK the "no grammar" rule above on purpose:
+//     each shows a progression and asks which sentence is correct English.
+//     All four options mean the same; only one is grammatically correct.
+// Word Match: fruits, getting dressed, bathroom, feeling unwell, body.
+// Pictures: five grammar questions on those same topics.
+const SET_C_STAGES: FocusGroupStage[] = [
+    { kind: "word-match", label: "Fruits", round: round("fruits") },
+    { kind: "word-match", label: "Getting dressed", round: round("getting-dressed") },
+    { kind: "word-match", label: "In the bathroom", round: round("bathroom-things") },
+    { kind: "word-match", label: "Feeling unwell", round: round("doctor-feeling") },
+    { kind: "word-match", label: "Parts of the body", round: round("body-parts") },
+
+    { kind: "picture", label: "Getting dressed", question: question("focus-c", 1) },
+    { kind: "picture", label: "Eating", question: question("focus-c", 2) },
+    { kind: "picture", label: "Brushing teeth", question: question("focus-c", 3) },
+    { kind: "picture", label: "Feeling unwell", question: question("focus-c", 4) },
+    { kind: "picture", label: "The face", question: question("focus-c", 5) },
+];
+
 export type FocusGroupSet = {
     slug: string;
     title: string;
@@ -84,6 +114,7 @@ export type FocusGroupSet = {
 export const FOCUS_GROUP_SETS: FocusGroupSet[] = [
     { slug: "a", title: "Focus Group Set A", stages: SET_A_STAGES },
     { slug: "b", title: "Focus Group Set B", stages: SET_B_STAGES },
+    { slug: "c", title: "Focus Group Set C", stages: SET_C_STAGES },
 ];
 
 export const getFocusGroupSet = (slug: string): FocusGroupSet | undefined =>

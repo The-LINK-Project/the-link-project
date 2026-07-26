@@ -657,4 +657,87 @@ export const PICTURE_STORY_SETS: PictureStoryGameSet[] = [
             },
         ],
     },
+    {
+        // Set C source — the HARD set. Unlike A and B (meaning-based, no
+        // grammar), these five look at an image progression and ask which
+        // sentence is correct ENGLISH. All four options say the same thing;
+        // three contain a real grammar mistake (agreement, tense, participle,
+        // article, plural) and only one is correct. This is what makes Set C
+        // harder — it tests the grammar, not just the vocabulary.
+        _id: "focus-c",
+        title: "Say it correctly (harder)",
+        difficulty: "hard",
+        questions: [
+            {
+                type: "sentence",
+                sequence: panels("socks", "trousers", "shirt", "shoes"),
+                prompt: "What is he doing? Choose the correct sentence.",
+                options: [
+                    "He is getting dressed.",
+                    "He is get dressed.",
+                    "He are getting dressed.",
+                    "He getting dressed.",
+                ],
+                correctAnswerIndex: 0,
+                explanation:
+                    "Present continuous is 'is' + verb-ing: he is getting dressed.",
+            },
+            {
+                type: "sentence",
+                sequence: panels("apple", "mouth"),
+                prompt: "Choose the correct sentence.",
+                options: [
+                    "She is eating an apple.",
+                    "She is eating a apple.",
+                    "She is eat an apple.",
+                    "She eating an apple.",
+                ],
+                correctAnswerIndex: 0,
+                explanation:
+                    "Use 'an' before a vowel sound (an apple), and 'is' + eating for what is happening now.",
+            },
+            {
+                type: "sentence",
+                sequence: panels("toothpaste", "toothbrush", "head"),
+                prompt: "The job is finished. Choose the correct sentence.",
+                options: [
+                    "She has brushed her teeth.",
+                    "She has brush her teeth.",
+                    "She have brushed her teeth.",
+                    "She has brushing her teeth.",
+                ],
+                correctAnswerIndex: 0,
+                explanation:
+                    "Present perfect is 'has' + past participle: she has brushed her teeth.",
+            },
+            {
+                type: "sentence",
+                sequence: panels("fever", "thermometer", "medicine"),
+                prompt: "He was sick. Choose the correct sentence.",
+                options: [
+                    "He has taken his medicine.",
+                    "He has took his medicine.",
+                    "He have taken his medicine.",
+                    "He has take his medicine.",
+                ],
+                correctAnswerIndex: 0,
+                explanation:
+                    "The past participle of 'take' is 'taken': he has taken his medicine.",
+            },
+            {
+                type: "sentence",
+                sequence: panels("head", "eye", "ear", "nose"),
+                prompt: "Choose the correct sentence.",
+                options: [
+                    "A face has two eyes and two ears.",
+                    "A face have two eyes and two ears.",
+                    "A face has two eye and two ear.",
+                    "A face has two eyes and two ear.",
+                ],
+                correctAnswerIndex: 0,
+                explanation:
+                    "'A face' is singular, so 'has'; and more than one takes the plural: eyes, ears.",
+            },
+        ],
+    },
 ];
