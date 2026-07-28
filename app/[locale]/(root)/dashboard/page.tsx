@@ -12,12 +12,18 @@ import { BarChart3, ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { FOCUS_GROUP_SETS } from "@/constants/games/focusGroup";
 
+// Keep the reusable survey prompt dormant now that the focus group is over.
+// The survey route, responses, and admin reporting remain available.
+const SHOW_SURVEY_BANNER = false;
+
 const DashboardPage = async () => {
     await ensureUser();
 
     const lessons = await getAllLessons();
     const lessonStatuses = await getAllLessonStatuses();
-    const surveyBannerState = await getSurveyBannerState();
+    const surveyBannerState = SHOW_SURVEY_BANNER
+        ? await getSurveyBannerState()
+        : null;
     const t = await getTranslations("dashboard");
 
     const getLessonsByDifficulty = (difficulty: string) => {
@@ -39,7 +45,7 @@ const DashboardPage = async () => {
 
     return (
         <section className="p-6">
-            <SurveyBanner state={surveyBannerState} />
+            {surveyBannerState && <SurveyBanner state={surveyBannerState} />}
 
             <div className="mb-8 flex justify-between items-start">
                 <div>
