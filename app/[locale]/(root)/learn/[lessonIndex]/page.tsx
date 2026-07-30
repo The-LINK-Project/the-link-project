@@ -76,6 +76,7 @@ const LessonPage = async ({ params }: { params: Promise<{ lessonIndex: string }>
                         </h2>
 
                         <Lesson
+                            key={index}
                             previousLessonProgress={lessonProgress}
                             lessonInfo={lesson}
                         />

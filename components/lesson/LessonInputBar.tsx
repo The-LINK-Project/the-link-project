@@ -52,7 +52,7 @@ const LessonInputBar = ({
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <p>{recording ? "Stop recording" : "Click this to speak"}</p>
+                        <p>{recording ? t("stoprecording") : t("speak")}</p>
                     </TooltipContent>
                 </Tooltip>
 

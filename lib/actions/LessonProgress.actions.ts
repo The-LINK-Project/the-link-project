@@ -110,17 +110,43 @@ export async function updateLessonProgress({
 
         const { _id: userId } = await ensureUser();
 
+        // Merge with the existing document so objectives can never regress —
+        // an objective already true in the DB stays true even if the incoming
+        // array says false
+        const existingLessonProgress = await LessonProgress.findOne({
+            userId: userId,
+            lessonIndex: lessonIndex,
+        });
+
+        const existingObjectivesMet: boolean[] =
+            existingLessonProgress?.objectivesMet ?? [];
+
+        const mergedObjectivesMet = objectivesMet.map(
+            (met: boolean, index: number) =>
+                met || !!existingObjectivesMet[index],
+        );
+
         const setUpdates: {
             objectivesMet: boolean[];
             convoHistory: Message[];
             completed?: boolean;
         } = {
-            objectivesMet: objectivesMet,
+            objectivesMet: mergedObjectivesMet,
             convoHistory: convoHistory,
         };
 
-        if (objectivesMet.every((met: boolean) => met)) {
+        if (mergedObjectivesMet.every((met: boolean) => met)) {
             setUpdates.completed = true;
+        }
+
+        // MongoDB rejects updates where the same path appears in both $set and
+        // $setOnInsert, so only default `completed` when $set doesn't carry it
+        const update: {
+            $set: typeof setUpdates;
+            $setOnInsert?: { completed: boolean };
+        } = { $set: setUpdates };
+        if (setUpdates.completed === undefined) {
+            update.$setOnInsert = { completed: false };
         }
 
         const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
@@ -128,10 +154,7 @@ export async function updateLessonProgress({
                 userId: userId,
                 lessonIndex: lessonIndex,
             },
-            {
-                $set: setUpdates,
-                $setOnInsert: { completed: false },
-            },
+            update,
             {
                 upsert: true,
                 new: true,

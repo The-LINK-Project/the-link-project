@@ -8,10 +8,22 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+const MAX_CONVO_HISTORY_MESSAGES = 20;
+
 export function formatConvoHistory(convoHistory: Message[]): string {
-    return convoHistory
-        .map((message) => `${message.role}: ${message.message}`)
-        .join("\n");
+    // "System" is the stored role for the tutor's messages, but "Tutor" is a
+    // clearer label for the model prompt
+    const recentMessages = convoHistory.slice(-MAX_CONVO_HISTORY_MESSAGES);
+    const lines = recentMessages.map(
+        (message) =>
+            `${message.role === "System" ? "Tutor" : message.role}: ${message.message}`,
+    );
+
+    if (convoHistory.length > MAX_CONVO_HISTORY_MESSAGES) {
+        lines.unshift("[earlier conversation omitted]");
+    }
+
+    return lines.join("\n");
 }
 
 export function formatInitialObjectives(objectives: any[]) {

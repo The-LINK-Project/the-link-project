@@ -66,6 +66,7 @@ Tool Call Instructions:
 - You can mark objectives complete whenever the user shows genuine competency - don't wait for perfect responses
 - Pass the exact index of the completed objective (0 for first objective, 1 for second, 2 for third, etc.)
 - **IMPORTANT**: Make the tool call BEFORE you respond to the user - this ensures the UI updates correctly
+- **NEVER respond with only a function call** - every turn that includes a tool call MUST also include your spoken reply text, briefly acknowledging the success and asking the next question
 - Continue teaching naturally after making the tool call - don't mention that you've marked anything complete
 - Do not mention tool calls, progress tracking, or ask permission to mark objectives complete
 - If unsure about completion, ask ONE targeted follow-up question to assess, then decide and call the tool
