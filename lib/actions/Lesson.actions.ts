@@ -53,6 +53,17 @@ export async function getAllLessons(): Promise<Lesson[]> {
     }
 }
 
+export async function getLessonCount(): Promise<number> {
+    try {
+        await connectToDatabase();
+
+        return await Lesson.countDocuments();
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export async function getLessonByIndex(lessonIndex: number): Promise<Lesson> {
     try {
         await connectToDatabase();

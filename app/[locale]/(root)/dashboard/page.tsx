@@ -19,8 +19,10 @@ const SHOW_SURVEY_BANNER = false;
 const DashboardPage = async () => {
     await ensureUser();
 
-    const lessons = await getAllLessons();
-    const lessonStatuses = await getAllLessonStatuses();
+    const [lessons, lessonStatuses] = await Promise.all([
+        getAllLessons(),
+        getAllLessonStatuses(),
+    ]);
     const surveyBannerState = SHOW_SURVEY_BANNER
         ? await getSurveyBannerState()
         : null;

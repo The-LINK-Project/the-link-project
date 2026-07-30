@@ -29,6 +29,8 @@ const LessonProgressSchema = new Schema({
     },
 });
 
+LessonProgressSchema.index({ userId: 1, lessonIndex: 1 }, { unique: true });
+
 const LessonProgress =
     models.LessonProgress || model("LessonProgress", LessonProgressSchema);
 
