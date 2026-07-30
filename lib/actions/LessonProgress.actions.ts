@@ -66,14 +66,18 @@ export async function getLessonProgress({
 }
 
 // this runs when the user clicks disconnect or unnaturally disconnects such as exiting tab
+// Pass `convoHistory` to replace the stored history, or `appendMessages` to
+// atomically $push new messages without rewriting what's already stored
 export async function updateLessonProgress({
     lessonIndex,
     objectivesMet,
     convoHistory,
+    appendMessages,
 }: {
     lessonIndex: number;
     objectivesMet: boolean[];
-    convoHistory: Message[];
+    convoHistory?: Message[];
+    appendMessages?: Message[];
 }) {
     try {
         await connectToDatabase();
@@ -98,12 +102,15 @@ export async function updateLessonProgress({
 
         const setUpdates: {
             objectivesMet: boolean[];
-            convoHistory: Message[];
+            convoHistory?: Message[];
             completed?: boolean;
         } = {
             objectivesMet: mergedObjectivesMet,
-            convoHistory: convoHistory,
         };
+
+        if (convoHistory !== undefined) {
+            setUpdates.convoHistory = convoHistory;
+        }
 
         if (mergedObjectivesMet.every((met: boolean) => met)) {
             setUpdates.completed = true;
@@ -114,9 +121,13 @@ export async function updateLessonProgress({
         const update: {
             $set: typeof setUpdates;
             $setOnInsert?: { completed: boolean };
+            $push?: { convoHistory: { $each: Message[] } };
         } = { $set: setUpdates };
         if (setUpdates.completed === undefined) {
             update.$setOnInsert = { completed: false };
+        }
+        if (appendMessages !== undefined && convoHistory === undefined) {
+            update.$push = { convoHistory: { $each: appendMessages } };
         }
 
         const updatedLessonProgress = await LessonProgress.findOneAndUpdate(

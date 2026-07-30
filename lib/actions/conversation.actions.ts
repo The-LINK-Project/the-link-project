@@ -276,8 +276,16 @@ export async function processInitialMessage({
       };
     }
 
-    const progressForInstructions = currentProgress ?? lessonProgress;
-    const instructions = await generateInstructions(progressForInstructions);
+    // The lesson page creates the progress doc before rendering, so a
+    // missing doc means something is wrong — never trust the client snapshot
+    if (!currentProgress) {
+      return {
+        success: false,
+        error: "Lesson progress not found",
+      };
+    }
+
+    const instructions = await generateInstructions(currentProgress);
 
     const audioResponse = await getInitialResponse(instructions);
 
@@ -298,7 +306,7 @@ export async function processInitialMessage({
 
     const updatedLessonProgress = await updateLessonProgress({
       lessonIndex: lessonProgress.lessonIndex,
-      objectivesMet: progressForInstructions.objectivesMet,
+      objectivesMet: currentProgress.objectivesMet,
       convoHistory: newConvoHistory,
     });
 
@@ -396,25 +404,22 @@ export async function processAudioMessage({
       }
     }
 
-    // most up to date convo history
-    const finalConvoHistory = [
-      ...currentProgress.convoHistory,
-      {
-        role: "User",
-        message: userTranscription,
-      },
-      {
-        role: "System",
-        message: audioResponse.systemTranscription ?? "",
-      },
-    ];
-
-    // persist only on full success; the returned document is authoritative
-    // (merged objectivesMet + completed flag)
+    // persist only on full success; the new messages are appended atomically
+    // ($push) so a concurrent turn can't clobber them, and the returned
+    // document is authoritative (merged objectivesMet + completed flag)
     const updatedLessonProgress = await updateLessonProgress({
       lessonIndex: currentProgress.lessonIndex,
       objectivesMet: currentObjectivesMet,
-      convoHistory: finalConvoHistory,
+      appendMessages: [
+        {
+          role: "User",
+          message: userTranscription,
+        },
+        {
+          role: "System",
+          message: audioResponse.systemTranscription ?? "",
+        },
+      ],
     });
 
     // output is the audio that can be played, and updated lessonProgress that will be used to update the state
