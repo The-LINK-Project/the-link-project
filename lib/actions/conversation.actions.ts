@@ -331,10 +331,24 @@ export async function processAudioMessage({
   updatedLessonProgress?: LessonProgress;
 }> {
   try {
+    // Re-read the authoritative progress server-side so a stale client
+    // snapshot (second tab, restored page) can't overwrite newer history
+    const currentProgress = await getLessonProgress({
+      lessonIndex: lessonProgress.lessonIndex,
+    });
+
+    if (!currentProgress) {
+      return {
+        success: false,
+        errorType: "response",
+        error: "Lesson progress not found",
+      };
+    }
+
     // Instructions are built from the PRE-utterance history — the current
     // utterance is sent to the model as audio, so it must not also appear in
     // the prompt's previous conversation
-    const instructions = await generateInstructions(lessonProgress);
+    const instructions = await generateInstructions(currentProgress);
 
     // Transcription and tutor response don't depend on each other, so run
     // them concurrently
@@ -363,7 +377,7 @@ export async function processAudioMessage({
     }
 
     // update objectives if there was a tool call used by the model
-    const currentObjectivesMet = [...lessonProgress.objectivesMet]; // Create new array
+    const currentObjectivesMet = [...currentProgress.objectivesMet]; // Create new array
 
     if (
       audioResponse.objectiveIndex !== undefined &&
@@ -384,7 +398,7 @@ export async function processAudioMessage({
 
     // most up to date convo history
     const finalConvoHistory = [
-      ...lessonProgress.convoHistory,
+      ...currentProgress.convoHistory,
       {
         role: "User",
         message: userTranscription,
@@ -398,7 +412,7 @@ export async function processAudioMessage({
     // persist only on full success; the returned document is authoritative
     // (merged objectivesMet + completed flag)
     const updatedLessonProgress = await updateLessonProgress({
-      lessonIndex: lessonProgress.lessonIndex,
+      lessonIndex: currentProgress.lessonIndex,
       objectivesMet: currentObjectivesMet,
       convoHistory: finalConvoHistory,
     });
