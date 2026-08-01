@@ -38,10 +38,11 @@ function setLessonObjectiveToTrue({
 function stripToolSyntax(text: string): string {
   return text
     .replace(
-      /```[\s\S]*?```|^[ \t]*(?:tool_code|tool_call)\b.*$|(?:tool_code|tool_call)[:\s]*|(?:print\s*\(\s*)?setLessonObjectiveToTrue\s*\(\s*(?:index\s*=\s*)?\d*\s*\)\)?/gim,
+      /```[\s\S]*?```|```[\s\S]*$|^[ \t]*(?:tool_code|tool_call)\b.*$|(?:tool_code|tool_call)[:\s]*|(?:print\s*\(\s*)?setLessonObjectiveToTrue\s*\([^)]*\)\)?/gim,
       ""
     )
-    .replace(/\s{2,}/g, " ")
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
 
@@ -349,18 +350,17 @@ export async function processInitialMessage({
       };
     }
 
-    // Persist only the tutor's greeting
-    const newConvoHistory = [
-      {
-        role: "System",
-        message: audioResponse.systemTranscription ?? "",
-      },
-    ];
-
     const updatedLessonProgress = await updateLessonProgress({
       lessonIndex: lessonProgress.lessonIndex,
       objectivesMet: currentProgress.objectivesMet,
-      convoHistory: newConvoHistory,
+      // Persist only the tutor's greeting, appended atomically so a slow
+      // concurrent tab can't wipe messages written after our empty check
+      appendMessages: [
+        {
+          role: "System",
+          message: audioResponse.systemTranscription ?? "",
+        },
+      ],
     });
 
     return {
