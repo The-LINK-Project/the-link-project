@@ -19,7 +19,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-import { Loader2, ChevronDown } from "lucide-react";
+import { Loader2, ChevronDown, X } from "lucide-react";
 
 import Link from "next/link";
 
@@ -42,6 +42,7 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isComplete, setIsComplete] = useState<boolean>(false);
     const [showScrollButton, setShowScrollButton] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunks = useRef<Blob[]>([]);
@@ -49,26 +50,25 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
 
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const currentAudioRef = useRef<HTMLAudioElement | null>(null);
-    const allAudioElementsRef = useRef<Set<HTMLAudioElement>>(new Set());
+    const audioURLRef = useRef<string | null>(null);
     const initialMessageSentRef = useRef<boolean>(false);
     // const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
 
-    // Function to stop all currently playing audio
+    // Function to stop the currently playing audio
     const stopAllAudio = () => {
-        // Stop the current main audio if playing
         if (currentAudioRef.current) {
             currentAudioRef.current.pause();
             currentAudioRef.current.currentTime = 0;
             currentAudioRef.current = null;
         }
+    };
 
-        // Stop all registered audio elements
-        allAudioElementsRef.current.forEach((audio) => {
-            if (!audio.paused) {
-                audio.pause();
-                audio.currentTime = 0;
-            }
-        });
+    // Function to release the microphone stream of the current recorder
+    const releaseMicStream = () => {
+        const stream = mediaRecorderRef.current?.stream;
+        if (stream) {
+            stream.getTracks().forEach((track) => track.stop());
+        }
     };
 
     // Function to play audio safely (stops others first)
@@ -107,19 +107,26 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                 });
 
                 if (result.success) {
-                    // Play audio
-                    const audioSrc = `data:audio/wav;base64,${result.audioBase64}`;
-                    const audio = new Audio(audioSrc);
-                    playAudioSafely(audio);
+                    // Play audio only if we have audio response
+                    if (result.audioBase64) {
+                        const audioSrc = `data:audio/wav;base64,${result.audioBase64}`;
+                        const audio = new Audio(audioSrc);
+                        playAudioSafely(audio);
+                    }
 
-                    // Update state with initial message
-                    setLessonProgress((prev) => ({
-                        ...prev,
-                        convoHistory: [
-                            { role: "User", message: "Hello" },
-                            { role: "System", message: result.systemTranscription ?? "" },
-                        ],
-                    }));
+                    // Update state with the authoritative server-side progress
+                    if (result.updatedLessonProgress) {
+                        const updated = result.updatedLessonProgress;
+                        setLessonProgress((prev) => ({
+                            ...prev,
+                            ...updated,
+                            objectivesMet: [...updated.objectivesMet],
+                            convoHistory: [...updated.convoHistory],
+                        }));
+                    }
+                } else {
+                    console.error("processInitialMessage failed:", result);
+                    setError(t("errorresponse"));
                 }
 
                 setIsLoading(false);
@@ -149,10 +156,20 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
         }
     }, [lessonProgress.convoHistory]);
 
-    // Cleanup audio on component unmount
+    // Keep a ref to the latest blob URL so it can be revoked on unmount
+    useEffect(() => {
+        audioURLRef.current = audioURL;
+    }, [audioURL]);
+
+    // Cleanup audio, microphone and blob URL on component unmount
     useEffect(() => {
         return () => {
             stopAllAudio();
+            releaseMicStream();
+            if (audioURLRef.current) {
+                URL.revokeObjectURL(audioURLRef.current);
+                audioURLRef.current = null;
+            }
         };
     }, []);
 
@@ -207,19 +224,28 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                     }
 
                     // Force state update with new object reference
-                    setLessonProgress((prevProgress) => ({
-                        ...prevProgress,
-                        ...result.updatedLessonProgress,
-                        // Ensure objectives array is a new reference
-                        objectivesMet: [...result.updatedLessonProgress.objectivesMet],
-                        // Ensure convoHistory is a new reference
-                        convoHistory: [...result.updatedLessonProgress.convoHistory],
-                    }));
+                    if (result.updatedLessonProgress) {
+                        const updated = result.updatedLessonProgress;
+                        setLessonProgress((prevProgress) => ({
+                            ...prevProgress,
+                            ...updated,
+                            // Ensure objectives array is a new reference
+                            objectivesMet: [...updated.objectivesMet],
+                            // Ensure convoHistory is a new reference
+                            convoHistory: [...updated.convoHistory],
+                        }));
+                    }
                 } else {
                     console.error("processAudioMessage failed:", result);
+                    setError(
+                        result.errorType === "transcription"
+                            ? t("errortranscription")
+                            : t("errorresponse")
+                    );
                 }
             } catch (error) {
                 console.error("Error in handleResponse:", error);
+                setError(t("errorresponse"));
             } finally {
                 setIsLoading(false);
             }
@@ -243,6 +269,12 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
         // Stop all currently playing audio before starting recording
         stopAllAudio();
 
+        // Release any lingering microphone stream from a previous recording
+        releaseMicStream();
+
+        // Clear any previous error
+        setError(null);
+
         // Reset cancelled flag
         recordingCancelledRef.current = false;
 
@@ -261,6 +293,9 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
             };
 
             mediaRecorderRef.current.onstop = () => {
+                // Always release the microphone once the recorder stops
+                stream.getTracks().forEach((track) => track.stop());
+
                 // Only process the audio if recording wasn't cancelled
                 if (!recordingCancelledRef.current && audioChunks.current.length > 0) {
                     const audioBlob = new Blob(audioChunks.current, {
@@ -349,9 +384,23 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                                                     ) : (
                                                         <LessonMessages
                                                             convoHistory={lessonProgress.convoHistory}
-                                                            allAudioElementsRef={allAudioElementsRef}
-                                                            currentAudioRef={currentAudioRef}
                                                         />
+                                                    )}
+                                                    {error && (
+                                                        <div className="flex justify-center mt-6">
+                                                            <div className="flex items-center gap-3 max-w-[75%] rounded-2xl p-4 shadow-sm bg-red-50 text-red-700 border border-red-200">
+                                                                <p className="text-sm leading-relaxed">
+                                                                    {error}
+                                                                </p>
+                                                                <button
+                                                                    onClick={() => setError(null)}
+                                                                    aria-label={t("dismiss")}
+                                                                    className="text-red-400 hover:text-red-600 transition-colors shrink-0"
+                                                                >
+                                                                    <X className="h-4 w-4" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     )}
                                                     {isLoading && (
                                                         <div className="flex justify-center mt-6">

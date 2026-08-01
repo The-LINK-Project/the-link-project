@@ -24,7 +24,9 @@
         "loading": "Naglo-load...",
         "recording": "Nagre-record...",
         "ready": "Handa nang mag-record",
-        "hear": "Pakinggan ang iyong recording"
+        "hear": "Pakinggan ang iyong recording",
+        "stoprecording": "Ihinto ang pag-record",
+        "speak": "I-click ito para magsalita"
     },
     "lessonmodal": {
         "actualcomplete": "Tapos na",
@@ -40,7 +42,10 @@
     },
     "lesson": {
         "processing": "Pinoproseso ang iyong sagot...",
-        "testknowledge": "Alam mo na ba ito? Subukan ang iyong kaalaman gamit ang quiz na ito!"
+        "testknowledge": "Alam mo na ba ito? Subukan ang iyong kaalaman gamit ang quiz na ito!",
+        "errortranscription": "Hindi namin narinig nang malinaw. Pakisubukang mag-record muli.",
+        "errorresponse": "May naganap na problema. Pakisubukan muli.",
+        "dismiss": "Isara"
     },
     "problemsection": {
         "part1body": "Kahit na may ilang pagkaintindi sa Ingles, ang pagsasalita ng malinaw sa pang-araw-araw na buhay o sa trabaho ay maaaring magdulot pa rin ng stress o hindi katiyakan.",

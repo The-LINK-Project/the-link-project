@@ -24,7 +24,9 @@
         "loading": "Loading...",
         "recording": "Recording...",
         "ready": "Ready to record",
-        "hear": "Hear your recording"
+        "hear": "Hear your recording",
+        "stoprecording": "Stop recording",
+        "speak": "Click this to speak"
     },
     "lessonmodal": {
         "actualcomplete": "Complete",
@@ -40,7 +42,10 @@
     },
     "lesson": {
         "processing": "Processing your response...",
-        "testknowledge": "Already know this? Test your knowledge with this quiz!"
+        "testknowledge": "Already know this? Test your knowledge with this quiz!",
+        "errortranscription": "We couldn't hear that clearly. Please try recording again.",
+        "errorresponse": "Something went wrong. Please try again.",
+        "dismiss": "Dismiss"
     },
     "problemsection": {
         "part1body": "Despite understanding some English, speaking clearly in daily life or at work can still feel stressful or uncertain.",

@@ -4,7 +4,8 @@ import { connectToDatabase } from "@/lib/database";
 import { revalidatePath } from "next/cache";
 
 import User from "@/lib/database/models/user.model";
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
+import { cache } from "react";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -73,10 +74,9 @@ type EnsureUserOptions = {
     retryDelayMs?: number;
 };
 
-export async function ensureUser({
-    maxRetries = 5,
-    retryDelayMs = 300,
-}: EnsureUserOptions = {}) {
+// Memoized per request via React cache(): repeated ensureUser()/getCurrentUser()
+// calls within a single render or server action resolve the user only once.
+const resolveUser = cache(async (maxRetries: number, retryDelayMs: number) => {
     await connectToDatabase();
 
     const { userId: clerkUserId } = await auth();
@@ -85,16 +85,18 @@ export async function ensureUser({
         throw new Error("Not authenticated");
     }
 
-    const { clerkClient } = await import("@clerk/nextjs/server");
-    const client = await clerkClient();
+    // Fast path: existing user — a single indexed Mongo query, no Clerk REST calls.
+    const knownUser = await User.findOne({ clerkId: clerkUserId });
 
-    let clerkUserData: Awaited<ReturnType<typeof client.users.getUser>> | null = null;
+    if (knownUser) {
+        return JSON.parse(JSON.stringify(knownUser));
+    }
+
+    // Slow path: first login (or a create race) — fetch the Clerk profile and upsert.
+    const client = await clerkClient();
+    const clerkUserData = await client.users.getUser(clerkUserId);
 
     for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
-        if (!clerkUserData) {
-            clerkUserData = await client.users.getUser(clerkUserId);
-        }
-
         const existingUser = await User.findOne({ clerkId: clerkUserId });
 
         if (existingUser) {
@@ -151,6 +153,13 @@ export async function ensureUser({
     }
 
     throw new Error("Timed out ensuring user exists in database");
+});
+
+export async function ensureUser({
+    maxRetries = 5,
+    retryDelayMs = 300,
+}: EnsureUserOptions = {}) {
+    return resolveUser(maxRetries, retryDelayMs);
 }
 
 export async function updateUser(

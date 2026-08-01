@@ -3,9 +3,6 @@ import { notFound } from "next/navigation";
 import FocusGroupRun from "@/components/games/FocusGroupRun";
 import { getFocusGroupSet } from "@/constants/games/focusGroup";
 
-// Static content, no database or network calls.
-export const dynamic = "force-dynamic";
-
 const FocusGroupSetCPage = () => {
     const set = getFocusGroupSet("c");
     if (!set) notFound();

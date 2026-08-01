@@ -30,6 +30,8 @@ const quizResultSchema = new mongoose.Schema(
     },
 );
 
+quizResultSchema.index({ userId: 1, lessonId: 1, score: 1 });
+
 const QuizResult =
     mongoose.models.QuizResult || mongoose.model("QuizResult", quizResultSchema);
 export default QuizResult;

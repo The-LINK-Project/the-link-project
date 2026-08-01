@@ -3,15 +3,9 @@ import { User, Bot } from "lucide-react";
 
 type LessonMessagesProps = {
     convoHistory: Message[];
-    allAudioElementsRef: React.RefObject<Set<HTMLAudioElement>>;
-    currentAudioRef: React.RefObject<HTMLAudioElement | null>;
 };
 
-const LessonMessages = ({
-    convoHistory,
-    allAudioElementsRef,
-    currentAudioRef,
-}: LessonMessagesProps) => {
+const LessonMessages = ({ convoHistory }: LessonMessagesProps) => {
     return (
         <div className="space-y-6">
             {convoHistory.map((message, index) => (
@@ -39,47 +33,6 @@ const LessonMessages = ({
                             >
                             {message.message}
                         </p>
-                        {message.audioURL && (
-                            <audio
-                                src={message.audioURL}
-                                controls
-                                className="w-full h-8 rounded-lg"
-                                ref={(audioElement) => {
-                                    if (audioElement) {
-                                        allAudioElementsRef.current.add(audioElement);
-
-                                        // Add event listener to manage playback
-                                        const handlePlay = () => {
-                                            // Stop other audio when this one starts playing
-                                            allAudioElementsRef.current.forEach((audio) => {
-                                                if (audio !== audioElement && !audio.paused) {
-                                                    audio.pause();
-                                                    audio.currentTime = 0;
-                                                }
-                                            });
-
-                                            // Stop main audio if playing
-                                            if (
-                                                currentAudioRef.current &&
-                                                currentAudioRef.current !== audioElement
-                                            ) {
-                                                currentAudioRef.current.pause();
-                                                currentAudioRef.current.currentTime = 0;
-                                                currentAudioRef.current = null;
-                                            }
-                                        };
-
-                                        audioElement.addEventListener("play", handlePlay);
-
-                                        // Cleanup on unmount
-                                        return () => {
-                                            allAudioElementsRef.current.delete(audioElement);
-                                            audioElement.removeEventListener("play", handlePlay);
-                                        };
-                                    }
-                                }}
-                            />
-                        )}
                     </div>
                 </div>
             ))}

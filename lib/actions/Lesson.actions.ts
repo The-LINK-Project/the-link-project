@@ -2,8 +2,48 @@
 
 import { connectToDatabase } from "@/lib/database";
 import Lesson from "../database/models/lesson.model";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import mongoose from "mongoose";
+
+// Lessons are admin-authored and change rarely, so the reads below are cached
+// with the "lessons" tag. Admin mutations call revalidateTag("lessons") so
+// edits show up immediately. connectToDatabase happens inside the cached
+// functions, and none of them touch auth/cookies or user-specific data.
+const getCachedLessons = unstable_cache(
+    async () => {
+        await connectToDatabase();
+
+        const lessons = await Lesson.find().lean();
+
+        return JSON.parse(JSON.stringify(lessons));
+    },
+    ["get-all-lessons"],
+    { tags: ["lessons"], revalidate: 3600 },
+);
+
+const getCachedLessonCount = unstable_cache(
+    async () => {
+        await connectToDatabase();
+
+        return await Lesson.countDocuments();
+    },
+    ["get-lesson-count"],
+    { tags: ["lessons"], revalidate: 3600 },
+);
+
+const getCachedLessonByIndex = unstable_cache(
+    async (lessonIndex: number) => {
+        await connectToDatabase();
+
+        const lesson = await Lesson.findOne({ lessonIndex: lessonIndex }).lean();
+
+        if (!lesson) throw Error("Lesson not found");
+
+        return JSON.parse(JSON.stringify(lesson));
+    },
+    ["get-lesson-by-index"],
+    { tags: ["lessons"], revalidate: 3600 },
+);
 
 export async function createLesson({
     title,
@@ -33,6 +73,8 @@ export async function createLesson({
 
         if (!newLesson) throw Error("Failed to create new lesson");
 
+        revalidateTag("lessons");
+
         return JSON.parse(JSON.stringify(newLesson));
     } catch (error) {
         console.log("Error creating lesson:", error);
@@ -42,11 +84,16 @@ export async function createLesson({
 
 export async function getAllLessons(): Promise<Lesson[]> {
     try {
-        await connectToDatabase();
+        return await getCachedLessons();
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
 
-        const lessons = await Lesson.find();
-
-        return JSON.parse(JSON.stringify(lessons));
+export async function getLessonCount(): Promise<number> {
+    try {
+        return await getCachedLessonCount();
     } catch (error) {
         console.log(error);
         throw error;
@@ -55,13 +102,7 @@ export async function getAllLessons(): Promise<Lesson[]> {
 
 export async function getLessonByIndex(lessonIndex: number): Promise<Lesson> {
     try {
-        await connectToDatabase();
-
-        const lesson = await Lesson.findOne({ lessonIndex: lessonIndex });
-
-        if (!lesson) throw Error("Lesson not found");
-
-        return JSON.parse(JSON.stringify(lesson));
+        return await getCachedLessonByIndex(lessonIndex);
     } catch (error) {
         console.log(error);
         throw error;
@@ -82,6 +123,7 @@ export async function deleteLesson(lessonId: string): Promise<{ success: boolean
             return { success: false, message: "Lesson not found" };
         }
 
+        revalidateTag("lessons");
         revalidatePath("/admin/lessons/manage");
         return { success: true, message: "Lesson deleted successfully" };
     } catch (error) {

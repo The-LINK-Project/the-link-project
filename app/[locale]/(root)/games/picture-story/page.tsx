@@ -2,11 +2,6 @@ import React from "react";
 import PictureStoryGame from "@/components/games/PictureStoryGame";
 import { PICTURE_STORY_SETS } from "@/constants/games/pictureStory";
 
-// Content is a static import, so this page makes no database or network
-// calls. Kept dynamic (rather than prerendered) to match the rest of the
-// app's rendering behaviour — the cost is nil, there is nothing to fetch.
-export const dynamic = "force-dynamic";
-
 const PictureStoryPage = () => {
     return (
         <div className="min-h-screen flex flex-col items-center">

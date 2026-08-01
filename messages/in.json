@@ -24,7 +24,9 @@
         "loading": "Memuat...",
         "recording": "Sedang merekam...",
         "ready": "Siap untuk merekam",
-        "hear": "Dengarkan rekaman Anda"
+        "hear": "Dengarkan rekaman Anda",
+        "stoprecording": "Berhenti merekam",
+        "speak": "Klik ini untuk berbicara"
     },
     "lessonmodal": {
         "actualcomplete": "Selesai",
@@ -40,7 +42,10 @@
     },
     "lesson": {
         "processing": "Memproses jawaban Anda...",
-        "testknowledge": "Sudah tahu materinya? Uji pengetahuan Anda dengan kuis ini!"
+        "testknowledge": "Sudah tahu materinya? Uji pengetahuan Anda dengan kuis ini!",
+        "errortranscription": "Kami tidak dapat mendengar dengan jelas. Silakan coba rekam lagi.",
+        "errorresponse": "Terjadi kesalahan. Silakan coba lagi.",
+        "dismiss": "Tutup"
     },
     "problemsection": {
         "part1body": "Meskipun sudah memahami sebagian Bahasa Inggris, berbicara dengan jelas dalam kehidupan sehari-hari atau di tempat kerja sering kali terasa sulit atau membuat gugup.",

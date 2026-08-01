@@ -1,11 +1,15 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
 import mongoose from "mongoose";
 import Quiz from "@/lib/database/models/quiz.model";
 
-export async function getQuizByLessonId(lessonId: number) {
-    try {
+// Quiz content is admin-authored and changes rarely, so the per-lesson read is
+// cached with the "quizzes" tag. Admin mutations call revalidateTag("quizzes")
+// so edits show up immediately. Quiz RESULTS are user-specific and are never
+// cached here.
+const getCachedQuizByLessonId = unstable_cache(
+    async (lessonId: number) => {
         await connectToDatabase();
 
         // Ensure Quiz model is registered
@@ -15,7 +19,7 @@ export async function getQuizByLessonId(lessonId: number) {
 
         const quiz = await Quiz.findOne({
             lessonId: lessonId,
-        });
+        }).lean();
         if (!quiz) {
             throw new Error("Quiz not found for this lesson");
         }
@@ -23,6 +27,14 @@ export async function getQuizByLessonId(lessonId: number) {
         // Alternative quick fix with JSON serialization
         const safeQuiz = JSON.parse(JSON.stringify(quiz));
         return safeQuiz;
+    },
+    ["get-quiz-by-lesson-id"],
+    { tags: ["quizzes"], revalidate: 3600 },
+);
+
+export async function getQuizByLessonId(lessonId: number) {
+    try {
+        return await getCachedQuizByLessonId(lessonId);
     } catch (error) {
         console.error("Error fetching quiz:", error);
         throw error;
@@ -75,6 +87,7 @@ export async function createCustomQuiz(quizData: QuizData) {
             questions: quizData.questions,
         });
 
+        revalidateTag("quizzes");
         revalidatePath(`/quiz/${quizData.lessonId}`);
         revalidatePath(`/admin/quiz`);
 
@@ -149,6 +162,7 @@ export async function deleteQuiz(quizId: string) {
             throw new Error("Quiz not found");
         }
 
+        revalidateTag("quizzes");
         revalidatePath("/admin/quiz/manage");
         revalidatePath("/admin/quiz");
 

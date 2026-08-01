@@ -47,7 +47,7 @@ export async function getLessonProgress({
     lessonIndex,
 }: {
     lessonIndex: number;
-}): Promise<LessonProgress> {
+}): Promise<LessonProgress | null> {
     try {
         await connectToDatabase();
 
@@ -58,10 +58,6 @@ export async function getLessonProgress({
             lessonIndex: lessonIndex,
         });
 
-        if (!lessonProgress) {
-            console.log("No Lesson Progress found");
-        }
-
         return JSON.parse(JSON.stringify(lessonProgress));
     } catch (error) {
         console.log(error);
@@ -69,58 +65,69 @@ export async function getLessonProgress({
     }
 }
 
-// this is used right when the user first opens the lesson, checks if they've done any part of the lesson before
-export async function checkIfLessonProgress({
-    lessonIndex,
-}: {
-    lessonIndex: number;
-}) {
-    try {
-        await connectToDatabase();
-
-        console.log("Checking if lesson progress 2");
-
-        const { _id: userId } = await ensureUser();
-
-        const lessonProgress = await LessonProgress.findOne({
-            userId,
-            lessonIndex,
-        });
-
-        // will return true if user has touched the lesson b4
-        return !!lessonProgress;
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
-
 // this runs when the user clicks disconnect or unnaturally disconnects such as exiting tab
+// Pass `convoHistory` to replace the stored history, or `appendMessages` to
+// atomically $push new messages without rewriting what's already stored
 export async function updateLessonProgress({
     lessonIndex,
     objectivesMet,
     convoHistory,
+    appendMessages,
 }: {
     lessonIndex: number;
     objectivesMet: boolean[];
-    convoHistory: Message[];
+    convoHistory?: Message[];
+    appendMessages?: Message[];
 }) {
     try {
         await connectToDatabase();
 
         const { _id: userId } = await ensureUser();
 
+        // Merge with the existing document so objectives can never regress —
+        // an objective already true in the DB stays true even if the incoming
+        // array says false
+        const existingLessonProgress = await LessonProgress.findOne({
+            userId: userId,
+            lessonIndex: lessonIndex,
+        });
+
+        const existingObjectivesMet: boolean[] =
+            existingLessonProgress?.objectivesMet ?? [];
+
+        const mergedObjectivesMet = objectivesMet.map(
+            (met: boolean, index: number) =>
+                met || !!existingObjectivesMet[index],
+        );
+
         const setUpdates: {
             objectivesMet: boolean[];
-            convoHistory: Message[];
+            convoHistory?: Message[];
             completed?: boolean;
         } = {
-            objectivesMet: objectivesMet,
-            convoHistory: convoHistory,
+            objectivesMet: mergedObjectivesMet,
         };
 
-        if (objectivesMet.every((met: boolean) => met)) {
+        if (convoHistory !== undefined) {
+            setUpdates.convoHistory = convoHistory;
+        }
+
+        if (mergedObjectivesMet.every((met: boolean) => met)) {
             setUpdates.completed = true;
+        }
+
+        // MongoDB rejects updates where the same path appears in both $set and
+        // $setOnInsert, so only default `completed` when $set doesn't carry it
+        const update: {
+            $set: typeof setUpdates;
+            $setOnInsert?: { completed: boolean };
+            $push?: { convoHistory: { $each: Message[] } };
+        } = { $set: setUpdates };
+        if (setUpdates.completed === undefined) {
+            update.$setOnInsert = { completed: false };
+        }
+        if (appendMessages !== undefined && convoHistory === undefined) {
+            update.$push = { convoHistory: { $each: appendMessages } };
         }
 
         const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
@@ -128,10 +135,7 @@ export async function updateLessonProgress({
                 userId: userId,
                 lessonIndex: lessonIndex,
             },
-            {
-                $set: setUpdates,
-                $setOnInsert: { completed: false },
-            },
+            update,
             {
                 upsert: true,
                 new: true,
@@ -156,30 +160,39 @@ export async function getAllLessonStatuses(): Promise<LessonStatus[]> {
 
         const { _id: userId } = await ensureUser();
 
-        const lessons = await getAllLessons();
+        const [lessons, progressDocs, passedQuizzes] = await Promise.all([
+            getAllLessons(),
+            LessonProgress.find({ userId })
+                .select("lessonIndex objectivesMet completed")
+                .lean<
+                    {
+                        lessonIndex: number;
+                        objectivesMet: boolean[];
+                        completed?: boolean;
+                    }[]
+                >(),
+            QuizResult.find({ userId, score: { $gte: 80 } })
+                .select("lessonId")
+                .lean<{ lessonId: number }[]>(),
+        ]);
 
-        let completionStatuses: LessonStatus[] = [];
+        const progressByLessonIndex = new Map(
+            progressDocs.map((progress) => [progress.lessonIndex, progress]),
+        );
+        const passedQuizLessonIds = new Set(
+            passedQuizzes.map((quiz) => quiz.lessonId),
+        );
+
+        const completionStatuses: LessonStatus[] = [];
         for (let i = 0; i < lessons.length; i++) {
-            console.log(i);
-
-            const lessonProgress = await LessonProgress.findOne({
-                userId: userId,
-                lessonIndex: i + 1,
-            });
+            const lessonProgress = progressByLessonIndex.get(i + 1);
+            const quizPassed = passedQuizLessonIds.has(i + 1);
 
             if (lessonProgress) {
                 const objectivesCompleted = lessonProgress.objectivesMet.every(
                     (met: boolean) => met,
                 );
                 const hasCompletedFlag = !!lessonProgress.completed;
-                const quizPassed =
-                    !hasCompletedFlag && !objectivesCompleted
-                        ? await QuizResult.exists({
-                              userId,
-                              lessonId: i + 1,
-                              score: { $gte: 80 },
-                          })
-                        : false;
 
                 if (hasCompletedFlag || objectivesCompleted || quizPassed) {
                     completionStatuses[i] = "Completed";
@@ -187,15 +200,9 @@ export async function getAllLessonStatuses(): Promise<LessonStatus[]> {
                     completionStatuses[i] = "In Progress";
                 }
             } else {
-                const quizPassed = await QuizResult.exists({
-                    userId,
-                    lessonId: i + 1,
-                    score: { $gte: 80 },
-                });
                 completionStatuses[i] = quizPassed ? "Completed" : "Not Started";
             }
         }
-        console.log(`Completion Statuses: ${completionStatuses}`);
         return completionStatuses;
     } catch (error) {
         console.log(error);
@@ -207,7 +214,21 @@ export async function getLessonProgressStats() {
     try {
         await connectToDatabase();
 
-        const allProgress = await LessonProgress.find({});
+        const [allProgress, passingQuizzes] = await Promise.all([
+            LessonProgress.find({})
+                .select("userId lessonIndex objectivesMet completed")
+                .lean<
+                    {
+                        userId: unknown;
+                        lessonIndex: number;
+                        objectivesMet: boolean[];
+                        completed?: boolean;
+                    }[]
+                >(),
+            QuizResult.find({ score: { $gte: 80 } })
+                .select("userId lessonId")
+                .lean<{ userId: unknown; lessonId: number }[]>(),
+        ]);
 
         const totalSessions = allProgress.length;
         const completedObjectives = allProgress.reduce((total, progress) => {
@@ -216,21 +237,19 @@ export async function getLessonProgressStats() {
             );
         }, 0);
 
-        const completionChecks = await Promise.all(
-            allProgress.map(async (progress) => {
-                if (progress.completed) return true;
-                if (progress.objectivesMet.every((met: boolean) => met)) {
-                    return true;
-                }
-                const quizPassed = await QuizResult.exists({
-                    userId: progress.userId,
-                    lessonId: progress.lessonIndex,
-                    score: { $gte: 80 },
-                });
-                return !!quizPassed;
-            }),
+        const passedQuizKeys = new Set(
+            passingQuizzes.map((quiz) => `${quiz.userId}:${quiz.lessonId}`),
         );
-        const completedLessons = completionChecks.filter(Boolean).length;
+
+        const completedLessons = allProgress.filter((progress) => {
+            if (progress.completed) return true;
+            if (progress.objectivesMet.every((met: boolean) => met)) {
+                return true;
+            }
+            return passedQuizKeys.has(
+                `${progress.userId}:${progress.lessonIndex}`,
+            );
+        }).length;
 
         const completionRate =
             totalSessions > 0

@@ -5,11 +5,6 @@ import {
     getWordMatchCategories,
 } from "@/constants/games/wordMatch";
 
-// Content is a static import, so this page makes no database or network
-// calls. Kept dynamic (rather than prerendered) to match the rest of the
-// app's rendering behaviour — the cost is nil, there is nothing to fetch.
-export const dynamic = "force-dynamic";
-
 const WordMatchPage = () => {
     const categories = getWordMatchCategories();
 

@@ -3,7 +3,14 @@ import { GoogleGenAI } from "@google/genai";
 import OpenAI from "openai";
 import { Type } from "@google/genai";
 import { generateInstructions } from "@/lib/utils";
-import { updateLessonProgress } from "@/lib/actions/LessonProgress.actions";
+import {
+  getLessonProgress,
+  updateLessonProgress,
+} from "@/lib/actions/LessonProgress.actions";
+
+// Fallback reply used when the model marks an objective complete but returns no text
+const OBJECTIVE_COMPLETE_FALLBACK =
+  "Great work! You've got that down. Shall we keep going with the next part of the lesson?";
 
 function setLessonObjectiveToTrue({
   objectiveIndex,
@@ -19,96 +26,9 @@ function setLessonObjectiveToTrue({
   return objectiveIndex;
 }
 
-// Helper function to automatically generate progression prompts
-function generateProgressionPrompt(
-  originalResponse: string,
-  completedObjectiveIndex: number,
-  currentObjectives: boolean[],
-  lessonObjectives: string[]
-): string {
-  // Find the next incomplete objective
-  const nextObjectiveIndex = currentObjectives.findIndex(
-    (met, index) => !met && index > completedObjectiveIndex
-  );
-
-  if (nextObjectiveIndex === -1) {
-    // No more objectives, let the original response stand
-    return originalResponse;
-  }
-
-  const nextObjective = lessonObjectives[nextObjectiveIndex];
-
-  // Generate specific prompts based on the type of objective
-  const progressionPrompts = [
-    `Great work! Now let's practice something different. ${nextObjective} - Can you think of a situation where you might need this skill?`,
-    `Perfect! Let's move on to the next skill: ${nextObjective} - What would you say if you were in that situation?`,
-    `Excellent! Now let's try: ${nextObjective} - How would you handle this scenario?`,
-    `Well done! Time for our next challenge: ${nextObjective} - Can you give this a try?`,
-  ];
-
-  // Select a progression prompt (could be randomized or based on context)
-  const selectedPrompt = progressionPrompts[0];
-
-  // If the original response is very short or just praise, replace it entirely
-  const responseWords = originalResponse.trim().split(" ");
-  const isShortResponse = responseWords.length < 10;
-  const isPurepraise =
-    /^(great|good|excellent|perfect|well done|nice)[\s!.]*$/i.test(
-      originalResponse.trim()
-    );
-
-  if (isShortResponse || isPurepraise) {
-    return selectedPrompt;
-  }
-
-  // Otherwise, append the progression
-  return `${originalResponse} ${selectedPrompt}`;
-}
-
-// Helper function to ensure responses always end with forward momentum
-function ensureProgression(
-  response: string,
-  currentObjectives: boolean[],
-  lessonObjectives: string[]
-): string {
-  // Check if response ends with a question
-  const endsWithQuestion = /\?[\s]*$/.test(response.trim());
-  if (endsWithQuestion) {
-    return response; // Already has forward momentum
-  }
-
-  // Check if it's just praise without progression
-  const lastSentence = response.trim().split(/[.!]/).pop()?.trim() || "";
-  const isPurepraise =
-    /^(great|good|excellent|perfect|well done|nice|amazing|fantastic)/i.test(
-      lastSentence
-    );
-
-  if (isPurepraise || lastSentence.length < 5) {
-    // Find the next incomplete objective
-    const nextObjectiveIndex = currentObjectives.findIndex((met) => !met);
-
-    if (nextObjectiveIndex !== -1) {
-      const nextObjective = lessonObjectives[nextObjectiveIndex];
-
-      const followUpQuestions = [
-        `Now, can you show me how you'd handle this: ${nextObjective}?`,
-        `Let's practice this next: ${nextObjective} - What would you do?`,
-        `Great! Now let's work on: ${nextObjective} - How would you approach this?`,
-      ];
-
-      return `${response} ${followUpQuestions[0]}`;
-    }
-  }
-
-  return response;
-}
-
 export async function getResponse(
   audioUrlBase64: string,
-  instructions: string,
-  currentObjectivesMet: boolean[],
-  lessonObjectives: string[]
+  instructions: string
 ) {
   const openai = new OpenAI();
   const geminiKey = process.env.GEMINI_KEY;
@@ -175,73 +95,56 @@ export async function getResponse(
       }
     }
 
-    let transcriptionSystem = response.text || "";
+    let transcriptionSystem = response.text ?? "";
 
-    // If an objective was just completed, automatically prompt for the next one
-    if (objectiveIndex !== undefined && objectiveIndex !== null) {
-      const updatedObjectives = [...currentObjectivesMet];
-      if (objectiveIndex >= 0 && objectiveIndex < updatedObjectives.length) {
-        updatedObjectives[objectiveIndex] = true;
-      }
-
-      // Use the helper function to generate appropriate progression
-      transcriptionSystem = generateProgressionPrompt(
-        transcriptionSystem,
-        objectiveIndex,
-        updatedObjectives,
-        lessonObjectives
-      );
-    } else {
-      // Even if no objective was completed, ensure the response has forward momentum
-      transcriptionSystem = ensureProgression(
-        transcriptionSystem,
-        currentObjectivesMet,
-        lessonObjectives
-      );
-    }
-
-    // Only create TTS if there's actual text content
-    let audioBase64 = "";
-    let finalTranscription = transcriptionSystem;
-
-    if (transcriptionSystem.trim()) {
-      const verbalResponse = await openai.audio.speech.create({
-        model: "gpt-4o-mini-tts",
-        voice: "shimmer",
-        input: transcriptionSystem,
-        instructions: "Speak in an enthusiastic but calm and positive tone.",
-        response_format: "wav",
-      });
-
-      const audioBuffer = Buffer.from(await verbalResponse.arrayBuffer());
-      audioBase64 = audioBuffer.toString("base64");
-    } else {
-      // Generate a simple confirmation audio when objective is marked but no text response
-      if (objectiveIndex !== undefined) {
-        const confirmationText = "Great work! That objective is now complete.";
-
-        // Update the final transcription to include our confirmation
-        finalTranscription = confirmationText;
-
-        const confirmationResponse = await openai.audio.speech.create({
-          model: "gpt-4o-mini-tts",
-          voice: "shimmer",
-          input: confirmationText,
-          instructions: "Speak in an enthusiastic but calm and positive tone.",
-          response_format: "wav",
+    // If the model made a tool call but returned no reply text, ask it once
+    // (without tools) for a short acknowledgement that continues the lesson
+    if (
+      objectiveIndex !== undefined &&
+      objectiveIndex !== null &&
+      !transcriptionSystem.trim()
+    ) {
+      try {
+        const followUp = await ai.models.generateContent({
+          model: "gemini-3.1-flash-lite",
+          contents:
+            "The student just successfully demonstrated a lesson objective. Briefly acknowledge their success and continue the lesson by asking them the next question.",
+          config: {
+            systemInstruction: instructions,
+          },
         });
+        transcriptionSystem = followUp.text ?? "";
+      } catch (followUpError) {
+        console.error("Error in follow-up response:", followUpError);
+      }
 
-        const audioBuffer = Buffer.from(
-          await confirmationResponse.arrayBuffer()
-        );
-        audioBase64 = audioBuffer.toString("base64");
+      if (!transcriptionSystem.trim()) {
+        transcriptionSystem = OBJECTIVE_COMPLETE_FALLBACK;
       }
     }
+
+    if (!transcriptionSystem.trim()) {
+      return {
+        success: false,
+        error: "The model returned an empty response",
+      };
+    }
+
+    const verbalResponse = await openai.audio.speech.create({
+      model: "gpt-4o-mini-tts",
+      voice: "shimmer",
+      input: transcriptionSystem,
+      instructions: "Speak in an enthusiastic but calm and positive tone.",
+      response_format: "wav",
+    });
+
+    const audioBuffer = Buffer.from(await verbalResponse.arrayBuffer());
+    const audioBase64 = audioBuffer.toString("base64");
 
     return {
       success: true,
       audioBase64Response: audioBase64,
-      systemTranscription: finalTranscription,
+      systemTranscription: transcriptionSystem,
       objectiveIndex: objectiveIndex,
     };
   } catch (error) {
@@ -315,12 +218,19 @@ export async function getInitialResponse(instructions: string) {
       },
     });
 
-    const transcriptionSystem = response.text;
+    const transcriptionSystem = response.text ?? "";
+
+    if (!transcriptionSystem.trim()) {
+      return {
+        success: false,
+        error: "The model returned an empty greeting",
+      };
+    }
 
     const verbalResponse = await openai.audio.speech.create({
       model: "gpt-4o-mini-tts",
       voice: "shimmer",
-      input: response.text || "",
+      input: transcriptionSystem,
       instructions: "Speak in an enthusiastic but calm and positive tone.",
       response_format: "wav",
     });
@@ -346,28 +256,72 @@ export async function processInitialMessage({
   lessonProgress,
 }: {
   lessonProgress: LessonProgress;
-}) {
-  const newConvoHistory = [
-    {
-      role: "User",
-      message: "Hello",
-    },
-  ];
+}): Promise<{
+  success: boolean;
+  error?: string;
+  audioBase64?: string;
+  updatedLessonProgress?: LessonProgress;
+}> {
+  try {
+    // Re-read the progress server-side so a refresh / second tab doesn't
+    // generate a duplicate greeting
+    const currentProgress = await getLessonProgress({
+      lessonIndex: lessonProgress.lessonIndex,
+    });
 
-  const updatedLessonProgress = {
-    ...lessonProgress,
-    convoHistory: newConvoHistory,
-  };
-  const instructions = await generateInstructions(updatedLessonProgress);
+    if (currentProgress && currentProgress.convoHistory?.length > 0) {
+      return {
+        success: true,
+        updatedLessonProgress: currentProgress,
+      };
+    }
 
-  const audioResponse = await getInitialResponse(instructions);
+    // The lesson page creates the progress doc before rendering, so a
+    // missing doc means something is wrong — never trust the client snapshot
+    if (!currentProgress) {
+      return {
+        success: false,
+        error: "Lesson progress not found",
+      };
+    }
 
-  return {
-    success: audioResponse.success,
-    error: (audioResponse as { error?: string }).error,
-    audioBase64: audioResponse.audioBase64Response,
-    systemTranscription: audioResponse.systemTranscription,
-  };
+    const instructions = await generateInstructions(currentProgress);
+
+    const audioResponse = await getInitialResponse(instructions);
+
+    if (!audioResponse.success) {
+      return {
+        success: false,
+        error: audioResponse.error ?? "Failed to generate the greeting",
+      };
+    }
+
+    // Persist only the tutor's greeting
+    const newConvoHistory = [
+      {
+        role: "System",
+        message: audioResponse.systemTranscription ?? "",
+      },
+    ];
+
+    const updatedLessonProgress = await updateLessonProgress({
+      lessonIndex: lessonProgress.lessonIndex,
+      objectivesMet: currentProgress.objectivesMet,
+      convoHistory: newConvoHistory,
+    });
+
+    return {
+      success: true,
+      audioBase64: audioResponse.audioBase64Response,
+      updatedLessonProgress: updatedLessonProgress,
+    };
+  } catch (error) {
+    console.error("Error in processInitialMessage:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
 }
 
 // gets the audio from the user and processes it and sends it to gemini and openai for the response
@@ -377,92 +331,109 @@ export async function processAudioMessage({
 }: {
   audioBase64: string;
   lessonProgress: LessonProgress;
-}) {
-  // get transcription
-  const transcriptionUser = await getUserTranscription(audioBase64);
+}): Promise<{
+  success: boolean;
+  error?: string;
+  errorType?: "transcription" | "response";
+  audioBase64?: string;
+  updatedLessonProgress?: LessonProgress;
+}> {
+  try {
+    // Re-read the authoritative progress server-side so a stale client
+    // snapshot (second tab, restored page) can't overwrite newer history
+    const currentProgress = await getLessonProgress({
+      lessonIndex: lessonProgress.lessonIndex,
+    });
 
-  // get up-to-date convo history w/ new user message
-  const newConvoHistory = [
-    ...lessonProgress.convoHistory,
-    {
-      role: "User",
-      message: transcriptionUser.userTranscription ?? "",
-    },
-  ];
-
-  // generate insturcions
-  const updatedLessonProgress = {
-    ...lessonProgress,
-    convoHistory: newConvoHistory,
-  };
-
-  const instructions = await generateInstructions(updatedLessonProgress);
-
-  // Get lesson objectives from the lesson data
-  const { getLessonByIndex } = await import("./Lesson.actions");
-  const lessonData = await getLessonByIndex(lessonProgress.lessonIndex);
-
-  // get the response from the model
-  const audioResponse = await getResponse(
-    audioBase64,
-    instructions,
-    lessonProgress.objectivesMet,
-    lessonData.objectives
-  );
-
-  // update objectives if there was a tool call used by the model
-  let currentObjectivesMet = [...lessonProgress.objectivesMet]; // Create new array
-
-  if (
-    audioResponse.objectiveIndex !== undefined &&
-    audioResponse.objectiveIndex !== null
-  ) {
-    // Validate index bounds
-    if (
-      audioResponse.objectiveIndex >= 0 &&
-      audioResponse.objectiveIndex < currentObjectivesMet.length
-    ) {
-      currentObjectivesMet[audioResponse.objectiveIndex] = true;
-    } else {
-      console.warn(
-        `Invalid objective index: ${audioResponse.objectiveIndex}. Valid range: 0-${currentObjectivesMet.length - 1}`
-      );
+    if (!currentProgress) {
+      return {
+        success: false,
+        errorType: "response",
+        error: "Lesson progress not found",
+      };
     }
-  }
 
-  // most up to date convo history
-  const finalConvoHistory = audioResponse.success
-    ? [
-        ...newConvoHistory,
+    // Instructions are built from the PRE-utterance history — the current
+    // utterance is sent to the model as audio, so it must not also appear in
+    // the prompt's previous conversation
+    const instructions = await generateInstructions(currentProgress);
+
+    // Transcription and tutor response don't depend on each other, so run
+    // them concurrently
+    const [transcriptionUser, audioResponse] = await Promise.all([
+      getUserTranscription(audioBase64),
+      getResponse(audioBase64, instructions),
+    ]);
+
+    const userTranscription = transcriptionUser.userTranscription ?? "";
+    if (!transcriptionUser.success || !userTranscription.trim()) {
+      return {
+        success: false,
+        errorType: "transcription",
+        error:
+          transcriptionUser.error ??
+          "Could not transcribe the audio. Please try again.",
+      };
+    }
+
+    if (!audioResponse.success) {
+      return {
+        success: false,
+        errorType: "response",
+        error: audioResponse.error ?? "Failed to generate a response",
+      };
+    }
+
+    // update objectives if there was a tool call used by the model
+    const currentObjectivesMet = [...currentProgress.objectivesMet]; // Create new array
+
+    if (
+      audioResponse.objectiveIndex !== undefined &&
+      audioResponse.objectiveIndex !== null
+    ) {
+      // Validate index bounds
+      if (
+        audioResponse.objectiveIndex >= 0 &&
+        audioResponse.objectiveIndex < currentObjectivesMet.length
+      ) {
+        currentObjectivesMet[audioResponse.objectiveIndex] = true;
+      } else {
+        console.warn(
+          `Invalid objective index: ${audioResponse.objectiveIndex}. Valid range: 0-${currentObjectivesMet.length - 1}`
+        );
+      }
+    }
+
+    // persist only on full success; the new messages are appended atomically
+    // ($push) so a concurrent turn can't clobber them, and the returned
+    // document is authoritative (merged objectivesMet + completed flag)
+    const updatedLessonProgress = await updateLessonProgress({
+      lessonIndex: currentProgress.lessonIndex,
+      objectivesMet: currentObjectivesMet,
+      appendMessages: [
+        {
+          role: "User",
+          message: userTranscription,
+        },
         {
           role: "System",
           message: audioResponse.systemTranscription ?? "",
         },
-      ]
-    : newConvoHistory;
+      ],
+    });
 
-  // update database and first removing the audioURL from the message object
-  const convoHistoryWithoutAudio = finalConvoHistory.map(
-    ({ audioURL, ...message }) => message
-  );
-  await updateLessonProgress({
-    lessonIndex: lessonProgress.lessonIndex,
-    objectivesMet: currentObjectivesMet,
-    convoHistory: convoHistoryWithoutAudio,
-  });
-
-  // output is the audio that can be played, and updated lessonProgress that will be used to update the state
-  return {
-    success: audioResponse.success,
-    error:
-      (audioResponse as { error?: string }).error ??
-      (transcriptionUser as { error?: string }).error,
-    audioBase64: audioResponse.audioBase64Response,
-    systemTranscription: audioResponse.systemTranscription,
-    updatedLessonProgress: {
-      ...lessonProgress,
-      convoHistory: finalConvoHistory,
-      objectivesMet: currentObjectivesMet,
-    },
-  };
+    // output is the audio that can be played, and updated lessonProgress that will be used to update the state
+    return {
+      success: true,
+      audioBase64: audioResponse.audioBase64Response,
+      updatedLessonProgress: updatedLessonProgress,
+    };
+  } catch (error) {
+    console.error("Error in processAudioMessage:", error);
+    return {
+      success: false,
+      errorType: "response",
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
 }

@@ -1,22 +1,26 @@
 import React from "react";
 
-import { getCurrentUser } from "@/lib/actions/user.actions";
 import {
     getLessonProgress,
     initLessonProgress,
 } from "@/lib/actions/LessonProgress.actions";
-import { formatConvoHistory, formatInitialObjectives } from "@/lib/utils";
-import { checkIfLessonProgress } from "@/lib/actions/LessonProgress.actions";
-import { getAllLessons } from "@/lib/actions/Lesson.actions";
+import { getLessonByIndex, getLessonCount } from "@/lib/actions/Lesson.actions";
 import Lesson from "@/components/lesson/Lesson";
 import Link from "next/link";
 
 const LessonPage = async ({ params }: { params: Promise<{ lessonIndex: string }> }) => {
     const { lessonIndex } = await params;
-    const lessons = await getAllLessons();
-    // const user = await getCurrentUser();
     const index = parseInt(lessonIndex, 10);
-    const lesson = lessons[index - 1];
+
+    if (Number.isNaN(index)) {
+        return <div>Lesson not found.</div>;
+    }
+
+    const [lesson, lessonCount, existingLessonProgress] = await Promise.all([
+        getLessonByIndex(index).catch(() => null),
+        getLessonCount(),
+        getLessonProgress({ lessonIndex: index }),
+    ]);
 
     if (!lesson) {
         return <div>Lesson not found.</div>;
@@ -24,40 +28,12 @@ const LessonPage = async ({ params }: { params: Promise<{ lessonIndex: string }>
 
     const lessonObjectives = lesson.objectives;
 
-    let lessonConvoHistory: Message[] = [];
-    let lessonObjectivesProgress = [];
-    let formattedConvoHistory: string | null = null;
-
-    const isLessonProgress = await checkIfLessonProgress({
-        lessonIndex: index,
-    });
-
-    let lessonProgress = {} as LessonProgress;
-    if (isLessonProgress) {
-        lessonProgress = await getLessonProgress({
-            lessonIndex: index,
-        });
-        lessonObjectivesProgress = lessonProgress.objectivesMet;
-        lessonConvoHistory = lessonProgress.convoHistory;
-
-        if (lessonConvoHistory && lessonConvoHistory.length > 0) {
-            formattedConvoHistory = formatConvoHistory(lessonConvoHistory);
-        }
-    } else {
-        lessonObjectivesProgress = formatInitialObjectives(lessonObjectives);
-        lessonProgress = await initLessonProgress({
+    const lessonProgress: LessonProgress =
+        existingLessonProgress ??
+        (await initLessonProgress({
             lessonIndex: index,
             objectives: lessonObjectives,
-        });
-    }
-
-    // const previosuessonProgress: LessonProgress = {
-    //   userId: user?.id,
-    //   lessonIndex: index,
-    //   objectivesMet: lessonObjectivesProgress,
-    //   convoHistory: lessonConvoHistory,
-    //   quizResult: [],
-    // };
+        }));
 
     return (
         <div className="min-h-screen bg-white">
@@ -76,6 +52,7 @@ const LessonPage = async ({ params }: { params: Promise<{ lessonIndex: string }>
                         </h2>
 
                         <Lesson
+                            key={index}
                             previousLessonProgress={lessonProgress}
                             lessonInfo={lesson}
                         />
@@ -91,7 +68,7 @@ const LessonPage = async ({ params }: { params: Promise<{ lessonIndex: string }>
                                 )}
                             </div>
                             <div>
-                                {index < lessons.length && (
+                                {index < lessonCount && (
                                     <Link href={`/learn/${index + 1}`}>
                                         <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-primary hover:cursor-pointer transition">
                                             Next Lesson →
