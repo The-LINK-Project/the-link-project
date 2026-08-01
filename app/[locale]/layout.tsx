@@ -94,16 +94,21 @@ export default async function RootLayout({
     return (
         <ClerkProvider>
             <html lang="en">
+                {/* The container classes live on a wrapper div, NOT on body:
+                    dialog scroll-locking injects margin/padding styles onto
+                    body, which fights mx-auto and squishes the whole page */}
                 <body
-                    className={`${openSans.variable} ${schibstedGrotesk.variable} ${nunitoSans.variable} antialiased container mx-auto max-w-7xl`}
+                    className={`${openSans.variable} ${schibstedGrotesk.variable} ${nunitoSans.variable} antialiased`}
                     suppressHydrationWarning={true}
                 >
-                    <NextIntlClientProvider>
-                        <Header></Header>
-                        <Chatbot></Chatbot>
-                        {children}
-                        <Analytics />
-                    </NextIntlClientProvider>
+                    <div className="container mx-auto max-w-7xl">
+                        <NextIntlClientProvider>
+                            <Header></Header>
+                            <Chatbot></Chatbot>
+                            {children}
+                            <Analytics />
+                        </NextIntlClientProvider>
+                    </div>
                 </body>
             </html>
         </ClerkProvider>
