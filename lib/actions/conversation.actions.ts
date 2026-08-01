@@ -12,6 +12,10 @@ import {
 const OBJECTIVE_COMPLETE_FALLBACK =
   "Great work! You've got that down. Shall we keep going with the next part of the lesson?";
 
+// Fallback conclusion for the turn that completes the final objective
+const LESSON_COMPLETE_FALLBACK =
+  "Fantastic work today! You've completed every part of this lesson — congratulations, and see you in the next one!";
+
 function setLessonObjectiveToTrue({
   objectiveIndex,
 }: {
@@ -43,7 +47,8 @@ function stripToolSyntax(text: string): string {
 
 export async function getResponse(
   audioUrlBase64: string,
-  instructions: string
+  instructions: string,
+  currentObjectivesMet: boolean[]
 ) {
   const openai = new OpenAI();
   const geminiKey = process.env.GEMINI_KEY;
@@ -114,9 +119,44 @@ export async function getResponse(
 
     let transcriptionSystem = stripToolSyntax(response.text ?? "");
 
-    // If the model made a tool call but returned no reply text, ask it once
-    // (without tools) for a short acknowledgement that continues the lesson
-    if (objectiveIndices.length > 0 && !transcriptionSystem.trim()) {
+    // Does this turn's tool call complete the final objective? The model
+    // generated its reply against the PRE-completion objective list (which
+    // told it to keep teaching), so the reply for this turn must be replaced
+    // with a proper conclusion instead of another practice question
+    const objectivesAfterCalls = [...currentObjectivesMet];
+    for (const objectiveIndex of objectiveIndices) {
+      if (objectiveIndex >= 0 && objectiveIndex < objectivesAfterCalls.length) {
+        objectivesAfterCalls[objectiveIndex] = true;
+      }
+    }
+    const lessonJustCompleted =
+      objectiveIndices.length > 0 &&
+      objectivesAfterCalls.length > 0 &&
+      objectivesAfterCalls.every((met) => met) &&
+      !currentObjectivesMet.every((met) => met);
+
+    if (lessonJustCompleted) {
+      try {
+        const conclusion = await ai.models.generateContent({
+          model: "gemini-3.1-flash-lite",
+          contents:
+            "The student has now completed EVERY lesson objective — the lesson is finished. Give a warm, brief conclusion: congratulate them on what they practised today and say goodbye. Do NOT ask any question, do NOT start new practice, and never write code, code fences, 'tool_code', 'tool_call', or 'print(' in your reply — natural spoken English only.",
+          config: {
+            systemInstruction: instructions,
+          },
+        });
+        transcriptionSystem = stripToolSyntax(conclusion.text ?? "");
+      } catch (conclusionError) {
+        console.error("Error in conclusion response:", conclusionError);
+        transcriptionSystem = "";
+      }
+
+      if (!transcriptionSystem.trim()) {
+        transcriptionSystem = LESSON_COMPLETE_FALLBACK;
+      }
+    } else if (objectiveIndices.length > 0 && !transcriptionSystem.trim()) {
+      // The model made a tool call but returned no reply text — ask it once
+      // (without tools) for a short acknowledgement that continues the lesson
       try {
         const followUp = await ai.models.generateContent({
           model: "gemini-3.1-flash-lite",
@@ -375,7 +415,7 @@ export async function processAudioMessage({
     // them concurrently
     const [transcriptionUser, audioResponse] = await Promise.all([
       getUserTranscription(audioBase64),
-      getResponse(audioBase64, instructions),
+      getResponse(audioBase64, instructions, currentProgress.objectivesMet),
     ]);
 
     const userTranscription = transcriptionUser.userTranscription ?? "";
