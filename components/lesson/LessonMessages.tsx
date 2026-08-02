@@ -1,11 +1,15 @@
 import React from "react";
-import { User, Bot } from "lucide-react";
+import { User, Bot, Volume2 } from "lucide-react";
 
 type LessonMessagesProps = {
     convoHistory: Message[];
+    onPlayTutorMessage: (messageIndex: number) => void;
 };
 
-const LessonMessages = ({ convoHistory }: LessonMessagesProps) => {
+const LessonMessages = ({
+    convoHistory,
+    onPlayTutorMessage,
+}: LessonMessagesProps) => {
     return (
         <div className="space-y-6">
             {convoHistory.map((message, index) => (
@@ -33,6 +37,17 @@ const LessonMessages = ({ convoHistory }: LessonMessagesProps) => {
                             >
                             {message.message}
                         </p>
+                        {message.role === "System" && (
+                            <button
+                                type="button"
+                                onClick={() => onPlayTutorMessage(index)}
+                                className="inline-flex items-center gap-2 rounded-full border border-primary/30 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+                                aria-label="Play tutor audio"
+                            >
+                                <Volume2 className="h-3.5 w-3.5" />
+                                Hear teacher
+                            </button>
+                        )}
                     </div>
                 </div>
             ))}

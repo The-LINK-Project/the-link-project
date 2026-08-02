@@ -390,6 +390,12 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                                                     ) : (
                                                         <LessonMessages
                                                             convoHistory={lessonProgress.convoHistory}
+                                                            onPlayTutorMessage={(messageIndex) =>
+                                                                streamTutorReply(
+                                                                    lessonProgress,
+                                                                    messageIndex,
+                                                                )
+                                                            }
                                                         />
                                                     )}
                                                     {error && (
