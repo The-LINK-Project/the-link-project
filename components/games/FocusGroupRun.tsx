@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import GameTimer, { formatTime } from "./GameTimer";
 import { Button } from "@/components/ui/button";
 import PicturePanel from "@/components/games/PicturePanel";
 import { FREEZE_MS, REVEAL_AFTER_WRONG } from "@/constants/games/focusGroup";
@@ -17,13 +18,6 @@ function shuffle<T>(items: T[]): T[] {
         [result[i], result[j]] = [result[j], result[i]];
     }
     return result;
-}
-
-function formatTime(ms: number) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
 type StageProps = {
@@ -459,7 +453,6 @@ export default function FocusGroupRun({
     const [phase, setPhase] = useState<RunPhase>("start");
     const [teamName, setTeamName] = useState("");
     const [stageIndex, setStageIndex] = useState(0);
-    const [elapsedMs, setElapsedMs] = useState(0);
     const [finalMs, setFinalMs] = useState(0);
     const [mistakes, setMistakes] = useState(0);
 
@@ -485,19 +478,8 @@ export default function FocusGroupRun({
         };
     }, []);
 
-    // The clock never stops — a freeze costs real seconds, and that is the
-    // whole penalty.
-    useEffect(() => {
-        if (phase !== "running") return;
-        const id = setInterval(() => {
-            setElapsedMs(Date.now() - startRef.current);
-        }, 250);
-        return () => clearInterval(id);
-    }, [phase]);
-
     const start = () => {
         startRef.current = Date.now();
-        setElapsedMs(0);
         setStageIndex(0);
         setMistakes(0);
         setStageWrong(0);
@@ -629,7 +611,14 @@ export default function FocusGroupRun({
                 </span>
                 <span className="flex items-center gap-1 text-lg font-bold tabular-nums text-foreground">
                     <Timer className="h-5 w-5" />
-                    {formatTime(elapsedMs)}
+                    {/* The clock never stops — a freeze costs real seconds,
+                        and that is the whole penalty. It ticks in its own leaf
+                        so it doesn't re-render the game tree. */}
+                    <GameTimer
+                        startTime={startRef.current}
+                        running={phase === "running"}
+                        intervalMs={250}
+                    />
                 </span>
             </div>
 

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import GameTimer, { formatTime } from "./GameTimer";
 import { Button } from "@/components/ui/button";
 import { MATCH_COOLDOWN_MS } from "@/constants/games/wordMatch";
 import {
@@ -65,13 +66,6 @@ function buildTiles(round: WordMatchGameRound): GameTile[] {
     return shuffle(tiles);
 }
 
-function formatTime(ms: number) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-}
-
 function DifficultyBadge({ difficulty }: { difficulty: GameDifficulty }) {
     return (
         <span
@@ -95,7 +89,6 @@ export default function WordMatchGame({
     const [matchedPairs, setMatchedPairs] = useState<number[]>([]);
     const [wrongIds, setWrongIds] = useState<string[]>([]);
     const [wrongAttempts, setWrongAttempts] = useState(0);
-    const [elapsedMs, setElapsedMs] = useState(0);
     const [finalTimeMs, setFinalTimeMs] = useState(0);
     const [score, setScore] = useState(0);
 
@@ -117,15 +110,6 @@ export default function WordMatchGame({
     const category = categories.find((item) => item.id === categoryId);
     const hasNextRound = roundIndex + 1 < categoryRounds.length;
 
-    // Tick the visible timer while a round is being played
-    useEffect(() => {
-        if (phase !== "playing") return;
-        const interval = setInterval(() => {
-            setElapsedMs(Date.now() - startTimeRef.current);
-        }, 500);
-        return () => clearInterval(interval);
-    }, [phase]);
-
     useEffect(() => {
         return () => {
             if (wrongTimeoutRef.current) clearTimeout(wrongTimeoutRef.current);
@@ -146,7 +130,6 @@ export default function WordMatchGame({
         coolingRef.current = false;
         setWrongIds([]);
         setWrongAttempts(0);
-        setElapsedMs(0);
         startTimeRef.current = Date.now();
         setPhase("playing");
     };
@@ -371,7 +354,10 @@ export default function WordMatchGame({
                     </span>
                     <span className="flex items-center gap-1 tabular-nums">
                         <Timer className="h-4 w-4" />
-                        {formatTime(elapsedMs)}
+                        <GameTimer
+                            startTime={startTimeRef.current}
+                            running={phase === "playing"}
+                        />
                     </span>
                 </div>
             </div>
