@@ -8,6 +8,10 @@ import { getSurveyStateForUser } from "@/lib/actions/survey.actions";
 // The feedback survey. Sign-in is enforced by the middleware (this route is
 // not public), and the server only ever reads or writes the signed-in user's
 // own response.
+
+// Per-user data — must never be statically prerendered
+export const dynamic = "force-dynamic";
+
 const SurveyPage = async () => {
     const survey = getActiveSurvey();
 

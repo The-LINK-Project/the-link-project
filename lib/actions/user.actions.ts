@@ -155,9 +155,11 @@ const resolveUser = cache(async (maxRetries: number, retryDelayMs: number) => {
     throw new Error("Timed out ensuring user exists in database");
 });
 
+// 2 retries × 250ms base = at most ~750ms of backoff. The old default (5
+// retries, exponential from 300ms) could hold a request for ~9s of pure sleep
 export async function ensureUser({
-    maxRetries = 5,
-    retryDelayMs = 300,
+    maxRetries = 2,
+    retryDelayMs = 250,
 }: EnsureUserOptions = {}) {
     return resolveUser(maxRetries, retryDelayMs);
 }
@@ -201,7 +203,9 @@ export async function deleteUser(clerkId: string) {
 
         // Delete user
         const deletedUser = await User.findByIdAndDelete(userToDelete._id);
-        revalidatePath("/");
+        // Only the admin user list renders this data — revalidating "/"
+        // would purge the cache of every route in the app
+        revalidatePath("/admin/users");
 
         return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
     } catch (error) {

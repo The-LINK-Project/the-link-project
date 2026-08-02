@@ -103,7 +103,7 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
 
                 // server action that gets the audio from the user and processes it and sends it to gemini and openai for the response
                 const result = await processInitialMessage({
-                    lessonProgress,
+                    lessonIndex: lessonProgress.lessonIndex,
                 });
 
                 if (result.success) {
@@ -147,7 +147,7 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
 
         scrollArea.addEventListener("scroll", handleScroll);
         return () => scrollArea.removeEventListener("scroll", handleScroll);
-    }, [lessonProgress.convoHistory]);
+    }, []);
 
     // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
@@ -210,10 +210,8 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                 // server action that gets the audio from the user and processes it and sends it to gemini and openai for the response
                 const result = await processAudioMessage({
                     audioBase64: base64,
-                    lessonProgress,
+                    lessonIndex: lessonProgress.lessonIndex,
                 });
-
-                console.log("processAudioMessage result:", result);
 
                 if (result.success) {
                     // Play audio only if we have audio response

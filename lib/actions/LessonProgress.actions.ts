@@ -84,51 +84,86 @@ export async function updateLessonProgress({
 
         const { _id: userId } = await ensureUser();
 
-        // Merge with the existing document so objectives can never regress —
-        // an objective already true in the DB stays true even if the incoming
-        // array says false
-        const existingLessonProgress = await LessonProgress.findOne({
-            userId: userId,
-            lessonIndex: lessonIndex,
-        });
-
-        const existingObjectivesMet: boolean[] =
-            existingLessonProgress?.objectivesMet ?? [];
-
-        const mergedObjectivesMet = objectivesMet.map(
-            (met: boolean, index: number) =>
-                met || !!existingObjectivesMet[index],
-        );
-
-        const setUpdates: {
-            objectivesMet: boolean[];
-            convoHistory?: Message[];
-            completed?: boolean;
+        // Single atomic pipeline update: the merge with the stored document
+        // (objectives can never regress — an objective already true in the DB
+        // stays true even if the incoming array says false) happens inside
+        // MongoDB, so there is no read-before-write round trip or race window
+        const firstStage: {
+            objectivesMet: unknown;
+            convoHistory?: unknown;
         } = {
-            objectivesMet: mergedObjectivesMet,
+            objectivesMet: {
+                $map: {
+                    input: { $range: [0, objectivesMet.length] },
+                    as: "i",
+                    in: {
+                        $or: [
+                            {
+                                $ifNull: [
+                                    {
+                                        $arrayElemAt: [
+                                            { $literal: objectivesMet },
+                                            "$$i",
+                                        ],
+                                    },
+                                    false,
+                                ],
+                            },
+                            {
+                                $eq: [
+                                    {
+                                        $ifNull: [
+                                            {
+                                                $arrayElemAt: [
+                                                    {
+                                                        $ifNull: [
+                                                            "$objectivesMet",
+                                                            [],
+                                                        ],
+                                                    },
+                                                    "$$i",
+                                                ],
+                                            },
+                                            false,
+                                        ],
+                                    },
+                                    true,
+                                ],
+                            },
+                        ],
+                    },
+                },
+            },
         };
 
         if (convoHistory !== undefined) {
-            setUpdates.convoHistory = convoHistory;
+            firstStage.convoHistory = { $literal: convoHistory };
+        } else if (appendMessages !== undefined) {
+            firstStage.convoHistory = {
+                $concatArrays: [
+                    { $ifNull: ["$convoHistory", []] },
+                    { $literal: appendMessages },
+                ],
+            };
         }
 
-        if (mergedObjectivesMet.every((met: boolean) => met)) {
-            setUpdates.completed = true;
-        }
-
-        // MongoDB rejects updates where the same path appears in both $set and
-        // $setOnInsert, so only default `completed` when $set doesn't carry it
-        const update: {
-            $set: typeof setUpdates;
-            $setOnInsert?: { completed: boolean };
-            $push?: { convoHistory: { $each: Message[] } };
-        } = { $set: setUpdates };
-        if (setUpdates.completed === undefined) {
-            update.$setOnInsert = { completed: false };
-        }
-        if (appendMessages !== undefined && convoHistory === undefined) {
-            update.$push = { convoHistory: { $each: appendMessages } };
-        }
+        const update = [
+            { $set: firstStage },
+            // Second stage reads the merged objectivesMet from the first:
+            // completed flips to true when every objective is met and is
+            // otherwise preserved (false on a fresh upsert)
+            {
+                $set: {
+                    completed: {
+                        $cond: [
+                            { $allElementsTrue: ["$objectivesMet"] },
+                            true,
+                            { $eq: [{ $ifNull: ["$completed", false] }, true] },
+                        ],
+                    },
+                },
+            },
+        ];
 
         const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
             {
@@ -139,7 +174,6 @@ export async function updateLessonProgress({
             {
                 upsert: true,
                 new: true,
-                setDefaultsOnInsert: true,
             }
         );
 

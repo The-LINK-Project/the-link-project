@@ -16,6 +16,9 @@ import { FOCUS_GROUP_SETS } from "@/constants/games/focusGroup";
 // The survey route, responses, and admin reporting remain available.
 const SHOW_SURVEY_BANNER = false;
 
+// Per-user data — must never be statically prerendered
+export const dynamic = "force-dynamic";
+
 const DashboardPage = async () => {
     await ensureUser();
 

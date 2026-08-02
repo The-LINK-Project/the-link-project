@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface ImageAutoSliderProps {
@@ -30,15 +31,16 @@ export const ImageAutoSlider = ({
                     <div
                         key={index}
                         className={cn(
-                            "h-56 w-56 flex-shrink-0 overflow-hidden rounded-2xl shadow-lg md:h-72 md:w-72 lg:h-80 lg:w-80",
+                            "relative h-56 w-56 flex-shrink-0 overflow-hidden rounded-2xl shadow-lg md:h-72 md:w-72 lg:h-80 lg:w-80",
                             tileClassName,
                         )}
                     >
-                        <img
+                        <Image
                             src={src}
                             alt={`Community gallery photo ${(index % images.length) + 1}`}
-                            className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                            loading="lazy"
+                            fill
+                            sizes="(min-width: 1024px) 320px, (min-width: 768px) 288px, 224px"
+                            className="object-cover transition-transform duration-500 hover:scale-105"
                         />
                     </div>
                 ))}

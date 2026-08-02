@@ -8,6 +8,15 @@ import {
   updateLessonProgress,
 } from "@/lib/actions/LessonProgress.actions";
 
+// Module-level lazy singletons so each request reuses the same client (and
+// its keep-alive connection pool) instead of paying a fresh TLS handshake
+let openaiClient: OpenAI | null = null;
+const getOpenAIClient = () => (openaiClient ??= new OpenAI());
+
+let geminiClient: GoogleGenAI | null = null;
+const getGeminiClient = () =>
+  (geminiClient ??= new GoogleGenAI({ apiKey: process.env.GEMINI_KEY }));
+
 // Fallback reply used when the model marks an objective complete but returns no text
 const OBJECTIVE_COMPLETE_FALLBACK =
   "Great work! You've got that down. Shall we keep going with the next part of the lesson?";
@@ -51,10 +60,8 @@ export async function getResponse(
   instructions: string,
   currentObjectivesMet: boolean[]
 ) {
-  const openai = new OpenAI();
-  const geminiKey = process.env.GEMINI_KEY;
-
-  const ai = new GoogleGenAI({ apiKey: geminiKey });
+  const openai = getOpenAIClient();
+  const ai = getGeminiClient();
 
   // Defining the function the model can call to update lesson objectives
   const setLessonObjectiveToTrueFunctionDeclaration = {
@@ -212,9 +219,7 @@ export async function getResponse(
 }
 
 export async function getUserTranscription(audioUrlBase64: string) {
-  const geminiKey = process.env.GEMINI_KEY;
-
-  const ai = new GoogleGenAI({ apiKey: geminiKey });
+  const ai = getGeminiClient();
 
   const contents = [
     {
@@ -257,10 +262,8 @@ export async function getUserTranscription(audioUrlBase64: string) {
 }
 
 export async function getInitialResponse(instructions: string) {
-  const openai = new OpenAI();
-  const geminiKey = process.env.GEMINI_KEY;
-
-  const ai = new GoogleGenAI({ apiKey: geminiKey });
+  const openai = getOpenAIClient();
+  const ai = getGeminiClient();
 
   try {
     const response = await ai.models.generateContent({
@@ -307,9 +310,9 @@ export async function getInitialResponse(instructions: string) {
 }
 
 export async function processInitialMessage({
-  lessonProgress,
+  lessonIndex,
 }: {
-  lessonProgress: LessonProgress;
+  lessonIndex: number;
 }): Promise<{
   success: boolean;
   error?: string;
@@ -320,7 +323,7 @@ export async function processInitialMessage({
     // Re-read the progress server-side so a refresh / second tab doesn't
     // generate a duplicate greeting
     const currentProgress = await getLessonProgress({
-      lessonIndex: lessonProgress.lessonIndex,
+      lessonIndex,
     });
 
     if (currentProgress && currentProgress.convoHistory?.length > 0) {
@@ -351,7 +354,7 @@ export async function processInitialMessage({
     }
 
     const updatedLessonProgress = await updateLessonProgress({
-      lessonIndex: lessonProgress.lessonIndex,
+      lessonIndex,
       objectivesMet: currentProgress.objectivesMet,
       // Persist only the tutor's greeting, appended atomically so a slow
       // concurrent tab can't wipe messages written after our empty check
@@ -380,10 +383,10 @@ export async function processInitialMessage({
 // gets the audio from the user and processes it and sends it to gemini and openai for the response
 export async function processAudioMessage({
   audioBase64,
-  lessonProgress,
+  lessonIndex,
 }: {
   audioBase64: string;
-  lessonProgress: LessonProgress;
+  lessonIndex: number;
 }): Promise<{
   success: boolean;
   error?: string;
@@ -395,7 +398,7 @@ export async function processAudioMessage({
     // Re-read the authoritative progress server-side so a stale client
     // snapshot (second tab, restored page) can't overwrite newer history
     const currentProgress = await getLessonProgress({
-      lessonIndex: lessonProgress.lessonIndex,
+      lessonIndex,
     });
 
     if (!currentProgress) {

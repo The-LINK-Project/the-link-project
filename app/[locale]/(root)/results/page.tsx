@@ -6,6 +6,10 @@ import QuizNoResults from "@/components/results/QuizNoResults";
 import { getAllLessons } from "@/lib/actions/Lesson.actions";
 import { getTranslations } from "next-intl/server";
 
+// Per-user data — must never be statically prerendered (the build was
+// snapshotting this page as SSG with empty results)
+export const dynamic = "force-dynamic";
+
 export default async function ResultsPage() {
     const t = await getTranslations("resultspage");
     const results = await getUserResults();

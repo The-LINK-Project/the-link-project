@@ -52,6 +52,9 @@ const surveyResponseSchema = new mongoose.Schema(
 );
 
 surveyResponseSchema.index({ userId: 1, surveyId: 1 }, { unique: true });
+// Admin stats/results/CSV filter by surveyId (+ status) and sort by
+// submittedAt — the unique index above can't serve those (wrong prefix)
+surveyResponseSchema.index({ surveyId: 1, status: 1, submittedAt: 1 });
 
 const SurveyResponse =
     mongoose.models.SurveyResponse ||

@@ -2,13 +2,9 @@
 import { useState, useEffect, useRef } from "react";
 import ChatbotIcon from "./ChatbotIcon";
 import ChatbotIconteal from "./ChatbotIconteal";
-import ChatbotIcontoggle from "./ChatbotIcontoggle";
-import XIcon from "./XIcon";
 import ChatForm from "./ChatForm";
 import ChatMessage from "./ChatMessage";
-import { chatbotInstructions } from "@/utils/conversation_config";
 import { getChatbotResponse } from "@/lib/actions/chatbot.actions";
-import { ArrowDownNarrowWideIcon } from "lucide-react";
 
 // Type definitions
 type ChatRole = "user" | "model";
@@ -19,17 +15,11 @@ type ChatMessageType = {
     hideInChat?: boolean;
 };
 
-const Chatbot = () => {
-    const [chatHistory, setChatHistory] = useState<ChatMessageType[]>([
-        {
-            hideInChat: true,
-            role: "model",
-            text: chatbotInstructions,
-            isError: false,
-        },
-    ]);
+// The instruction prompt is prepended server-side in getChatbotResponse, so
+// the history starts empty here
+const Chatbot = ({ showChatbot }: { showChatbot: boolean }) => {
+    const [chatHistory, setChatHistory] = useState<ChatMessageType[]>([]);
 
-    const [showChatbot, setShowChatbot] = useState<boolean>(false);
     const [isRateLimited, setIsRateLimited] = useState<boolean>(false);
     const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false); 
 
@@ -80,37 +70,6 @@ const Chatbot = () => {
         <div
             className={`container${showChatbot ? " show-chatbot" : ""} font-[Inter,sans-serif]`}
         >
-            {/* Toggle Button */}
-            <button
-                id="chatbot-toggler"
-                onClick={() => setShowChatbot((prev) => !prev)}
-                className={`
-                    fixed flex items-center justify-center bottom-[30px] right-[20px]
-                    h-[50px] w-[50px] border-none cursor-pointer rounded-full
-                    bg-primary transition-all duration-200 outline-none z-[100]
-                    ${showChatbot ? "rotate-90" : ""}
-                `}
-                style={{ WebkitTapHighlightColor: "transparent" }}
-            >
-                {/* Open/Close text */}
-                <span
-                    className={`
-                        absolute text-white pointer-events-none transition-opacity duration-200
-                        ${showChatbot ? "opacity-0" : "opacity-100"}
-                    `}
-                >
-                    <ChatbotIcontoggle />
-                </span>
-                <span
-                    className={`
-                        absolute text-white pointer-events-none transition-opacity duration-200
-                        ${showChatbot ? "opacity-100" : "opacity-0"}
-                    `}
-                >
-                    <XIcon />
-                </span>
-            </button>
-
             {/* Popup */}
             <div
                 className={`

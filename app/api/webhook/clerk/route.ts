@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 import { WebhookEvent, clerkClient } from "@clerk/nextjs/server";
 import { createUser, updateUser, deleteUser } from "@/lib/actions/user.actions";
 import { NextResponse } from "next/server";
-import { redirect } from "next/navigation";
 export async function POST(req: Request) {
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
     const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -50,13 +49,10 @@ export async function POST(req: Request) {
         });
     }
 
-    // Do something with the payload
-    // For this guide, you simply log the payload to the console
     const { id } = evt.data;
     const eventType = evt.type;
 
     console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
-    console.log("Webhook body:", body);
 
     if (eventType === "user.created") {
         const { id, email_addresses, image_url, first_name, last_name, username } =
@@ -70,7 +66,6 @@ export async function POST(req: Request) {
             lastName: last_name!,
             photo: image_url,
         };
-        console.log("MAKING USER");
         const newUser = await createUser(user);
 
         if (newUser) {

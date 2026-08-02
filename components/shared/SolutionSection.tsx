@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 const SolutionSection = () => {
@@ -40,29 +41,35 @@ const SolutionSection = () => {
                     <div className="flex flex-col gap-4">
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1.4fr_1fr]">
                             <div className="rounded-2xl border border-[#e7e5dd] bg-surface p-2.5 shadow-[0_18px_44px_rgba(30,39,35,0.1)]">
-                                <img
+                                <Image
                                     src="/assets/Conversation.png"
                                     alt="Realtime Conversation"
+                                    width={1480}
+                                    height={1118}
+                                    sizes="(min-width: 1024px) 40vw, 90vw"
                                     className="block w-full rounded-lg object-contain"
-                                    style={{ aspectRatio: "1480 / 1118" }}
                                 />
                             </div>
                             <div className="flex items-center rounded-2xl border border-[#e7e5dd] bg-surface p-2.5 shadow-[0_18px_44px_rgba(30,39,35,0.1)]">
-                                <img
+                                <Image
                                     src="/assets/Chatbot.png"
                                     alt="AI Chatbot"
+                                    width={594}
+                                    height={996}
+                                    sizes="(min-width: 1024px) 25vw, 60vw"
                                     className="block w-full rounded-lg object-contain"
-                                    style={{ aspectRatio: "594 / 996" }}
                                 />
                             </div>
                         </div>
 
                         <div className="overflow-hidden rounded-2xl border border-[#e7e5dd] bg-surface p-2.5 shadow-[0_18px_44px_rgba(30,39,35,0.1)]">
-                            <img
+                            <Image
                                 src="/assets/Objectives.png"
                                 alt="Learning Objectives"
+                                width={2000}
+                                height={302}
+                                sizes="(min-width: 1024px) 55vw, 90vw"
                                 className="block w-full rounded-lg object-contain"
-                                style={{ aspectRatio: "2000 / 302" }}
                             />
                         </div>
                     </div>

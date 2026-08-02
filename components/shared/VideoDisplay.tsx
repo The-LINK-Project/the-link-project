@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 /**
  * Hero product preview framed in a browser-style chrome (traffic-light dots
@@ -13,9 +14,13 @@ const VideoDisplay = () => {
                     <span className="h-3 w-3 rounded-full bg-[#e7c25e]" />
                     <span className="h-3 w-3 rounded-full bg-primary" />
                 </div>
-                <img
+                <Image
                     src="/assets/Problemsection.png"
                     alt="Problem Section"
+                    width={1600}
+                    height={1137}
+                    priority
+                    sizes="(min-width: 1024px) 1024px, 100vw"
                     className="block w-full rounded-xl object-contain"
                 />
             </div>

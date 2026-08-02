@@ -31,6 +31,8 @@ const quizResultSchema = new mongoose.Schema(
 );
 
 quizResultSchema.index({ userId: 1, lessonId: 1, score: 1 });
+// getUserResults lists a user's attempts newest-first
+quizResultSchema.index({ userId: 1, completedAt: -1 });
 
 const QuizResult =
     mongoose.models.QuizResult || mongoose.model("QuizResult", quizResultSchema);

@@ -10,9 +10,9 @@ import {
     SignedOut,
     UserButton,
 } from "@clerk/nextjs";
-import Chatbot from "@/components/chatbot/Chatbot";
+import ChatbotLauncher from "@/components/chatbot/ChatbotLauncher";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 
@@ -36,6 +36,7 @@ const nunitoSans = Nunito_Sans({
 });
 
 export const metadata: Metadata = {
+    metadataBase: new URL("https://thelinkproject.org"),
     title: "The LINK Project | AI English Lessons for Migrant Workers",
     description:
         "English learning resources for migrant workers in Singapore through a personalized AI voice assistant",
@@ -77,6 +78,22 @@ export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }));
 }
 
+// Only these namespaces are consumed by "use client" components (via
+// useTranslations), so only they are serialized into every page's payload.
+// Server components get the full catalog through getTranslations/useTranslations
+// on the server and are unaffected. If a client component starts using a new
+// namespace, add it here — otherwise it will throw MISSING_MESSAGE at runtime.
+const CLIENT_MESSAGE_NAMESPACES = [
+    "lesson",
+    "lessoninput",
+    "lessonmodal",
+    "lessonnotstarted",
+    "objectives",
+    "contactUs",
+    "quizComplete",
+    "quizProgressBar",
+];
+
 export default async function RootLayout({
     children,
     params,
@@ -91,9 +108,17 @@ export default async function RootLayout({
     }
 
     setRequestLocale(locale);
+
+    const messages = await getMessages();
+    const clientMessages = Object.fromEntries(
+        CLIENT_MESSAGE_NAMESPACES.filter((namespace) => namespace in messages).map(
+            (namespace) => [namespace, messages[namespace]],
+        ),
+    );
+
     return (
         <ClerkProvider>
-            <html lang="en">
+            <html lang={locale}>
                 {/* The container classes live on a wrapper div, NOT on body:
                     dialog scroll-locking injects margin/padding styles onto
                     body, which fights mx-auto and squishes the whole page */}
@@ -102,9 +127,9 @@ export default async function RootLayout({
                     suppressHydrationWarning={true}
                 >
                     <div className="container mx-auto max-w-7xl">
-                        <NextIntlClientProvider>
+                        <NextIntlClientProvider messages={clientMessages}>
                             <Header></Header>
-                            <Chatbot></Chatbot>
+                            <ChatbotLauncher></ChatbotLauncher>
                             {children}
                             <Analytics />
                         </NextIntlClientProvider>

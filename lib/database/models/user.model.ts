@@ -14,6 +14,9 @@ const UserSchema = new Schema(
     },
 );
 
+// Admin user list sorts newest-first and counts recent signups
+UserSchema.index({ createdAt: -1 });
+
 const User = models.User || model("User", UserSchema);
 
 export default User;

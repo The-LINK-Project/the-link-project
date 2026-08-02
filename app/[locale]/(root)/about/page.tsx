@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { aboutUsInformation } from "@/constants";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -38,11 +39,13 @@ export default function AboutPage() {
                                 <div className="absolute bottom-4 left-8 w-10 h-10 bg-primary/10 rounded-lg -rotate-6 group-hover:bg-primary/18 transition-colors duration-300"></div>
 
                                 <div className="relative mx-auto mb-6">
-                                    <div className="w-full aspect-[3/3] rounded-xl overflow-hidden border-2 border-primary/20 group-hover:border-primary/40 transition-all duration-300 bg-gradient-to-br from-primary/5 to-primary/10">
-                                        <img
+                                    <div className="relative w-full aspect-[3/3] rounded-xl overflow-hidden border-2 border-primary/20 group-hover:border-primary/40 transition-all duration-300 bg-gradient-to-br from-primary/5 to-primary/10">
+                                        <Image
                                             src={person.image}
                                             alt={person.name}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                            fill
+                                            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                                            className="object-cover group-hover:scale-110 transition-transform duration-500"
                                         />
                                         {/* Overlay gradient */}
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

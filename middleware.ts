@@ -1,4 +1,4 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
@@ -6,18 +6,22 @@ import { routing } from "./i18n/routing";
 // Create the intl middleware
 const intlMiddleware = createMiddleware(routing);
 
-// Define public routes (these should match the actual paths without locale prefixes)
-const isPublicRoute = createRouteMatcher([
-    "/",
-    "/sign-in(.*)",
-    "/sign-up(.*)",
-    "/api/webhook/clerk",
-    "/contact",
-    "/about"
-]);
+// Public routes, matched against the locale-stripped pathname. Plain path
+// matching (no fake request objects) — API routes never reach here, the
+// matcher below excludes them.
+const publicRoutePatterns = [
+    /^\/$/,
+    /^\/sign-in(\/.*)?$/,
+    /^\/sign-up(\/.*)?$/,
+    /^\/contact$/,
+    /^\/about$/,
+];
 
-// Define admin routes
-const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
+const isPublicPath = (path: string) =>
+    publicRoutePatterns.some((pattern) => pattern.test(path));
+
+const isAdminPath = (path: string) =>
+    path === "/admin" || path.startsWith("/admin/");
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
     const { pathname } = req.nextUrl;
@@ -27,7 +31,7 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
         pathname.startsWith("/api/") ||
         pathname.startsWith("/_next/") ||
         pathname.startsWith("/_vercel/") ||
-        pathname.includes(".") && !pathname.endsWith("/")
+        (pathname.includes(".") && !pathname.endsWith("/"))
     ) {
         return NextResponse.next();
     }
@@ -49,37 +53,31 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
         locale = segments[0] as any;
     }
 
-    // Get auth info
-    const { userId } = await auth();
+    // Strip the locale prefix for route matching
+    const pathForMatching =
+        segments.length > 0 && routing.locales.includes(segments[0] as any)
+            ? "/" + segments.slice(1).join("/")
+            : pathname;
 
-    // Create a request object for route matching (without locale prefix)
-    const pathForMatching = segments.length > 0 && routing.locales.includes(segments[0] as any)
-        ? "/" + segments.slice(1).join("/")
-        : pathname;
+    const normalizedPath = pathForMatching || "/";
 
-    const matchingRequest = {
-        ...req,
-        nextUrl: {
-            ...req.nextUrl,
-            pathname: pathForMatching || "/"
-        }
-    } as NextRequest;
-
-    // Check admin routes
-    if (isAdminRoute(matchingRequest)) {
+    // Only protected routes pay for the auth() call — public pages
+    // (landing, about, contact, sign-in/up) skip Clerk entirely
+    if (isAdminPath(normalizedPath)) {
+        const { userId } = await auth();
         if (!userId) {
             const signInUrl = new URL(`/${locale}/sign-in`, req.url);
             return NextResponse.redirect(signInUrl);
         }
-    }
-
-    // Check protected routes
-    else if (!isPublicRoute(matchingRequest)) {
+    } else if (!isPublicPath(normalizedPath)) {
+        const { userId } = await auth();
         if (!userId) {
             const isDashboardRoute =
-                pathForMatching === "/dashboard" ||
-                pathForMatching.startsWith("/dashboard/");
-            const redirectPath = isDashboardRoute ? `/${locale}/sign-up` : `/${locale}/sign-in`;
+                normalizedPath === "/dashboard" ||
+                normalizedPath.startsWith("/dashboard/");
+            const redirectPath = isDashboardRoute
+                ? `/${locale}/sign-up`
+                : `/${locale}/sign-in`;
             const redirectUrl = new URL(redirectPath, req.url);
             return NextResponse.redirect(redirectUrl);
         }

@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Image from "next/image";
 import NavItems from "./NavItems";
 import { MenuIcon } from "lucide-react";
 import {
@@ -26,7 +27,13 @@ const Header = () => {
     return (
         <div className="flex flex-row mx-4 sm:mx-8 lg:mx-24 justify-between h-16 sm:h-18 items-center py-2">
             <Link href="/" className="flex flex-row gap-1 sm:gap-2 items-center">
-                <img src="/assets/link_green.png" className="w-6 h-6 sm:w-8 sm:h-8" />
+                <Image
+                    src="/assets/link_green.png"
+                    alt="The LINK Project logo"
+                    width={32}
+                    height={32}
+                    className="w-6 h-6 sm:w-8 sm:h-8"
+                />
                 <h1 className="font-semibold text-sm sm:text-lg">
                     <span className="sm:hidden">LINK</span>
                     <span className="hidden sm:inline">The LINK Project</span>

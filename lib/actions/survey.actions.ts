@@ -250,56 +250,49 @@ export async function saveSurveyAnswer(
         await connectToDatabase();
         const { _id: userId } = await ensureUser();
 
-        const existing = await SurveyResponse.findOne({
-            userId,
-            surveyId: survey.id,
-        });
-
-        // Answers are frozen once submitted.
-        if (existing?.status === "submitted") {
-            return {
-                success: false,
-                alreadySubmitted: true,
-                status: "submitted",
-            };
-        }
-
         const update: Record<string, unknown> = {
             status: "in_progress",
             declinedAt: null, // starting to answer supersedes an old decline
         };
         if (lastQuestionId) update.lastQuestionId = lastQuestionId;
 
-        // The status guard closes the race with a concurrent submit: if the
-        // response was submitted between the read above and this write, the
-        // filter matches nothing and the upsert trips the unique index
-        // instead of appending to a frozen response.
+        // Answers are frozen once submitted. The status guard enforces that
+        // atomically: for a submitted response the filter matches nothing, so
+        // the upsert tries to insert and trips the unique {userId, surveyId}
+        // index instead of appending to a frozen response — no read needed.
         const notSubmitted = {
             userId,
             surveyId: survey.id,
             status: { $ne: "submitted" },
         };
 
+        let updateDoc: Record<string, unknown>;
         if (answer === null) {
-            await SurveyResponse.findOneAndUpdate(
-                notSubmitted,
-                { $set: update, $unset: { [`answers.${questionId}`]: "" } },
-                { upsert: true },
-            );
-            return { success: true, status: "in_progress" };
+            updateDoc = {
+                $set: update,
+                $unset: { [`answers.${questionId}`]: "" },
+            };
+        } else {
+            const cleaned = validateAnswer(question, answer);
+            if (!cleaned) return { success: false, message: "Invalid answer" };
+            update[`answers.${questionId}`] = cleaned;
+            updateDoc = { $set: update };
         }
 
-        const cleaned = validateAnswer(question, answer);
-        if (!cleaned) return { success: false, message: "Invalid answer" };
-
-        update[`answers.${questionId}`] = cleaned;
-        await SurveyResponse.findOneAndUpdate(
-            notSubmitted,
-            { $set: update },
-            {
+        try {
+            await SurveyResponse.updateOne(notSubmitted, updateDoc, {
                 upsert: true,
-            },
-        );
+            });
+        } catch (error: any) {
+            if (error?.code === 11000) {
+                return {
+                    success: false,
+                    alreadySubmitted: true,
+                    status: "submitted",
+                };
+            }
+            throw error;
+        }
 
         return { success: true, status: "in_progress" };
     } catch (error) {
@@ -317,19 +310,24 @@ export async function declineSurvey(): Promise<SurveySaveResult> {
         await connectToDatabase();
         const { _id: userId } = await ensureUser();
 
-        const existing = await SurveyResponse.findOne({
-            userId,
-            surveyId: survey.id,
-        });
-        if (existing?.status === "submitted") {
-            return { success: true, status: "submitted" };
+        // Same atomic pattern as saveSurveyAnswer: a submitted response never
+        // matches the filter, so the upsert trips the unique index instead
+        try {
+            await SurveyResponse.updateOne(
+                {
+                    userId,
+                    surveyId: survey.id,
+                    status: { $ne: "submitted" },
+                },
+                { $set: { declinedAt: new Date() } },
+                { upsert: true },
+            );
+        } catch (error: any) {
+            if (error?.code === 11000) {
+                return { success: true, status: "submitted" };
+            }
+            throw error;
         }
-
-        await SurveyResponse.findOneAndUpdate(
-            { userId, surveyId: survey.id },
-            { $set: { declinedAt: new Date() } },
-            { upsert: true },
-        );
 
         return { success: true, status: "not_started" };
     } catch (error) {
@@ -354,7 +352,7 @@ export async function submitSurvey(): Promise<SurveySaveResult> {
         const existing = await SurveyResponse.findOne({
             userId,
             surveyId: survey.id,
-        });
+        }).lean<any>();
 
         if (existing?.status === "submitted") {
             return {
@@ -388,7 +386,7 @@ export async function submitSurvey(): Promise<SurveySaveResult> {
             }
         }
 
-        await SurveyResponse.findOneAndUpdate(
+        await SurveyResponse.updateOne(
             { userId, surveyId: survey.id, status: { $ne: "submitted" } },
             { $set: { status: "submitted", submittedAt: new Date() } },
         );
@@ -411,6 +409,41 @@ async function requireAdmin() {
     }
 }
 
+// A bare decline (no answers) is not a "start".
+const IS_SUBMITTED_EXPR = { $eq: ["$status", "submitted"] };
+const HAS_ANSWERS_EXPR = {
+    $gt: [{ $size: { $objectToArray: { $ifNull: ["$answers", {}] } } }, 0],
+};
+const IS_STARTED_EXPR = { $or: [IS_SUBMITTED_EXPR, HAS_ANSWERS_EXPR] };
+
+// Mirrors the client-side "did they actually answer this" rule: text needs
+// content, multi needs at least one selection, anything else just has to exist
+function answerHasContentExpr(questionId: string) {
+    const path = `$answers.${questionId}`;
+    return {
+        $switch: {
+            branches: [
+                {
+                    case: { $eq: [`${path}.kind`, "text"] },
+                    then: {
+                        $gt: [
+                            { $strLenCP: { $ifNull: [`${path}.text`, ""] } },
+                            0,
+                        ],
+                    },
+                },
+                {
+                    case: { $eq: [`${path}.kind`, "multi"] },
+                    then: {
+                        $gt: [{ $size: { $ifNull: [`${path}.values`, []] } }, 0],
+                    },
+                },
+            ],
+            default: { $ne: [{ $type: path }, "missing"] },
+        },
+    };
+}
+
 export async function getSurveyStats(
     surveyId: string,
 ): Promise<SurveyStats | null> {
@@ -421,39 +454,58 @@ export async function getSurveyStats(
 
     await connectToDatabase();
 
-    const responses = await SurveyResponse.find({ surveyId }).lean<any[]>();
-
-    // A bare decline (no answers) is not a "start".
-    const started = responses.filter(
-        (response) =>
-            response.status === "submitted" ||
-            Object.keys(response.answers ?? {}).length > 0,
-    );
-    const submitted = started.filter(
-        (response) => response.status === "submitted",
-    );
-
     const questions = getSurveyQuestions(survey);
+
+    // All counts come back from one aggregation instead of loading every
+    // response document (drafts included) into memory
+    const answeredAccumulators = Object.fromEntries(
+        questions.map((question, index) => [
+            `answered_${index}`,
+            {
+                $sum: {
+                    $cond: [
+                        {
+                            $and: [
+                                IS_SUBMITTED_EXPR,
+                                answerHasContentExpr(question.id),
+                            ],
+                        },
+                        1,
+                        0,
+                    ],
+                },
+            },
+        ]),
+    );
+
+    const [totals] = await SurveyResponse.aggregate([
+        { $match: { surveyId } },
+        {
+            $group: {
+                _id: null,
+                started: { $sum: { $cond: [IS_STARTED_EXPR, 1, 0] } },
+                submitted: { $sum: { $cond: [IS_SUBMITTED_EXPR, 1, 0] } },
+                ...answeredAccumulators,
+            },
+        },
+    ]);
+
+    const started = totals?.started ?? 0;
+    const submitted = totals?.submitted ?? 0;
 
     return {
         surveyId,
-        started: started.length,
-        submitted: submitted.length,
-        completionRate: started.length
-            ? Math.round((submitted.length / started.length) * 100)
+        started,
+        submitted,
+        completionRate: started
+            ? Math.round((submitted / started) * 100)
             : 0,
         questionCount: questions.length,
-        questions: questions.map((question) => ({
+        questions: questions.map((question, index) => ({
             id: question.id,
             exportKey: question.exportKey,
             prompt: question.prompt,
-            answered: submitted.filter((response) => {
-                const answer = response.answers?.[question.id];
-                if (!answer) return false;
-                if (answer.kind === "text") return Boolean(answer.text);
-                if (answer.kind === "multi") return answer.values?.length > 0;
-                return true;
-            }).length,
+            answered: totals?.[`answered_${index}`] ?? 0,
         })),
     };
 }
@@ -473,28 +525,25 @@ export async function getSurveyResults(
 
     await connectToDatabase();
 
-    const all = await SurveyResponse.find({ surveyId }).lean<any[]>();
-
-    // Same definitions as getSurveyStats: a bare decline is not a "start".
-    const started = all.filter(
-        (response) =>
-            response.status === "submitted" ||
-            Object.keys(response.answers ?? {}).length > 0,
-    );
-    const submitted = started
-        .filter((response) => response.status === "submitted")
-        .sort(
-            (a, b) =>
-                new Date(a.submittedAt ?? 0).getTime() -
-                new Date(b.submittedAt ?? 0).getTime(),
-        );
+    // Same "started" definition as getSurveyStats; only submitted documents
+    // (the ones the table shows) are actually fetched — drafts stay in the DB
+    const [startedCount, submitted] = await Promise.all([
+        SurveyResponse.countDocuments({
+            surveyId,
+            $expr: IS_STARTED_EXPR,
+        }),
+        SurveyResponse.find({ surveyId, status: "submitted" })
+            .sort({ submittedAt: 1 })
+            .select("submittedAt answers")
+            .lean<any[]>(),
+    ]);
 
     return {
         surveyId,
-        started: started.length,
+        started: startedCount,
         submitted: submitted.length,
-        completionRate: started.length
-            ? Math.round((submitted.length / started.length) * 100)
+        completionRate: startedCount
+            ? Math.round((submitted.length / startedCount) * 100)
             : 0,
         responses: submitted.map((response, index) => ({
             number: index + 1,
