@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -32,17 +32,14 @@ export default function ManageLessonsClient({
     initialLessons,
 }: ManageLessonsClientProps) {
     const [lessons, setLessons] = useState<LessonData[]>(initialLessons);
-    const [filteredLessons, setFilteredLessons] =
-        useState<LessonData[]>(initialLessons);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedDifficulty, setSelectedDifficulty] = useState("all");
     const [message, setMessage] = useState("");
 
-    useEffect(() => {
-        filterLessons();
-    }, [lessons, searchTerm, selectedDifficulty]);
-
-    const filterLessons = () => {
+    // Derived, not stored: recomputes when inputs change without the extra
+    // render cycle of the old state+effect pair. Copied before sort so the
+    // source array is never mutated.
+    const filteredLessons = useMemo(() => {
         let filtered = lessons;
 
         if (searchTerm) {
@@ -64,10 +61,8 @@ export default function ManageLessonsClient({
         }
 
         // Sort by lesson index
-        filtered.sort((a, b) => a.lessonIndex - b.lessonIndex);
-
-        setFilteredLessons(filtered);
-    };
+        return [...filtered].sort((a, b) => a.lessonIndex - b.lessonIndex);
+    }, [lessons, searchTerm, selectedDifficulty]);
 
     const handleDelete = async (lessonId: string, title: string) => {
         if (!confirm(`Are you sure you want to delete "${title}"?`)) {

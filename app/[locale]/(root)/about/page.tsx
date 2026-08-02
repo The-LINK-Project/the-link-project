@@ -38,7 +38,11 @@ export default function AboutPage() {
                                 <div className="absolute top-1/2 left-2 w-6 h-6 bg-primary/12 rotate-45 group-hover:bg-primary/20 transition-colors duration-300"></div>
                                 <div className="absolute bottom-4 left-8 w-10 h-10 bg-primary/10 rounded-lg -rotate-6 group-hover:bg-primary/18 transition-colors duration-300"></div>
 
-                                <div className="relative mx-auto mb-6">
+                                {/* w-full is load-bearing: CardHeader is a grid,
+                                    so with only an absolutely-positioned fill
+                                    image inside, this wrapper would otherwise
+                                    shrink-wrap to zero width */}
+                                <div className="relative w-full mx-auto mb-6">
                                     <div className="relative w-full aspect-[3/3] rounded-xl overflow-hidden border-2 border-primary/20 group-hover:border-primary/40 transition-all duration-300 bg-gradient-to-br from-primary/5 to-primary/10">
                                         <Image
                                             src={person.image}
