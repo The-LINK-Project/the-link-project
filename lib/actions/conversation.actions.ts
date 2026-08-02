@@ -1,6 +1,5 @@
 "use server";
 import { GoogleGenAI } from "@google/genai";
-import OpenAI from "openai";
 import { Type } from "@google/genai";
 import { generateInstructions } from "@/lib/utils";
 import {
@@ -8,11 +7,8 @@ import {
   updateLessonProgress,
 } from "@/lib/actions/LessonProgress.actions";
 
-// Module-level lazy singletons so each request reuses the same client (and
-// its keep-alive connection pool) instead of paying a fresh TLS handshake
-let openaiClient: OpenAI | null = null;
-const getOpenAIClient = () => (openaiClient ??= new OpenAI());
-
+// Module-level lazy singleton so each request reuses the same client (and its
+// keep-alive connection pool) instead of paying a fresh TLS handshake.
 let geminiClient: GoogleGenAI | null = null;
 const getGeminiClient = () =>
   (geminiClient ??= new GoogleGenAI({ apiKey: process.env.GEMINI_KEY }));
@@ -60,7 +56,6 @@ export async function getResponse(
   instructions: string,
   currentObjectivesMet: boolean[]
 ) {
-  const openai = getOpenAIClient();
   const ai = getGeminiClient();
 
   // Defining the function the model can call to update lesson objectives
@@ -191,20 +186,8 @@ export async function getResponse(
       };
     }
 
-    const verbalResponse = await openai.audio.speech.create({
-      model: "gpt-4o-mini-tts",
-      voice: "shimmer",
-      input: transcriptionSystem,
-      instructions: "Speak in an enthusiastic but calm and positive tone.",
-      response_format: "wav",
-    });
-
-    const audioBuffer = Buffer.from(await verbalResponse.arrayBuffer());
-    const audioBase64 = audioBuffer.toString("base64");
-
     return {
       success: true,
-      audioBase64Response: audioBase64,
       systemTranscription: transcriptionSystem,
       objectiveIndices: objectiveIndices,
     };
@@ -262,7 +245,6 @@ export async function getUserTranscription(audioUrlBase64: string) {
 }
 
 export async function getInitialResponse(instructions: string) {
-  const openai = getOpenAIClient();
   const ai = getGeminiClient();
 
   try {
@@ -284,19 +266,8 @@ export async function getInitialResponse(instructions: string) {
       };
     }
 
-    const verbalResponse = await openai.audio.speech.create({
-      model: "gpt-4o-mini-tts",
-      voice: "shimmer",
-      input: transcriptionSystem,
-      instructions: "Speak in an enthusiastic but calm and positive tone.",
-      response_format: "wav",
-    });
-
-    const audioBuffer = Buffer.from(await verbalResponse.arrayBuffer());
-    const audioBase64 = audioBuffer.toString("base64");
     return {
       success: true,
-      audioBase64Response: audioBase64,
       systemTranscription: transcriptionSystem,
     };
   } catch (error) {
@@ -316,7 +287,7 @@ export async function processInitialMessage({
 }): Promise<{
   success: boolean;
   error?: string;
-  audioBase64?: string;
+  ttsMessageIndex?: number;
   updatedLessonProgress?: LessonProgress;
 }> {
   try {
@@ -368,7 +339,7 @@ export async function processInitialMessage({
 
     return {
       success: true,
-      audioBase64: audioResponse.audioBase64Response,
+      ttsMessageIndex: updatedLessonProgress.convoHistory.length - 1,
       updatedLessonProgress: updatedLessonProgress,
     };
   } catch (error) {
@@ -380,7 +351,8 @@ export async function processInitialMessage({
   }
 }
 
-// gets the audio from the user and processes it and sends it to gemini and openai for the response
+// Processes the student's audio and persists the tutor's text response. Speech
+// is synthesized afterward by /api/tts so it can stream directly to the client.
 export async function processAudioMessage({
   audioBase64,
   lessonIndex,
@@ -391,7 +363,7 @@ export async function processAudioMessage({
   success: boolean;
   error?: string;
   errorType?: "transcription" | "response";
-  audioBase64?: string;
+  ttsMessageIndex?: number;
   updatedLessonProgress?: LessonProgress;
 }> {
   try {
@@ -475,10 +447,11 @@ export async function processAudioMessage({
       ],
     });
 
-    // output is the audio that can be played, and updated lessonProgress that will be used to update the state
+    // The client can render immediately from the persisted progress, then ask
+    // /api/tts to stream the exact System message just appended.
     return {
       success: true,
-      audioBase64: audioResponse.audioBase64Response,
+      ttsMessageIndex: updatedLessonProgress.convoHistory.length - 1,
       updatedLessonProgress: updatedLessonProgress,
     };
   } catch (error) {

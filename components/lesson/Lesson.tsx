@@ -57,8 +57,10 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
     // Function to stop the currently playing audio
     const stopAllAudio = () => {
         if (currentAudioRef.current) {
-            currentAudioRef.current.pause();
-            currentAudioRef.current.currentTime = 0;
+            const audio = currentAudioRef.current;
+            audio.pause();
+            audio.removeAttribute("src");
+            audio.load();
             currentAudioRef.current = null;
         }
     };
@@ -91,6 +93,18 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
         });
     };
 
+    const streamTutorReply = (
+        progress: LessonProgress,
+        messageIndex: number,
+    ) => {
+        const searchParams = new URLSearchParams({
+            progressId: progress._id,
+            messageIndex: messageIndex.toString(),
+        });
+
+        playAudioSafely(new Audio(`/api/tts?${searchParams.toString()}`));
+    };
+
     useEffect(() => {
         const handleInitialMessage = async () => {
             // if the lesson hasn't been started (no conversation history) and we haven't sent initial message yet
@@ -101,19 +115,12 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                 initialMessageSentRef.current = true; // Prevent multiple calls
                 setIsLoading(true);
 
-                // server action that gets the audio from the user and processes it and sends it to gemini and openai for the response
+                // Generate and persist the tutor's initial text reply.
                 const result = await processInitialMessage({
                     lessonIndex: lessonProgress.lessonIndex,
                 });
 
                 if (result.success) {
-                    // Play audio only if we have audio response
-                    if (result.audioBase64) {
-                        const audioSrc = `data:audio/wav;base64,${result.audioBase64}`;
-                        const audio = new Audio(audioSrc);
-                        playAudioSafely(audio);
-                    }
-
                     // Update state with the authoritative server-side progress
                     if (result.updatedLessonProgress) {
                         const updated = result.updatedLessonProgress;
@@ -123,6 +130,10 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                             objectivesMet: [...updated.objectivesMet],
                             convoHistory: [...updated.convoHistory],
                         }));
+
+                        if (result.ttsMessageIndex !== undefined) {
+                            streamTutorReply(updated, result.ttsMessageIndex);
+                        }
                     }
                 } else {
                     console.error("processInitialMessage failed:", result);
@@ -207,20 +218,13 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                     );
                 }
 
-                // server action that gets the audio from the user and processes it and sends it to gemini and openai for the response
+                // Transcribe the student and persist the tutor's text reply.
                 const result = await processAudioMessage({
                     audioBase64: base64,
                     lessonIndex: lessonProgress.lessonIndex,
                 });
 
                 if (result.success) {
-                    // Play audio only if we have audio response
-                    if (result.audioBase64) {
-                        const audioSrc = `data:audio/wav;base64,${result.audioBase64}`;
-                        const audio = new Audio(audioSrc);
-                        playAudioSafely(audio);
-                    }
-
                     // Force state update with new object reference
                     if (result.updatedLessonProgress) {
                         const updated = result.updatedLessonProgress;
@@ -232,6 +236,10 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                             // Ensure convoHistory is a new reference
                             convoHistory: [...updated.convoHistory],
                         }));
+
+                        if (result.ttsMessageIndex !== undefined) {
+                            streamTutorReply(updated, result.ttsMessageIndex);
+                        }
                     }
                 } else {
                     console.error("processAudioMessage failed:", result);

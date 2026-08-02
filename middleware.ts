@@ -91,5 +91,8 @@ export const config = {
     matcher: [
         // Skip all internal paths (_next, _vercel) and API routes
         "/((?!api|_next|_vercel|.*\\..*).*)",
+        // The route handler performs its own authorization, but Clerk's
+        // middleware must run first so auth() has request context.
+        "/api/tts",
     ]
 };

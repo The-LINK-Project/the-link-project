@@ -1,6 +1,7 @@
 // LESSON TYPES
 
 declare type LessonProgress = {
+    _id: string;
     userId: string;
     lessonIndex: number;
     objectivesMet: boolean[];
