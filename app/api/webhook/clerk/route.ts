@@ -26,9 +26,9 @@ export async function POST(req: Request) {
         });
     }
 
-    // Get the body
-    const payload = await req.json();
-    const body = JSON.stringify(payload);
+    // Get the raw body. Svix signs the exact bytes Clerk sent — re-serializing
+    // parsed JSON can differ in key order/whitespace and fail verification
+    const body = await req.text();
 
     // Create a new Svix instance with your secret.
     const wh = new Webhook(WEBHOOK_SECRET);
@@ -55,15 +55,41 @@ export async function POST(req: Request) {
     console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
 
     if (eventType === "user.created") {
-        const { id, email_addresses, image_url, first_name, last_name, username } =
-            evt.data;
+        const {
+            id,
+            email_addresses,
+            primary_email_address_id,
+            image_url,
+            first_name,
+            last_name,
+            username,
+        } = evt.data;
+
+        const primaryEmail =
+            email_addresses.find(
+                (email) => email.id === primary_email_address_id,
+            ) ?? email_addresses[0];
+
+        if (!primaryEmail) {
+            // Without an email the User schema can't be satisfied. Acknowledge
+            // the event — retrying the same payload can never succeed
+            console.error(`user.created ${id} has no email address, skipping`);
+            return NextResponse.json({ message: "Skipped: no email address" });
+        }
+
+        // OAuth sign-ups (e.g. Google) often have no username. Derive one
+        // from the email and suffix it with part of the Clerk ID so it stays
+        // unique even when two users share an email local part
+        const fallbackUsername = `${primaryEmail.email_address
+            .split("@")[0]
+            .replace(/[^a-zA-Z0-9._-]/g, "")}-${id.slice(-6)}`;
 
         const user = {
             clerkId: id,
-            email: email_addresses[0].email_address,
-            username: username!,
-            firstName: first_name!,
-            lastName: last_name!,
+            email: primaryEmail.email_address,
+            username: username || fallbackUsername,
+            firstName: first_name ?? "",
+            lastName: last_name ?? "",
             photo: image_url,
         };
         const newUser = await createUser(user);
@@ -86,11 +112,13 @@ export async function POST(req: Request) {
     if (eventType === "user.updated") {
         const { id, image_url, first_name, last_name, username } = evt.data;
 
+        // Only overwrite the stored username when Clerk actually has one, so
+        // an OAuth user's derived username isn't wiped to null
         const user = {
-            firstName: first_name!,
-            lastName: last_name!,
-            username: username!,
+            firstName: first_name ?? "",
+            lastName: last_name ?? "",
             photo: image_url,
+            ...(username ? { username } : {}),
         };
 
         const updatedUser = await updateUser(id, user);

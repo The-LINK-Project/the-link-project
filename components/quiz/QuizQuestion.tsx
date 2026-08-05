@@ -1,7 +1,7 @@
 import React from "react";
 
 type QuizQuestionProps = {
-    q: Question;
+    q: PublicQuizQuestion;
     qIndex: number;
     selectedAnswers: number[];
     handleAnswerSelect: (questionIndex: number, answerIndex: number) => void;

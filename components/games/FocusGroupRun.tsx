@@ -243,6 +243,16 @@ function PictureStage({
     // Set the moment the stage is answered, so a tap during the green
     // confirmation is not scored against the next stage.
     const doneRef = useRef(false);
+    // Same fast-tap problem the word-match stage solved with refs: the
+    // `locked` prop and `picks` state only update after a re-render, so a
+    // second tap in the same frame used to double-count a mistake (two
+    // overlapping freezes) or judge a correct tap against stale picks.
+    const picksRef = useRef<number[]>([]);
+    const lockedRef = useRef(false);
+
+    useEffect(() => {
+        lockedRef.current = locked;
+    }, [locked]);
 
     const options = useMemo(
         () =>
@@ -275,6 +285,7 @@ function PictureStage({
         setPicks([]);
         setWrongFlash(null);
         doneRef.current = false;
+        picksRef.current = [];
     }, [question]);
 
     // Clear the red highlight on the wrong option once the freeze ends
@@ -282,27 +293,42 @@ function PictureStage({
         if (!locked) setWrongFlash(null);
     }, [locked]);
 
+    // Locks synchronously so the very next tap already sees it; the effect
+    // above releases it when the parent's freeze ends.
+    const registerWrong = (flashIndex: number | null) => {
+        lockedRef.current = true;
+        if (flashIndex !== null) setWrongFlash(flashIndex);
+        onWrong();
+    };
+
     const tapOption = (index: number) => {
-        if (locked || doneRef.current) return;
+        if (locked || lockedRef.current || doneRef.current) return;
         if (options[index].originalIndex === question.correctAnswerIndex) {
             setSelected(index);
             doneRef.current = true;
             onComplete();
         } else {
-            setWrongFlash(index);
-            onWrong();
+            registerWrong(index);
         }
     };
 
     const tapPanel = (index: number) => {
-        if (locked || doneRef.current || picks.includes(index)) return;
-        const next = [...picks, index];
+        if (
+            locked ||
+            lockedRef.current ||
+            doneRef.current ||
+            picksRef.current.includes(index)
+        )
+            return;
+        const next = [...picksRef.current, index];
         // Wrong the moment a panel goes in the wrong slot — no waiting
-        if (panels[index].correctIndex !== picks.length) {
+        if (panels[index].correctIndex !== picksRef.current.length) {
+            picksRef.current = [];
             setPicks([]);
-            onWrong();
+            registerWrong(null);
             return;
         }
+        picksRef.current = next;
         setPicks(next);
         if (next.length === panels.length) {
             doneRef.current = true;

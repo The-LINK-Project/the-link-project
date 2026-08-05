@@ -3,6 +3,8 @@ import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
 import mongoose from "mongoose";
 import Quiz from "@/lib/database/models/quiz.model";
+import QuizResult from "@/lib/database/models/quizResult.model";
+import LessonProgress from "@/lib/database/models/lessonProgress.model";
 import { requireAdmin } from "@/lib/auth";
 
 // Quiz content is admin-authored and changes rarely, so the per-lesson read is
@@ -21,19 +23,33 @@ const getCachedQuizByLessonId = unstable_cache(
         const quiz = await Quiz.findOne({
             lessonId: lessonId,
         }).lean();
+        // Not every lesson has a quiz — callers render a "no quiz" state
         if (!quiz) {
-            throw new Error("Quiz not found for this lesson");
+            return null;
         }
 
         // Alternative quick fix with JSON serialization
         const safeQuiz = JSON.parse(JSON.stringify(quiz));
-        return safeQuiz;
+
+        // Strip the answer key: this payload is sent to the browser, and
+        // grading happens server-side in submitQuiz against the DB copy
+        const publicQuiz: PublicQuizData = {
+            title: safeQuiz.title,
+            lessonId: safeQuiz.lessonId,
+            questions: safeQuiz.questions.map((question: Question) => ({
+                questionText: question.questionText,
+                options: question.options,
+            })),
+        };
+        return publicQuiz;
     },
     ["get-quiz-by-lesson-id"],
     { tags: ["quizzes"], revalidate: 3600 },
 );
 
-export async function getQuizByLessonId(lessonId: number) {
+export async function getQuizByLessonId(
+    lessonId: number,
+): Promise<PublicQuizData | null> {
     try {
         return await getCachedQuizByLessonId(lessonId);
     } catch (error) {
@@ -164,6 +180,24 @@ export async function deleteQuiz(quizId: string) {
         if (!deletedQuiz) {
             throw new Error("Quiz not found");
         }
+
+        // The confirm dialog promises associated results are removed too.
+        // Orphaned results would keep inflating stats and would block
+        // re-creating a quiz workflow for the same lesson number.
+        const staleResults = await QuizResult.find({
+            lessonId: deletedQuiz.lessonId,
+        })
+            .select("_id")
+            .lean<{ _id: mongoose.Types.ObjectId }[]>();
+        const staleResultIds = staleResults.map((result) => result._id);
+
+        await Promise.all([
+            QuizResult.deleteMany({ lessonId: deletedQuiz.lessonId }),
+            LessonProgress.updateMany(
+                { quizResult: { $in: staleResultIds } },
+                { $pull: { quizResult: { $in: staleResultIds } } },
+            ),
+        ]);
 
         revalidateTag("quizzes");
         revalidatePath("/admin/quiz/manage");

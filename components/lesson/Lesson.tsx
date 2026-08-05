@@ -29,9 +29,15 @@ import { useTranslations } from "next-intl";
 type LessonProps = {
     previousLessonProgress: LessonProgress;
     lessonInfo: Lesson;
+    hasQuiz: boolean;
 };
 
-const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
+// An empty objectivesMet array must never count as "all objectives met" —
+// [].every() is true, which would complete the lesson on open
+const allObjectivesMet = (objectivesMet: boolean[]) =>
+    objectivesMet.length > 0 && objectivesMet.every((objective) => objective);
+
+const Lesson = ({ previousLessonProgress, lessonInfo, hasQuiz }: LessonProps) => {
     const t = useTranslations("lesson");
     const [lessonProgress, setLessonProgress] = useState<LessonProgress>(
         previousLessonProgress
@@ -52,6 +58,13 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
     const currentAudioRef = useRef<HTMLAudioElement | null>(null);
     const audioURLRef = useRef<string | null>(null);
     const initialMessageSentRef = useRef<boolean>(false);
+    // A lesson finished in an earlier session must stay reopenable for
+    // practice, so the completion modal only fires on the transition from
+    // incomplete to complete within this session
+    const wasAlreadyCompleteRef = useRef<boolean>(
+        previousLessonProgress.completed ||
+            allObjectivesMet(previousLessonProgress.objectivesMet)
+    );
     // const convoHistoryRef = useRef<Message[]>(previousConvoHistory ?? []);
 
     // Function to stop the currently playing audio
@@ -175,10 +188,12 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
 
     // checking if lesson is complete by objectives or explicit completion flag
     useEffect(() => {
-        if (
+        const nowComplete =
             lessonProgress.completed ||
-            lessonProgress.objectivesMet.every((objective) => objective)
-        ) {
+            allObjectivesMet(lessonProgress.objectivesMet);
+
+        if (nowComplete && !wasAlreadyCompleteRef.current) {
+            wasAlreadyCompleteRef.current = true;
             setIsComplete(true);
         }
     }, [lessonProgress.completed, lessonProgress.objectivesMet]);
@@ -375,7 +390,10 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                                     <div className="flex flex-col h-[600px]">
                                         {/* Messages Area */}
                                         <div className="flex-1 relative overflow-hidden">
-                                            <ScrollArea className="h-full" ref={scrollAreaRef}>
+                                            <ScrollArea
+                                                className="h-full"
+                                                viewportRef={scrollAreaRef}
+                                            >
                                                 <div className="p-6">
                                                     {lessonProgress.convoHistory.length === 0 ? (
                                                         <LessonNotStarted />
@@ -439,13 +457,17 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                         </div>
                     </div>
 
-                    <div className="flex flex-col items-center text-blue-700">
+                    {hasQuiz && (
                         <div className="flex flex-col items-center text-blue-700">
-                            <Link href={`/learn/${lessonProgress.lessonIndex}/quiz`}>
-                                {t("testknowledge")}
-                            </Link>
+                            <div className="flex flex-col items-center text-blue-700">
+                                <Link
+                                    href={`/learn/${lessonProgress.lessonIndex}/quiz`}
+                                >
+                                    {t("testknowledge")}
+                                </Link>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </TooltipProvider>
             <LessonCompleteModal
@@ -453,6 +475,7 @@ const Lesson = ({ previousLessonProgress, lessonInfo }: LessonProps) => {
                 setIsComplete={setIsComplete}
                 lessonIndex={lessonProgress.lessonIndex}
                 lessonObjectives={lessonInfo.objectives}
+                hasQuiz={hasQuiz}
             />
         </>
     );

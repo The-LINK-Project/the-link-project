@@ -42,7 +42,7 @@ export async function updateUser(
     user: {
         firstName: string;
         lastName: string;
-        username: string;
+        username?: string;
         photo: string;
     },
 ) {

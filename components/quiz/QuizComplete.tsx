@@ -5,16 +5,16 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 type QuizCompleteProps = {
-    score: number | null;
-    selectedAnswers: number[];
-    quiz: QuizData;
+    score: number;
+    correctCount: number;
+    totalQuestions: number;
     lessonIndex: number;
 };
 
 const QuizComplete = ({
     score,
-    selectedAnswers,
-    quiz,
+    correctCount,
+    totalQuestions,
     lessonIndex,
 }: QuizCompleteProps) => {
     const t = useTranslations("quizComplete");
@@ -44,35 +44,31 @@ const QuizComplete = ({
 
                     <div className="bg-primary/15 rounded-xl p-4 mb-4">
                         <div className="text-4xl font-extrabold text-primary mb-2">
-                            {score ?? 0}%
+                            {score}%
                         </div>
                         <p className="text-base text-slate-700 font-medium">
                             {t("youscored")}
                             <span className="font-bold text-primary">
-                                {
-                                    selectedAnswers.filter(
-                                        (ans, idx) => ans === quiz.questions[idx].correctAnswerIndex
-                                    ).length
-                                }
+                                {correctCount}
                             </span>{" "}
                             {t("outof")}
                             <span className="font-bold text-primary">
-                                {quiz.questions.length}
+                                {totalQuestions}
                             </span>{" "}
                             {t("numberCorrect")}
                         </p>
                     </div>
 
                     <div className="mb-4">
-                        {(score ?? 0) >= 90 ? (
+                        {score >= 90 ? (
                             <p className="text-primary text-base font-semibold">
                                 {t("encouragement1")}
                             </p>
-                        ) : (score ?? 0) >= 70 ? (
+                        ) : score >= 70 ? (
                             <p className="text-primary text-base font-semibold">
                                 {t("encouragement2")}
                             </p>
-                        ) : (score ?? 0) >= 50 ? (
+                        ) : score >= 50 ? (
                             <p className="text-yellow-600 text-base font-semibold">
                                 {t("encouragement3")}
                             </p>

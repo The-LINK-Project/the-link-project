@@ -27,7 +27,11 @@ export async function initLessonProgress({
             userId: userId,
             lessonIndex: lessonIndex,
             objectivesMet: objectivesMet,
-            completed: objectivesMet.every((met: boolean) => met),
+            // Length guard: [].every() is true, and a lesson with no
+            // objectives must not start out completed
+            completed:
+                objectivesMet.length > 0 &&
+                objectivesMet.every((met: boolean) => met),
             convoHistory: [],
             quizResult: [],
         };
@@ -151,12 +155,18 @@ export async function updateLessonProgress({
             { $set: firstStage },
             // Second stage reads the merged objectivesMet from the first:
             // completed flips to true when every objective is met and is
-            // otherwise preserved (false on a fresh upsert)
+            // otherwise preserved (false on a fresh upsert). The $size guard
+            // matters: $allElementsTrue on an empty array is true.
             {
                 $set: {
                     completed: {
                         $cond: [
-                            { $allElementsTrue: ["$objectivesMet"] },
+                            {
+                                $and: [
+                                    { $gt: [{ $size: "$objectivesMet" }, 0] },
+                                    { $allElementsTrue: ["$objectivesMet"] },
+                                ],
+                            },
                             true,
                             { $eq: [{ $ifNull: ["$completed", false] }, true] },
                         ],
@@ -223,9 +233,9 @@ export async function getAllLessonStatuses(): Promise<LessonStatus[]> {
             const quizPassed = passedQuizLessonIds.has(i + 1);
 
             if (lessonProgress) {
-                const objectivesCompleted = lessonProgress.objectivesMet.every(
-                    (met: boolean) => met,
-                );
+                const objectivesCompleted =
+                    lessonProgress.objectivesMet.length > 0 &&
+                    lessonProgress.objectivesMet.every((met: boolean) => met);
                 const hasCompletedFlag = !!lessonProgress.completed;
 
                 if (hasCompletedFlag || objectivesCompleted || quizPassed) {
@@ -277,7 +287,10 @@ export async function getLessonProgressStats() {
 
         const completedLessons = allProgress.filter((progress) => {
             if (progress.completed) return true;
-            if (progress.objectivesMet.every((met: boolean) => met)) {
+            if (
+                progress.objectivesMet.length > 0 &&
+                progress.objectivesMet.every((met: boolean) => met)
+            ) {
                 return true;
             }
             return passedQuizKeys.has(

@@ -119,6 +119,23 @@
         "statAverage": "Nilai Rata-Rata",
         "statQuizzes": "Kuis Diselesaikan"
     },
+    "quizComplete": {
+        "quizComplete": "Kuis Selesai!",
+        "youscored": "Anda menjawab benar",
+        "outof": "dari",
+        "numberCorrect": "pertanyaan",
+        "encouragement1": "Hasil yang luar biasa!",
+        "encouragement2": "Kerja bagus! Pertahankan!",
+        "encouragement3": "Usaha yang baik! Masih bisa ditingkatkan",
+        "encouragement4": "Terus belajar dan coba lagi!",
+        "seeResults": "Lihat Semua Hasil Kuis",
+        "backButton": "Kembali ke Pelajaran Sebelumnya",
+        "nextButton": "Pelajaran Berikutnya"
+    },
+    "quizProgressBar": {
+        "title": "Kemajuan",
+        "answered": "terjawab"
+    },
     "faq": {
         "q1": "Apa itu Proyek LINK?",
         "a1": "Proyek LINK mendukung pembelajaran Bahasa Inggris bagi pekerja migran di Singapura...",

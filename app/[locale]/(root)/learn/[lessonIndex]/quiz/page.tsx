@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import QuizClient from "@/components/quiz/QuizClient";
 import { getQuizByLessonId } from "@/lib/actions/quiz.actions";
 
@@ -10,7 +11,27 @@ type QuizPageProps = {
 const QuizPage = async ({ params }: QuizPageProps) => {
     const { lessonIndex } = await params;
     const index = parseInt(lessonIndex, 10);
-    const quiz = await getQuizByLessonId(index);
+    const quiz = Number.isNaN(index) ? null : await getQuizByLessonId(index);
+
+    if (!quiz) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+                <h1 className="text-3xl font-bold text-primary mb-4">
+                    No quiz for this lesson yet
+                </h1>
+                <p className="text-slate-600 text-lg mb-8 max-w-xl">
+                    This lesson doesn&apos;t have a quiz. Head back to the
+                    lesson to keep practicing.
+                </p>
+                <Link
+                    href={Number.isNaN(index) ? "/dashboard" : `/learn/${index}`}
+                    className="px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-colors"
+                >
+                    Back to lesson
+                </Link>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen flex flex-col items-center">

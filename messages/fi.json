@@ -120,6 +120,9 @@
         "statQuizzes": "Mga Kumpletadong Quiz"
     },
     "quizComplete": {
+        "quizComplete": "Tapos na ang Quiz!",
+        "youscored": "Nakakuha ka ng",
+        "outof": "sa",
         "numberCorrect": "mga tamang tanong",
         "encouragement1": "Napakahusay na pagganap!",
         "encouragement2": "Magaling na trabaho! Ituloy mo lang!",

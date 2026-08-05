@@ -5,6 +5,7 @@ import {
     initLessonProgress,
 } from "@/lib/actions/LessonProgress.actions";
 import { getLessonByIndex, getLessonCount } from "@/lib/actions/Lesson.actions";
+import { getQuizByLessonId } from "@/lib/actions/quiz.actions";
 import Lesson from "@/components/lesson/Lesson";
 import Link from "next/link";
 
@@ -16,11 +17,13 @@ const LessonPage = async ({ params }: { params: Promise<{ lessonIndex: string }>
         return <div>Lesson not found.</div>;
     }
 
-    const [lesson, lessonCount, existingLessonProgress] = await Promise.all([
-        getLessonByIndex(index).catch(() => null),
-        getLessonCount(),
-        getLessonProgress({ lessonIndex: index }),
-    ]);
+    const [lesson, lessonCount, existingLessonProgress, quiz] =
+        await Promise.all([
+            getLessonByIndex(index).catch(() => null),
+            getLessonCount(),
+            getLessonProgress({ lessonIndex: index }),
+            getQuizByLessonId(index).catch(() => null),
+        ]);
 
     if (!lesson) {
         return <div>Lesson not found.</div>;
@@ -55,6 +58,7 @@ const LessonPage = async ({ params }: { params: Promise<{ lessonIndex: string }>
                             key={index}
                             previousLessonProgress={lessonProgress}
                             lessonInfo={lesson}
+                            hasQuiz={!!quiz}
                         />
 
                         <div className="mt-8 flex justify-between">
