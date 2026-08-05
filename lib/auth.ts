@@ -51,3 +51,12 @@ export async function isAdmin() {
 export function getAdminEmails() {
   return ADMIN_CONFIG.adminEmails;
 }
+
+// Guard for admin-only server actions. Unlike requireAdminAccess it throws
+// instead of redirecting: server actions are bare POST endpoints, and page
+// guards never run for them.
+export async function requireAdmin() {
+  if (!(await isAdmin())) {
+    throw new Error("Not authorized");
+  }
+}

@@ -3,6 +3,7 @@ import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
 import mongoose from "mongoose";
 import Quiz from "@/lib/database/models/quiz.model";
+import { requireAdmin } from "@/lib/auth";
 
 // Quiz content is admin-authored and changes rarely, so the per-lesson read is
 // cached with the "quizzes" tag. Admin mutations call revalidateTag("quizzes")
@@ -42,6 +43,7 @@ export async function getQuizByLessonId(lessonId: number) {
 }
 
 export async function createCustomQuiz(quizData: QuizData) {
+    await requireAdmin();
     try {
         await connectToDatabase();
 
@@ -144,6 +146,7 @@ export async function getAllQuizzes() {
 }
 
 export async function deleteQuiz(quizId: string) {
+    await requireAdmin();
     try {
         await connectToDatabase();
 

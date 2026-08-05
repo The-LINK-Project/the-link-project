@@ -4,6 +4,12 @@ const rateLimiters = {
     chatbot: new RateLimiterMemory({
         points: 5, // Number of requests
         duration: 60 // Per minute
+    }),
+    // Lesson conversation turns are the most expensive calls in the app
+    // (Gemini + TTS); 20/min is far above any honest speaking pace
+    conversation: new RateLimiterMemory({
+        points: 20,
+        duration: 60
     })
 };
 
@@ -14,7 +20,7 @@ export async function checkRateLimit(userId: string, type: keyof typeof rateLimi
     } catch (error) {
         return {
             success: false,
-            error: type === "chatbot" ? "Rate limit exceeded. Please wait a minute before trying again." : undefined
+            error: "Rate limit exceeded. Please wait a minute before trying again."
         };
     }
 }

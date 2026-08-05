@@ -4,6 +4,7 @@ import { connectToDatabase } from "@/lib/database";
 import Lesson from "../database/models/lesson.model";
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import mongoose from "mongoose";
+import { requireAdmin } from "@/lib/auth";
 
 // Lessons are admin-authored and change rarely, so the reads below are cached
 // with the "lessons" tag. Admin mutations call revalidateTag("lessons") so
@@ -58,6 +59,7 @@ export async function createLesson({
     lessonIndex: Number;
     difficulty: string;
 }): Promise<Lesson> {
+    await requireAdmin();
     try {
         await connectToDatabase();
 
@@ -110,6 +112,7 @@ export async function getLessonByIndex(lessonIndex: number): Promise<Lesson> {
 }
 
 export async function deleteLesson(lessonId: string): Promise<{ success: boolean; message: string }> {
+    await requireAdmin();
     try {
         await connectToDatabase();
 

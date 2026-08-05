@@ -4,7 +4,7 @@ import { connectToDatabase } from "@/lib/database";
 import LessonProgress from "../database/models/lessonProgress.model";
 import QuizResult from "../database/models/quizResult.model";
 import { getAllLessons } from "./Lesson.actions";
-import { formatInitialObjectives } from "../utils";
+import { formatInitialObjectives } from "../serverUtils";
 import { ensureUser } from "./user.actions";
 
 // when user has never done the lesson before and goes to it make a mongoDB item with convoHistory and objectives met default empty array and false array respectively

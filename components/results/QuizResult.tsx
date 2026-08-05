@@ -7,6 +7,9 @@ type QuizResultProps = {
 
 const QuizResult = ({ result, lessons }: QuizResultProps) => {
     const t = useTranslations("quizResults");
+    // result.lessonId stores the lesson's 1-based lessonIndex, and lessons
+    // arrives in no guaranteed order — never use it as an array position
+    const lesson = lessons.find((l) => l.lessonIndex === result.lessonId);
     return (
         <div
             key={result._id.toString()}
@@ -30,10 +33,10 @@ const QuizResult = ({ result, lessons }: QuizResultProps) => {
 
             <div className="col-span-5">
                 <div className="text-sm font-medium text-gray-900 group-hover:text-gray-700">
-                    {lessons[result.lessonId].title}
+                    {lesson?.title ?? `Lesson ${result.lessonId}`}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">
-                    Lesson {result.lessonId + 1}
+                    Lesson {result.lessonId}
                 </div>
             </div>
 

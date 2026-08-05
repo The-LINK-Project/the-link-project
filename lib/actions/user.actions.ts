@@ -1,73 +1,17 @@
 "use server";
 
 import { connectToDatabase } from "@/lib/database";
-import { revalidatePath } from "next/cache";
 
 import User from "@/lib/database/models/user.model";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { cache } from "react";
+import { requireAdmin } from "@/lib/auth";
+
+// Webhook-driven create/update/delete live in lib/userSync.ts — they must not
+// be server actions, since actions are public endpoints and the webhook has
+// its own svix-signature auth.
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-export async function createUser(user: {
-    clerkId: string;
-    firstName: string;
-    lastName: string;
-    username: string;
-    email: string;
-    photo: string;
-}) {
-    try {
-        await connectToDatabase();
-
-        const newUser = await User.create(user);
-
-        return JSON.parse(JSON.stringify(newUser));
-    } catch (error: any) {
-        if (error?.code === 11000) {
-            const existingUser = await User.findOne({
-                $or: [{ clerkId: user.clerkId }, { email: user.email }],
-            });
-
-            if (existingUser) {
-                return JSON.parse(JSON.stringify(existingUser));
-            }
-        }
-
-        console.log(error);
-        throw error;
-    }
-}
-
-export async function getUserById(userId: string) {
-    try {
-        await connectToDatabase();
-
-        const user = await User.findById(userId);
-
-        if (!user) throw new Error("User not found");
-
-        return JSON.parse(JSON.stringify(user));
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
-
-export async function getUserByClerkId(clerkId: string) {
-    try {
-        await connectToDatabase();
-
-        const user = await User.findOne({ clerkId });
-
-        if (!user) throw new Error("User not found");
-
-        return JSON.parse(JSON.stringify(user));
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
 
 type EnsureUserOptions = {
     maxRetries?: number;
@@ -164,61 +108,12 @@ export async function ensureUser({
     return resolveUser(maxRetries, retryDelayMs);
 }
 
-export async function updateUser(
-    clerkId: string,
-    user: {
-        firstName: string;
-        lastName: string;
-        username: string;
-        photo: string;
-    },
-) {
-    try {
-        await connectToDatabase();
-
-        const updatedUser = await User.findOneAndUpdate({ clerkId }, user, {
-            new: true,
-        });
-
-        if (!updatedUser) throw new Error("User update failed");
-        return JSON.parse(JSON.stringify(updatedUser));
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
-
-export async function deleteUser(clerkId: string) {
-    try {
-        await connectToDatabase();
-
-        // Find user to delete
-        const userToDelete = await User.findOne({ clerkId });
-
-        if (!userToDelete) {
-            throw new Error("User not found");
-        }
-
-        // TODO: DELETE ALL THEIRS OR MAKE IT SAY DELETED USER
-
-        // Delete user
-        const deletedUser = await User.findByIdAndDelete(userToDelete._id);
-        // Only the admin user list renders this data — revalidating "/"
-        // would purge the cache of every route in the app
-        revalidatePath("/admin/users");
-
-        return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
-
 export async function getCurrentUser() {
     return ensureUser();
 }
 
 export async function getAllUsers() {
+    await requireAdmin();
     try {
         await connectToDatabase();
 
