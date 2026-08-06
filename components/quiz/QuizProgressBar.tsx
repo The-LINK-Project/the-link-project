@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 
 type QuizProgressBarProps = {
     selectedAnswers: number[];
-    quiz: QuizData;
+    quiz: PublicQuizData;
 };
 
 const QuizProgressBar = ({ selectedAnswers, quiz }: QuizProgressBarProps) => {

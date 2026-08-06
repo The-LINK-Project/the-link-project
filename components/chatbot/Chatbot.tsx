@@ -36,24 +36,37 @@ const Chatbot = ({ showChatbot }: { showChatbot: boolean }) => {
         };
 
         try {
-            const apiResponseText = await getChatbotResponse(history);
-            updateHistory(apiResponseText ?? "Sorry, no response.");
-            setIsRateLimited(false);
-        } catch (error: any) {
-            if (error.message.includes("Rate limit exceeded")) {
+            // The action returns a structured result rather than throwing:
+            // Next.js redacts thrown error messages in production, so string
+            // matching on error.message never worked outside dev
+            const result = await getChatbotResponse(history);
+
+            if (result.success) {
+                updateHistory(result.text || "Sorry, no response.");
+                setIsRateLimited(false);
+            } else if (result.error === "rate_limit") {
                 setIsRateLimited(true);
                 updateHistory(
                     "⏰ You've reached the chat limit for this minute. Please wait a moment before sending another message.",
                     true
                 );
                 setTimeout(() => setIsRateLimited(false), 60000);
-            } else if (error.message.includes("Authentication required")) {
+            } else if (result.error === "auth") {
                 updateHistory("🔒 Please sign in to use the chatbot.", true);
             } else {
-                updateHistory(`❌ Sorry, I encountered an error: ${error.message}`, true);
+                updateHistory(
+                    "❌ Sorry, something went wrong. Please try again.",
+                    true
+                );
             }
+        } catch (error) {
+            console.error("Chatbot request failed:", error);
+            updateHistory(
+                "❌ Sorry, something went wrong. Please try again.",
+                true
+            );
         } finally {
-            setIsWaitingForResponse(false); 
+            setIsWaitingForResponse(false);
         }
     };
 

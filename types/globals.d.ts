@@ -44,6 +44,19 @@ declare type QuizData = {
     questions: Question[];
 };
 
+// Learner-facing quiz payload: the answer key never leaves the server.
+// Grading happens in submitQuiz against the database copy.
+declare type PublicQuizQuestion = {
+    questionText: string;
+    options: string[];
+};
+
+declare type PublicQuizData = {
+    title: string;
+    lessonId: number;
+    questions: PublicQuizQuestion[];
+};
+
 declare type QuizAdmin = {
     _id: string;
     title: string;

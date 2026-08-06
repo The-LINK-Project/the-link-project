@@ -4,10 +4,12 @@ import { connectToDatabase } from "@/lib/database";
 import LessonProgress from "../database/models/lessonProgress.model";
 import QuizResult from "../database/models/quizResult.model";
 import { getAllLessons } from "./Lesson.actions";
-import { formatInitialObjectives } from "../utils";
+import { formatInitialObjectives } from "../serverUtils";
 import { ensureUser } from "./user.actions";
 
 // when user has never done the lesson before and goes to it make a mongoDB item with convoHistory and objectives met default empty array and false array respectively
+// Upsert-based and idempotent: two tabs opening a fresh lesson at once used
+// to both create() and mint duplicate (userId, lessonIndex) documents.
 export async function initLessonProgress({
     lessonIndex,
     objectives,
@@ -23,20 +25,32 @@ export async function initLessonProgress({
         // this part is a repeat to be removed later
         const objectivesMet = formatInitialObjectives(objectives);
 
-        const payload = {
-            userId: userId,
-            lessonIndex: lessonIndex,
+        const filter = { userId: userId, lessonIndex: lessonIndex };
+        const insertDefaults = {
             objectivesMet: objectivesMet,
-            completed: objectivesMet.every((met: boolean) => met),
+            // objectivesMet starts all-false, so fresh progress is never
+            // completed (and an empty objectives array must not count either)
+            completed: false,
             convoHistory: [],
             quizResult: [],
         };
 
-        const newLessonProgress = await LessonProgress.create(payload);
-
-        if (!newLessonProgress) throw Error("Failed to create new lesson progress");
-
-        return JSON.parse(JSON.stringify(newLessonProgress));
+        try {
+            const lessonProgress = await LessonProgress.findOneAndUpdate(
+                filter,
+                { $setOnInsert: insertDefaults },
+                { upsert: true, new: true },
+            );
+            return JSON.parse(JSON.stringify(lessonProgress));
+        } catch (error: any) {
+            // Upsert race against the unique index: the other request's
+            // insert won, so the document exists now — read it
+            if (error?.code === 11000) {
+                const existing = await LessonProgress.findOne(filter);
+                if (existing) return JSON.parse(JSON.stringify(existing));
+            }
+            throw error;
+        }
     } catch (error) {
         console.log(error);
         throw error;
@@ -151,12 +165,18 @@ export async function updateLessonProgress({
             { $set: firstStage },
             // Second stage reads the merged objectivesMet from the first:
             // completed flips to true when every objective is met and is
-            // otherwise preserved (false on a fresh upsert)
+            // otherwise preserved (false on a fresh upsert). The $size guard
+            // matters: $allElementsTrue on an empty array is true.
             {
                 $set: {
                     completed: {
                         $cond: [
-                            { $allElementsTrue: ["$objectivesMet"] },
+                            {
+                                $and: [
+                                    { $gt: [{ $size: "$objectivesMet" }, 0] },
+                                    { $allElementsTrue: ["$objectivesMet"] },
+                                ],
+                            },
                             true,
                             { $eq: [{ $ifNull: ["$completed", false] }, true] },
                         ],
@@ -165,17 +185,27 @@ export async function updateLessonProgress({
             },
         ];
 
-        const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
-            {
-                userId: userId,
-                lessonIndex: lessonIndex,
-            },
-            update,
-            {
-                upsert: true,
-                new: true,
-            }
-        );
+        const filter = { userId: userId, lessonIndex: lessonIndex };
+        const options = { upsert: true, new: true };
+
+        let updatedLessonProgress;
+        try {
+            updatedLessonProgress = await LessonProgress.findOneAndUpdate(
+                filter,
+                update,
+                options
+            );
+        } catch (error: any) {
+            // Upsert race against the unique (userId, lessonIndex) index:
+            // another request inserted the doc between lookup and insert.
+            // It exists now, so the retry takes the plain update path.
+            if (error?.code !== 11000) throw error;
+            updatedLessonProgress = await LessonProgress.findOneAndUpdate(
+                filter,
+                update,
+                options
+            );
+        }
 
         if (!updatedLessonProgress) {
             throw Error("Failed to update lesson progress");
@@ -223,9 +253,9 @@ export async function getAllLessonStatuses(): Promise<LessonStatus[]> {
             const quizPassed = passedQuizLessonIds.has(i + 1);
 
             if (lessonProgress) {
-                const objectivesCompleted = lessonProgress.objectivesMet.every(
-                    (met: boolean) => met,
-                );
+                const objectivesCompleted =
+                    lessonProgress.objectivesMet.length > 0 &&
+                    lessonProgress.objectivesMet.every((met: boolean) => met);
                 const hasCompletedFlag = !!lessonProgress.completed;
 
                 if (hasCompletedFlag || objectivesCompleted || quizPassed) {
@@ -277,7 +307,10 @@ export async function getLessonProgressStats() {
 
         const completedLessons = allProgress.filter((progress) => {
             if (progress.completed) return true;
-            if (progress.objectivesMet.every((met: boolean) => met)) {
+            if (
+                progress.objectivesMet.length > 0 &&
+                progress.objectivesMet.every((met: boolean) => met)
+            ) {
                 return true;
             }
             return passedQuizKeys.has(

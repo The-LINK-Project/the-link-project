@@ -3,6 +3,9 @@ import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
 import mongoose from "mongoose";
 import Quiz from "@/lib/database/models/quiz.model";
+import QuizResult from "@/lib/database/models/quizResult.model";
+import LessonProgress from "@/lib/database/models/lessonProgress.model";
+import { requireAdmin } from "@/lib/auth";
 
 // Quiz content is admin-authored and changes rarely, so the per-lesson read is
 // cached with the "quizzes" tag. Admin mutations call revalidateTag("quizzes")
@@ -20,19 +23,33 @@ const getCachedQuizByLessonId = unstable_cache(
         const quiz = await Quiz.findOne({
             lessonId: lessonId,
         }).lean();
+        // Not every lesson has a quiz — callers render a "no quiz" state
         if (!quiz) {
-            throw new Error("Quiz not found for this lesson");
+            return null;
         }
 
         // Alternative quick fix with JSON serialization
         const safeQuiz = JSON.parse(JSON.stringify(quiz));
-        return safeQuiz;
+
+        // Strip the answer key: this payload is sent to the browser, and
+        // grading happens server-side in submitQuiz against the DB copy
+        const publicQuiz: PublicQuizData = {
+            title: safeQuiz.title,
+            lessonId: safeQuiz.lessonId,
+            questions: safeQuiz.questions.map((question: Question) => ({
+                questionText: question.questionText,
+                options: question.options,
+            })),
+        };
+        return publicQuiz;
     },
     ["get-quiz-by-lesson-id"],
     { tags: ["quizzes"], revalidate: 3600 },
 );
 
-export async function getQuizByLessonId(lessonId: number) {
+export async function getQuizByLessonId(
+    lessonId: number,
+): Promise<PublicQuizData | null> {
     try {
         return await getCachedQuizByLessonId(lessonId);
     } catch (error) {
@@ -42,6 +59,7 @@ export async function getQuizByLessonId(lessonId: number) {
 }
 
 export async function createCustomQuiz(quizData: QuizData) {
+    await requireAdmin();
     try {
         await connectToDatabase();
 
@@ -107,6 +125,9 @@ export async function createCustomQuiz(quizData: QuizData) {
 }
 
 export async function getAllQuizzes() {
+    // Admin-only read: it returns every correctAnswerIndex, and as a server
+    // action it is directly invokable — page-level guards don't cover it
+    await requireAdmin();
     try {
         await connectToDatabase();
 
@@ -144,6 +165,7 @@ export async function getAllQuizzes() {
 }
 
 export async function deleteQuiz(quizId: string) {
+    await requireAdmin();
     try {
         await connectToDatabase();
 
@@ -156,11 +178,54 @@ export async function deleteQuiz(quizId: string) {
             throw new Error("Invalid Quiz ID format");
         }
 
-        const deletedQuiz = await Quiz.findByIdAndDelete(quizId);
+        const quiz = await Quiz.findById(quizId);
 
-        if (!deletedQuiz) {
+        if (!quiz) {
             throw new Error("Quiz not found");
         }
+
+        // Children first, parent last: if any cleanup step fails the quiz
+        // still exists and the whole delete can simply be retried. Deleting
+        // the parent first would strand orphans behind a "not found" error.
+        //
+        // The confirm dialog promises associated results are removed too —
+        // orphaned results would keep inflating stats and block re-creating
+        // a quiz for the same lesson number.
+        await QuizResult.deleteMany({ lessonId: quiz.lessonId });
+
+        // Results are only ever pushed onto progress docs with the same
+        // lesson number, so this clears every stale reference. Completion is
+        // recomputed from objectives alone: completion earned only through
+        // the deleted quiz is revoked, completion earned by meeting the
+        // objectives is preserved. ($size guard: $allElementsTrue([]) is true)
+        await LessonProgress.updateMany({ lessonIndex: quiz.lessonId }, [
+            {
+                $set: {
+                    quizResult: [],
+                    completed: {
+                        $and: [
+                            {
+                                $gt: [
+                                    {
+                                        $size: {
+                                            $ifNull: ["$objectivesMet", []],
+                                        },
+                                    },
+                                    0,
+                                ],
+                            },
+                            {
+                                $allElementsTrue: [
+                                    { $ifNull: ["$objectivesMet", []] },
+                                ],
+                            },
+                        ],
+                    },
+                },
+            },
+        ]);
+
+        await Quiz.findByIdAndDelete(quizId);
 
         revalidateTag("quizzes");
         revalidatePath("/admin/quiz/manage");
@@ -181,6 +246,9 @@ export async function deleteQuiz(quizId: string) {
 }
 
 export async function getQuizResultStats() {
+    // Admin-only read, guarded like getAllQuizzes (outside the try so the
+    // auth failure isn't swallowed into the default zero stats)
+    await requireAdmin();
     try {
         await connectToDatabase();
 

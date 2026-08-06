@@ -5,11 +5,13 @@ import mongoose from "mongoose";
 import PictureStorySet from "@/lib/database/models/pictureStorySet.model";
 import PictureStoryResult from "@/lib/database/models/pictureStoryResult.model";
 import { ensureUser } from "./user.actions";
+import { requireAdmin } from "@/lib/auth";
 
 const OPTIONS_PER_QUESTION = 4;
 const MAX_SEQUENCE_LENGTH = 8;
 
 export async function createPictureStorySet(setData: PictureStorySetData) {
+    await requireAdmin();
     try {
         await connectToDatabase();
 
@@ -111,6 +113,7 @@ export async function getAllPictureStorySets(): Promise<
 }
 
 export async function deletePictureStorySet(setId: string) {
+    await requireAdmin();
     try {
         await connectToDatabase();
 

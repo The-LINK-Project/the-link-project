@@ -21,6 +21,7 @@ type LessonCompleteModalProps = {
     setIsComplete: (value: boolean) => void;
     lessonIndex: number;
     lessonObjectives: string[];
+    hasQuiz: boolean;
 };
 
 const LessonCompleteModal = ({
@@ -28,6 +29,7 @@ const LessonCompleteModal = ({
     setIsComplete,
     lessonIndex,
     lessonObjectives,
+    hasQuiz,
 }: LessonCompleteModalProps) => {
     const t = useTranslations("lessonmodal");
     const [showContent, setShowContent] = useState(false);
@@ -64,12 +66,9 @@ const LessonCompleteModal = ({
 
     return (
         <Dialog open={isComplete} onOpenChange={setIsComplete}>
-            <DialogContent
-                className="sm:max-w-md"
-                showCloseButton={false}
-                onPointerDownOutside={(e) => e.preventDefault()}
-                onEscapeKeyDown={(e) => e.preventDefault()}
-            >
+            {/* Dismissible on purpose: learners can close this and keep
+                practicing the lesson after completing it */}
+            <DialogContent className="sm:max-w-md">
                 <DialogHeader className="text-center">
                     {/* Success Icon */}
                     <div className="flex justify-center mb-4">
@@ -139,11 +138,13 @@ const LessonCompleteModal = ({
                     <Link href="/dashboard">
                         <Button className="w-full">{t("returnbutton")}</Button>
                     </Link>
-                    <Link href={`/learn/${lessonIndex}/quiz`}>
-                        <Button variant="outline" className="w-full">
-                            {t("takequiz")}
-                        </Button>
-                    </Link>
+                    {hasQuiz && (
+                        <Link href={`/learn/${lessonIndex}/quiz`}>
+                            <Button variant="outline" className="w-full">
+                                {t("takequiz")}
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </DialogContent>
         </Dialog>

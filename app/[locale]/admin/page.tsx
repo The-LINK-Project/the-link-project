@@ -26,6 +26,10 @@ import {
     type AdminAccent,
 } from "@/components/admin/AdminPageShell";
 
+// Live stats need an admin session, which only exists at request time —
+// prerendering would permanently bake the zero/empty fallbacks
+export const dynamic = "force-dynamic";
+
 // One bento panel per content domain. The whole panel is the link — no
 // buttons, no borders, just a soft color wash with the domain's live
 // analytics inline. Management and monitoring in a single surface.

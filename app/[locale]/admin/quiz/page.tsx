@@ -5,6 +5,10 @@ import {
     AdminManagementCard,
 } from "@/components/admin/AdminPageShell";
 
+// Quiz stats need an admin session, which only exists at request time —
+// prerendering would permanently bake the empty fallbacks
+export const dynamic = "force-dynamic";
+
 export default async function AdminQuizPage() {
     const [quizzes, quizStats] = await Promise.all([
         getAllQuizzes().catch(() => []),

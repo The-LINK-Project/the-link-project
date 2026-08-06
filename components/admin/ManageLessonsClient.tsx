@@ -65,7 +65,14 @@ export default function ManageLessonsClient({
     }, [lessons, searchTerm, selectedDifficulty]);
 
     const handleDelete = async (lessonId: string, title: string) => {
-        if (!confirm(`Are you sure you want to delete "${title}"?`)) {
+        if (
+            !confirm(
+                `Are you sure you want to delete "${title}"?\n\n` +
+                    "This permanently removes the lesson, its quiz, every " +
+                    "learner's conversation history and progress for it, and " +
+                    "all quiz results. This cannot be undone.",
+            )
+        ) {
             return;
         }
 

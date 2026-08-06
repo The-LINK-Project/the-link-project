@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import WordMatchRound from "@/lib/database/models/wordMatchRound.model";
 import WordMatchResult from "@/lib/database/models/wordMatchResult.model";
 import { ensureUser } from "./user.actions";
+import { requireAdmin } from "@/lib/auth";
 
 const MIN_PAIRS = 2;
 const MAX_PAIRS = 8;
@@ -14,6 +15,7 @@ function hasContent(tile: WordMatchTileContent) {
 }
 
 export async function createWordMatchRound(roundData: WordMatchRoundData) {
+    await requireAdmin();
     try {
         await connectToDatabase();
 
@@ -106,6 +108,7 @@ export async function getAllWordMatchRounds(): Promise<WordMatchRoundAdmin[]> {
 }
 
 export async function deleteWordMatchRound(roundId: string) {
+    await requireAdmin();
     try {
         await connectToDatabase();
 

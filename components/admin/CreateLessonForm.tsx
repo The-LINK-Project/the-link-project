@@ -83,19 +83,33 @@ export default function CreateLessonForm() {
                 return;
             }
 
+            const filledObjectives = formData.objectives.filter(
+                (obj) => obj.trim() !== "",
+            );
+
+            if (filledObjectives.length === 0) {
+                setMessage(
+                    "Failed to create lesson: add at least one learning objective",
+                );
+                return;
+            }
+
             console.log("Submitting lesson data:", formData);
 
             const result = await createLesson({
                 title: formData.title,
                 description: formData.description,
-                objectives: formData.objectives.filter(
-                    (obj) => obj.trim() !== "",
-                ),
+                objectives: filledObjectives,
                 lessonIndex: formData.lessonIndex as unknown as Number,
                 difficulty: formData.difficulty,
             });
 
-            console.log("Lesson created successfully:", result);
+            if (!result.success) {
+                setMessage(`Failed to create lesson: ${result.message}`);
+                return;
+            }
+
+            console.log("Lesson created successfully:", result.lesson);
             setMessage("Lesson created successfully!");
             setIsSuccess(true);
 

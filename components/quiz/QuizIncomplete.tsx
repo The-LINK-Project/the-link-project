@@ -1,12 +1,14 @@
 import React from "react";
+import { useTranslations } from "next-intl";
 import QuizQuestion from "./QuizQuestion";
 import QuizProgressBar from "./QuizProgressBar";
 
 type QuizIncompleteProps = {
-    quiz: QuizData;
+    quiz: PublicQuizData;
     selectedAnswers: number[];
     handleAnswerSelect: (questionIndex: number, answerIndex: number) => void;
     handleSubmit: () => void;
+    isSubmitting: boolean;
 };
 
 const QuizIncomplete = ({
@@ -14,12 +16,14 @@ const QuizIncomplete = ({
     selectedAnswers,
     handleAnswerSelect,
     handleSubmit,
+    isSubmitting,
 }: QuizIncompleteProps) => {
+    const t = useTranslations("quizIncomplete");
     return (
         <>
             <QuizProgressBar selectedAnswers={selectedAnswers} quiz={quiz} />
             <div className="space-y-6">
-                {quiz.questions.map((q: Question, qIndex: number) => (
+                {quiz.questions.map((q: PublicQuizQuestion, qIndex: number) => (
                     <QuizQuestion
                         key={qIndex}
                         q={q}
@@ -32,16 +36,18 @@ const QuizIncomplete = ({
 
             <div className="flex justify-center mt-10">
                 <button
-                    disabled={selectedAnswers.includes(-1)}
+                    disabled={selectedAnswers.includes(-1) || isSubmitting}
                     onClick={handleSubmit}
-                    className={`px-10 py-3 rounded-xl text-lg font-semibold transition-all duration-300 shadow-lg ${selectedAnswers.includes(-1)
+                    className={`px-10 py-3 rounded-xl text-lg font-semibold transition-all duration-300 shadow-lg ${selectedAnswers.includes(-1) || isSubmitting
                         ? "bg-slate-300 text-slate-600 cursor-not-allowed"
                         : "bg-primary text-white hover:bg-primary/90 hover:shadow-xl transform hover:scale-105"
                         }`}
                 >
-                    {selectedAnswers.includes(-1)
-                        ? "Answer All Questions"
-                        : "Submit Quiz"}
+                    {isSubmitting
+                        ? t("submittingButton")
+                        : selectedAnswers.includes(-1)
+                            ? t("cannotSubmitButton")
+                            : t("canSubmitButton")}
                 </button>
             </div>
         </>

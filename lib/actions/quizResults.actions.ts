@@ -4,27 +4,52 @@ import { connectToDatabase } from "@/lib/database";
 import mongoose from "mongoose";
 import QuizResult from "@/lib/database/models/quizResult.model";
 import LessonProgress from "@/lib/database/models/lessonProgress.model";
+import Quiz from "@/lib/database/models/quiz.model";
 import { ensureUser } from "./user.actions";
 
-// submitting and sending over the quiz results to mongodb
-export async function saveQuizResult(formData: FormData) {
+const PASSING_SCORE = 80;
+
+// Grades the submitted answers server-side against the quiz stored in the
+// database. The browser never sees the answer key and never sends a score —
+// a forged request can't mark a lesson complete.
+export async function submitQuiz({
+    lessonId,
+    answers,
+}: {
+    lessonId: number;
+    answers: number[];
+}) {
     try {
         await connectToDatabase();
 
         const { _id: userId } = await ensureUser();
 
-        const lessonId = parseInt(formData.get("lessonId") as string);
-        const score = parseInt(formData.get("score") as string);
-        const answersJson = formData.get("answers") as string;
-        const answers = JSON.parse(answersJson);
-
-        if (!lessonId || isNaN(score) || !answers) {
+        if (
+            !Number.isInteger(lessonId) ||
+            !Array.isArray(answers) ||
+            answers.some((answer) => !Number.isInteger(answer))
+        ) {
             throw new Error("Missing required fields");
         }
 
-        if (isNaN(score) || score < 0 || score > 100) {
-            throw new Error("Score must be a number between 0 and 100");
+        const quiz = await Quiz.findOne({ lessonId: lessonId }).lean<{
+            questions: Question[];
+        }>();
+
+        if (!quiz || quiz.questions.length === 0) {
+            throw new Error("Quiz not found for this lesson");
         }
+
+        if (answers.length !== quiz.questions.length) {
+            throw new Error("Answer every question before submitting");
+        }
+
+        const correctCount = quiz.questions.reduce(
+            (count, question, index) =>
+                count + (answers[index] === question.correctAnswerIndex ? 1 : 0),
+            0,
+        );
+        const score = Math.round((correctCount / quiz.questions.length) * 100);
 
         const result = await QuizResult.create({
             userId: userId,
@@ -32,8 +57,6 @@ export async function saveQuizResult(formData: FormData) {
             score,
             answers,
         });
-
-        console.log(result);
 
         // add quiz result to lesson progress and mark completed if score >= 80
         const lessonProgress = await LessonProgress.findOne({
@@ -47,7 +70,7 @@ export async function saveQuizResult(formData: FormData) {
             $push: { quizResult: result._id },
         };
 
-        if (score >= 80) {
+        if (score >= PASSING_SCORE) {
             updatePayload.$set = {
                 completed: true,
             };
@@ -62,15 +85,17 @@ export async function saveQuizResult(formData: FormData) {
 
         revalidatePath("/quiz/results");
         return {
-            success: true,
+            success: true as const,
             id: result._id.toString(),
-            score: result.score,
+            score,
+            correctCount,
+            totalQuestions: quiz.questions.length,
             message: "Quiz result saved successfully",
         };
     } catch (error) {
         console.error("Error saving quiz result:", error);
         return {
-            success: false,
+            success: false as const,
             message:
                 error instanceof Error ? error.message : "An unexpected error occurred",
         };

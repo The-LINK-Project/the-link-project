@@ -94,7 +94,10 @@
     },
     "quizMain": {
         "badge": "Kuis Interaktif",
-        "headerCall": "Uji pengetahuan Anda dan pantau kemajuan belajar"
+        "headerCall": "Uji pengetahuan Anda dan pantau kemajuan belajar",
+        "noQuizTitle": "Belum ada kuis untuk pelajaran ini",
+        "noQuizDescription": "Pelajaran ini belum memiliki kuis. Kembali ke pelajaran untuk terus berlatih.",
+        "backToLesson": "Kembali ke pelajaran"
     },
     "resultspage": {
         "headerTitle": "Hasil Kuis",
@@ -118,6 +121,29 @@
         "statHighest": "Nilai Tertinggi",
         "statAverage": "Nilai Rata-Rata",
         "statQuizzes": "Kuis Diselesaikan"
+    },
+    "quizComplete": {
+        "quizComplete": "Kuis Selesai!",
+        "youscored": "Anda menjawab benar",
+        "outof": "dari",
+        "numberCorrect": "pertanyaan",
+        "encouragement1": "Hasil yang luar biasa!",
+        "encouragement2": "Kerja bagus! Pertahankan!",
+        "encouragement3": "Usaha yang baik! Masih bisa ditingkatkan",
+        "encouragement4": "Terus belajar dan coba lagi!",
+        "seeResults": "Lihat Semua Hasil Kuis",
+        "backButton": "Kembali ke Pelajaran Sebelumnya",
+        "nextButton": "Pelajaran Berikutnya"
+    },
+    "quizIncomplete": {
+        "cannotSubmitButton": "Jawab Semua Pertanyaan",
+        "canSubmitButton": "Kirim Kuis",
+        "submittingButton": "Mengirim...",
+        "submitError": "Terjadi kesalahan saat mengirim kuis Anda. Silakan coba lagi."
+    },
+    "quizProgressBar": {
+        "title": "Kemajuan",
+        "answered": "terjawab"
     },
     "faq": {
         "q1": "Apa itu Proyek LINK?",

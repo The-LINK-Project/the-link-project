@@ -2,11 +2,13 @@
 import { GoogleGenAI } from "@google/genai";
 import OpenAI from "openai";
 import { Type } from "@google/genai";
-import { generateInstructions } from "@/lib/utils";
+import { generateInstructions } from "@/lib/serverUtils";
 import {
   getLessonProgress,
   updateLessonProgress,
 } from "@/lib/actions/LessonProgress.actions";
+import { auth } from "@clerk/nextjs/server";
+import { checkRateLimit } from "../RateLimiter";
 
 // Module-level lazy singletons so each request reuses the same client (and
 // its keep-alive connection pool) instead of paying a fresh TLS handshake
@@ -55,7 +57,9 @@ function stripToolSyntax(text: string): string {
     .trim();
 }
 
-export async function getResponse(
+// NOT exported: exporting from a "use server" file would make this a public
+// endpoint with a caller-controlled system prompt and unmetered AI spend.
+async function getResponse(
   audioUrlBase64: string,
   instructions: string,
   currentObjectivesMet: boolean[]
@@ -218,7 +222,7 @@ export async function getResponse(
   }
 }
 
-export async function getUserTranscription(audioUrlBase64: string) {
+async function getUserTranscription(audioUrlBase64: string) {
   const ai = getGeminiClient();
 
   const contents = [
@@ -261,7 +265,7 @@ export async function getUserTranscription(audioUrlBase64: string) {
   }
 }
 
-export async function getInitialResponse(instructions: string) {
+async function getInitialResponse(instructions: string) {
   const openai = getOpenAIClient();
   const ai = getGeminiClient();
 
@@ -320,6 +324,15 @@ export async function processInitialMessage({
   updatedLessonProgress?: LessonProgress;
 }> {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return { success: false, error: "Authentication required" };
+    }
+    const rateLimit = await checkRateLimit(userId, "conversation");
+    if (!rateLimit.success) {
+      return { success: false, error: rateLimit.error };
+    }
+
     // Re-read the progress server-side so a refresh / second tab doesn't
     // generate a duplicate greeting
     const currentProgress = await getLessonProgress({
@@ -395,6 +408,19 @@ export async function processAudioMessage({
   updatedLessonProgress?: LessonProgress;
 }> {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return {
+        success: false,
+        errorType: "response",
+        error: "Authentication required",
+      };
+    }
+    const rateLimit = await checkRateLimit(userId, "conversation");
+    if (!rateLimit.success) {
+      return { success: false, errorType: "response", error: rateLimit.error };
+    }
+
     // Re-read the authoritative progress server-side so a stale client
     // snapshot (second tab, restored page) can't overwrite newer history
     const currentProgress = await getLessonProgress({

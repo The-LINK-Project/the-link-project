@@ -4,6 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
 
+// Never prerender: the user list must be fetched per-request as the signed-in
+// admin (a build-time render has no session and would bake a stale list in)
+export const dynamic = "force-dynamic";
+
 export default async function UsersManagePage() {
     const users = await getAllUsers();
 
