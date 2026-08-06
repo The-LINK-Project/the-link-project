@@ -94,7 +94,10 @@
     },
     "quizMain": {
         "badge": "Interactive Quiz",
-        "headerCall": "Test your knowledge and track your progress"
+        "headerCall": "Test your knowledge and track your progress",
+        "noQuizTitle": "No quiz for this lesson yet",
+        "noQuizDescription": "This lesson doesn't have a quiz. Head back to the lesson to keep practicing.",
+        "backToLesson": "Back to lesson"
     },
     "resultspage": {
         "headerTitle": "Quiz Results",
@@ -134,7 +137,9 @@
     },
     "quizIncomplete": {
         "cannotSubmitButton": "Answer All Questions",
-        "canSubmitButton": "Submit Quiz"
+        "canSubmitButton": "Submit Quiz",
+        "submittingButton": "Submitting...",
+        "submitError": "Something went wrong submitting your quiz. Please try again."
     },
     "quizProgressBar": {
         "title": "Progress",

@@ -49,6 +49,9 @@ const getCachedLessonByIndex = unstable_cache(
     { tags: ["lessons"], revalidate: 3600 },
 );
 
+// Returns a structured result instead of throwing: Next.js redacts thrown
+// server-action error messages in production, so the admin form could never
+// show WHY creation failed (duplicate lesson number, missing objectives)
 export async function createLesson({
     title,
     description,
@@ -61,7 +64,7 @@ export async function createLesson({
     objectives: string[];
     lessonIndex: Number;
     difficulty: string;
-}): Promise<Lesson> {
+}): Promise<{ success: boolean; message: string; lesson?: Lesson }> {
     await requireAdmin();
     try {
         await connectToDatabase();
@@ -73,7 +76,10 @@ export async function createLesson({
             .filter((objective) => objective !== "");
 
         if (trimmedObjectives.length === 0) {
-            throw Error("At least one learning objective is required");
+            return {
+                success: false,
+                message: "At least one learning objective is required",
+            };
         }
 
         // Explicit check for a friendly message; the unique index on
@@ -82,9 +88,10 @@ export async function createLesson({
             lessonIndex: lessonIndex,
         });
         if (existingLesson) {
-            throw Error(
-                `A lesson with number ${lessonIndex} already exists`,
-            );
+            return {
+                success: false,
+                message: `A lesson with number ${lessonIndex} already exists`,
+            };
         }
 
         const payload = {
@@ -97,14 +104,24 @@ export async function createLesson({
 
         const newLesson = await Lesson.create(payload);
 
-        if (!newLesson) throw Error("Failed to create new lesson");
-
         revalidateTag("lessons");
 
-        return JSON.parse(JSON.stringify(newLesson));
-    } catch (error) {
+        return {
+            success: true,
+            message: "Lesson created successfully",
+            lesson: JSON.parse(JSON.stringify(newLesson)),
+        };
+    } catch (error: any) {
         console.log("Error creating lesson:", error);
-        throw error;
+        // Duplicate-key race: another admin created the same number between
+        // the check above and the insert
+        if (error?.code === 11000) {
+            return {
+                success: false,
+                message: `A lesson with number ${lessonIndex} already exists`,
+            };
+        }
+        return { success: false, message: "Failed to create lesson" };
     }
 }
 
@@ -144,21 +161,25 @@ export async function deleteLesson(lessonId: string): Promise<{ success: boolean
             return { success: false, message: "Invalid lesson ID format" };
         }
 
-        const deletedLesson = await Lesson.findByIdAndDelete(lessonId);
+        const lesson = await Lesson.findById(lessonId);
 
-        if (!deletedLesson) {
+        if (!lesson) {
             return { success: false, message: "Lesson not found" };
         }
 
         // Remove everything keyed to this lesson number, otherwise a ghost
         // quiz blocks re-creating one for a reused lessonIndex and orphaned
-        // progress/results keep inflating stats
-        const lessonIndex = deletedLesson.lessonIndex;
+        // progress/results keep inflating stats. Children are deleted first
+        // and the lesson last, so a failed cleanup leaves the lesson in
+        // place and the whole delete can simply be retried.
+        const lessonIndex = lesson.lessonIndex;
         await Promise.all([
             Quiz.deleteMany({ lessonId: lessonIndex }),
             QuizResult.deleteMany({ lessonId: lessonIndex }),
             LessonProgress.deleteMany({ lessonIndex: lessonIndex }),
         ]);
+
+        await Lesson.findByIdAndDelete(lessonId);
 
         revalidateTag("lessons");
         revalidateTag("quizzes");

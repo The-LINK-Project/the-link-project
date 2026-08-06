@@ -104,7 +104,12 @@ export default function CreateLessonForm() {
                 difficulty: formData.difficulty,
             });
 
-            console.log("Lesson created successfully:", result);
+            if (!result.success) {
+                setMessage(`Failed to create lesson: ${result.message}`);
+                return;
+            }
+
+            console.log("Lesson created successfully:", result.lesson);
             setMessage("Lesson created successfully!");
             setIsSuccess(true);
 

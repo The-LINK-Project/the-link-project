@@ -125,6 +125,9 @@ export async function createCustomQuiz(quizData: QuizData) {
 }
 
 export async function getAllQuizzes() {
+    // Admin-only read: it returns every correctAnswerIndex, and as a server
+    // action it is directly invokable — page-level guards don't cover it
+    await requireAdmin();
     try {
         await connectToDatabase();
 
@@ -175,29 +178,54 @@ export async function deleteQuiz(quizId: string) {
             throw new Error("Invalid Quiz ID format");
         }
 
-        const deletedQuiz = await Quiz.findByIdAndDelete(quizId);
+        const quiz = await Quiz.findById(quizId);
 
-        if (!deletedQuiz) {
+        if (!quiz) {
             throw new Error("Quiz not found");
         }
 
-        // The confirm dialog promises associated results are removed too.
-        // Orphaned results would keep inflating stats and would block
-        // re-creating a quiz workflow for the same lesson number.
-        const staleResults = await QuizResult.find({
-            lessonId: deletedQuiz.lessonId,
-        })
-            .select("_id")
-            .lean<{ _id: mongoose.Types.ObjectId }[]>();
-        const staleResultIds = staleResults.map((result) => result._id);
+        // Children first, parent last: if any cleanup step fails the quiz
+        // still exists and the whole delete can simply be retried. Deleting
+        // the parent first would strand orphans behind a "not found" error.
+        //
+        // The confirm dialog promises associated results are removed too —
+        // orphaned results would keep inflating stats and block re-creating
+        // a quiz for the same lesson number.
+        await QuizResult.deleteMany({ lessonId: quiz.lessonId });
 
-        await Promise.all([
-            QuizResult.deleteMany({ lessonId: deletedQuiz.lessonId }),
-            LessonProgress.updateMany(
-                { quizResult: { $in: staleResultIds } },
-                { $pull: { quizResult: { $in: staleResultIds } } },
-            ),
+        // Results are only ever pushed onto progress docs with the same
+        // lesson number, so this clears every stale reference. Completion is
+        // recomputed from objectives alone: completion earned only through
+        // the deleted quiz is revoked, completion earned by meeting the
+        // objectives is preserved. ($size guard: $allElementsTrue([]) is true)
+        await LessonProgress.updateMany({ lessonIndex: quiz.lessonId }, [
+            {
+                $set: {
+                    quizResult: [],
+                    completed: {
+                        $and: [
+                            {
+                                $gt: [
+                                    {
+                                        $size: {
+                                            $ifNull: ["$objectivesMet", []],
+                                        },
+                                    },
+                                    0,
+                                ],
+                            },
+                            {
+                                $allElementsTrue: [
+                                    { $ifNull: ["$objectivesMet", []] },
+                                ],
+                            },
+                        ],
+                    },
+                },
+            },
         ]);
+
+        await Quiz.findByIdAndDelete(quizId);
 
         revalidateTag("quizzes");
         revalidatePath("/admin/quiz/manage");
@@ -218,6 +246,9 @@ export async function deleteQuiz(quizId: string) {
 }
 
 export async function getQuizResultStats() {
+    // Admin-only read, guarded like getAllQuizzes (outside the try so the
+    // auth failure isn't swallowed into the default zero stats)
+    await requireAdmin();
     try {
         await connectToDatabase();
 

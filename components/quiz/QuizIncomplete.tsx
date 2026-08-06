@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslations } from "next-intl";
 import QuizQuestion from "./QuizQuestion";
 import QuizProgressBar from "./QuizProgressBar";
 
@@ -17,6 +18,7 @@ const QuizIncomplete = ({
     handleSubmit,
     isSubmitting,
 }: QuizIncompleteProps) => {
+    const t = useTranslations("quizIncomplete");
     return (
         <>
             <QuizProgressBar selectedAnswers={selectedAnswers} quiz={quiz} />
@@ -42,10 +44,10 @@ const QuizIncomplete = ({
                         }`}
                 >
                     {isSubmitting
-                        ? "Submitting..."
+                        ? t("submittingButton")
                         : selectedAnswers.includes(-1)
-                            ? "Answer All Questions"
-                            : "Submit Quiz"}
+                            ? t("cannotSubmitButton")
+                            : t("canSubmitButton")}
                 </button>
             </div>
         </>

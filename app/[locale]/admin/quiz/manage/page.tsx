@@ -3,6 +3,11 @@ import QuizList from "@/components/admin/quiz/QuizList";
 import { Badge } from "@/components/ui/badge";
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
 
+// Admin data (including answer keys) must never be baked into the static
+// build; getAllQuizzes also requires an admin session, which only exists at
+// request time
+export const dynamic = "force-dynamic";
+
 export default async function QuizManagePage() {
     const quizzes = await getAllQuizzes();
 

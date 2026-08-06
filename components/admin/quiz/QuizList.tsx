@@ -226,7 +226,8 @@ export default function QuizList({ quizzes: initialQuizzes }: QuizListProps) {
                         <AlertDialogDescription>
                             Are you sure you want to delete "{deletingQuiz?.title}"? This
                             action cannot be undone. All quiz data and associated results will
-                            be permanently removed.
+                            be permanently removed, and lesson completion earned only through
+                            this quiz will be reset.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

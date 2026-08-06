@@ -94,7 +94,10 @@
     },
     "quizMain": {
         "badge": "Interaktibong Pagsusulit",
-        "headerCall": "Subukan ang iyong kaalaman at subaybayan ang iyong progreso"
+        "headerCall": "Subukan ang iyong kaalaman at subaybayan ang iyong progreso",
+        "noQuizTitle": "Wala pang quiz para sa araling ito",
+        "noQuizDescription": "Walang quiz ang araling ito. Bumalik sa aralin para magpatuloy sa pagsasanay.",
+        "backToLesson": "Bumalik sa aralin"
     },
     "resultspage": {
         "headerTitle": "Mga Resulta ng Quiz",
@@ -134,7 +137,9 @@
     },
     "quizIncomplete": {
         "cannotSubmitButton": "Sagutin Lahat ng mga Tanong",
-        "canSubmitButton": "Isumite ang Quiz"
+        "canSubmitButton": "Isumite ang Quiz",
+        "submittingButton": "Isinusumite...",
+        "submitError": "May naganap na problema sa pagsusumite ng iyong quiz. Pakisubukan muli."
     },
     "quizProgressBar": {
         "title": "Progreso",

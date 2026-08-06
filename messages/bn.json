@@ -94,7 +94,10 @@
     },
     "quizMain": {
         "badge": "ইন্টারেক্টিভ কুইজ",
-        "headerCall": "আপনার জ্ঞান পরীক্ষা করুন এবং অগ্রগতি ট্র্যাক করুন"
+        "headerCall": "আপনার জ্ঞান পরীক্ষা করুন এবং অগ্রগতি ট্র্যাক করুন",
+        "noQuizTitle": "এই পাঠের জন্য এখনও কোনো কুইজ নেই",
+        "noQuizDescription": "এই পাঠে কোনো কুইজ নেই। অনুশীলন চালিয়ে যেতে পাঠে ফিরে যান।",
+        "backToLesson": "পাঠে ফিরে যান"
     },
     "resultspage": {
         "headerTitle": "কুইজ ফলাফল",
@@ -134,7 +137,9 @@
     },
     "quizIncomplete": {
         "cannotSubmitButton": "সব প্রশ্নের উত্তর দিন",
-        "canSubmitButton": "কুইজ জমা দিন"
+        "canSubmitButton": "কুইজ জমা দিন",
+        "submittingButton": "জমা দেওয়া হচ্ছে...",
+        "submitError": "আপনার কুইজ জমা দিতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।"
     },
     "quizProgressBar": {
         "title": "প্রগতি",

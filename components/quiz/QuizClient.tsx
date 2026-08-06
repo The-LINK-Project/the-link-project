@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { submitQuiz } from "@/lib/actions/quizResults.actions";
 import QuizComplete from "@/components/quiz/QuizComplete";
 import QuizIncomplete from "@/components/quiz/QuizIncomplete";
@@ -12,13 +13,14 @@ type QuizClientProps = {
 };
 
 export default function QuizClient({ params }: QuizClientProps) {
+  const t = useTranslations("quizIncomplete");
   const quiz = params.quiz;
   const lessonIndex = params.lessonIndex;
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>(
     new Array(quiz.questions.length).fill(-1)
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitFailed, setSubmitFailed] = useState(false);
   const [result, setResult] = useState<{
     score: number;
     correctCount: number;
@@ -36,8 +38,11 @@ export default function QuizClient({ params }: QuizClientProps) {
   // Grading happens on the server (the answer key is never sent to the
   // browser), so the completion screen waits for the server's verdict
   const handleSubmit = async () => {
+    // Guards a double-click landing before the disabled state re-renders,
+    // which would record two attempts
+    if (isSubmitting) return;
     setIsSubmitting(true);
-    setSubmitError(null);
+    setSubmitFailed(false);
 
     try {
       const response = await submitQuiz({
@@ -52,11 +57,12 @@ export default function QuizClient({ params }: QuizClientProps) {
           totalQuestions: response.totalQuestions,
         });
       } else {
-        setSubmitError(response.message);
+        console.error("Quiz submission rejected:", response.message);
+        setSubmitFailed(true);
       }
     } catch (error) {
       console.error("Error submitting quiz:", error);
-      setSubmitError("Something went wrong submitting your quiz. Please try again.");
+      setSubmitFailed(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -74,9 +80,9 @@ export default function QuizClient({ params }: QuizClientProps) {
               handleSubmit={handleSubmit}
               isSubmitting={isSubmitting}
             />
-            {submitError && (
+            {submitFailed && (
               <p className="mt-4 text-center text-sm font-medium text-red-600">
-                {submitError}
+                {t("submitError")}
               </p>
             )}
           </>

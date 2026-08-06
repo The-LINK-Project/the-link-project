@@ -8,6 +8,8 @@ import { formatInitialObjectives } from "../serverUtils";
 import { ensureUser } from "./user.actions";
 
 // when user has never done the lesson before and goes to it make a mongoDB item with convoHistory and objectives met default empty array and false array respectively
+// Upsert-based and idempotent: two tabs opening a fresh lesson at once used
+// to both create() and mint duplicate (userId, lessonIndex) documents.
 export async function initLessonProgress({
     lessonIndex,
     objectives,
@@ -23,24 +25,32 @@ export async function initLessonProgress({
         // this part is a repeat to be removed later
         const objectivesMet = formatInitialObjectives(objectives);
 
-        const payload = {
-            userId: userId,
-            lessonIndex: lessonIndex,
+        const filter = { userId: userId, lessonIndex: lessonIndex };
+        const insertDefaults = {
             objectivesMet: objectivesMet,
-            // Length guard: [].every() is true, and a lesson with no
-            // objectives must not start out completed
-            completed:
-                objectivesMet.length > 0 &&
-                objectivesMet.every((met: boolean) => met),
+            // objectivesMet starts all-false, so fresh progress is never
+            // completed (and an empty objectives array must not count either)
+            completed: false,
             convoHistory: [],
             quizResult: [],
         };
 
-        const newLessonProgress = await LessonProgress.create(payload);
-
-        if (!newLessonProgress) throw Error("Failed to create new lesson progress");
-
-        return JSON.parse(JSON.stringify(newLessonProgress));
+        try {
+            const lessonProgress = await LessonProgress.findOneAndUpdate(
+                filter,
+                { $setOnInsert: insertDefaults },
+                { upsert: true, new: true },
+            );
+            return JSON.parse(JSON.stringify(lessonProgress));
+        } catch (error: any) {
+            // Upsert race against the unique index: the other request's
+            // insert won, so the document exists now — read it
+            if (error?.code === 11000) {
+                const existing = await LessonProgress.findOne(filter);
+                if (existing) return JSON.parse(JSON.stringify(existing));
+            }
+            throw error;
+        }
     } catch (error) {
         console.log(error);
         throw error;
@@ -175,17 +185,27 @@ export async function updateLessonProgress({
             },
         ];
 
-        const updatedLessonProgress = await LessonProgress.findOneAndUpdate(
-            {
-                userId: userId,
-                lessonIndex: lessonIndex,
-            },
-            update,
-            {
-                upsert: true,
-                new: true,
-            }
-        );
+        const filter = { userId: userId, lessonIndex: lessonIndex };
+        const options = { upsert: true, new: true };
+
+        let updatedLessonProgress;
+        try {
+            updatedLessonProgress = await LessonProgress.findOneAndUpdate(
+                filter,
+                update,
+                options
+            );
+        } catch (error: any) {
+            // Upsert race against the unique (userId, lessonIndex) index:
+            // another request inserted the doc between lookup and insert.
+            // It exists now, so the retry takes the plain update path.
+            if (error?.code !== 11000) throw error;
+            updatedLessonProgress = await LessonProgress.findOneAndUpdate(
+                filter,
+                update,
+                options
+            );
+        }
 
         if (!updatedLessonProgress) {
             throw Error("Failed to update lesson progress");

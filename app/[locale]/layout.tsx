@@ -91,6 +91,7 @@ const CLIENT_MESSAGE_NAMESPACES = [
     "objectives",
     "contactUs",
     "quizComplete",
+    "quizIncomplete",
     "quizProgressBar",
 ];
 
