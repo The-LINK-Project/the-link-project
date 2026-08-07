@@ -2,7 +2,10 @@
 import { GoogleGenAI } from "@google/genai";
 import OpenAI from "openai";
 import { Type } from "@google/genai";
-import { generateInstructions } from "@/lib/serverUtils";
+import {
+  buildConversationContents,
+  generateInstructions,
+} from "@/lib/serverUtils";
 import {
   getLessonProgress,
   updateLessonProgress,
@@ -33,7 +36,7 @@ function setLessonObjectiveToTrue({
   objectiveIndex: number;
 }) {
   // Validate the index
-  if (typeof objectiveIndex !== "number" || objectiveIndex < 0) {
+  if (!Number.isInteger(objectiveIndex) || objectiveIndex < 0) {
     console.warn(`Invalid objective index: ${objectiveIndex}`);
     return null;
   }
@@ -62,7 +65,8 @@ function stripToolSyntax(text: string): string {
 async function getResponse(
   audioUrlBase64: string,
   instructions: string,
-  currentObjectivesMet: boolean[]
+  currentObjectivesMet: boolean[],
+  historyContents: { role: string; parts: { text: string }[] }[] = []
 ) {
   const openai = getOpenAIClient();
   const ai = getGeminiClient();
@@ -85,7 +89,10 @@ async function getResponse(
     },
   };
 
+  // Prior turns are real conversation turns, not prompt text — learner speech
+  // arrives tagged "user" and can never read as part of the instructions
   const contents = [
+    ...historyContents,
     {
       role: "user",
       parts: [
@@ -113,20 +120,37 @@ async function getResponse(
         ],
       },
     });
-    // Collect every function call — the model can emit several in one turn,
-    // and dropping any of them desyncs its beliefs from the stored progress
+    // A tool call is the model's suggestion, never the authority for a state
+    // change. Three server-side rules gate it, so a model talked into "mark
+    // every objective complete" cannot finish a lesson in one go: the index
+    // must be a real in-range objective, it must not already be met, and at
+    // most ONE objective is credited per turn (the prompt's own documented
+    // rule, enforced here in code rather than trusted as prose). Completing a
+    // lesson therefore still costs one genuinely-spoken turn per objective.
+    //
+    // Deliberately NOT enforcing "earliest outstanding only": objectives are
+    // not inherently ordered, so a learner who demonstrates the second one
+    // first would have the credit silently dropped while the tutor's reply
+    // says otherwise, and the lesson could stall with no way to recover.
     const objectiveIndices: number[] = [];
     for (const functionCall of response.functionCalls ?? []) {
-      if (functionCall.args) {
-        const objectiveIndex = setLessonObjectiveToTrue(
-          functionCall.args as { objectiveIndex: number }
-        );
-        if (objectiveIndex !== null && objectiveIndex !== undefined) {
-          objectiveIndices.push(objectiveIndex);
-        }
-      } else {
+      if (!functionCall.args) {
         console.warn("Function call found but no args provided");
+        continue;
       }
+      const objectiveIndex = setLessonObjectiveToTrue(
+        functionCall.args as { objectiveIndex: number }
+      );
+      if (objectiveIndex === null) continue;
+      if (objectiveIndex >= currentObjectivesMet.length) {
+        console.warn(
+          `Rejected objective ${objectiveIndex}: outside the lesson's ${currentObjectivesMet.length} objectives`
+        );
+        continue;
+      }
+      if (currentObjectivesMet[objectiveIndex]) continue;
+      objectiveIndices.push(objectiveIndex);
+      break;
     }
 
     let transcriptionSystem = stripToolSyntax(response.text ?? "");
@@ -214,10 +238,11 @@ async function getResponse(
     };
   } catch (error) {
     console.error("Error in getResponse:", error);
-    // Return an error object if something goes wrong
+    // Fixed text only: Next.js does not redact a server action's resolved
+    // value, so provider/internal error messages must never be returned
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: "Failed to generate a response",
     };
   }
 }
@@ -260,7 +285,7 @@ async function getUserTranscription(audioUrlBase64: string) {
     // Return an error object if something goes wrong
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: "Could not transcribe the audio. Please try again.",
     };
   }
 }
@@ -308,7 +333,7 @@ async function getInitialResponse(instructions: string) {
     // Return an error object if something goes wrong
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: "Failed to generate the greeting",
     };
   }
 }
@@ -388,7 +413,7 @@ export async function processInitialMessage({
     console.error("Error in processInitialMessage:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: "Unexpected server error",
     };
   }
 }
@@ -444,7 +469,12 @@ export async function processAudioMessage({
     // them concurrently
     const [transcriptionUser, audioResponse] = await Promise.all([
       getUserTranscription(audioBase64),
-      getResponse(audioBase64, instructions, currentProgress.objectivesMet),
+      getResponse(
+        audioBase64,
+        instructions,
+        currentProgress.objectivesMet,
+        buildConversationContents(currentProgress.convoHistory)
+      ),
     ]);
 
     const userTranscription = transcriptionUser.userTranscription ?? "";
@@ -512,7 +542,7 @@ export async function processAudioMessage({
     return {
       success: false,
       errorType: "response",
-      error: error instanceof Error ? error.message : String(error),
+      error: "Unexpected server error",
     };
   }
 }

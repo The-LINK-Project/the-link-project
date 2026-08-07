@@ -74,6 +74,9 @@ export async function createWordMatchRound(roundData: WordMatchRoundData) {
 }
 
 export async function getAllWordMatchRounds(): Promise<WordMatchRoundAdmin[]> {
+    // Admin-only read: the learner game renders the static rounds in
+    // constants/games/wordMatch, so this only ever feeds the admin screens
+    await requireAdmin();
     try {
         await connectToDatabase();
 
@@ -142,6 +145,9 @@ export async function deleteWordMatchRound(roundId: string) {
 }
 
 export async function getWordMatchStats() {
+    // Admin-only read: aggregate play data across every user. Guarded outside
+    // the try so the auth failure isn't swallowed into the default zero stats.
+    await requireAdmin();
     try {
         await connectToDatabase();
 

@@ -13,7 +13,9 @@ const LessonPage = async ({ params }: { params: Promise<{ lessonIndex: string }>
     const { lessonIndex } = await params;
     const index = parseInt(lessonIndex, 10);
 
-    if (Number.isNaN(index)) {
+    // Must match what the actions accept: a negative index now throws rather
+    // than reaching Mongo, so screen it here instead of serving a 500
+    if (!Number.isInteger(index) || index < 0) {
         return <div>Lesson not found.</div>;
     }
 

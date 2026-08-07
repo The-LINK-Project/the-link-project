@@ -14,7 +14,14 @@ async function backfillLessonCompletion() {
     let updatedCount = 0;
 
     for (const progress of candidates) {
-        const objectivesCompleted = progress.objectivesMet.every((met: boolean) => met);
+        // [].every() is true, so a progress document with no objectives
+        // recorded would otherwise be marked complete without anyone doing
+        // anything. No objectives means nothing has been met.
+        const objectivesMet: boolean[] = Array.isArray(progress.objectivesMet)
+            ? progress.objectivesMet
+            : [];
+        const objectivesCompleted =
+            objectivesMet.length > 0 && objectivesMet.every((met: boolean) => met);
 
         let quizPassed = false;
         if (!objectivesCompleted) {
