@@ -7,21 +7,62 @@ import { getCurrentUser } from "@/lib/actions/user.actions";
 import { getLessonByIndex } from "./actions/Lesson.actions";
 
 const MAX_CONVO_HISTORY_MESSAGES = 20;
+const MAX_PROMPT_NAME_LENGTH = 60;
+const MAX_HISTORY_MESSAGE_LENGTH = 2000;
 
-export function formatConvoHistory(convoHistory: Message[]): string {
-    // "System" is the stored role for the tutor's messages, but "Tutor" is a
-    // clearer label for the model prompt
-    const recentMessages = convoHistory.slice(-MAX_CONVO_HISTORY_MESSAGES);
-    const lines = recentMessages.map(
-        (message) =>
-            `${message.role === "System" ? "Tutor" : message.role}: ${message.message}`,
-    );
+// "System" is the only stored role that means the tutor. Whitelisting it (as
+// opposed to echoing whatever the document holds) means a forged role can
+// never make learner text speak with the tutor's voice.
+export const TUTOR_ROLE = "System";
+export const LEARNER_ROLE = "User";
 
-    if (convoHistory.length > MAX_CONVO_HISTORY_MESSAGES) {
-        lines.unshift("[earlier conversation omitted]");
-    }
+export function normalizeStoredRole(role: unknown): string {
+    return role === TUTOR_ROLE ? TUTOR_ROLE : LEARNER_ROLE;
+}
 
-    return lines.join("\n");
+// Untrusted text is about to sit inside the model's system prompt. Strip
+// newlines and control characters so it cannot forge a new prompt section,
+// collapse runs of whitespace, and cap the length.
+export function sanitizePromptText(value: unknown, maxLength: number): string {
+    if (typeof value !== "string") return "";
+    return value
+        .replace(/[\u0000-\u001f\u007f]+/g, " ")
+        .replace(/\s{2,}/g, " ")
+        .trim()
+        .slice(0, maxLength);
+}
+
+// String.replace with a string pattern honours $&, $` and $' in the
+// replacement, so a chosen first name could splice surrounding prompt text
+// back into itself. A function replacement is inert.
+function fillToken(template: string, token: string, value: string): string {
+    return template.replace(token, () => value);
+}
+
+// Prior turns are passed to Gemini as real conversation turns rather than
+// concatenated into the system instruction, so learner speech is data the
+// model replies to and can never read as part of its own instructions.
+export function buildConversationContents(convoHistory: Message[]) {
+    const recentMessages = (
+        Array.isArray(convoHistory) ? convoHistory : []
+    ).slice(-MAX_CONVO_HISTORY_MESSAGES);
+
+    return recentMessages
+        .map((message) => ({
+            role:
+                normalizeStoredRole(message?.role) === TUTOR_ROLE
+                    ? "model"
+                    : "user",
+            parts: [
+                {
+                    text:
+                        typeof message?.message === "string"
+                            ? message.message.slice(0, MAX_HISTORY_MESSAGE_LENGTH)
+                            : "",
+                },
+            ],
+        }))
+        .filter((entry) => entry.parts[0].text.trim().length > 0);
 }
 
 export function formatInitialObjectives(objectives: any[]) {
@@ -34,10 +75,13 @@ export async function generateInstructions(LessonProgress: LessonProgress) {
     const Lesson = await getLessonByIndex(LessonProgress.lessonIndex);
     let generatedInstructions = instructions;
     const user = await getCurrentUser();
-    const userName = user?.firstName;
+    // The learner picks their own Clerk first name, so it is untrusted text
+    const userName = sanitizePromptText(
+        user?.firstName,
+        MAX_PROMPT_NAME_LENGTH,
+    );
     // info from lesson progress
     const lessonObjectivesMet = LessonProgress.objectivesMet;
-    const convoHistory = LessonProgress.convoHistory;
 
     // info from lesson
     const lessonTitle = Lesson.title;
@@ -52,24 +96,26 @@ export async function generateInstructions(LessonProgress: LessonProgress) {
         )
         .join(", ");
 
-    const formattedConvoHistory = formatConvoHistory(convoHistory);
-
-    generatedInstructions = generatedInstructions.replace("<<NAME>>", userName);
-    generatedInstructions = generatedInstructions.replace(
+    // fillToken, never String.replace with a string replacement — see above
+    generatedInstructions = fillToken(
+        generatedInstructions,
+        "<<NAME>>",
+        userName || "the student",
+    );
+    generatedInstructions = fillToken(
+        generatedInstructions,
         "<<LESSON_TITLE>>",
         lessonTitle,
     );
-    generatedInstructions = generatedInstructions.replace(
+    generatedInstructions = fillToken(
+        generatedInstructions,
         "<<LESSON_DESCRIPTION>>",
         lessonDescription,
     );
-    generatedInstructions = generatedInstructions.replace(
+    generatedInstructions = fillToken(
+        generatedInstructions,
         "<<OBJECTIVES_MET>>",
         lessonObjectivesAndCompletionStatus,
-    );
-    generatedInstructions = generatedInstructions.replace(
-        "<<PREVIOUS_CONVERSATION>>",
-        formattedConvoHistory,
     );
 
     return generatedInstructions;

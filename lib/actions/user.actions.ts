@@ -126,6 +126,9 @@ export async function getAllUsers() {
 }
 
 export async function getUserStats() {
+    // Admin-only read (the admin dashboard's user counts). Guarded outside the
+    // try so the auth failure isn't swallowed into the default zero stats.
+    await requireAdmin();
     try {
         await connectToDatabase();
 

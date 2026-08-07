@@ -4,8 +4,41 @@ import { connectToDatabase } from "@/lib/database";
 import LessonProgress from "../database/models/lessonProgress.model";
 import QuizResult from "../database/models/quizResult.model";
 import { getAllLessons } from "./Lesson.actions";
-import { formatInitialObjectives } from "../serverUtils";
+import { formatInitialObjectives, normalizeStoredRole } from "../serverUtils";
 import { ensureUser } from "./user.actions";
+import { requireAdmin } from "@/lib/auth";
+
+const MAX_STORED_MESSAGE_LENGTH = 4000;
+
+// lessonIndex is interpolated into a Mongoose filter, where a non-numeric
+// value raises a CastError naming the model and schema path. Validating here
+// means that error is never reachable, whatever the caller sends.
+function assertLessonIndex(lessonIndex: number): number {
+    if (!Number.isInteger(lessonIndex) || lessonIndex < 0) {
+        throw new Error("Invalid lesson index");
+    }
+    return lessonIndex;
+}
+
+// Every export of a "use server" file is a POST endpoint, so these arguments
+// are caller-controlled regardless of what the UI sends. Coerce the objective
+// flags to real booleans and whitelist stored roles, so a forged role can
+// never make learner text replay as the tutor's own turn in a later prompt.
+function sanitizeObjectivesMet(objectivesMet: boolean[]): boolean[] {
+    if (!Array.isArray(objectivesMet)) return [];
+    return objectivesMet.map((met) => met === true);
+}
+
+function sanitizeMessages(messages: Message[]): Message[] {
+    if (!Array.isArray(messages)) return [];
+    return messages.map((message) => ({
+        role: normalizeStoredRole(message?.role),
+        message:
+            typeof message?.message === "string"
+                ? message.message.slice(0, MAX_STORED_MESSAGE_LENGTH)
+                : "",
+    }));
+}
 
 // when user has never done the lesson before and goes to it make a mongoDB item with convoHistory and objectives met default empty array and false array respectively
 // Upsert-based and idempotent: two tabs opening a fresh lesson at once used
@@ -21,6 +54,8 @@ export async function initLessonProgress({
         await connectToDatabase();
 
         const { _id: userId } = await ensureUser();
+
+        assertLessonIndex(lessonIndex);
 
         // this part is a repeat to be removed later
         const objectivesMet = formatInitialObjectives(objectives);
@@ -67,6 +102,8 @@ export async function getLessonProgress({
 
         const { _id: userId } = await ensureUser();
 
+        assertLessonIndex(lessonIndex);
+
         const lessonProgress = await LessonProgress.findOne({
             userId: userId,
             lessonIndex: lessonIndex,
@@ -97,6 +134,15 @@ export async function updateLessonProgress({
         await connectToDatabase();
 
         const { _id: userId } = await ensureUser();
+
+        assertLessonIndex(lessonIndex);
+        objectivesMet = sanitizeObjectivesMet(objectivesMet);
+        if (convoHistory !== undefined) {
+            convoHistory = sanitizeMessages(convoHistory);
+        }
+        if (appendMessages !== undefined) {
+            appendMessages = sanitizeMessages(appendMessages);
+        }
 
         // Single atomic pipeline update: the merge with the stored document
         // (objectives can never regress — an objective already true in the DB
@@ -275,6 +321,10 @@ export async function getAllLessonStatuses(): Promise<LessonStatus[]> {
 }
 
 export async function getLessonProgressStats() {
+    // Cross-user aggregate for the admin dashboard: a server action is a bare
+    // POST endpoint, so the page guard alone never protects it
+    await requireAdmin();
+
     try {
         await connectToDatabase();
 
@@ -348,6 +398,8 @@ export async function deleteLessonProgress({
         await connectToDatabase();
 
         const { _id: userId } = await ensureUser();
+
+        assertLessonIndex(lessonIndex);
 
         const deletedLessonProgress = await LessonProgress.findOneAndDelete({
             userId: userId,

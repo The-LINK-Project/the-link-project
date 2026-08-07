@@ -26,12 +26,13 @@ const isAdminPath = (path: string) =>
 export default clerkMiddleware(async (auth, req: NextRequest) => {
     const { pathname } = req.nextUrl;
 
-    // Skip API routes, static files, and Next.js internals
+    // Skip API routes and Next.js internals. Static assets are excluded by the
+    // matcher below — never short-circuit on a bare "." here, since a dot can
+    // be injected into any dynamic segment (e.g. /en/learn/1./quiz).
     if (
         pathname.startsWith("/api/") ||
         pathname.startsWith("/_next/") ||
-        pathname.startsWith("/_vercel/") ||
-        (pathname.includes(".") && !pathname.endsWith("/"))
+        pathname.startsWith("/_vercel/")
     ) {
         return NextResponse.next();
     }
@@ -89,7 +90,9 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 
 export const config = {
     matcher: [
-        // Skip all internal paths (_next, _vercel) and API routes
-        "/((?!api|_next|_vercel|.*\\..*).*)",
+        // Skip internal paths (_next, _vercel), API routes, and real static
+        // assets. Only genuine file extensions anchored at the end of the path
+        // are excluded — a bare "." must not switch the auth gate off.
+        "/((?!api|_next|_vercel|.*\\.(?:ico|png|jpe?g|gif|svg|webp|avif|css|js|mjs|map|txt|xml|json|webmanifest|woff2?|ttf|otf|eot|mp4|webm|mp3|wav|pdf)$).*)",
     ]
 };

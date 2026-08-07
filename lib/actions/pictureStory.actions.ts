@@ -84,6 +84,9 @@ export async function createPictureStorySet(setData: PictureStorySetData) {
 export async function getAllPictureStorySets(): Promise<
     PictureStorySetAdmin[]
 > {
+    // Admin-only read: it returns every correctAnswerIndex, and the learner
+    // game renders the static sets in constants/games/pictureStory instead
+    await requireAdmin();
     try {
         await connectToDatabase();
 
@@ -147,6 +150,9 @@ export async function deletePictureStorySet(setId: string) {
 }
 
 export async function getPictureStoryStats() {
+    // Admin-only read: aggregate play data across every user. Guarded outside
+    // the try so the auth failure isn't swallowed into the default zero stats.
+    await requireAdmin();
     try {
         await connectToDatabase();
 

@@ -94,10 +94,11 @@ export async function submitQuiz({
         };
     } catch (error) {
         console.error("Error saving quiz result:", error);
+        // Fixed text only: Next.js does not redact a server action's resolved
+        // value, so internal error messages must never be returned
         return {
             success: false as const,
-            message:
-                error instanceof Error ? error.message : "An unexpected error occurred",
+            message: "An unexpected error occurred",
         };
     }
 }

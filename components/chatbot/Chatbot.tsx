@@ -26,7 +26,7 @@ const Chatbot = ({ showChatbot }: { showChatbot: boolean }) => {
     const chatBodyRef = useRef<HTMLDivElement>(null);
 
     const generateBotResponse = async (history: ChatMessageType[]) => {
-        setIsWaitingForResponse(true); 
+        setIsWaitingForResponse(true);
 
         const updateHistory = (text: string, isError = false) => {
             setChatHistory((prev) => [

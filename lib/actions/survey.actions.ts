@@ -232,8 +232,14 @@ export async function getSurveyStateForUser(): Promise<SurveyStateForUser | null
  * change of mind). Also remembers where the person is so they can resume.
  * Designed to be called on every answer; failure is reported quietly in the
  * return value and must never interrupt the person mid-survey.
+ *
+ * `surveyId` is the id of the survey the server handed this session (the page
+ * renders it from getActiveSurvey and the client echoes it back). It is the
+ * only evidence available of what the caller was actually served, and every
+ * write is bound to it.
  */
 export async function saveSurveyAnswer(
+    surveyId: string,
     questionId: string,
     answer: unknown,
     lastQuestionId?: string,
@@ -242,9 +248,19 @@ export async function saveSurveyAnswer(
         const survey = getActiveSurvey();
         if (!survey) return { success: false, message: "No survey is open" };
 
-        const question = getSurveyQuestions(survey).find(
-            (item) => item.id === questionId,
-        );
+        // A question is only writable if it comes from the question set this
+        // session was served. Without this, a page left open across a survey
+        // change — or any other mix-up between what was shown and what is
+        // being written — files answers under whichever survey happens to be
+        // open now, as if the person had been asked those questions.
+        // "Unknown question" is the client's signal to drop a save for good
+        // rather than retry it forever; a closed survey can never accept one.
+        if (surveyId !== survey.id) {
+            return { success: false, message: "Unknown question" };
+        }
+
+        const questions = getSurveyQuestions(survey);
+        const question = questions.find((item) => item.id === questionId);
         if (!question) return { success: false, message: "Unknown question" };
 
         await connectToDatabase();
@@ -254,7 +270,15 @@ export async function saveSurveyAnswer(
             status: "in_progress",
             declinedAt: null, // starting to answer supersedes an old decline
         };
-        if (lastQuestionId) update.lastQuestionId = lastQuestionId;
+        // The resume position gets the same treatment as the answer itself: it
+        // must name a real question of this survey, never an arbitrary string
+        // the client asked us to store and later steer their session with.
+        if (
+            lastQuestionId &&
+            questions.some((item) => item.id === lastQuestionId)
+        ) {
+            update.lastQuestionId = lastQuestionId;
+        }
 
         // Answers are frozen once submitted. The status guard enforces that
         // atomically: for a submitted response the filter matches nothing, so

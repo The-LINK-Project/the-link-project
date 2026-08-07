@@ -1,4 +1,4 @@
-import { currentUser, User } from "@clerk/nextjs/server";
+import { auth, currentUser, User } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { ADMIN_CONFIG, isAdminEmail } from "@/lib/config/admin";
@@ -22,6 +22,25 @@ function getVerifiedPrimaryEmail(user: User): string | undefined {
   }
 
   return primary.emailAddress;
+}
+
+/**
+ * Guard for signed-in-only pages. Layout-level backstop so that middleware.ts
+ * is not the single point of failure for every learner page — a matcher hole
+ * (one has already been found once) must not be enough on its own to serve a
+ * protected page to an anonymous visitor.
+ *
+ * Only the session is checked, no Clerk Backend API call: this runs on every
+ * render of every protected page.
+ */
+export async function requireSignedIn() {
+  const { userId } = await auth();
+
+  if (!userId) {
+    redirect(ADMIN_CONFIG.redirectPaths.signIn);
+  }
+
+  return userId;
 }
 
 /**

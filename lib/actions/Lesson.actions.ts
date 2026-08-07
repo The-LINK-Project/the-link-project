@@ -173,6 +173,22 @@ export async function deleteLesson(lessonId: string): Promise<{ success: boolean
         // and the lesson last, so a failed cleanup leaves the lesson in
         // place and the whole delete can simply be retried.
         const lessonIndex = lesson.lessonIndex;
+
+        // The cascade keys on the lesson NUMBER, not on this document's id.
+        // While two lessons share a number, deleting one would also erase the
+        // conversation history, progress and quiz results belonging to the
+        // one that stays. Refuse rather than guess which rows were meant —
+        // the duplicates have to be resolved by hand first.
+        const lessonsWithSameIndex = await Lesson.countDocuments({
+            lessonIndex,
+        });
+        if (lessonsWithSameIndex > 1) {
+            return {
+                success: false,
+                message: `Another lesson also uses lesson number ${lessonIndex}. Deleting this one would erase learner progress and quiz results for that lesson too. Please fix the duplicate lesson numbers first.`,
+            };
+        }
+
         await Promise.all([
             Quiz.deleteMany({ lessonId: lessonIndex }),
             QuizResult.deleteMany({ lessonId: lessonIndex }),

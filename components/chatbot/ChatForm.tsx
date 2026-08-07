@@ -62,15 +62,8 @@ const ChatForm: FC<ChatFormProps> = ({
 
             setChatHistory(thinkingHistory);
 
-            Promise.resolve(
-                generateBotResponse([
-                    ...updatedHistory,
-                    {
-                        role: "user",
-                        text: ` Using the details provided above, please address this query: ${userMessage}`,
-                    },
-                ])
-            ).finally(() => {
+            // updatedHistory already ends with this turn's message
+            Promise.resolve(generateBotResponse(updatedHistory)).finally(() => {
                 setIsSubmitting(false);
             });
         }, 600);

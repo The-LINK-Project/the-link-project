@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 import { Button } from "@/components/ui/button";
 import SurveyClient from "@/components/survey/SurveyClient";
 import { getActiveSurvey } from "@/constants/survey/feedbackSurvey";
@@ -31,8 +32,15 @@ const SurveyPage = async () => {
     }
 
     const initialState = await getSurveyStateForUser();
+    const { userId } = await auth();
 
-    return <SurveyClient survey={survey} initialState={initialState} />;
+    return (
+        <SurveyClient
+            survey={survey}
+            initialState={initialState}
+            ownerId={userId}
+        />
+    );
 };
 
 export default SurveyPage;

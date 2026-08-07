@@ -9,6 +9,11 @@ import {
     submitSurvey,
 } from "@/lib/actions/survey.actions";
 import { getSurveyQuestions } from "@/constants/survey/feedbackSurvey";
+import {
+    clearSurveyDraft,
+    readSurveyDraft,
+    writeSurveyDraft,
+} from "@/lib/surveyDraft";
 import { ArrowLeft, ArrowRight, Check, Pencil } from "lucide-react";
 
 // The survey runner. Design intent, in order of importance:
@@ -24,46 +29,10 @@ import { ArrowLeft, ArrowRight, Check, Pencil } from "lucide-react";
 type SurveyClientProps = {
     survey: SurveyDefinition;
     initialState: SurveyStateForUser | null;
+    ownerId: string | null;
 };
 
 type Screen = "consent" | "questions" | "review" | "done";
-
-type LocalDraft = {
-    answers: SurveyAnswers;
-    lastQuestionId: string | null;
-    updatedAt: string;
-};
-
-const draftKey = (surveyId: string) => `link-survey-draft-${surveyId}`;
-
-function readLocalDraft(surveyId: string): LocalDraft | null {
-    try {
-        const raw = window.localStorage.getItem(draftKey(surveyId));
-        if (!raw) return null;
-        const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed !== "object" || !parsed.answers)
-            return null;
-        return parsed as LocalDraft;
-    } catch {
-        return null;
-    }
-}
-
-function writeLocalDraft(surveyId: string, draft: LocalDraft) {
-    try {
-        window.localStorage.setItem(draftKey(surveyId), JSON.stringify(draft));
-    } catch {
-        // A full phone must not break the survey; the server copy still works.
-    }
-}
-
-function clearLocalDraft(surveyId: string) {
-    try {
-        window.localStorage.removeItem(draftKey(surveyId));
-    } catch {
-        // ignore
-    }
-}
 
 /** Human-readable answer for the review screen. Null means skipped. */
 function answerSummary(
@@ -115,6 +84,7 @@ function answerSummary(
 export default function SurveyClient({
     survey,
     initialState,
+    ownerId,
 }: SurveyClientProps) {
     const router = useRouter();
     const questions = useMemo(() => getSurveyQuestions(survey), [survey]);
@@ -155,6 +125,7 @@ export default function SurveyClient({
                         .entries()
                         .next().value as [string, SurveyAnswer | null];
                     const result = await saveSurveyAnswer(
+                        survey.id,
                         questionId,
                         answer,
                         currentQuestionIdRef.current ?? questionId,
@@ -166,7 +137,7 @@ export default function SurveyClient({
                         }
                     } else if (result.alreadySubmitted) {
                         pendingRef.current.clear();
-                        clearLocalDraft(survey.id);
+                        clearSurveyDraft(survey.id);
                         setScreen("done");
                         return;
                     } else if (
@@ -206,10 +177,12 @@ export default function SurveyClient({
     // ------------------------------------------------------------------
     useEffect(() => {
         if (initialState?.status === "submitted") {
-            clearLocalDraft(survey.id);
+            clearSurveyDraft(survey.id);
             return;
         }
-        const local = readLocalDraft(survey.id);
+        const stored = readSurveyDraft(survey.id);
+        // Only the person who wrote a draft may restore it.
+        const local = ownerId && stored?.userId === ownerId ? stored : null;
         const serverTime = initialState?.updatedAt
             ? new Date(initialState.updatedAt).getTime()
             : 0;
@@ -282,10 +255,11 @@ export default function SurveyClient({
             next[questionId] = answer;
         }
         setAnswers(next);
-        writeLocalDraft(survey.id, {
+        writeSurveyDraft(survey.id, {
             answers: next,
             lastQuestionId: questionId,
             updatedAt: new Date().toISOString(),
+            userId: ownerId,
         });
         pendingRef.current.set(questionId, answer);
         scheduleFlush();
@@ -379,7 +353,7 @@ export default function SurveyClient({
             }
             const result = await submitSurvey();
             if (result.success) {
-                clearLocalDraft(survey.id);
+                clearSurveyDraft(survey.id);
                 setScreen("done");
                 window.scrollTo(0, 0);
             } else {
