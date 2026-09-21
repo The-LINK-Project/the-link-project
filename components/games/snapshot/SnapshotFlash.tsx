@@ -36,6 +36,16 @@ export default function SnapshotFlash({
     useEffect(() => {
         const onKey = (event: KeyboardEvent) => {
             if (event.repeat) return;
+            // Let focused controls (e.g. Quit) handle Space/Enter themselves. A
+            // focused "Next photo" button still advances via its native click.
+            if (
+                (event.key === " " || event.key === "Enter") &&
+                event.target instanceof Element &&
+                event.target.closest(
+                    'button, a, input, textarea, select, [role="button"]',
+                )
+            )
+                return;
             if (
                 event.key === " " ||
                 event.key === "Enter" ||

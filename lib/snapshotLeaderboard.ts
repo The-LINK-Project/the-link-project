@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // The Snapshot leaderboard lives in this browser's localStorage. The game runs
 // on a single booth laptop, so there is no network or database to fail
@@ -43,6 +43,8 @@ const write = (scores: SnapshotScore[]) => {
 
 export function useSnapshotLeaderboard() {
     const [scores, setScores] = useState<SnapshotScore[]>([]);
+    const scoresRef = useRef(scores);
+    scoresRef.current = scores;
 
     useEffect(() => {
         setScores(read().sort(compareScores));
@@ -63,7 +65,15 @@ export function useSnapshotLeaderboard() {
             id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
             at: Date.now(),
         };
-        const next = [...read(), score].sort(compareScores).slice(0, MAX_STORED);
+        // Merge storage with what's on screen, so scores saved this session
+        // survive even if storage writes are failing.
+        const byId = new Map(
+            [...scoresRef.current, ...read()].map((s) => [s.id, s]),
+        );
+        byId.set(score.id, score);
+        const next = [...byId.values()]
+            .sort(compareScores)
+            .slice(0, MAX_STORED);
         write(next);
         setScores(next);
         return score;

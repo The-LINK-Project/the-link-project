@@ -203,7 +203,7 @@ export default function SnapshotGame() {
                         {SNAPSHOT_TOPIC}
                     </p>
                     <p className="mt-2 text-lg text-ink-soft">
-                        Get ready. Tap or press Space to go faster.
+                        Get ready. Once the photos start, tap or press Space for the next one.
                     </p>
                     <span
                         key={count}
