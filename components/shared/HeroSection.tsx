@@ -1,8 +1,6 @@
 import React from "react";
 import GetStartedButton from "./GetStartedButton";
 import AwardBadge from "./AwardBadge";
-import { Link } from "@/i18n/navigation";
-import { Gamepad2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 const HeroSection = () => {
@@ -41,15 +39,8 @@ const HeroSection = () => {
                 {t("header1")} {t("header2")}
             </p>
 
-            <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
+            <div className="mt-9">
                 <GetStartedButton />
-                <Link
-                    href="/snapshot"
-                    className="inline-flex items-center gap-2 rounded-lg border border-ink/15 bg-surface px-8 py-3.5 text-base font-semibold text-ink transition-all duration-300 hover:border-ink/40 hover:shadow-[0_10px_24px_rgba(30,39,35,0.1)]"
-                >
-                    <Gamepad2 className="size-4" strokeWidth={2.25} />
-                    Play the memory game
-                </Link>
             </div>
         </section>
     );

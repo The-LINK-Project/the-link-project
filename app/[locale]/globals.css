@@ -330,19 +330,3 @@ body {
         transition: none;
     }
 }
-
-/* Snapshot memory game: a phase timer that drains linearly. The duration is
-   set inline, so the bar animates on the compositor without React ticks. */
-@keyframes snapshot-drain {
-    from {
-        transform: scaleX(1);
-    }
-    to {
-        transform: scaleX(0);
-    }
-}
-
-.snapshot-drain {
-    transform-origin: left center;
-    animation: snapshot-drain var(--snapshot-duration, 30s) linear forwards;
-}
