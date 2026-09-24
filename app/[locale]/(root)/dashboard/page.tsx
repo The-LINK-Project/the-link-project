@@ -4,6 +4,7 @@ import { getAllLessons } from "@/lib/actions/Lesson.actions";
 import { ensureUser } from "@/lib/actions/user.actions";
 import { getSurveyBannerState } from "@/lib/actions/survey.actions";
 import DashboardLessonItem from "@/components/dashboard/DashboardLessonItem";
+import LessonHome from "@/components/learn/LessonHome";
 import SurveyBanner from "@/components/survey/SurveyBanner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -67,6 +68,17 @@ const DashboardPage = async () => {
                         {t("viewResultsButton")}
                     </Link>
                 </Button>
+            </div>
+
+            {/* The lessons, the same as the mobile app's Home: what was left
+                unfinished, every lesson and where it stands, and the daily mix. */}
+            <LessonHome />
+
+            <div className="mt-12">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    {t("conversationTitle")}
+                </h2>
+                <p className="text-gray-600 mb-4">{t("conversationSubtitle")}</p>
             </div>
 
             <Tabs defaultValue="beginner" className="w-full">

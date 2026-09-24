@@ -96,5 +96,9 @@ export const config = {
         // assets. Only genuine file extensions anchored at the end of the path
         // are excluded — a bare "." must not switch the auth gate off.
         "/((?!api|_next|_vercel|.*\\.(?:ico|png|jpe?g|gif|svg|webp|avif|css|js|mjs|map|txt|xml|json|webmanifest|woff2?|ttf|otf|eot|mp4|webm|mp3|wav|pdf)$).*)",
+        // The speaking tutor checks the session with auth(), which only works
+        // on requests Clerk's middleware has seen. The handler above passes
+        // every /api/ path straight through, so nothing else changes for it.
+        "/api/tutor/(.*)",
     ]
 };

@@ -93,6 +93,8 @@ const CLIENT_MESSAGE_NAMESPACES = [
     "quizComplete",
     "quizIncomplete",
     "quizProgressBar",
+    "lessons",
+    "speaking",
 ];
 
 export default async function RootLayout({
