@@ -1,48 +1,25 @@
 "use client";
 
-import {
-    Check,
-    ChevronRight,
-    Circle,
-    CircleCheck,
-    Clock,
-    Ellipsis,
-    HardHat,
-    Mic,
-    Shuffle,
-    Stethoscope,
-    TrainFront,
-    Utensils,
-    type LucideIcon,
-} from "lucide-react";
+import { Mic } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
-import type { LessonIcon } from "@/lib/lessons/icons";
 import { useLessonLocalized } from "@/lib/lessons/localized";
 import type { Lesson } from "@/lib/lessons/types";
-import { lessonStage, type LessonStage, type LessonStatus } from "@/lib/progress/model";
+import { lessonStage, type LessonStatus } from "@/lib/progress/model";
 import { canPractiseSpeaking } from "@/lib/speaking/context";
 import { cn } from "@/lib/utils";
 
-import { LessonStages, stagesOf } from "./LessonStages";
-import { LessonBadge, text, type BadgeTone } from "./ui";
+import { Medallion, STAGE_COLORS } from "./Medallion";
 
-/** One picture per lesson, so a learner can find the lesson without reading. */
-export const LESSON_ICONS: Record<LessonIcon, LucideIcon> = {
-    train: TrainFront,
-    clinic: Stethoscope,
-    food: Utensils,
-    work: HardHat,
-    mix: Shuffle,
-};
+export { LESSON_ICONS } from "./Medallion";
 
 type Props = {
     lesson: Lesson;
     status: LessonStatus;
     /** The lesson to take next. Marked, never enforced: nothing is locked. */
     next?: boolean;
-    /** Shown instead of the usual badges, e.g. the daily mix done for today. */
+    /** Shown instead of the usual status, e.g. the daily mix done for today. */
     doneLabel?: string;
     /** Present when the exercises are finished and the lesson can be said aloud. */
     speakHref?: string;
@@ -51,13 +28,12 @@ type Props = {
 /**
  * Entry point for a lesson on the dashboard.
  *
- * Where the lesson stands is one of three things, and each looks like nothing
- * else: not started is an empty outline, in progress is yellow, done is a
- * white card with a green tick. Both of the last two have a faint lattice of
- * diamonds behind them in their colour, the way a certificate has a pattern in
- * its paper, so a card that has been touched looks different from one that has
- * not even before the colour is read. Every colour is said again by a picture
- * and by words, for a learner who cannot tell the colours apart or reads little.
+ * Drawn like a key that can be pressed: a thick outline with a heavier lower
+ * edge that sinks under the finger. Where the lesson stands is said three ways
+ * at once, for a learner who cannot tell the colours apart or reads little:
+ * the outline's colour (grey, blue for the one to start with, yellow under
+ * way, green done), the ring round the lesson's picture filling up, and the
+ * words above the title.
  *
  * No lesson is ever locked. Somebody who is going to the clinic tomorrow needs
  * the clinic lesson today, whatever order the list is in.
@@ -68,7 +44,7 @@ export function LessonCard({ lesson, status, next = false, doneLabel, speakHref 
     const { run, talk } = status;
     // Said by `doneLabel` for the daily mix, which is new again every morning.
     const stage = doneLabel ? "done" : lessonStage(status);
-    const twoStages = canPractiseSpeaking(lesson);
+    const tone = STAGE_COLORS[next && stage === "new" ? "next" : stage];
 
     const stageLabel =
         doneLabel ??
@@ -79,9 +55,6 @@ export function LessonCard({ lesson, status, next = false, doneLabel, speakHref 
               : next
                 ? t("statusNext")
                 : t("statusNotStarted"));
-    // How far the stage in hand has got. A lesson being gone through again is
-    // still a finished lesson: the tick stays, and the bar is the new run's.
-    const bar = run ?? (status.finished === "learned" ? talk : null);
     const detail = run
         ? t("statusStarted", run)
         : status.finished !== "learned"
@@ -90,164 +63,76 @@ export function LessonCard({ lesson, status, next = false, doneLabel, speakHref 
             ? t("continueTalk", talk)
             : t("statusSpeakingLeft");
 
-    const Icon = LESSON_ICONS[lesson.icon];
-    const StageIcon = STAGE_ICON[stage];
-    const tone: BadgeTone = STAGE_TONE[next && stage === "new" ? "next" : stage];
+    const fraction = progressShare(status, canPractiseSpeaking(lesson));
+    // Owed, not optional, until the talk is done: it is the way to finish.
+    const speakOwed = stage !== "done";
 
     return (
         <div
             className={cn(
-                "relative overflow-hidden rounded-2xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)]",
-                stage === "new" && !next && "border border-lesson-border",
-                stage === "new" && next && "border-2 border-lesson-primary",
-                stage === "progress" && "border-2 border-lesson-warning-fill",
-                stage === "done" && "border-[1.5px] border-lesson-success",
+                "flex flex-col rounded-2xl border-2 bg-white shadow-[0_4px_0_var(--lip)] transition-[transform,box-shadow] duration-75",
+                // The whole key sinks when its main part is pressed.
+                "has-[[data-card-main]:active]:translate-y-1 has-[[data-card-main]:active]:shadow-none",
             )}
+            style={{ borderColor: tone.ring, ["--lip" as string]: tone.lip }}
         >
-            {stage === "done" ? <Lattice color="#15803d" /> : null}
-            {stage === "progress" ? <Lattice color="#eab308" /> : null}
-
             <Link
+                data-card-main
                 href={`/lessons/${lesson.id}`}
                 aria-label={[localized(lesson.title), stageLabel, detail].filter(Boolean).join(". ")}
                 title={localized(lesson.goal)}
-                className="relative flex items-center gap-3 p-4 transition-opacity active:opacity-85"
+                className="flex items-center gap-4 rounded-2xl p-4 outline-offset-4"
             >
-                <span
-                    className={cn(
-                        "relative flex size-[52px] shrink-0 items-center justify-center rounded-xl border-[1.5px]",
-                        TILE[stage],
-                    )}
-                >
-                    <Icon className="size-[26px]" />
-                    {stage === "new" ? null : (
-                        <span
-                            className={cn(
-                                "absolute -bottom-1.5 -right-1.5 flex size-[22px] items-center justify-center rounded-full border-2 border-white",
-                                stage === "done" ? "bg-lesson-success" : "bg-lesson-warning-fill",
-                            )}
-                        >
-                            {stage === "done" ? (
-                                <Check className="size-3.5 text-white" strokeWidth={3} />
-                            ) : (
-                                <Ellipsis className="size-3.5 text-white" strokeWidth={3} />
-                            )}
-                        </span>
-                    )}
-                </span>
-
-                <span className="flex min-w-0 flex-1 flex-col gap-1">
-                    <span className={text.subheading}>{localized(lesson.title)}</span>
-                    <span className={text.caption}>{localized(lesson.goal)}</span>
-
-                    <span className="mt-1 flex flex-wrap gap-2">
-                        <LessonBadge
-                            label={stageLabel}
-                            tone={tone}
-                            icon={stage === "new" && next ? undefined : <StageIcon className="size-3.5" />}
-                        />
-                        {stage === "new" ? (
-                            <>
-                                <LessonBadge label={t("minutes", { count: lesson.estimatedMinutes })} tone="primary" />
-                                {next ? null : <LessonBadge label={t(`level.${lesson.level}`)} />}
-                            </>
-                        ) : null}
+                <Medallion icon={lesson.icon} fraction={fraction} done={stage === "done"} />
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="text-[13px] font-extrabold uppercase tracking-wide" style={{ color: tone.text }}>
+                        {stageLabel}
+                        {detail ? <span className="font-bold normal-case tracking-normal"> · {detail}</span> : null}
                     </span>
-
-                    {bar ? (
-                        <span className="block h-2 overflow-hidden rounded-full bg-lesson-muted-surface">
-                            <span
-                                className={cn(
-                                    "block h-full rounded-full",
-                                    stage === "done" ? "bg-lesson-success" : "bg-lesson-warning-fill",
-                                )}
-                                style={{ width: `${(bar.done / bar.total) * 100}%` }}
-                            />
-                        </span>
-                    ) : null}
-                    {detail ? (
-                        <span
-                            className={cn(
-                                "text-sm font-semibold leading-5",
-                                stage === "done" ? "text-lesson-success" : "text-lesson-warning",
-                            )}
-                        >
-                            {detail}
+                    <span className="text-lg font-extrabold leading-6 text-[#3c3c3c]">{localized(lesson.title)}</span>
+                    <span className="text-[15px] leading-5 text-[#6b6b6b]">{localized(lesson.goal)}</span>
+                    {stage === "new" ? (
+                        <span className="pt-1 text-[13px] font-bold text-[#8a8a8a]">
+                            {t("minutes", { count: lesson.estimatedMinutes })} · {t(`level.${lesson.level}`)}
                         </span>
                     ) : null}
                 </span>
-
-                <ChevronRight className="size-5 shrink-0 text-lesson-muted" />
             </Link>
 
-            {/* Under the row and as wide as the card: beside the picture there is
-                no room for two labels in Bengali or Tamil. A done lesson has said
-                all this with its tick. */}
-            {twoStages && stage !== "done" ? (
-                <div className="relative px-4 pb-3">
-                    <LessonStages {...stagesOf(status)} />
-                </div>
-            ) : null}
-
             {speakHref ? (
-                <Link
-                    href={speakHref}
-                    aria-label={`${t("summarySpeak")}. ${localized(lesson.title)}`}
-                    className={cn(
-                        "relative flex min-h-12 items-center justify-center gap-2 border-t px-4 transition-opacity active:opacity-85",
-                        // Owed, not optional: it is the way to finish the lesson.
-                        stage === "progress" && "border-lesson-warning-fill bg-lesson-warning-soft text-lesson-warning",
-                        // Once done, another go is an offer, not a second green band.
-                        stage === "done" && "border-lesson-success-soft bg-transparent text-lesson-primary-dark",
-                        stage === "new" && "border-lesson-hairline bg-lesson-primary-soft text-lesson-primary-dark",
-                    )}
-                >
-                    <Mic className="size-5" strokeWidth={stage === "done" ? 2 : 2.5} />
-                    <span className="text-base font-semibold leading-6">{t("summarySpeak")}</span>
-                </Link>
+                <div className="px-4 pb-4">
+                    <Link
+                        href={speakHref}
+                        aria-label={`${t("summarySpeak")}. ${localized(lesson.title)}`}
+                        className={cn(
+                            "flex min-h-12 items-center justify-center gap-2 rounded-xl text-[15px] font-extrabold uppercase tracking-wide transition-[transform,box-shadow] duration-75 active:translate-y-1 active:shadow-none",
+                            speakOwed
+                                ? "bg-[#ffc800] text-[#4d3500] shadow-[0_4px_0_#e5a800]"
+                                : // Once done, another go is an offer, not a second loud button.
+                                  "border-2 border-[#e5e5e5] bg-white text-[#0b6fa4] shadow-[0_4px_0_#e5e5e5]",
+                        )}
+                    >
+                        <Mic className="size-5" strokeWidth={3} />
+                        {t("summarySpeak")}
+                    </Link>
+                </div>
             ) : null}
         </div>
     );
 }
 
-/** Distance between diamonds in the lattice, and the half-width of one. */
-const LATTICE_STEP = 26;
-const DIAMOND = 3.5;
-
 /**
- * The pattern behind a lesson that has been started or finished: small
- * diamonds in staggered rows, so faint they read as texture rather than as
- * something to look at, in the colour of the stage. Decoration only.
+ * How much of the lesson is behind the learner, for the ring. A lesson with a
+ * talk is two halves: the exercises, then the talk. A lesson under way always
+ * shows a sliver, so it never looks the same as one not started.
  */
-function Lattice({ color }: { color: string }) {
-    const s = LATTICE_STEP;
-    const diamond = (cx: number, cy: number) =>
-        `<polygon points='${cx},${cy - DIAMOND} ${cx + DIAMOND},${cy} ${cx},${cy + DIAMOND} ${cx - DIAMOND},${cy}'/>`;
-    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${s}' height='${s * 2}'><g fill='${color}' fill-opacity='0.16'>${diamond(0, s / 2)}${diamond(s, s / 2)}${diamond(s / 2, s * 1.5)}</g></svg>`;
-    return (
-        <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0"
-            style={{ backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(svg)}")` }}
-        />
-    );
+function progressShare({ finished, run, talk }: LessonStatus, twoStages: boolean): number {
+    if (finished === "done") return 1;
+    const half = twoStages ? 0.5 : 1;
+    let share = 0;
+    if (finished === "learned") share = half + (talk ? (1 - half) * (talk.done / talk.total) : 0);
+    else if (run) share = half * (run.done / run.total);
+    else if (talk) share = (1 - half) * (talk.done / talk.total);
+    const started = finished !== "none" || run || talk;
+    return started ? Math.max(share, 0.05) : 0;
 }
-
-const TILE: Record<LessonStage, string> = {
-    new: "bg-white text-lesson-primary-dark border-lesson-border",
-    progress: "bg-lesson-warning-soft text-lesson-warning border-lesson-warning-fill",
-    done: "bg-lesson-success text-white border-lesson-success",
-};
-
-const STAGE_TONE = {
-    new: "neutral",
-    next: "accent",
-    progress: "warning",
-    done: "success",
-} as const;
-
-const STAGE_ICON: Record<LessonStage, LucideIcon> = {
-    new: Circle,
-    progress: Clock,
-    done: CircleCheck,
-};
