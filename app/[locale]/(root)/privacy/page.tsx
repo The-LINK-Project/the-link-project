@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { Link } from "@/i18n/navigation";
 
 export const metadata: Metadata = {
     title: "Privacy Policy | The LINK Project app",
@@ -70,7 +71,7 @@ export default function PrivacyPage() {
             </p>
             <p>
                 We have tried to write it in simple English. If anything is unclear,
-                please email us at <Todo>[[PRIVACY EMAIL]]</Todo>.
+                please email us at thelinkproject.org@gmail.com.
             </p>
 
             <H2>1. Who we are</H2>
@@ -92,7 +93,7 @@ export default function PrivacyPage() {
             </p>
             <p>
                 <strong>Data Protection Officer:</strong> <Todo>[[DPO NAME]]</Todo>{" "}
-                <strong>Email:</strong> <Todo>[[PRIVACY EMAIL]]</Todo>
+                <strong>Email:</strong> thelinkproject.org@gmail.com
             </p>
 
             <H2>2. Who the app is for</H2>
@@ -382,11 +383,13 @@ export default function PrivacyPage() {
             </p>
             <p>
                 <strong>Without the app:</strong> go to{" "}
-                <Todo>[[WEB DELETION URL]]</Todo> or email{" "}
-                <Todo>[[PRIVACY EMAIL]]</Todo> from the email address you signed up
-                with. Write &quot;Delete my account&quot; in the subject. We will
-                delete your account within <Todo>[[NUMBER]]</Todo> days and email you
-                when it is done.
+                <Link href="/delete-account">Delete your account</Link> or email{" "}
+                <a href="mailto:thelinkproject.org@gmail.com?subject=Delete%20my%20account">
+                    thelinkproject.org@gmail.com
+                </a>{" "}
+                from the email address you signed up with. Write &quot;Delete my
+                account&quot; in the subject. We will delete your account within 30
+                days and email you when it is done.
             </p>
 
             <H2>15. Your rights</H2>
@@ -408,7 +411,7 @@ export default function PrivacyPage() {
                 </li>
                 <li>
                     <strong>ask a question or complain:</strong> email{" "}
-                    <Todo>[[PRIVACY EMAIL]]</Todo>. We will reply within{" "}
+                    thelinkproject.org@gmail.com. We will reply within{" "}
                     <Todo>[[NUMBER]]</Todo> days.
                 </li>
             </ul>
@@ -434,7 +437,7 @@ export default function PrivacyPage() {
                 <br />
                 Data Protection Officer: <Todo>[[DPO NAME]]</Todo>
                 <br />
-                Email: <Todo>[[PRIVACY EMAIL]]</Todo>
+                Email: thelinkproject.org@gmail.com
             </p>
         </main>
     );
