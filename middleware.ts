@@ -11,6 +11,7 @@ const intlMiddleware = createMiddleware(routing);
 // matcher below excludes them.
 const publicRoutePatterns = [
     /^\/$/,
+    /^\/delete-account$/,
     /^\/sign-in(\/.*)?$/,
     /^\/sign-up(\/.*)?$/,
     /^\/contact$/,
