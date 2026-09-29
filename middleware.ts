@@ -15,6 +15,7 @@ const publicRoutePatterns = [
     /^\/sign-up(\/.*)?$/,
     /^\/contact$/,
     /^\/about$/,
+    /^\/privacy$/,
 ];
 
 const isPublicPath = (path: string) =>

@@ -6,6 +6,7 @@ import EventsSection from "@/components/shared/EventsSection";
 import FAQ from "@/components/shared/FAQ";
 import ShareIdeasSection from "@/components/shared/ShareIdeasSection";
 import ObjectivesMarquee from "@/components/shared/ObjectivesMarquee";
+import Footer from "@/components/shared/Footer";
 
 export default function Home() {
     return (
@@ -18,6 +19,7 @@ export default function Home() {
             <EventsSection />
             <FAQ />
             <ShareIdeasSection />
+            <Footer />
         </div>
     );
 }
