@@ -6,7 +6,9 @@ import mongoose from "mongoose";
 //
 // Anonymity note: userId exists ONLY to enforce one-response-per-person and to
 // let a person resume their own draft. The admin export (survey.actions.ts)
-// never reads it out, and nothing user-facing displays it.
+// never reads it out, and nothing user-facing displays it. When the account
+// is deleted (deleteUser in lib/userSync.ts), a submitted response keeps its
+// answers but gets a random userId; drafts and declines are deleted.
 const surveyResponseSchema = new mongoose.Schema(
     {
         userId: {

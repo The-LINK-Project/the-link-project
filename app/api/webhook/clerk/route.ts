@@ -129,9 +129,21 @@ export async function POST(req: Request) {
     if (eventType === "user.deleted") {
         const { id } = evt.data;
 
-        const deletedUser = await deleteUser(id!);
+        if (!id) {
+            // Without the Clerk ID there is no way to tell whose data to
+            // remove. Acknowledge the event — retrying the same payload can
+            // never succeed
+            console.error("user.deleted event has no user ID, skipping");
+            return NextResponse.json({ message: "Skipped: no user ID" });
+        }
 
-        return NextResponse.json({ message: "OK", user: deletedUser });
+        // null means the user was already gone, which is still a success
+        const deletedUser = await deleteUser(id);
+
+        return NextResponse.json({
+            message: deletedUser ? "OK" : "Already deleted",
+            user: deletedUser,
+        });
     }
 
     return new Response("", { status: 200 });
