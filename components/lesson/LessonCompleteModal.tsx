@@ -139,7 +139,7 @@ const LessonCompleteModal = ({
                         <Button className="w-full">{t("returnbutton")}</Button>
                     </Link>
                     {hasQuiz && (
-                        <Link href={`/learn/${lessonIndex}/quiz`}>
+                        <Link href={`/legacy/learn/${lessonIndex}/quiz`}>
                             <Button variant="outline" className="w-full">
                                 {t("takequiz")}
                             </Button>

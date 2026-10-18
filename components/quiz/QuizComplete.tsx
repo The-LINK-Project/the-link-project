@@ -79,7 +79,7 @@ const QuizComplete = ({
                         )}
                     </div>
 
-                    <Link href="/results">
+                    <Link href="/legacy/results">
                         <Button className="px-6 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 hover:cursor-grabbing transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                             {t("seeResults")}
                         </Button>
@@ -88,7 +88,7 @@ const QuizComplete = ({
 
                 {/* Navigation buttons */}
                 <div className="flex justify-between gap-4 mt-6">
-                    <Link href={`/learn/${lessonIndex}`}>
+                    <Link href={`/legacy/learn/${lessonIndex}`}>
                         <Button
                             variant="outline"
                             className="px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-300 hover:shadow-lg flex items-center gap-2"
@@ -99,7 +99,7 @@ const QuizComplete = ({
                         </Button>
                     </Link>
 
-                    <Link href={`/learn/${lessonIndex + 1}`}>
+                    <Link href={`/legacy/learn/${lessonIndex + 1}`}>
                         <Button className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2">
                             {t("nextButton")}
                             <ChevronRight className="h-4 w-4" />

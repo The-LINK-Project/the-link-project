@@ -53,7 +53,7 @@ export async function createWordMatchRound(roundData: WordMatchRoundData) {
             })),
         });
 
-        revalidatePath("/games/word-match");
+        revalidatePath("/legacy/games/word-match");
         revalidatePath("/admin/games/word-match");
 
         return {
@@ -125,7 +125,7 @@ export async function deleteWordMatchRound(roundId: string) {
             throw new Error("Round not found");
         }
 
-        revalidatePath("/games/word-match");
+        revalidatePath("/legacy/games/word-match");
         revalidatePath("/admin/games/word-match");
 
         return {
