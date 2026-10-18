@@ -1,13 +1,12 @@
 "use client";
 
-import { Check, CircleCheck, Clock, Ellipsis, Mic } from "lucide-react";
+import { CircleCheck, Clock, Mic } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { localized } from "@/lib/lessons/localized";
 import type { Lesson } from "@/lib/lessons/types";
 import type { LessonRecord } from "@/lib/progress/model";
-import { cn } from "@/lib/utils";
 
+import { LessonHeading } from "./LessonHeading";
 import { LessonWords } from "./LessonIntro";
 import { LessonStages } from "./LessonStages";
 import { LessonHero } from "./LessonVisual";
@@ -35,23 +34,12 @@ export function LessonDone({
 
     return (
         <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-3">
-                <p className={text.label}>{localized(lesson.title, "en")}</p>
-                <div className="flex items-center gap-2">
-                    <span
-                        className={cn(
-                            "flex size-8 shrink-0 items-center justify-center rounded-full",
-                            speakingLeft ? "bg-lesson-warning-fill" : "bg-lesson-success",
-                        )}
-                    >
-                        {speakingLeft ? (
-                            <Ellipsis className="size-5 text-white" />
-                        ) : (
-                            <Check className="size-5 text-white" strokeWidth={3} />
-                        )}
-                    </span>
-                    <h1 className={text.title}>{speakingLeft ? t("summaryStageTitle") : t("summaryTitle")}</h1>
-                </div>
+            <LessonHeading
+                lesson={lesson}
+                title={speakingLeft ? t("summaryStageTitle") : t("summaryTitle")}
+                fraction={speakingLeft ? 0.5 : 1}
+                done={!speakingLeft}
+            >
                 {speakingLeft ? <p className={text.caption}>{t("summarySpeakNext")}</p> : null}
                 <LessonHero lesson={lesson} />
                 <div className="flex">
@@ -64,7 +52,7 @@ export function LessonDone({
                 {twoStages ? (
                     <LessonStages learn="done" speak={speakingLeft ? "current" : "done"} size="lg" />
                 ) : null}
-            </div>
+            </LessonHeading>
 
             <LessonCardBox>
                 <p className={text.label}>{t("summaryFirstTry")}</p>

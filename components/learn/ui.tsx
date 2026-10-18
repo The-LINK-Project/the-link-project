@@ -12,10 +12,10 @@ import { cn } from "@/lib/utils";
 
 /** Type styles, named after the mobile app's text variants. */
 export const text = {
-    display: "text-[34px] font-extrabold leading-10 text-lesson-fg",
-    title: "text-[28px] font-bold leading-[34px] text-lesson-fg",
-    heading: "text-[22px] font-bold leading-7 text-lesson-fg",
-    subheading: "text-lg font-semibold leading-6 text-lesson-fg",
+    display: "text-[34px] font-extrabold leading-10 text-lesson-ink",
+    title: "text-[28px] font-extrabold leading-[34px] text-lesson-ink",
+    heading: "text-[22px] font-extrabold leading-7 text-lesson-ink",
+    subheading: "text-lg font-bold leading-6 text-lesson-ink",
     body: "text-base leading-6 text-lesson-fg",
     bodyStrong: "text-base font-semibold leading-6 text-lesson-fg",
     caption: "text-sm leading-5 text-lesson-muted",
@@ -25,18 +25,23 @@ export const text = {
 type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "destructive";
 type ButtonSize = "sm" | "md" | "lg";
 
+/**
+ * Keys, like the lesson cards on the dashboard: a darker lower edge that the
+ * key sinks into when pressed. `--lip` is that edge's colour.
+ */
 const BUTTON_VARIANT: Record<ButtonVariant, string> = {
-    primary: "bg-lesson-primary text-lesson-on-primary border-transparent",
-    secondary: "bg-lesson-muted-surface text-lesson-fg border-transparent",
-    outline: "bg-white text-lesson-fg border-lesson-border",
-    ghost: "bg-transparent text-lesson-fg border-transparent",
-    destructive: "bg-lesson-destructive text-white border-transparent",
+    primary:
+        "bg-lesson-primary text-lesson-on-primary border-transparent [--lip:var(--color-lesson-primary-lip)] disabled:bg-lesson-key disabled:text-lesson-key-text disabled:[--lip:var(--color-lesson-key-lip)] disabled:opacity-100",
+    secondary: "bg-lesson-muted-surface text-lesson-ink border-transparent [--lip:var(--color-lesson-key-lip)]",
+    outline: "border-2 bg-white text-lesson-link border-lesson-key [--lip:var(--color-lesson-key)]",
+    ghost: "bg-transparent text-lesson-muted border-transparent shadow-none!",
+    destructive: "bg-lesson-destructive text-white border-transparent [--lip:#98200c]",
 };
 
 const BUTTON_SIZE: Record<ButtonSize, string> = {
-    sm: "min-h-10 px-3 text-sm",
-    md: "min-h-12 px-4 text-base",
-    lg: "min-h-14 px-6 text-base",
+    sm: "min-h-10 px-3 text-[13px]",
+    md: "min-h-12 px-4 text-[15px]",
+    lg: "min-h-14 px-6 text-[15px]",
 };
 
 export function LessonButton({
@@ -60,7 +65,8 @@ export function LessonButton({
             type="button"
             disabled={disabled || loading}
             className={cn(
-                "flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border font-semibold transition-opacity active:opacity-80 disabled:cursor-not-allowed disabled:opacity-50",
+                "flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border font-extrabold uppercase tracking-wide shadow-[0_4px_0_var(--lip)] transition-[transform,box-shadow] duration-75",
+                "enabled:active:translate-y-1 enabled:active:shadow-none disabled:cursor-not-allowed disabled:opacity-50",
                 BUTTON_VARIANT[variant],
                 BUTTON_SIZE[size],
                 className,
@@ -118,7 +124,7 @@ export function LessonCardBox({
     return (
         <div
             className={cn(
-                "rounded-2xl border border-lesson-border p-4 shadow-[0_2px_8px_rgba(0,0,0,0.06)]",
+                "rounded-2xl border-2 border-lesson-key p-4 shadow-[0_4px_0_var(--color-lesson-key)]",
                 tone === "muted" ? "bg-lesson-muted-surface" : "bg-white",
                 className,
             )}

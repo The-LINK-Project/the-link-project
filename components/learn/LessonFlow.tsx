@@ -80,6 +80,7 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
     return (
         <LessonShell
             closeLabel={t("quit")}
+            icon={lesson.icon}
             onClose={() => router.push("/dashboard")}
             footer={
                 <ShellActions>
@@ -156,6 +157,7 @@ function LessonRunner({ lessonId, saved }: { lessonId: string; saved?: SavedRun 
         return (
             <LessonShell
                 closeLabel={t("quit")}
+                icon={lesson.icon}
                 onClose={leave}
                 footer={
                     <ShellActions>
@@ -176,7 +178,7 @@ function LessonRunner({ lessonId, saved }: { lessonId: string; saved?: SavedRun 
 
     if (!exercise) {
         return (
-            <LessonShell closeLabel={t("quit")} onClose={leave}>
+            <LessonShell closeLabel={t("quit")} icon={lesson.icon} onClose={leave}>
                 <p className={text.body}>{t("exerciseMissing")}</p>
             </LessonShell>
         );
@@ -185,6 +187,7 @@ function LessonRunner({ lessonId, saved }: { lessonId: string; saved?: SavedRun 
     return (
         <LessonShell
             closeLabel={t("quit")}
+            icon={lesson.icon}
             onClose={leave}
             header={<LessonProgress value={progress} />}
             footer={
@@ -199,7 +202,7 @@ function LessonRunner({ lessonId, saved }: { lessonId: string; saved?: SavedRun 
                 />
             }
         >
-            <h1 className={text.subheading}>{localized(exercise.instruction)}</h1>
+            <h1 className={text.heading}>{localized(exercise.instruction)}</h1>
             <ExerciseRenderer
                 // A fresh component per queue position: an exercise that comes
                 // back after a miss starts again rather than showing its old answer.

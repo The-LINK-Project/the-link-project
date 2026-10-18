@@ -9,6 +9,7 @@ import { useSpeech } from "@/lib/lessons/speech";
 import type { Lesson, VocabItem } from "@/lib/lessons/types";
 import { cn } from "@/lib/utils";
 
+import { LessonHeading } from "./LessonHeading";
 import { LessonHero, VocabularyVisual } from "./LessonVisual";
 import { text } from "./ui";
 
@@ -29,13 +30,11 @@ export function LessonIntro({ lesson }: { lesson: Lesson }) {
 
     return (
         <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-3">
-                <p className={text.label}>{localized(lesson.title, "en")}</p>
-                <h1 className={text.title}>{t("introTitle")}</h1>
+            <LessonHeading lesson={lesson} title={t("introTitle")}>
                 <LessonHero lesson={lesson} />
-                <p className={cn(text.bodyStrong, "text-lesson-primary-dark")}>{localized(lesson.goal, "en")}</p>
+                <p className={cn(text.subheading, "text-lesson-primary-dark")}>{localized(lesson.goal, "en")}</p>
                 <p className={text.caption}>{t("introBody")}</p>
-            </div>
+            </LessonHeading>
             <LessonWords lesson={lesson} />
         </div>
     );
@@ -64,7 +63,7 @@ export function LessonWords({ lesson }: { lesson: Lesson }) {
                         aria-label={`${item.term}. ${native(item.meaning)}`}
                         aria-description={t("tapToListen")}
                         onClick={() => say(item)}
-                        className="flex min-h-[92px] cursor-pointer items-center gap-3 rounded-2xl border border-lesson-border bg-white p-3 text-left transition-opacity active:opacity-85"
+                        className="flex min-h-[92px] cursor-pointer items-center gap-3 rounded-2xl border-2 border-lesson-key bg-white p-3 text-left shadow-[0_4px_0_var(--color-lesson-key)] transition-[transform,box-shadow] duration-75 hover:bg-lesson-primary-soft/40 active:translate-y-1 active:shadow-none"
                     >
                         {item.picture ? <VocabularyVisual picture={item.picture} /> : null}
                         <span className="flex flex-1 flex-col gap-0.5">

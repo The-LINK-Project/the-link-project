@@ -38,7 +38,7 @@ export function RecordBar(props: Props) {
     const caption = busyLabel ?? props.notice;
 
     return (
-        <div className="flex flex-col gap-3 border-t border-lesson-hairline bg-white p-4 pb-6">
+        <div className="flex flex-col gap-3 bg-white p-4 pb-6">
             {caption && status !== "idle" ? <p className={`${text.caption} text-center`}>{caption}</p> : null}
 
             {status === "recording" ? (
@@ -46,7 +46,8 @@ export function RecordBar(props: Props) {
                     <RoundButton icon={X} label={t("cancel")} onPress={props.onCancel} />
                     <div
                         className="flex flex-1 items-center gap-2"
-                        aria-live="polite"
+                        // Not a live region: its label changes every second, and
+                        // a screen reader reading it out would land in the recording.
                         aria-label={t("recording", { time: clock(props.durationMs) })}
                     >
                         <span className="size-2.5 animate-pulse rounded-full bg-lesson-destructive" />
@@ -89,7 +90,7 @@ export function RecordBar(props: Props) {
                 <div className="flex flex-col items-center gap-2">
                     {props.notice ? <p className={`${text.caption} text-center`}>{props.notice}</p> : null}
                     <RoundButton icon={Mic} label={t("record")} tone="primary" large onPress={props.onRecord} />
-                    <p className={text.caption}>{t("tapToSpeak")}</p>
+                    <p className="pt-1 text-[13px] font-extrabold uppercase tracking-wide text-lesson-muted">{t("tapToSpeak")}</p>
                 </div>
             )}
         </div>
@@ -121,18 +122,23 @@ function RoundButton({
             disabled={disabled}
             onClick={onPress}
             className={cn(
-                "flex shrink-0 cursor-pointer items-center justify-center rounded-full active:opacity-80 disabled:cursor-not-allowed",
-                large ? "size-20" : "size-14",
-                tone === "plain" && "bg-lesson-muted-surface text-lesson-fg",
-                tone === "primary" && "bg-lesson-primary text-lesson-on-primary",
-                tone === "danger" && "bg-lesson-destructive text-white",
+                // A key like the rest of the lesson: it sinks into its lower
+                // edge when pressed. The microphone is the biggest key there is.
+                "flex shrink-0 cursor-pointer items-center justify-center rounded-full transition-[transform,box-shadow] duration-75 disabled:cursor-not-allowed",
+                large
+                    ? "size-20 shadow-[0_6px_0_var(--lip)] enabled:active:translate-y-1.5"
+                    : "size-14 shadow-[0_4px_0_var(--lip)] enabled:active:translate-y-1",
+                "enabled:active:shadow-none",
+                tone === "plain" && "bg-lesson-muted-surface text-lesson-ink [--lip:var(--color-lesson-key-lip)]",
+                tone === "primary" && "bg-lesson-primary text-lesson-on-primary [--lip:var(--color-lesson-primary-lip)]",
+                tone === "danger" && "bg-lesson-destructive text-white [--lip:#98200c]",
                 disabled && !busy && "opacity-50",
             )}
         >
             {busy ? (
                 <Loader2 className="size-6 animate-spin" />
             ) : (
-                <Icon className={large ? "size-9" : "size-6"} />
+                <Icon className={large ? "size-9" : "size-6"} strokeWidth={2.5} />
             )}
         </button>
     );

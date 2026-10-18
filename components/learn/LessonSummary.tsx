@@ -3,10 +3,11 @@
 import { Mic } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { localized, useLessonLocalized } from "@/lib/lessons/localized";
+import { useLessonLocalized } from "@/lib/lessons/localized";
 import type { SessionSummary } from "@/lib/lessons/session";
 import type { Lesson } from "@/lib/lessons/types";
 
+import { LessonHeading } from "./LessonHeading";
 import { LessonStages } from "./LessonStages";
 import { LessonBadge, LessonButton, LessonCardBox, text } from "./ui";
 
@@ -35,9 +36,12 @@ export function LessonSummary({
 
     return (
         <div className="flex flex-col gap-6 pb-6">
-            <div className="flex flex-col gap-1 pb-4 pt-2">
-                <p className={text.label}>{localized(lesson.title, "en")}</p>
-                <h1 className={text.title}>{speakingLeft ? t("summaryStageTitle") : t("summaryTitle")}</h1>
+            <LessonHeading
+                lesson={lesson}
+                title={speakingLeft ? t("summaryStageTitle") : t("summaryTitle")}
+                fraction={speakingLeft ? 0.5 : 1}
+                done={!speakingLeft}
+            >
                 <p className={text.caption}>
                     {perfect ? t("summaryPerfect") : t("summaryReviewed", { count: summary.reviewed })}
                 </p>
@@ -47,7 +51,7 @@ export function LessonSummary({
                         <p className={text.bodyStrong}>{t("summarySpeakNext")}</p>
                     </div>
                 ) : null}
-            </div>
+            </LessonHeading>
 
             <LessonCardBox>
                 <p className={text.label}>{t("summaryFirstTry")}</p>

@@ -48,7 +48,7 @@ export function LessonFooter({ phase, canSubmit, result, onSubmit, onNext, isLas
     if (!graded) {
         if (hideSubmit) return null;
         return (
-            <div className="border-t border-lesson-hairline bg-white p-4">
+            <div className="bg-white p-4">
                 <LessonButton
                     title={t("check")}
                     size="lg"

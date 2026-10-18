@@ -20,12 +20,17 @@ export function LessonProgress({ value }: { value: number }) {
             aria-valuemin={0}
             aria-valuemax={100}
             aria-valuenow={Math.round(clamped * 100)}
-            className="h-4 flex-1 overflow-hidden rounded-full bg-lesson-muted-surface"
+            className="h-4 flex-1 overflow-hidden rounded-full bg-lesson-key"
         >
             <div
-                className="h-full rounded-full bg-lesson-primary transition-[width] duration-300"
+                className="relative h-full rounded-full bg-lesson-primary transition-[width] duration-500 ease-out"
                 style={{ width: `${clamped * 100}%` }}
-            />
+            >
+                {/* The shine along the top, as on the dashboard's keys. */}
+                {clamped > 0.04 ? (
+                    <span className="absolute inset-x-2 top-1 h-1 rounded-full bg-white/40" />
+                ) : null}
+            </div>
         </div>
     );
 }

@@ -10,7 +10,7 @@ import { LessonButton, text } from "@/components/learn/ui";
 import { useRouter } from "@/i18n/navigation";
 import { getLesson } from "@/lib/lessons/data";
 import { isTranslationLanguage, type TranslationLanguage } from "@/lib/lessons/languages";
-import { useLearnerLanguage, useLessonLocalized } from "@/lib/lessons/localized";
+import { useLearnerLanguage } from "@/lib/lessons/localized";
 import type { Lesson } from "@/lib/lessons/types";
 import type { SavedTalk } from "@/lib/progress/model";
 import { clearTalk, completeSpeaking, getProgressData, saveTalk, setResume } from "@/lib/progress/store";
@@ -22,6 +22,7 @@ import {
     type SpeakingContext,
 } from "@/lib/speaking/context";
 import { restoreConversation, saidCount } from "@/lib/speaking/conversation";
+import { englishSplitter } from "@/lib/speaking/highlight";
 import { usePlayback } from "@/lib/speaking/playback";
 import { useRecorder } from "@/lib/speaking/recorder";
 import { useSpeakingSession } from "@/lib/speaking/useSpeakingSession";
@@ -76,7 +77,7 @@ function SpeakScreen({ lessonId, words, phrases }: { lessonId: string; words?: s
 
     if (languages.length === 0) {
         return (
-            <LessonShell closeLabel={t("close")} onClose={() => router.push("/dashboard")}>
+            <LessonShell closeLabel={t("close")} icon={lesson.icon} onClose={() => router.push("/dashboard")}>
                 <p className={text.body}>{t("nothingToPractise")}</p>
             </LessonShell>
         );
@@ -94,7 +95,6 @@ function SpeakingFlow({
     languages: TranslationLanguage[];
 }) {
     const t = useTranslations("speaking");
-    const localized = useLessonLocalized();
     const router = useRouter();
     const locale = useLearnerLanguage();
     const [chosen, setChosen] = useState<TranslationLanguage | null>(null);
@@ -165,6 +165,7 @@ function SpeakingFlow({
     return (
         <LessonShell
             closeLabel={t("close")}
+            icon={lesson.icon}
             onClose={() => router.push("/dashboard")}
             footer={
                 // Pinned, like every other way forward in a lesson.
@@ -181,7 +182,7 @@ function SpeakingFlow({
             }
         >
             <SpeakingIntro
-                title={localized(lesson.title)}
+                lesson={lesson}
                 targets={preview?.goals.map((goal) => goal.target) ?? []}
                 language={language}
                 languages={languages}
@@ -204,9 +205,9 @@ function Conversation({
     onAgain: () => void;
 }) {
     const t = useTranslations("speaking");
-    const localized = useLessonLocalized();
     const router = useRouter();
     const { state, takeTurn } = useSpeakingSession(context, saved?.state);
+    const english = useMemo(() => englishSplitter(context), [context]);
     const recorder = useRecorder();
     const voice = usePlayback();
     const review = usePlayback();
@@ -304,6 +305,7 @@ function Conversation({
         return (
             <LessonShell
                 closeLabel={t("close")}
+                icon={lesson.icon}
                 onClose={quit}
                 footer={
                     <ShellActions>
@@ -315,7 +317,7 @@ function Conversation({
                 }
             >
                 <SpeakingSummary
-                    title={localized(lesson.title)}
+                    lesson={lesson}
                     goals={context.goals.map((goal, index) => ({
                         id: goal.id,
                         target: goal.target,
@@ -342,6 +344,7 @@ function Conversation({
     return (
         <LessonShell
             closeLabel={t("close")}
+            icon={lesson.icon}
             onClose={quit}
             scrollRef={scroll}
             header={
@@ -349,7 +352,10 @@ function Conversation({
                     <LessonProgress value={state.results.length / state.goalCount} />
                     {/* A bar says "some of it"; a number says when it ends, which
                         is what somebody with ten minutes of break left wants. */}
-                    <span className={text.caption} aria-label={t("goalCount", goalLabel)}>
+                    <span
+                        className="text-[15px] font-extrabold tabular-nums text-lesson-muted"
+                        aria-label={t("goalCount", goalLabel)}
+                    >
                         {`${goalLabel.current}/${goalLabel.total}`}
                     </span>
                 </>
@@ -404,6 +410,8 @@ function Conversation({
                     <ChatBubble
                         key={message.id}
                         message={message}
+                        english={english}
+                        icon={lesson.icon}
                         disabled={preparing || recorder.status === "recording"}
                         playing={!!message.audioUri && voice.playingUri === message.audioUri}
                         onPlay={(speed) => {

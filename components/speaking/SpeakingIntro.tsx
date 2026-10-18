@@ -1,15 +1,17 @@
 "use client";
 
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, Mic } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { LessonHeading } from "@/components/learn/LessonHeading";
 import { LessonCardBox, text } from "@/components/learn/ui";
 import {
     FIRST_LANGUAGE_ENGLISH_NAMES,
     FIRST_LANGUAGE_LABELS,
     type TranslationLanguage,
 } from "@/lib/lessons/languages";
+import type { Lesson } from "@/lib/lessons/types";
 import { cn } from "@/lib/utils";
 
 /**
@@ -18,14 +20,14 @@ import { cn } from "@/lib/utils";
  * scripts, since the learner may not read the English around them.
  */
 export function SpeakingIntro({
-    title,
+    lesson,
     targets,
     language,
     languages,
     onLanguageChange,
     micBlocked,
 }: {
-    title: string;
+    lesson: Lesson;
     /** The English the learner will be asked to say. */
     targets: string[];
     language: TranslationLanguage | null;
@@ -40,11 +42,9 @@ export function SpeakingIntro({
 
     return (
         <div className="flex flex-col gap-6 pb-6">
-            <div className="flex flex-col gap-1 pt-2">
-                <p className={text.label}>{title}</p>
-                <h1 className={text.title}>{t("title")}</h1>
+            <LessonHeading lesson={lesson} title={t("title")} fraction={0.5}>
                 <p className={text.caption}>{t("intro")}</p>
-            </div>
+            </LessonHeading>
 
             <div className="flex flex-col gap-2">
                 <p className={text.label}>{t("language")}</p>
@@ -97,11 +97,19 @@ export function SpeakingIntro({
 
             <div className="flex flex-col gap-2">
                 <p className={text.label}>{t("youWillSay")}</p>
-                {targets.map((target) => (
-                    <p key={target} className={text.bodyStrong}>
-                        {target}
-                    </p>
-                ))}
+                <ul className="flex flex-col gap-2">
+                    {targets.map((target) => (
+                        <li key={target} className="flex items-center gap-3">
+                            <span
+                                aria-hidden
+                                className="flex size-9 shrink-0 items-center justify-center rounded-full bg-lesson-primary-soft text-lesson-primary-dark"
+                            >
+                                <Mic className="size-[18px]" strokeWidth={2.5} />
+                            </span>
+                            <span className={text.bodyStrong}>{target}</span>
+                        </li>
+                    ))}
+                </ul>
             </div>
 
             <div className="flex flex-col gap-1">
