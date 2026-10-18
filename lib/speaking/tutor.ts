@@ -69,6 +69,12 @@ export const MAX_ATTEMPTS = 3;
  */
 export const MAX_ASIDES = 4;
 const MAX_REWRITES = 2;
+/**
+ * The prompt asks for two to four short sentences, a few hundred characters in
+ * any tutor language. A reply far past that is the model running away, and
+ * every character of it would be paid for again as speech.
+ */
+export const MAX_REPLY_CHARS = 1_000;
 const MAX_AUDIO_BYTES = 1_500_000;
 const AUDIO_TYPES = ["audio/wav", "audio/aac"];
 const BASE64 = /^[A-Za-z0-9+/]+={0,2}$/;
@@ -589,6 +595,10 @@ export async function runTurn(
         const violations = LATIN_SCRIPT_LANGUAGES.has(request.language)
             ? []
             : findViolations(reply, allowed);
+        if (reply.length > MAX_REPLY_CHARS) {
+            fallback = true;
+            break;
+        }
         if (reply && violations.length === 0) break;
         if (!reply || rewrites === MAX_REWRITES || remaining() < REWRITE_TIMEOUT_MS) {
             fallback = true;

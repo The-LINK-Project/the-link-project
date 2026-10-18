@@ -105,22 +105,43 @@ export async function getLearnerProgress(): Promise<Progress> {
     return readStored(clerkId);
 }
 
+/** Far more than two devices saving at once will ever need. */
+const MAX_SAVE_TRIES = 5;
+
 /**
  * Merge the browser's copy into the stored one and return the result.
  *
- * Read, merge, write is not atomic, and does not need to be: the merge loses
- * nothing, so two writes crossing leave at worst a copy that the next sync from
- * either device completes.
+ * The write only lands on the copy it was merged from, as in the mobile API.
+ * Two devices saving at once both read the same copy; the second write then
+ * matches nothing, and it reads again and merges again, so neither device's
+ * lesson is lost. Without this, the lesson could be recovered only by the
+ * device that took it syncing again.
  */
 export async function saveLearnerProgress(progress: unknown): Promise<Progress> {
     const clerkId = await signedInClerkId();
     const incoming = parseProgress(progress);
     await connectToDatabase();
-    const merged = mergeProgress(await readStored(clerkId), incoming);
-    await LearnerProgress.updateOne(
-        { clerkId },
-        { $set: { lessons: merged.lessons } },
-        { upsert: true },
-    );
-    return merged;
+    // The unique clerkId index is what turns a crossed write into a retry, so
+    // it must exist before the first write. Cached by Mongoose after the first.
+    await LearnerProgress.init();
+    for (let tries = 0; tries < MAX_SAVE_TRIES; tries++) {
+        const found = await LearnerProgress.findOne({ clerkId })
+            .select("lessons version")
+            .lean<{ lessons?: Record<string, LessonRecord>; version?: number }>();
+        const merged = mergeProgress({ lessons: found?.lessons ?? {} }, incoming);
+        const version = found?.version;
+        try {
+            // A copy that does not match upserts, and the unique clerkId turns
+            // that into a duplicate key: someone else wrote first.
+            await LearnerProgress.updateOne(
+                { clerkId, version: version ?? { $exists: false } },
+                { $set: { lessons: merged.lessons, version: (version ?? 0) + 1 } },
+                { upsert: true },
+            );
+            return merged;
+        } catch (error) {
+            if ((error as { code?: number }).code !== 11000) throw error;
+        }
+    }
+    throw new Error("Progress kept changing while it was being saved");
 }

@@ -12,6 +12,8 @@ const learnerProgressSchema = new mongoose.Schema(
     {
         clerkId: { type: String, required: true, unique: true },
         lessons: { type: mongoose.Schema.Types.Mixed, required: true, default: {} },
+        /** Counts writes, so a save can tell whether another landed since it read. */
+        version: { type: Number },
     },
     {
         timestamps: true,
