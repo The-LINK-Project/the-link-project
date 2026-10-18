@@ -30,7 +30,9 @@ const list = (value: string | undefined, fallback: string[]) => {
 // Built once per instance, so what the tutor learns about quotas is kept.
 let tutor: TutorModel | null = null;
 function getTutor(): TutorModel | null {
-    const apiKey = process.env.GEMINI_API_KEY?.trim() || process.env.GEMINI_KEY?.trim();
+    // The mobile API's key, which carries the tutor's languages and billing.
+    // Not GEMINI_KEY: that one is for the older conversation lessons only.
+    const apiKey = process.env.GEMINI_API_KEY?.trim();
     if (!apiKey) return null;
     tutor ??= createGeminiTutor({
         apiKey,
