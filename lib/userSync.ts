@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 
 import User from "@/lib/database/models/user.model";
 import LessonProgress from "@/lib/database/models/lessonProgress.model";
+import LearnerProgress from "@/lib/database/models/learnerProgress.model";
 import QuizResult from "@/lib/database/models/quizResult.model";
 import WordMatchResult from "@/lib/database/models/wordMatchResult.model";
 import PictureStoryResult from "@/lib/database/models/pictureStoryResult.model";
@@ -70,6 +71,10 @@ export async function updateUser(
 export async function deleteUser(clerkId: string) {
     try {
         await connectToDatabase();
+
+        // Lesson progress is keyed by Clerk id, not by the User row, so it is
+        // removed even for an account that never got one
+        await LearnerProgress.deleteOne({ clerkId });
 
         // Find user to delete
         const userToDelete = await User.findOne({ clerkId });

@@ -61,7 +61,7 @@ export async function createPictureStorySet(setData: PictureStorySetData) {
             })),
         });
 
-        revalidatePath("/games/picture-story");
+        revalidatePath("/legacy/games/picture-story");
         revalidatePath("/admin/games/picture-story");
 
         return {
@@ -130,7 +130,7 @@ export async function deletePictureStorySet(setId: string) {
             throw new Error("Question set not found");
         }
 
-        revalidatePath("/games/picture-story");
+        revalidatePath("/legacy/games/picture-story");
         revalidatePath("/admin/games/picture-story");
 
         return {

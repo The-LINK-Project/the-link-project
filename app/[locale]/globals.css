@@ -48,6 +48,35 @@
     --color-popover: var(--popover);
     --color-card-foreground: var(--card-foreground);
     --color-card: var(--card);
+    /* Lesson palette, shared with the mobile app (lib/theme.ts there), so a
+       lesson state reads the same on either. Light theme only, like mobile. */
+    --color-lesson-fg: #171717;
+    --color-lesson-muted: #6b7280;
+    --color-lesson-muted-surface: #f3f4f6;
+    --color-lesson-border: #dfdfdf;
+    --color-lesson-hairline: #ececec;
+    --color-lesson-primary: #72e3ad;
+    --color-lesson-primary-dark: #1b7a50;
+    --color-lesson-primary-soft: #e8faf1;
+    --color-lesson-on-primary: #0b3d27;
+    --color-lesson-accent: #5ac7db;
+    --color-lesson-accent-soft: #e6f7fa;
+    --color-lesson-accent-dark: #0e6b7b;
+    --color-lesson-success: #15803d;
+    --color-lesson-success-soft: #dcfce7;
+    --color-lesson-warning: #946300;
+    --color-lesson-warning-soft: #fef9c3;
+    --color-lesson-warning-fill: #eab308;
+    --color-lesson-destructive: #ca3214;
+    --color-lesson-destructive-soft: #fee2e2;
+    /* The keys and cards of the lesson kit, from the dashboard's lesson
+       cards: titles in a warm near-black, a light key edge, links in blue. */
+    --color-lesson-ink: #3c3c3c;
+    --color-lesson-key: #e5e5e5;
+    --color-lesson-key-lip: #d4d4d4;
+    --color-lesson-key-text: #8f8f8f;
+    --color-lesson-link: #0b6fa4;
+    --color-lesson-primary-lip: #3fbf86;
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);

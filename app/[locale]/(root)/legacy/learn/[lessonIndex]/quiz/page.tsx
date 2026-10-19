@@ -25,7 +25,7 @@ const QuizPage = async ({ params }: QuizPageProps) => {
                     {t("noQuizDescription")}
                 </p>
                 <Link
-                    href={Number.isNaN(index) ? "/dashboard" : `/learn/${index}`}
+                    href={Number.isNaN(index) ? "/dashboard" : `/legacy/learn/${index}`}
                     className="px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-colors"
                 >
                     {t("backToLesson")}

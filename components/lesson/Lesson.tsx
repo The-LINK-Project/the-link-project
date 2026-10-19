@@ -461,7 +461,7 @@ const Lesson = ({ previousLessonProgress, lessonInfo, hasQuiz }: LessonProps) =>
                         <div className="flex flex-col items-center text-blue-700">
                             <div className="flex flex-col items-center text-blue-700">
                                 <Link
-                                    href={`/learn/${lessonProgress.lessonIndex}/quiz`}
+                                    href={`/legacy/learn/${lessonProgress.lessonIndex}/quiz`}
                                 >
                                     {t("testknowledge")}
                                 </Link>
