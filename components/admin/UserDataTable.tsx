@@ -87,14 +87,23 @@ export const columns: ColumnDef<User>[] = [
                 </Button>
             );
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+        // Phone-only sign-ups have no email
+        cell: ({ row }) =>
+            row.getValue("email") ? (
+                <div className="lowercase">{row.getValue("email")}</div>
+            ) : (
+                <div className="text-slate-400">No email</div>
+            ),
     },
     {
         accessorKey: "username",
         header: "Username",
-        cell: ({ row }) => (
-            <div className="text-slate-600">@{row.getValue("username")}</div>
-        ),
+        cell: ({ row }) =>
+            row.getValue("username") ? (
+                <div className="text-slate-600">@{row.getValue("username")}</div>
+            ) : (
+                <div className="text-slate-400">None</div>
+            ),
     },
     {
         accessorKey: "createdAt",
