@@ -22,7 +22,7 @@ const LESSON_ID = /^[a-z0-9-]{1,64}$/;
 /** Far more lessons than the app will ever ship; a bound, not a target. */
 const MAX_LESSONS = 500;
 const MAX_COUNT = 10_000;
-/** A device's clock may run fast, but not by more than this. */
+/** A device's clock may run fast by this much and its dates are kept. */
 const CLOCK_SKEW_MS = 24 * 60 * 60 * 1000;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -38,8 +38,11 @@ function count(value: unknown): number | undefined {
 function isoDate(value: unknown, now: number): string | undefined {
     if (typeof value !== "string" || value.length > 40) return undefined;
     const time = Date.parse(value);
-    if (Number.isNaN(time) || time > now + CLOCK_SKEW_MS) return undefined;
-    return new Date(time).toISOString();
+    if (Number.isNaN(time)) return undefined;
+    // Further ahead, the date becomes now. Refusing it would refuse the whole
+    // save, and the browser keeps that date, so the learner's progress would
+    // never reach the server again
+    return new Date(time > now + CLOCK_SKEW_MS ? now : time).toISOString();
 }
 
 function parseSpeaking(value: unknown, now: number): SpeakingRecord | undefined | null {
