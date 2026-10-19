@@ -39,7 +39,7 @@ describe("Ethics of AI content", () => {
             ...ETHICS_SORT_CARDS.map((card) => card.situation),
             ...ETHICS_MATCH_PAIRS.flatMap((pair) => [pair.situation, pair.reason]),
         ];
-        for (const line of texts) expect(line.split(" ").length).toBeLessThanOrEqual(12);
+        for (const line of texts) expect(line.split(" ").length).toBeLessThanOrEqual(16);
         expect(ETHICS_WORDS).toHaveLength(6);
     });
 

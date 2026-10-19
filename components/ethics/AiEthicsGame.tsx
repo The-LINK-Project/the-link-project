@@ -243,7 +243,7 @@ export function AiEthicsGame() {
                             {reasons.map((pair) => (
                                 <Tile
                                     key={pair.id}
-                                    label={`${VERDICT_EMOJI[pair.verdict]} ${pair.reason}`}
+                                    label={pair.reason}
                                     block
                                     className="flex-1"
                                     state={stateFor("reason", pair.id)}

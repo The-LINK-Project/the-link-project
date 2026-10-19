@@ -28,7 +28,7 @@ export type EthicsMatchPair = {
     id: string;
     situation: string;
     verdict: EthicsVerdict;
-    /** Shown with a 👍 or ⚠️ in front, so the emoji narrows the choice. */
+    /** No emoji hint here: the team has to read both halves. */
     reason: string;
 };
 
@@ -36,92 +36,92 @@ export type EthicsWord = { word: string; meaning: string };
 
 /** Taught on the start screen and used on the cards. */
 export const ETHICS_WORDS: EthicsWord[] = [
-    { word: "AI", meaning: "a computer program that learns" },
-    { word: "private", meaning: "only for me" },
-    { word: "mistake", meaning: "something wrong" },
-    { word: "scam", meaning: "a trick to take your money" },
-    { word: "fake", meaning: "not real" },
-    { word: "fair", meaning: "the same for everyone" },
+    { word: "AI", meaning: "a computer program that learns from data" },
+    { word: "privacy", meaning: "keeping my information to myself" },
+    { word: "accurate", meaning: "correct, with no mistakes" },
+    { word: "bias", meaning: "treating some people better than others" },
+    { word: "deepfake", meaning: "a fake video or voice made by AI" },
+    { word: "permission", meaning: "saying yes before something happens" },
 ];
 
 export const ETHICS_SORT_CARDS: EthicsSortCard[] = [
     {
         id: "translate",
-        situation: "A translate app helps me talk to the doctor.",
+        situation: "A translate app helps me explain my symptoms to the doctor.",
         answer: "good",
-        reason: "AI is good because it helps me say what I need.",
+        reason: "AI is good because it helps me communicate clearly.",
     },
     {
         id: "map",
-        situation: "A map app shows me the way to the MRT.",
+        situation: "A map app finds the fastest route to the MRT when it is raining.",
         answer: "good",
-        reason: "AI is good because it saves time.",
+        reason: "AI is good because it saves time and effort.",
     },
     {
-        id: "face",
-        situation: "My phone opens when it sees my face.",
+        id: "voice",
+        situation: "A voice assistant reads my messages aloud while I am cooking.",
         answer: "good",
-        reason: "AI is good because it is fast and easy.",
+        reason: "AI is good because it is convenient and hands-free.",
     },
     {
         id: "bus",
-        situation: "A chatbot tells me the wrong bus time.",
+        situation: "A chatbot sounds very confident, but gives me the wrong bus timing.",
         answer: "problem",
-        reason: "AI is a problem because it can make mistakes.",
-        tip: "Check again on the bus app or the sign.",
+        reason: "AI is a problem because it can make mistakes while sounding sure.",
+        tip: "Always check important information with a second source.",
     },
     {
         id: "scam-call",
-        situation: "A video call looks like my family, but it is a scam.",
+        situation: "A video call looks and sounds like my family, but it is a scam for money.",
         answer: "problem",
-        reason: "AI is a problem because it can trick people.",
-        tip: "Hang up. Call your family back on the real number.",
+        reason: "AI is a problem because it can copy faces and voices to trick people.",
+        tip: "Hang up. Call your family back on their real number.",
     },
     {
         id: "photos",
-        situation: "An app shares my photos without asking me.",
+        situation: "A photo app uploads my pictures online without asking my permission.",
         answer: "problem",
-        reason: "AI is a problem because it is not private.",
-        tip: "Check the app settings. Say no to sharing.",
+        reason: "AI is a problem because it does not respect my privacy.",
+        tip: "Check the app permissions and switch off sharing.",
     },
 ];
 
 export const ETHICS_MATCH_PAIRS: EthicsMatchPair[] = [
     {
         id: "read-aloud",
-        situation: "AI reads the words out loud for me.",
+        situation: "An app reads street signs aloud for people who cannot see well.",
         verdict: "good",
-        reason: "It helps people who cannot see well.",
+        reason: "It makes everyday life more accessible.",
     },
     {
         id: "practise",
-        situation: "A chatbot helps me practise English.",
+        situation: "A chatbot lets me practise English at midnight after work.",
         verdict: "good",
-        reason: "I can practise any time.",
+        reason: "It is available at any time.",
     },
     {
         id: "weather",
-        situation: "A weather app says: bring an umbrella.",
+        situation: "A weather app warns me an hour before a heavy storm.",
         verdict: "good",
-        reason: "It helps me plan my day.",
+        reason: "It helps me plan ahead.",
     },
     {
         id: "accent",
-        situation: "AI does not understand my accent.",
+        situation: "Voice AI understands some accents much better than others.",
         verdict: "problem",
-        reason: "It is not fair to everyone.",
+        reason: "It is biased and not fair to everyone.",
     },
     {
         id: "fake-photo",
-        situation: "A photo online looks real, but it is fake.",
+        situation: "A viral photo of a flood turns out to be made by AI.",
         verdict: "problem",
-        reason: "Do not believe everything you see.",
+        reason: "Do not believe everything you see online.",
     },
     {
         id: "my-words",
-        situation: "AI writes my message for me.",
+        situation: "AI writes my whole message in words I would never use.",
         verdict: "problem",
-        reason: "It is not my own words.",
+        reason: "It is not my own voice.",
     },
 ];
 
