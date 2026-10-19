@@ -27,32 +27,43 @@ const resolveUser = cache(async () => {
 
     await connectToDatabase();
 
-    // Fast path: existing user — a single indexed Mongo query, no Clerk REST calls.
+    // Fast path: existing user — a single indexed Mongo query, no Clerk REST
+    // calls. A row without a username was made while Clerk couldn't be
+    // reached, so until it's filled in, each visit asks Clerk again
     const knownUser = await User.findOne({ clerkId: clerkUserId });
 
-    if (knownUser) {
+    if (knownUser?.username) {
         return JSON.parse(JSON.stringify(knownUser));
     }
 
     // First visit, and the webhook hasn't made the row yet (or its delivery
     // failed). The profile is nice to have, not needed — every caller only
-    // uses the row's _id — so a Clerk API hiccup makes a bare row that the
-    // next user.updated webhook fills in, not an error page
+    // uses the row's _id — so a Clerk API hiccup makes a bare row, not an
+    // error page
     let profile: Partial<UserProfile> | null;
+    let fromClerk = true;
     try {
         profile = await fetchClerkProfile(clerkUserId);
     } catch (error) {
         console.error(`Couldn't load Clerk profile for ${clerkUserId}:`, error);
+        if (knownUser) return JSON.parse(JSON.stringify(knownUser));
         profile = {};
+        fromClerk = false;
     }
 
     // Deleted in Clerk while its session token is still good (up to a
-    // minute): making a row now would bring back data user.deleted removed
-    if (!profile) {
+    // minute): a row now would bring back data user.deleted removed
+    const user = profile
+        ? await upsertUserByClerkId(clerkUserId, profile, {
+              overwrite: fromClerk,
+          })
+        : null;
+
+    if (!user) {
         throw new Error("Not authenticated");
     }
 
-    return upsertUserByClerkId(clerkUserId, profile, { overwrite: false });
+    return user;
 });
 
 export async function ensureUser() {

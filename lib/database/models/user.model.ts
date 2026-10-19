@@ -17,6 +17,9 @@ const UserSchema = new Schema(
         firstName: { type: String, required: false, unique: false },
         lastName: { type: String, required: false, unique: false },
         photo: { type: String, required: false, unique: false },
+        // Clerk's updatedAt for the profile copied here, so a slower, older
+        // read of Clerk can't overwrite a newer one (see upsertUserByClerkId)
+        clerkUpdatedAt: { type: Number, required: false },
     },
     {
         timestamps: true, // This adds createdAt and updatedAt automatically

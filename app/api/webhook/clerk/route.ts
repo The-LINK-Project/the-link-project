@@ -77,6 +77,10 @@ export async function POST(req: Request) {
                 ? await createUser(id, profile)
                 : await updateUser(id, profile);
 
+        if (!user) {
+            return NextResponse.json({ message: "Skipped: user was deleted" });
+        }
+
         return NextResponse.json({ message: "OK", user });
     }
 
