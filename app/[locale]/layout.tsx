@@ -95,6 +95,7 @@ const CLIENT_MESSAGE_NAMESPACES = [
     "quizProgressBar",
     "lessons",
     "speaking",
+    "ethics",
 ];
 
 export default async function RootLayout({

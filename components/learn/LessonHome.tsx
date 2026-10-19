@@ -8,6 +8,8 @@ import { continuePoint, doneToday, lessonStatus, type LessonRef } from "@/lib/pr
 import { useProgressData } from "@/lib/progress/store";
 import { canPractiseSpeaking } from "@/lib/speaking/context";
 
+import { EthicsCard } from "@/components/ethics/EthicsCard";
+
 import { ContinueCard } from "./ContinueCard";
 import { LessonCard } from "./LessonCard";
 import { ProgressGate } from "./ProgressGate";
@@ -27,6 +29,7 @@ export default function LessonHome() {
 
 function LessonHomeContent() {
     const t = useTranslations("lessons");
+    const ethics = useTranslations("ethics");
     const data = useProgressData();
     const lessons = listLessons();
     const mix = getDailyMix();
@@ -107,6 +110,16 @@ function LessonHomeContent() {
                     status={{ finished: "none", run: mixStatus.run, talk: null }}
                     doneLabel={mixDone ? t("mixDoneToday") : undefined}
                 />
+            </div>
+
+            {/* The workshop's AI-literacy game. Nothing about it is tracked,
+                so it is a plain link rather than a lesson with a status. */}
+            <div className="flex flex-col gap-1 pt-2">
+                <h2 className={text.heading}>{ethics("title")}</h2>
+                <p className={text.caption}>{ethics("sectionBody")}</p>
+            </div>
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+                <EthicsCard />
             </div>
         </div>
     );
