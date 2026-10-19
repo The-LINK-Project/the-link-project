@@ -1,16 +1,16 @@
 "use client";
 
-import { Bot } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
+
+import { EthicsCoin } from "./EthicsCoin";
 
 /**
  * The Ethics of AI game on the dashboard, drawn like a lesson key so it sits
  * naturally under Quick practice. Nothing is tracked, so the ring is empty
  * and the coin's colour is its own.
  */
-const HUE = { base: "#5ac7db", dark: "#2a9db3" };
 const RING = "#e5e5e5";
 
 export function EthicsCard() {
@@ -27,17 +27,7 @@ export function EthicsCard() {
                 aria-label={`${t("title")}. ${t("cardGoal")}`}
                 className="flex items-center gap-4 rounded-2xl p-4 outline-offset-4"
             >
-                <span aria-hidden className="relative flex size-[78px] shrink-0 items-center justify-center">
-                    <svg viewBox="0 0 78 78" className="absolute inset-0">
-                        <circle cx="39" cy="39" r="35" fill="none" stroke={RING} strokeWidth="6" />
-                    </svg>
-                    <span
-                        className="flex size-[58px] items-center justify-center rounded-full text-white [&>svg]:size-8"
-                        style={{ background: HUE.base, boxShadow: `inset 0 -5px 0 ${HUE.dark}` }}
-                    >
-                        <Bot strokeWidth={2.5} />
-                    </span>
-                </span>
+                <EthicsCoin />
                 <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                     <span className="text-[13px] font-extrabold uppercase tracking-wide text-[#737373]">{t("cardMeta")}</span>
                     <span className="text-lg font-extrabold leading-6 text-[#3c3c3c]">{t("title")}</span>

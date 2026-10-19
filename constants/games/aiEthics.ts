@@ -125,8 +125,6 @@ export const ETHICS_MATCH_PAIRS: EthicsMatchPair[] = [
     },
 ];
 
-export const VERDICT_EMOJI: Record<EthicsVerdict, string> = { good: "👍", problem: "⚠️" };
-
 /** Same scoring as Word Match: start at 100, lose 10 for each wrong tap. */
 export const POINTS_PER_WRONG = 10;
 

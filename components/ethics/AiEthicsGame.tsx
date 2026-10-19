@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleCheck, CircleX, Timer, Trophy } from "lucide-react";
+import { CircleCheck, CircleX, ThumbsUp, Timer, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -14,7 +14,6 @@ import {
     ETHICS_MATCH_PAIRS,
     ETHICS_SORT_CARDS,
     ETHICS_WORDS,
-    VERDICT_EMOJI,
     ethicsScore,
     type EthicsMatchPair,
     type EthicsSortCard,
@@ -22,6 +21,8 @@ import {
 } from "@/constants/games/aiEthics";
 import { seededShuffle } from "@/lib/lessons/shuffle";
 import { cn } from "@/lib/utils";
+
+import { ETHICS_HUE, EthicsCoin } from "./EthicsCoin";
 
 /**
  * Ethics of AI: a two-round team game for the workshop, played on a laptop
@@ -262,17 +263,42 @@ export function AiEthicsGame() {
 
 // ------------------------------------------------------------------ screens
 
+/** The top of a game page, as LessonHeading is for a lesson's pages. */
+function GameHeading({ title, done = false, children }: { title: string; done?: boolean; children?: React.ReactNode }) {
+    const t = useTranslations("ethics");
+    return (
+        <div className="flex flex-col gap-3 pt-1">
+            <div className="flex items-center gap-4">
+                <EthicsCoin done={done} />
+                <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <h1 className="text-balance text-[26px] font-extrabold leading-8 text-lesson-ink">{title}</h1>
+                    <p className="text-[15px] font-bold leading-5" style={{ color: ETHICS_HUE.ink }}>
+                        {t("title")}
+                    </p>
+                </div>
+            </div>
+            {children}
+        </div>
+    );
+}
+
+/** Good and Problem as line icons, like every other mark in the lesson kit. */
+function VerdictIcon({ verdict }: { verdict: EthicsVerdict }) {
+    return verdict === "good" ? (
+        <ThumbsUp className="size-5 shrink-0 text-lesson-success" strokeWidth={2.5} />
+    ) : (
+        <TriangleAlert className="size-5 shrink-0 text-lesson-warning" strokeWidth={2.5} />
+    );
+}
+
 function Intro() {
     const t = useTranslations("ethics");
     return (
         <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-1">
-                <p className={text.label}>{t("cardMeta")}</p>
-                <h1 className={text.title}>{t("title")}</h1>
-                <p className={text.body}>{t("introBody")}</p>
-            </div>
+            <GameHeading title={t("introWords")}>
+                <p className={text.caption}>{t("introBody")}</p>
+            </GameHeading>
             <div className="flex flex-col gap-2">
-                <p className={text.label}>{t("introWords")}</p>
                 <div className="flex flex-col">
                     {ETHICS_WORDS.map((item) => (
                         <div key={item.word} className="flex items-baseline gap-3 border-b border-lesson-hairline py-2">
@@ -312,7 +338,7 @@ function SortRound({
     };
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-1 flex-col gap-6">
             <div className="flex flex-col gap-1">
                 <p className={text.label}>{t("round1Label")}</p>
                 <h1 className={text.heading}>{t("round1Title")}</h1>
@@ -324,11 +350,13 @@ function SortRound({
                 <p className="text-[22px] font-bold leading-8 text-lesson-ink">{card.situation}</p>
             </LessonCardBox>
 
-            <div className="grid grid-cols-2 gap-3">
-                {/* Once answered the tiles go inert without `disabled`, which
-                    would dim them: the green one is the lesson. */}
+            {/* The choices sit low, where a lesson keeps its answer tiles. Once
+                answered they go inert without `disabled`, which would dim them:
+                the green one is the lesson. */}
+            <div className="mt-auto grid grid-cols-2 gap-3">
                 <Tile
-                    label={`${VERDICT_EMOJI.good} ${t("good")}`}
+                    label={t("good")}
+                    icon={<VerdictIcon verdict="good" />}
                     caption={t("goodSub")}
                     block
                     className="min-h-28"
@@ -336,7 +364,8 @@ function SortRound({
                     onPress={picked ? undefined : () => onPick("good")}
                 />
                 <Tile
-                    label={`${VERDICT_EMOJI.problem} ${t("problem")}`}
+                    label={t("problem")}
+                    icon={<VerdictIcon verdict="problem" />}
                     caption={t("problemSub")}
                     block
                     className="min-h-28"
@@ -377,9 +406,7 @@ function Verdict({ correct, card, onNext }: { correct: boolean; card: EthicsSort
                     {correct ? t("correct") : t("notQuite")}
                 </p>
             </div>
-            <p className={text.bodyStrong}>
-                {VERDICT_EMOJI[card.answer]} {card.reason}
-            </p>
+            <p className={text.bodyStrong}>{card.reason}</p>
             {card.tip ? <p className={text.caption}>{card.tip}</p> : null}
             <LessonButton
                 autoFocus
@@ -397,8 +424,9 @@ function Recap() {
     const t = useTranslations("ethics");
     const column = (verdict: EthicsVerdict) => (
         <div className="flex flex-1 flex-col gap-2">
-            <p className={text.subheading}>
-                {VERDICT_EMOJI[verdict]} {t(verdict)}
+            <p className={cn(text.subheading, "flex items-center gap-2")}>
+                <VerdictIcon verdict={verdict} />
+                {t(verdict)}
             </p>
             {ETHICS_SORT_CARDS.filter((item) => item.answer === verdict).map((item) => (
                 <LessonCardBox key={item.id} tone="muted" className="flex flex-col gap-1 p-3">
@@ -429,11 +457,9 @@ function Finished({ timeMs, wrongAttempts }: { timeMs: number; wrongAttempts: nu
 
     return (
         <div className="flex flex-col gap-6">
-            <div className="flex flex-col items-center gap-2 pt-4 text-center">
-                <Trophy className="size-16 text-lesson-warning-fill" />
-                <h1 className={text.title}>{t("finishedTitle")}</h1>
+            <GameHeading title={t("finishedTitle")} done>
                 <p className={text.caption}>{t("showTeacher")}</p>
-            </div>
+            </GameHeading>
 
             <div className="grid grid-cols-2 gap-3">
                 <LessonCardBox className="text-center">
