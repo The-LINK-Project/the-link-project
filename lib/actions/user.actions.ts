@@ -5,6 +5,7 @@ import { connectToDatabase } from "@/lib/database";
 import User from "@/lib/database/models/user.model";
 import { auth } from "@clerk/nextjs/server";
 import { cache } from "react";
+import { unstable_rethrow } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import {
     fetchClerkProfile,
@@ -45,6 +46,7 @@ const resolveUser = cache(async () => {
     try {
         profile = await fetchClerkProfile(clerkUserId);
     } catch (error) {
+        unstable_rethrow(error);
         console.error(`Couldn't load Clerk profile for ${clerkUserId}:`, error);
         if (knownUser) return JSON.parse(JSON.stringify(knownUser));
         profile = {};

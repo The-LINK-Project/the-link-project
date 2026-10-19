@@ -4,6 +4,7 @@ import { getSurveyBannerState } from "@/lib/actions/survey.actions";
 import LessonHome from "@/components/learn/LessonHome";
 import SurveyBanner from "@/components/survey/SurveyBanner";
 import { getTranslations } from "next-intl/server";
+import { unstable_rethrow } from "next/navigation";
 
 // Keep the reusable survey prompt dormant now that the focus group is over.
 // The survey route, responses, and admin reporting remain available.
@@ -20,6 +21,7 @@ const DashboardPage = async () => {
     try {
         await ensureUser();
     } catch (error) {
+        unstable_rethrow(error);
         console.error("Couldn't prepare the user's row:", error);
     }
 

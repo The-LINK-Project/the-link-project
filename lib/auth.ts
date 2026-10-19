@@ -1,5 +1,5 @@
 import { auth, currentUser, User } from "@clerk/nextjs/server";
-import { notFound, redirect } from "next/navigation";
+import { notFound, redirect, unstable_rethrow } from "next/navigation";
 import { cache } from "react";
 import { ADMIN_CONFIG, isAdminEmail } from "@/lib/config/admin";
 
@@ -35,6 +35,8 @@ async function sessionOrNotFound() {
   try {
     session = await auth();
   } catch (error) {
+    // Next's own signals (dynamic rendering, redirects) pass straight through
+    unstable_rethrow(error);
     console.error("Page reached without Clerk's middleware:", error);
   }
   if (!session) notFound();
@@ -74,6 +76,7 @@ export async function requireAdminAccess() {
   try {
     user = await getCachedCurrentUser();
   } catch (error) {
+    unstable_rethrow(error);
     console.error("Couldn't load the Clerk user for an admin check:", error);
     redirect(ADMIN_CONFIG.redirectPaths.unauthorized);
   }
