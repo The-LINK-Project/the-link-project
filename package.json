@@ -10,8 +10,11 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "migration:backfill-lesson-completed": "tsx scripts/backfill-lesson-completed.ts",
     "migration:dedupe-lesson-progress": "tsx scripts/dedupe-lesson-progress.ts",
+    "migration:drop-user-unique-indexes": "tsx scripts/drop-user-unique-indexes.ts",
     "seed:games": "tsx scripts/seed-games.ts"
   },
   "dependencies": {
@@ -56,10 +59,12 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "mongodb-memory-server": "^11.3.0",
     "prettier": "^3.6.2",
     "sass": "^1.89.0",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.0.5"
   }
 }

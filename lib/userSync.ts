@@ -5,6 +5,8 @@
 import mongoose from "mongoose";
 import { connectToDatabase } from "@/lib/database";
 import { revalidatePath } from "next/cache";
+import { clerkClient } from "@clerk/nextjs/server";
+import { isClerkAPIResponseError } from "@clerk/nextjs/errors";
 
 import User from "@/lib/database/models/user.model";
 import LessonProgress from "@/lib/database/models/lessonProgress.model";
@@ -14,58 +16,123 @@ import WordMatchResult from "@/lib/database/models/wordMatchResult.model";
 import PictureStoryResult from "@/lib/database/models/pictureStoryResult.model";
 import SurveyResponse from "@/lib/database/models/surveyResponse.model";
 
-export async function createUser(user: {
-    clerkId: string;
+export type UserProfile = {
+    email?: string;
+    username?: string;
     firstName: string;
     lastName: string;
-    username: string;
-    email: string;
-    photo: string;
-}) {
+    photo?: string;
+};
+
+/**
+ * The User row's copy of a Clerk profile. Takes the fields both Clerk shapes
+ * have (the Backend API's camelCase user and the webhook's snake_case payload)
+ * so the two can't drift apart.
+ */
+export function profileFromClerk(clerkUser: {
+    id: string;
+    emails: { id: string; emailAddress: string }[];
+    primaryEmailId?: string | null;
+    username?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    imageUrl?: string | null;
+}): UserProfile {
+    const email = (
+        clerkUser.emails.find(
+            (entry) => entry.id === clerkUser.primaryEmailId,
+        ) ?? clerkUser.emails[0]
+    )?.emailAddress;
+
+    // OAuth and phone sign-ups often have no username. Derive a readable one
+    // for the admin pages, suffixed with part of the Clerk ID
+    const localPart = email?.split("@")[0].replace(/[^a-zA-Z0-9._-]/g, "");
+    const username =
+        clerkUser.username ||
+        `${localPart || "user"}-${clerkUser.id.slice(-6)}`;
+
+    return {
+        ...(email ? { email } : {}),
+        username,
+        firstName: clerkUser.firstName ?? "",
+        lastName: clerkUser.lastName ?? "",
+        ...(clerkUser.imageUrl ? { photo: clerkUser.imageUrl } : {}),
+    };
+}
+
+/**
+ * Reads the user from Clerk itself. null means Clerk has no such user, which
+ * is the only answer that isn't a passing failure: the account was deleted.
+ */
+export async function fetchClerkProfile(
+    clerkId: string,
+): Promise<UserProfile | null> {
+    const client = await clerkClient();
+
     try {
-        await connectToDatabase();
-
-        const newUser = await User.create(user);
-
-        return JSON.parse(JSON.stringify(newUser));
-    } catch (error: any) {
-        if (error?.code === 11000) {
-            const existingUser = await User.findOne({
-                $or: [{ clerkId: user.clerkId }, { email: user.email }],
-            });
-
-            if (existingUser) {
-                return JSON.parse(JSON.stringify(existingUser));
-            }
+        const clerkUser = await client.users.getUser(clerkId);
+        return profileFromClerk({
+            id: clerkUser.id,
+            emails: clerkUser.emailAddresses,
+            primaryEmailId: clerkUser.primaryEmailAddressId,
+            username: clerkUser.username,
+            firstName: clerkUser.firstName,
+            lastName: clerkUser.lastName,
+            imageUrl: clerkUser.imageUrl,
+        });
+    } catch (error) {
+        if (isClerkAPIResponseError(error) && error.status === 404) {
+            return null;
         }
-
-        console.log(error);
         throw error;
     }
 }
 
-export async function updateUser(
+/**
+ * Finds or creates the User row for a Clerk user, in one atomic upsert keyed
+ * by clerkId alone, so it can't collide with any other row whatever email or
+ * username that row has. `overwrite` decides what happens to an existing
+ * row's profile: the webhook brings fresh Clerk data and overwrites it; the
+ * page-load path only fills a row in when it's first made.
+ */
+export async function upsertUserByClerkId(
     clerkId: string,
-    user: {
-        firstName: string;
-        lastName: string;
-        username?: string;
-        photo: string;
-    },
+    profile: Partial<UserProfile>,
+    { overwrite }: { overwrite: boolean },
 ) {
-    try {
-        await connectToDatabase();
+    await connectToDatabase();
 
-        const updatedUser = await User.findOneAndUpdate({ clerkId }, user, {
-            new: true,
-        });
+    const update = overwrite
+        ? { $set: profile, $setOnInsert: { clerkId } }
+        : { $setOnInsert: { clerkId, ...profile } };
 
-        if (!updatedUser) throw new Error("User update failed");
-        return JSON.parse(JSON.stringify(updatedUser));
-    } catch (error) {
-        console.log(error);
-        throw error;
+    // Two first requests for the same new user can both miss and both insert;
+    // the unique clerkId index fails the loser with E11000, and running again
+    // finds the winner's row
+    for (let attempt = 0; ; attempt += 1) {
+        try {
+            const user = await User.findOneAndUpdate({ clerkId }, update, {
+                upsert: true,
+                new: true,
+            });
+            return JSON.parse(JSON.stringify(user));
+        } catch (error: any) {
+            if (error?.code !== 11000 || attempt >= 2) {
+                throw error;
+            }
+        }
     }
+}
+
+export async function createUser(clerkId: string, profile: UserProfile) {
+    return upsertUserByClerkId(clerkId, profile, { overwrite: true });
+}
+
+// Upserts rather than updates: user.updated can arrive before user.created
+// (Svix doesn't promise order), or for a user whose create was never
+// delivered. Failing would 500 and Clerk would retry it for days
+export async function updateUser(clerkId: string, profile: UserProfile) {
+    return upsertUserByClerkId(clerkId, profile, { overwrite: true });
 }
 
 export async function deleteUser(clerkId: string) {
