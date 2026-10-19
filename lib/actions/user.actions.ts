@@ -3,109 +3,73 @@
 import { connectToDatabase } from "@/lib/database";
 
 import User from "@/lib/database/models/user.model";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { cache } from "react";
+import { unstable_rethrow } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
+import {
+    fetchClerkProfile,
+    upsertUserByClerkId,
+    type UserProfile,
+} from "@/lib/userSync";
 
 // Webhook-driven create/update/delete live in lib/userSync.ts — they must not
 // be server actions, since actions are public endpoints and the webhook has
 // its own svix-signature auth.
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-type EnsureUserOptions = {
-    maxRetries?: number;
-    retryDelayMs?: number;
-};
-
 // Memoized per request via React cache(): repeated ensureUser()/getCurrentUser()
 // calls within a single render or server action resolve the user only once.
-const resolveUser = cache(async (maxRetries: number, retryDelayMs: number) => {
-    await connectToDatabase();
-
+const resolveUser = cache(async () => {
     const { userId: clerkUserId } = await auth();
 
     if (!clerkUserId) {
         throw new Error("Not authenticated");
     }
 
-    // Fast path: existing user — a single indexed Mongo query, no Clerk REST calls.
+    await connectToDatabase();
+
+    // Fast path: existing user — a single indexed Mongo query, no Clerk REST
+    // calls. A row without a username was made while Clerk couldn't be
+    // reached, so until it's filled in, each visit asks Clerk again
     const knownUser = await User.findOne({ clerkId: clerkUserId });
 
-    if (knownUser) {
+    if (knownUser?.username) {
         return JSON.parse(JSON.stringify(knownUser));
     }
 
-    // Slow path: first login (or a create race) — fetch the Clerk profile and upsert.
-    const client = await clerkClient();
-    const clerkUserData = await client.users.getUser(clerkUserId);
-
-    for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
-        const existingUser = await User.findOne({ clerkId: clerkUserId });
-
-        if (existingUser) {
-            const userObject = JSON.parse(JSON.stringify(existingUser));
-
-            const mongoUserId = existingUser._id.toString();
-            const existingMetadataUserId = clerkUserData.publicMetadata?.userId;
-
-            if (existingMetadataUserId !== mongoUserId) {
-                await client.users.updateUserMetadata(clerkUserId, {
-                    publicMetadata: { userId: mongoUserId },
-                });
-            }
-
-            return userObject;
-        }
-
-        const primaryEmail = clerkUserData.emailAddresses?.[0]?.emailAddress;
-
-        if (!primaryEmail) {
-            throw new Error("User email is missing from Clerk profile");
-        }
-
-        try {
-            const newUser = await User.create({
-                clerkId: clerkUserId,
-                email: primaryEmail,
-                username:
-                    clerkUserData.username ||
-                    primaryEmail ||
-                    `${clerkUserId.slice(0, 8)}-user`,
-                firstName: clerkUserData.firstName || "",
-                lastName: clerkUserData.lastName || "",
-                photo: clerkUserData.imageUrl,
-            });
-
-            const userObject = JSON.parse(JSON.stringify(newUser));
-
-            await client.users.updateUserMetadata(clerkUserId, {
-                publicMetadata: { userId: newUser._id.toString() },
-            });
-
-            return userObject;
-        } catch (error: any) {
-            if (error?.code !== 11000) {
-                console.log(error);
-                throw error;
-            }
-        }
-
-        if (attempt < maxRetries) {
-            await wait(retryDelayMs * Math.pow(2, attempt));
-        }
+    // First visit, and the webhook hasn't made the row yet (or its delivery
+    // failed). The profile is nice to have, not needed — every caller only
+    // uses the row's _id — so a Clerk API hiccup makes a bare row, not an
+    // error page
+    let profile: Partial<UserProfile> | null;
+    let fromClerk = true;
+    try {
+        profile = await fetchClerkProfile(clerkUserId);
+    } catch (error) {
+        unstable_rethrow(error);
+        console.error(`Couldn't load Clerk profile for ${clerkUserId}:`, error);
+        if (knownUser) return JSON.parse(JSON.stringify(knownUser));
+        profile = {};
+        fromClerk = false;
     }
 
-    throw new Error("Timed out ensuring user exists in database");
+    // Deleted in Clerk while its session token is still good (up to a
+    // minute): a row now would bring back data user.deleted removed
+    const user = profile
+        ? await upsertUserByClerkId(clerkUserId, profile, {
+              overwrite: fromClerk,
+          })
+        : null;
+
+    if (!user) {
+        throw new Error("Not authenticated");
+    }
+
+    return user;
 });
 
-// 2 retries × 250ms base = at most ~750ms of backoff. The old default (5
-// retries, exponential from 300ms) could hold a request for ~9s of pure sleep
-export async function ensureUser({
-    maxRetries = 2,
-    retryDelayMs = 250,
-}: EnsureUserOptions = {}) {
-    return resolveUser(maxRetries, retryDelayMs);
+export async function ensureUser() {
+    return resolveUser();
 }
 
 export async function getCurrentUser() {

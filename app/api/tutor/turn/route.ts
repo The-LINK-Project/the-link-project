@@ -52,7 +52,15 @@ export async function POST(request: Request) {
     const { userId } = await auth();
     if (!userId) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
 
-    const limit = await checkRateLimit(userId, "tutor");
+    // The limiter throws when its storage is down: the same "not available"
+    // as a tutor failure, not a bare 500
+    const limit = await checkRateLimit(userId, "tutor").catch((error) => {
+        console.error("Tutor rate limit check failed", {
+            message: error instanceof Error ? error.message : String(error),
+        });
+        return null;
+    });
+    if (!limit) return NextResponse.json({ error: "The tutor is not available right now" }, { status: 503 });
     if (!limit.success) {
         return NextResponse.json({ error: limit.error }, { status: 429, headers: { "Retry-After": "60" } });
     }

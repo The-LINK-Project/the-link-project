@@ -4,6 +4,7 @@ import { getSurveyBannerState } from "@/lib/actions/survey.actions";
 import LessonHome from "@/components/learn/LessonHome";
 import SurveyBanner from "@/components/survey/SurveyBanner";
 import { getTranslations } from "next-intl/server";
+import { unstable_rethrow } from "next/navigation";
 
 // Keep the reusable survey prompt dormant now that the focus group is over.
 // The survey route, responses, and admin reporting remain available.
@@ -13,7 +14,16 @@ const SHOW_SURVEY_BANNER = false;
 export const dynamic = "force-dynamic";
 
 const DashboardPage = async () => {
-    await ensureUser();
+    // Only makes the user's row ahead of their first lesson; nothing on this
+    // page reads it. The lessons and their progress work without it, so a
+    // database hiccup here must not take the whole page down. The lesson
+    // actions make the row themselves if this didn't
+    try {
+        await ensureUser();
+    } catch (error) {
+        unstable_rethrow(error);
+        console.error("Couldn't prepare the user's row:", error);
+    }
 
     const surveyBannerState = SHOW_SURVEY_BANNER
         ? await getSurveyBannerState()
@@ -29,9 +39,7 @@ const DashboardPage = async () => {
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">
                         {t("headerCall")}
                     </h1>
-                    <p className="text-gray-600">
-                        {t("headerCall2")}
-                    </p>
+                    <p className="text-gray-600">{t("headerCall2")}</p>
                 </div>
             </div>
 

@@ -5,8 +5,11 @@
 import mongoose from "mongoose";
 import { connectToDatabase } from "@/lib/database";
 import { revalidatePath } from "next/cache";
+import { clerkClient } from "@clerk/nextjs/server";
+import { isClerkAPIResponseError } from "@clerk/nextjs/errors";
 
 import User from "@/lib/database/models/user.model";
+import DeletedUser from "@/lib/database/models/deletedUser.model";
 import LessonProgress from "@/lib/database/models/lessonProgress.model";
 import LearnerProgress from "@/lib/database/models/learnerProgress.model";
 import QuizResult from "@/lib/database/models/quizResult.model";
@@ -14,63 +17,186 @@ import WordMatchResult from "@/lib/database/models/wordMatchResult.model";
 import PictureStoryResult from "@/lib/database/models/pictureStoryResult.model";
 import SurveyResponse from "@/lib/database/models/surveyResponse.model";
 
-export async function createUser(user: {
-    clerkId: string;
+export type UserProfile = {
+    email?: string;
+    username?: string;
     firstName: string;
     lastName: string;
-    username: string;
-    email: string;
-    photo: string;
-}) {
+    photo?: string;
+    clerkUpdatedAt?: number;
+};
+
+// Profile fields Clerk can take away. When Clerk's copy lacks one, the row's
+// copy goes too, or a removed email would stay here for good
+const REMOVABLE_FIELDS = ["email", "photo"] as const;
+
+/**
+ * The User row's copy of a Clerk profile. Takes the fields both Clerk shapes
+ * have (the Backend API's camelCase user and the webhook's snake_case payload)
+ * so the two can't drift apart.
+ */
+export function profileFromClerk(clerkUser: {
+    id: string;
+    emails: { id: string; emailAddress: string }[];
+    primaryEmailId?: string | null;
+    username?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    imageUrl?: string | null;
+    updatedAt?: number | null;
+}): UserProfile {
+    const email = (
+        clerkUser.emails.find(
+            (entry) => entry.id === clerkUser.primaryEmailId,
+        ) ?? clerkUser.emails[0]
+    )?.emailAddress;
+
+    // OAuth and phone sign-ups often have no username. Derive a readable one
+    // for the admin pages, suffixed with part of the Clerk ID
+    const localPart = email?.split("@")[0].replace(/[^a-zA-Z0-9._-]/g, "");
+    const username =
+        clerkUser.username ||
+        `${localPart || "user"}-${clerkUser.id.slice(-6)}`;
+
+    return {
+        ...(email ? { email } : {}),
+        username,
+        firstName: clerkUser.firstName ?? "",
+        lastName: clerkUser.lastName ?? "",
+        ...(clerkUser.imageUrl ? { photo: clerkUser.imageUrl } : {}),
+        ...(clerkUser.updatedAt ? { clerkUpdatedAt: clerkUser.updatedAt } : {}),
+    };
+}
+
+export async function isDeletedUser(clerkId: string) {
+    await connectToDatabase();
+    return Boolean(await DeletedUser.exists({ _id: clerkId }));
+}
+
+/**
+ * Reads the user from Clerk itself. null means Clerk has no such user, which
+ * is the only answer that isn't a passing failure: the account was deleted.
+ */
+export async function fetchClerkProfile(
+    clerkId: string,
+): Promise<UserProfile | null> {
+    const client = await clerkClient();
+
     try {
-        await connectToDatabase();
-
-        const newUser = await User.create(user);
-
-        return JSON.parse(JSON.stringify(newUser));
-    } catch (error: any) {
-        if (error?.code === 11000) {
-            const existingUser = await User.findOne({
-                $or: [{ clerkId: user.clerkId }, { email: user.email }],
-            });
-
-            if (existingUser) {
-                return JSON.parse(JSON.stringify(existingUser));
-            }
+        const clerkUser = await client.users.getUser(clerkId);
+        return profileFromClerk({
+            id: clerkUser.id,
+            emails: clerkUser.emailAddresses,
+            primaryEmailId: clerkUser.primaryEmailAddressId,
+            username: clerkUser.username,
+            firstName: clerkUser.firstName,
+            lastName: clerkUser.lastName,
+            imageUrl: clerkUser.imageUrl,
+            updatedAt: clerkUser.updatedAt,
+        });
+    } catch (error) {
+        if (isClerkAPIResponseError(error) && error.status === 404) {
+            return null;
         }
-
-        console.log(error);
         throw error;
     }
 }
 
-export async function updateUser(
+/**
+ * Finds or creates the User row for a Clerk user, in one atomic upsert keyed
+ * by clerkId alone, so it can't collide with any other row whatever email or
+ * username that row has. `overwrite` is for a profile read from Clerk just
+ * now: it replaces the row's copy, unless the row already holds a newer read.
+ * Without it the profile only fills in a row being made.
+ *
+ * Returns null for a deleted user, and never leaves a row behind for one.
+ */
+export async function upsertUserByClerkId(
     clerkId: string,
-    user: {
-        firstName: string;
-        lastName: string;
-        username?: string;
-        photo: string;
-    },
+    profile: Partial<UserProfile>,
+    { overwrite }: { overwrite: boolean },
 ) {
-    try {
-        await connectToDatabase();
+    if (await isDeletedUser(clerkId)) return null;
 
-        const updatedUser = await User.findOneAndUpdate({ clerkId }, user, {
-            new: true,
-        });
+    let update: Record<string, unknown> = {
+        $setOnInsert: { clerkId, ...profile },
+    };
+    let filter: Record<string, unknown> = { clerkId };
 
-        if (!updatedUser) throw new Error("User update failed");
-        return JSON.parse(JSON.stringify(updatedUser));
-    } catch (error) {
-        console.log(error);
-        throw error;
+    if (overwrite) {
+        const removed = REMOVABLE_FIELDS.filter((field) => !profile[field]);
+        update = {
+            $set: profile,
+            $setOnInsert: { clerkId },
+            ...(removed.length > 0
+                ? {
+                      $unset: Object.fromEntries(
+                          removed.map((field) => [field, ""]),
+                      ),
+                  }
+                : {}),
+        };
+        // Two reads of Clerk can finish in either order; only a read at least
+        // as new as the stored one may write
+        if (profile.clerkUpdatedAt !== undefined) {
+            filter = {
+                clerkId,
+                $or: [
+                    { clerkUpdatedAt: { $exists: false } },
+                    { clerkUpdatedAt: { $lte: profile.clerkUpdatedAt } },
+                ],
+            };
+        }
     }
+
+    let user;
+    for (let attempt = 0; !user; attempt += 1) {
+        try {
+            user = await User.findOneAndUpdate(filter, update, {
+                upsert: true,
+                new: true,
+            });
+        } catch (error: any) {
+            // E11000 on clerkId: another first request made the row, or the
+            // row holds a newer read than this one. Either way, that row is it
+            if (error?.code !== 11000) throw error;
+            user = await User.findOne({ clerkId });
+            if (!user && attempt >= 2) throw error;
+        }
+    }
+
+    // A deletion that finished while this was writing. deleteUser records the
+    // ID before removing anything, so one of the two always sees the other
+    if (await isDeletedUser(clerkId)) {
+        await User.deleteOne({ clerkId });
+        return null;
+    }
+
+    return JSON.parse(JSON.stringify(user));
+}
+
+export async function createUser(clerkId: string, profile: UserProfile) {
+    return upsertUserByClerkId(clerkId, profile, { overwrite: true });
+}
+
+// Upserts rather than updates: user.updated can arrive before user.created
+// (Svix doesn't promise order), or for a user whose create was never
+// delivered. Failing would 500 and Clerk would retry it for days
+export async function updateUser(clerkId: string, profile: UserProfile) {
+    return upsertUserByClerkId(clerkId, profile, { overwrite: true });
 }
 
 export async function deleteUser(clerkId: string) {
     try {
         await connectToDatabase();
+
+        // First, so a write already on its way can't bring the user back
+        // (see upsertUserByClerkId)
+        await DeletedUser.updateOne(
+            { _id: clerkId },
+            { $setOnInsert: { deletedAt: new Date() } },
+            { upsert: true },
+        );
 
         // Lesson progress is keyed by Clerk id, not by the User row, so it is
         // removed even for an account that never got one

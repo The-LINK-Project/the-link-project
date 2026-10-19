@@ -42,15 +42,27 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     // Handle internationalization first
     const intlResponse = intlMiddleware(req);
 
-    // If intl middleware returns a redirect, handle auth logic with the redirected URL
     if (intlResponse && intlResponse.status >= 300 && intlResponse.status < 400) {
-        // Let the intl middleware handle the redirect
+        // next-intl decodes the path before rebuilding it, so a crafted one
+        // like /en/%09/evil.com comes back as //evil.com: a redirect off the
+        // site. Only ever send people somewhere on this one
+        const location = intlResponse.headers.get("location");
+        if (location && new URL(location, req.url).origin !== req.nextUrl.origin) {
+            return NextResponse.redirect(new URL("/", req.url));
+        }
         return intlResponse;
     }
 
-    // Extract locale from pathname for auth redirects
+    // Guard the page that will actually be served, not the path as typed.
+    // next-intl decodes the URL once more on its way to the rewrite, so
+    // /sign-in/%252e%252e/admin looks like a public sign-in page here but is
+    // served as /en/admin
+    const rewrite = intlResponse?.headers.get("x-middleware-rewrite");
+    const servedPath = rewrite ? new URL(rewrite, req.url).pathname : pathname;
+
+    // Extract locale from the served path for auth redirects
     let locale = routing.defaultLocale;
-    const segments = pathname.split("/").filter(Boolean);
+    const segments = servedPath.split("/").filter(Boolean);
 
     if (segments.length > 0 && routing.locales.includes(segments[0] as any)) {
         locale = segments[0] as any;
@@ -60,7 +72,7 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     const pathForMatching =
         segments.length > 0 && routing.locales.includes(segments[0] as any)
             ? "/" + segments.slice(1).join("/")
-            : pathname;
+            : servedPath;
 
     const normalizedPath = pathForMatching || "/";
 

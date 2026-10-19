@@ -16,13 +16,14 @@ import { auth } from "@clerk/nextjs/server";
 
 import { connectToDatabase } from "@/lib/database";
 import LearnerProgress from "@/lib/database/models/learnerProgress.model";
+import { isDeletedUser } from "@/lib/userSync";
 import { mergeProgress, type LessonRecord, type Progress, type SpeakingRecord } from "@/lib/progress/model";
 
 const LESSON_ID = /^[a-z0-9-]{1,64}$/;
 /** Far more lessons than the app will ever ship; a bound, not a target. */
 const MAX_LESSONS = 500;
 const MAX_COUNT = 10_000;
-/** A device's clock may run fast, but not by more than this. */
+/** A device's clock may run fast by this much and its dates are kept. */
 const CLOCK_SKEW_MS = 24 * 60 * 60 * 1000;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -38,8 +39,11 @@ function count(value: unknown): number | undefined {
 function isoDate(value: unknown, now: number): string | undefined {
     if (typeof value !== "string" || value.length > 40) return undefined;
     const time = Date.parse(value);
-    if (Number.isNaN(time) || time > now + CLOCK_SKEW_MS) return undefined;
-    return new Date(time).toISOString();
+    if (Number.isNaN(time)) return undefined;
+    // Further ahead, the date becomes now. Refusing it would refuse the whole
+    // save, and the browser keeps that date, so the learner's progress would
+    // never reach the server again
+    return new Date(time > now + CLOCK_SKEW_MS ? now : time).toISOString();
 }
 
 function parseSpeaking(value: unknown, now: number): SpeakingRecord | undefined | null {
@@ -121,6 +125,8 @@ export async function saveLearnerProgress(progress: unknown): Promise<Progress> 
     const clerkId = await signedInClerkId();
     const incoming = parseProgress(progress);
     await connectToDatabase();
+    // A session outlives its deleted account by up to a minute
+    if (await isDeletedUser(clerkId)) throw new Error("Not authenticated");
     // The unique clerkId index is what turns a crossed write into a retry, so
     // it must exist before the first write. Cached by Mongoose after the first.
     await LearnerProgress.init();
@@ -138,6 +144,11 @@ export async function saveLearnerProgress(progress: unknown): Promise<Progress> 
                 { $set: { lessons: merged.lessons, version: (version ?? 0) + 1 } },
                 { upsert: true },
             );
+            // Deleted while this was writing (see upsertUserByClerkId)
+            if (await isDeletedUser(clerkId)) {
+                await LearnerProgress.deleteOne({ clerkId });
+                throw new Error("Not authenticated");
+            }
             return merged;
         } catch (error) {
             if ((error as { code?: number }).code !== 11000) throw error;

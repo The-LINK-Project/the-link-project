@@ -1,7 +1,12 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { WebhookEvent, clerkClient } from "@clerk/nextjs/server";
-import { createUser, updateUser, deleteUser } from "@/lib/userSync";
+import { WebhookEvent } from "@clerk/nextjs/server";
+import {
+    createUser,
+    updateUser,
+    deleteUser,
+    fetchClerkProfile,
+} from "@/lib/userSync";
 import { NextResponse } from "next/server";
 export async function POST(req: Request) {
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -54,76 +59,29 @@ export async function POST(req: Request) {
 
     console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
 
-    if (eventType === "user.created") {
-        const {
-            id,
-            email_addresses,
-            primary_email_address_id,
-            image_url,
-            first_name,
-            last_name,
-            username,
-        } = evt.data;
+    // Created and updated are the same write: an upsert keyed by clerkId,
+    // which can't collide with another row's email or username (see
+    // user.model.ts). The profile comes from Clerk itself, not the payload:
+    // Svix doesn't promise order, so a late or retried event would otherwise
+    // write stale data, or bring back a user that user.deleted already removed
+    if (eventType === "user.created" || eventType === "user.updated") {
+        const { id } = evt.data;
+        const profile = await fetchClerkProfile(id);
 
-        const primaryEmail =
-            email_addresses.find(
-                (email) => email.id === primary_email_address_id,
-            ) ?? email_addresses[0];
-
-        if (!primaryEmail) {
-            // Without an email the User schema can't be satisfied. Acknowledge
-            // the event — retrying the same payload can never succeed
-            console.error(`user.created ${id} has no email address, skipping`);
-            return NextResponse.json({ message: "Skipped: no email address" });
+        if (!profile) {
+            return NextResponse.json({ message: "Skipped: user was deleted" });
         }
 
-        // OAuth sign-ups (e.g. Google) often have no username. Derive one
-        // from the email and suffix it with part of the Clerk ID so it stays
-        // unique even when two users share an email local part
-        const fallbackUsername = `${primaryEmail.email_address
-            .split("@")[0]
-            .replace(/[^a-zA-Z0-9._-]/g, "")}-${id.slice(-6)}`;
+        const user =
+            eventType === "user.created"
+                ? await createUser(id, profile)
+                : await updateUser(id, profile);
 
-        const user = {
-            clerkId: id,
-            email: primaryEmail.email_address,
-            username: username || fallbackUsername,
-            firstName: first_name ?? "",
-            lastName: last_name ?? "",
-            photo: image_url,
-        };
-        const newUser = await createUser(user);
-
-        if (newUser) {
-            const client = await clerkClient();
-            await client.users.updateUserMetadata(id, {
-                publicMetadata: {
-                    userId: newUser._id, // link the Clerk user to the user in mongodb
-                },
-            });
+        if (!user) {
+            return NextResponse.json({ message: "Skipped: user was deleted" });
         }
 
-        // Note: redirect() in webhook context - client will handle navigation
-        // Cannot use redirect() here as it would prevent the response from being sent
-
-        return NextResponse.json({ message: "OK", user: newUser });
-    }
-
-    if (eventType === "user.updated") {
-        const { id, image_url, first_name, last_name, username } = evt.data;
-
-        // Only overwrite the stored username when Clerk actually has one, so
-        // an OAuth user's derived username isn't wiped to null
-        const user = {
-            firstName: first_name ?? "",
-            lastName: last_name ?? "",
-            photo: image_url,
-            ...(username ? { username } : {}),
-        };
-
-        const updatedUser = await updateUser(id, user);
-
-        return NextResponse.json({ message: "OK", user: updatedUser });
+        return NextResponse.json({ message: "OK", user });
     }
 
     if (eventType === "user.deleted") {
