@@ -9,13 +9,17 @@ import { LessonProgress } from "@/components/learn/LessonProgress";
 import { LessonShell, ShellActions } from "@/components/learn/LessonShell";
 import { Tile } from "@/components/learn/Tile";
 import { LessonBadge, LessonButton, LessonCardBox, text } from "@/components/learn/ui";
+import { WordBank } from "@/components/learn/WordBank";
 import { useRouter } from "@/i18n/navigation";
 import {
+    ETHICS_BUILD_ITEMS,
+    ETHICS_DILEMMAS,
     ETHICS_MATCH_PAIRS,
     ETHICS_SORT_CARDS,
     ETHICS_WORDS,
     ethicsScore,
-    type EthicsMatchPair,
+    type EthicsBuildItem,
+    type EthicsDilemma,
     type EthicsSortCard,
     type EthicsVerdict,
 } from "@/constants/games/aiEthics";
@@ -25,16 +29,17 @@ import { cn } from "@/lib/utils";
 import { ETHICS_HUE, EthicsCoin } from "./EthicsCoin";
 
 /**
- * Ethics of AI: a two-round team game for the workshop, played on a laptop
- * with a group round it. Round 1 sorts six situations into Good or Problem,
- * one card at a time, and teaches the reason after every tap. Round 2 is
- * Tap-the-pairs, situations against reasons.
+ * Ethics of AI: a four-round team game for the workshop, played on a laptop
+ * with a group round it. Sort, Match and Build are timed and scored like Word
+ * Match. The Dilemmas are not: the clock stops, the team picks a side, and
+ * says why to the teacher.
  *
  * Built from the lesson kit so it looks like every other lesson. Nothing is
  * saved: the finish screen is the result, and teams compare out loud.
  */
-type Phase = "intro" | "sort" | "recap" | "match" | "finished";
+type Phase = "intro" | "sort" | "recap" | "match" | "build" | "dilemma" | "finished";
 
+const ROUNDS = 4;
 const WRONG_PAIR_FEEDBACK_MS = 600;
 
 type Side = "situation" | "reason";
@@ -60,13 +65,22 @@ export function AiEthicsGame() {
     const [wrongPair, setWrongPair] = useState<WrongPair>(null);
     const wrongTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // The clock runs during the two rounds and pauses on the recap, where the
-    // facilitator talks. `clockStart` is set so that Date.now() - clockStart is
-    // the total time played so far.
+    // Round 3
+    const [buildIndex, setBuildIndex] = useState(0);
+    const [placed, setPlaced] = useState<number[]>([]);
+    const [buildResult, setBuildResult] = useState<boolean | null>(null);
+
+    // Round 4
+    const [dilemmaIndex, setDilemmaIndex] = useState(0);
+    const [chosen, setChosen] = useState<Record<string, 0 | 1>>({});
+
+    // The clock runs through the three scored rounds and stops on the recap
+    // and for the dilemmas, where the team talks. `clockStart` is set so that
+    // Date.now() - clockStart is the total time played so far.
     const [clockStart, setClockStart] = useState(0);
     const playedMs = useRef(0);
     const [finalMs, setFinalMs] = useState(0);
-    const timed = phase === "sort" || phase === "match";
+    const timed = phase === "sort" || phase === "match" || phase === "build";
 
     useEffect(
         () => () => {
@@ -88,6 +102,11 @@ export function AiEthicsGame() {
         setMatched([]);
         setSelected(null);
         setWrongPair(null);
+        setBuildIndex(0);
+        setPlaced([]);
+        setBuildResult(null);
+        setDilemmaIndex(0);
+        setChosen({});
         resumeClock();
         setPhase("sort");
     };
@@ -95,7 +114,6 @@ export function AiEthicsGame() {
     // ------------------------------------------------------------- round 1
 
     const card = ETHICS_SORT_CARDS[sortIndex];
-    const sortTotal = ETHICS_SORT_CARDS.length;
 
     const pick = (verdict: EthicsVerdict) => {
         if (picked) return;
@@ -105,17 +123,12 @@ export function AiEthicsGame() {
 
     const nextCard = () => {
         setPicked(null);
-        if (sortIndex + 1 < sortTotal) {
+        if (sortIndex + 1 < ETHICS_SORT_CARDS.length) {
             setSortIndex(sortIndex + 1);
         } else {
             pauseClock();
             setPhase("recap");
         }
-    };
-
-    const startRound2 = () => {
-        resumeClock();
-        setPhase("match");
     };
 
     // ------------------------------------------------------------- round 2
@@ -130,10 +143,7 @@ export function AiEthicsGame() {
             const next = [...matched, pairId];
             setMatched(next);
             setSelected(null);
-            if (next.length === ETHICS_MATCH_PAIRS.length) {
-                setFinalMs(Date.now() - clockStart);
-                setPhase("finished");
-            }
+            if (next.length === ETHICS_MATCH_PAIRS.length) setPhase("build");
             return;
         }
         setWrongAttempts((n) => n + 1);
@@ -155,19 +165,62 @@ export function AiEthicsGame() {
         return "default" as const;
     };
 
+    // ------------------------------------------------------------- round 3
+
+    const buildItem = ETHICS_BUILD_ITEMS[buildIndex];
+    const buildTokens = useMemo(
+        () => seededShuffle([...buildItem.answer, ...buildItem.decoys], buildItem.id),
+        [buildItem],
+    );
+
+    const checkBuild = () => {
+        const sentence = placed.map((i) => buildTokens[i]);
+        const correct =
+            sentence.length === buildItem.answer.length && sentence.every((word, i) => word === buildItem.answer[i]);
+        if (!correct) setWrongAttempts((n) => n + 1);
+        setBuildResult(correct);
+    };
+
+    const nextBuild = () => {
+        setPlaced([]);
+        setBuildResult(null);
+        if (buildIndex + 1 < ETHICS_BUILD_ITEMS.length) {
+            setBuildIndex(buildIndex + 1);
+        } else {
+            // The scored part ends here; the dilemmas are talk, not a race.
+            pauseClock();
+            setFinalMs(Date.now() - clockStart);
+            setPhase("dilemma");
+        }
+    };
+
+    // ------------------------------------------------------------- round 4
+
+    const dilemma = ETHICS_DILEMMAS[dilemmaIndex];
+    const dilemmaChoice = chosen[dilemma.id];
+
+    const nextDilemma = () => {
+        if (dilemmaIndex + 1 < ETHICS_DILEMMAS.length) setDilemmaIndex(dilemmaIndex + 1);
+        else setPhase("finished");
+    };
+
     // --------------------------------------------------------------- frame
 
-    // Round 1 is the first half of the bar, round 2 the second.
+    const roundShare = (round: number, within: number) => (round - 1 + within) / ROUNDS;
     const progress =
         phase === "intro"
             ? 0
             : phase === "sort"
-              ? (sortIndex + (picked ? 1 : 0)) / sortTotal / 2
+              ? roundShare(1, (sortIndex + (picked ? 1 : 0)) / ETHICS_SORT_CARDS.length)
               : phase === "recap"
-                ? 0.5
+                ? roundShare(2, 0)
                 : phase === "match"
-                  ? 0.5 + matched.length / ETHICS_MATCH_PAIRS.length / 2
-                  : 1;
+                  ? roundShare(2, matched.length / ETHICS_MATCH_PAIRS.length)
+                  : phase === "build"
+                    ? roundShare(3, (buildIndex + (buildResult !== null ? 1 : 0)) / ETHICS_BUILD_ITEMS.length)
+                    : phase === "dilemma"
+                      ? roundShare(4, (dilemmaIndex + (dilemmaChoice !== undefined ? 1 : 0)) / ETHICS_DILEMMAS.length)
+                      : 1;
 
     const header =
         phase === "intro" || phase === "finished" ? null : (
@@ -175,57 +228,85 @@ export function AiEthicsGame() {
                 <LessonProgress value={progress} />
                 <span className="flex shrink-0 items-center gap-1 text-base font-bold tabular-nums text-lesson-muted">
                     <Timer className="size-5" />
-                    <GameTimer startTime={clockStart} running={timed} />
+                    {phase === "dilemma" ? formatTime(finalMs) : <GameTimer startTime={clockStart} running={timed} />}
                 </span>
             </>
         );
 
     const footer = (() => {
-        if (phase === "intro") {
-            return (
-                <ShellActions>
-                    <LessonButton title={t("start")} size="lg" onClick={start} />
-                </ShellActions>
-            );
+        switch (phase) {
+            case "intro":
+                return (
+                    <ShellActions>
+                        <LessonButton title={t("start")} size="lg" onClick={start} />
+                    </ShellActions>
+                );
+            case "sort":
+                return picked ? (
+                    <Outcome correct={picked === card.answer} onNext={nextCard}>
+                        <p className={text.bodyStrong}>{card.reason}</p>
+                        {card.tip ? <p className={text.caption}>{card.tip}</p> : null}
+                    </Outcome>
+                ) : null;
+            case "recap":
+                return (
+                    <ShellActions>
+                        <LessonButton
+                            title={t("startRound2")}
+                            size="lg"
+                            onClick={() => {
+                                resumeClock();
+                                setPhase("match");
+                            }}
+                        />
+                    </ShellActions>
+                );
+            case "build":
+                return buildResult === null ? (
+                    <ShellActions>
+                        <LessonButton title={t("check")} size="lg" disabled={placed.length === 0} onClick={checkBuild} />
+                    </ShellActions>
+                ) : (
+                    <Outcome correct={buildResult} onNext={nextBuild}>
+                        {buildResult ? null : (
+                            <p className={text.caption}>
+                                {t("modelAnswer")} <span className={text.bodyStrong}>{buildItem.answer.join(" ")}</span>
+                            </p>
+                        )}
+                    </Outcome>
+                );
+            case "dilemma":
+                return dilemmaChoice === undefined ? null : (
+                    <ShellActions>
+                        <p className={cn(text.bodyStrong, "pb-3 text-center")}>{t("dilemmaSay")}</p>
+                        <LessonButton title={t("continue")} size="lg" onClick={nextDilemma} />
+                    </ShellActions>
+                );
+            case "finished":
+                return (
+                    <ShellActions>
+                        <div className="flex flex-col gap-3 sm:flex-row">
+                            <LessonButton title={t("home")} size="lg" variant="outline" onClick={() => router.push("/dashboard")} />
+                            <LessonButton title={t("playAgain")} size="lg" onClick={start} />
+                        </div>
+                    </ShellActions>
+                );
         }
-        if (phase === "sort" && picked) {
-            const correct = picked === card.answer;
-            return <Verdict correct={correct} card={card} onNext={nextCard} />;
-        }
-        if (phase === "recap") {
-            return (
-                <ShellActions>
-                    <LessonButton title={t("startRound2")} size="lg" onClick={startRound2} />
-                </ShellActions>
-            );
-        }
-        if (phase === "finished") {
-            return (
-                <ShellActions>
-                    <div className="flex flex-col gap-3 sm:flex-row">
-                        <LessonButton title={t("home")} size="lg" variant="outline" onClick={() => router.push("/dashboard")} />
-                        <LessonButton title={t("playAgain")} size="lg" onClick={start} />
-                    </div>
-                </ShellActions>
-            );
-        }
-        return null;
     })();
 
     return (
         <LessonShell closeLabel={t("close")} onClose={() => router.push("/dashboard")} header={header} footer={footer}>
             {phase === "intro" ? <Intro /> : null}
+
             {phase === "sort" ? (
-                <SortRound card={card} index={sortIndex} total={sortTotal} picked={picked} onPick={pick} />
+                <SortRound card={card} index={sortIndex} total={ETHICS_SORT_CARDS.length} picked={picked} onPick={pick} />
             ) : null}
+
             {phase === "recap" ? <Recap /> : null}
+
             {phase === "match" ? (
                 <div className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-1">
-                        <p className={text.label}>{t("round2Label")}</p>
-                        <h1 className={text.heading}>{t("round2Title")}</h1>
-                        <p className={text.caption}>{t("round2Hint")}</p>
-                    </div>
+                    <RoundHeading label={t("round2Label")} title={t("round2Title")} hint={t("round2Hint")} />
                     <div className="flex gap-3">
                         <div className="flex flex-1 flex-col gap-3">
                             {situations.map((pair) => (
@@ -256,12 +337,35 @@ export function AiEthicsGame() {
                     </div>
                 </div>
             ) : null}
-            {phase === "finished" ? <Finished timeMs={finalMs} wrongAttempts={wrongAttempts} /> : null}
+
+            {phase === "build" ? (
+                <BuildRound
+                    item={buildItem}
+                    index={buildIndex}
+                    total={ETHICS_BUILD_ITEMS.length}
+                    tokens={buildTokens}
+                    placed={placed}
+                    onChange={setPlaced}
+                    result={buildResult}
+                />
+            ) : null}
+
+            {phase === "dilemma" ? (
+                <DilemmaRound
+                    dilemma={dilemma}
+                    index={dilemmaIndex}
+                    total={ETHICS_DILEMMAS.length}
+                    choice={dilemmaChoice}
+                    onChoose={(side) => setChosen((prev) => ({ ...prev, [dilemma.id]: side }))}
+                />
+            ) : null}
+
+            {phase === "finished" ? <Finished timeMs={finalMs} wrongAttempts={wrongAttempts} chosen={chosen} /> : null}
         </LessonShell>
     );
 }
 
-// ------------------------------------------------------------------ screens
+// ------------------------------------------------------------------ pieces
 
 /** The top of a game page, as LessonHeading is for a lesson's pages. */
 function GameHeading({ title, done = false, children }: { title: string; done?: boolean; children?: React.ReactNode }) {
@@ -282,6 +386,16 @@ function GameHeading({ title, done = false, children }: { title: string; done?: 
     );
 }
 
+function RoundHeading({ label, title, hint }: { label: string; title: string; hint: string }) {
+    return (
+        <div className="flex flex-col gap-1">
+            <p className={text.label}>{label}</p>
+            <h1 className={text.heading}>{title}</h1>
+            <p className={text.caption}>{hint}</p>
+        </div>
+    );
+}
+
 /** Good and Problem as line icons, like every other mark in the lesson kit. */
 function VerdictIcon({ verdict }: { verdict: EthicsVerdict }) {
     return verdict === "good" ? (
@@ -291,6 +405,49 @@ function VerdictIcon({ verdict }: { verdict: EthicsVerdict }) {
     );
 }
 
+/** The graded banner under an answer, drawn like the lesson footer. */
+function Outcome({ correct, onNext, children }: { correct: boolean; onNext: () => void; children?: React.ReactNode }) {
+    const t = useTranslations("ethics");
+    useEffect(() => {
+        try {
+            navigator.vibrate?.(correct ? 30 : [40, 60, 40]);
+        } catch {
+            // Reinforcement only.
+        }
+    }, [correct]);
+
+    return (
+        <div
+            role="status"
+            className={cn(
+                "flex flex-col gap-3 border-t p-4",
+                correct ? "border-lesson-success bg-lesson-success-soft" : "border-lesson-destructive bg-lesson-destructive-soft",
+            )}
+        >
+            <div className="flex items-center gap-2">
+                {correct ? (
+                    <CircleCheck className="size-7 text-lesson-success" />
+                ) : (
+                    <CircleX className="size-7 text-lesson-destructive" />
+                )}
+                <p className={cn(text.subheading, correct ? "text-lesson-success" : "text-lesson-destructive")}>
+                    {correct ? t("correct") : t("notQuite")}
+                </p>
+            </div>
+            {children}
+            <LessonButton
+                autoFocus
+                title={t("continue")}
+                size="lg"
+                variant={correct ? "primary" : "destructive"}
+                onClick={onNext}
+            />
+        </div>
+    );
+}
+
+// ------------------------------------------------------------------ screens
+
 function Intro() {
     const t = useTranslations("ethics");
     return (
@@ -298,15 +455,13 @@ function Intro() {
             <GameHeading title={t("introWords")}>
                 <p className={text.caption}>{t("introBody")}</p>
             </GameHeading>
-            <div className="flex flex-col gap-2">
-                <div className="flex flex-col">
-                    {ETHICS_WORDS.map((item) => (
-                        <div key={item.word} className="flex items-baseline gap-3 border-b border-lesson-hairline py-2">
-                            <p className={cn(text.bodyStrong, "w-24 shrink-0")}>{item.word}</p>
-                            <p className={text.caption}>{item.meaning}</p>
-                        </div>
-                    ))}
-                </div>
+            <div className="flex flex-col">
+                {ETHICS_WORDS.map((item) => (
+                    <div key={item.word} className="flex items-baseline gap-3 border-b border-lesson-hairline py-2">
+                        <p className={cn(text.bodyStrong, "w-28 shrink-0")}>{item.word}</p>
+                        <p className={text.caption}>{item.meaning}</p>
+                    </div>
+                ))}
             </div>
             <LessonCardBox tone="muted" className="flex flex-col gap-1">
                 <p className={text.bodyStrong}>{t("stemGood")}</p>
@@ -339,11 +494,7 @@ function SortRound({
 
     return (
         <div className="flex flex-1 flex-col gap-6">
-            <div className="flex flex-col gap-1">
-                <p className={text.label}>{t("round1Label")}</p>
-                <h1 className={text.heading}>{t("round1Title")}</h1>
-                <p className={text.caption}>{t("round1Hint")}</p>
-            </div>
+            <RoundHeading label={t("round1Label")} title={t("round1Title")} hint={t("round1Hint")} />
 
             <LessonCardBox className="flex flex-col gap-2">
                 <p className={text.label}>{t("cardOf", { index: index + 1, total })}</p>
@@ -377,49 +528,7 @@ function SortRound({
     );
 }
 
-/** The graded banner under a sorted card, drawn like the lesson footer. */
-function Verdict({ correct, card, onNext }: { correct: boolean; card: EthicsSortCard; onNext: () => void }) {
-    const t = useTranslations("ethics");
-    useEffect(() => {
-        try {
-            navigator.vibrate?.(correct ? 30 : [40, 60, 40]);
-        } catch {
-            // Reinforcement only.
-        }
-    }, [correct]);
-
-    return (
-        <div
-            role="status"
-            className={cn(
-                "flex flex-col gap-3 border-t p-4",
-                correct ? "border-lesson-success bg-lesson-success-soft" : "border-lesson-destructive bg-lesson-destructive-soft",
-            )}
-        >
-            <div className="flex items-center gap-2">
-                {correct ? (
-                    <CircleCheck className="size-7 text-lesson-success" />
-                ) : (
-                    <CircleX className="size-7 text-lesson-destructive" />
-                )}
-                <p className={cn(text.subheading, correct ? "text-lesson-success" : "text-lesson-destructive")}>
-                    {correct ? t("correct") : t("notQuite")}
-                </p>
-            </div>
-            <p className={text.bodyStrong}>{card.reason}</p>
-            {card.tip ? <p className={text.caption}>{card.tip}</p> : null}
-            <LessonButton
-                autoFocus
-                title={t("continue")}
-                size="lg"
-                variant={correct ? "primary" : "destructive"}
-                onClick={onNext}
-            />
-        </div>
-    );
-}
-
-/** All six cards in their right columns, for the facilitator's debrief. */
+/** All the sorted cards in their right columns, for the facilitator's debrief. */
 function Recap() {
     const t = useTranslations("ethics");
     const column = (verdict: EthicsVerdict) => (
@@ -451,7 +560,83 @@ function Recap() {
     );
 }
 
-function Finished({ timeMs, wrongAttempts }: { timeMs: number; wrongAttempts: number }) {
+function BuildRound({
+    item,
+    index,
+    total,
+    tokens,
+    placed,
+    onChange,
+    result,
+}: {
+    item: EthicsBuildItem;
+    index: number;
+    total: number;
+    tokens: string[];
+    placed: number[];
+    onChange: (placed: number[]) => void;
+    result: boolean | null;
+}) {
+    const t = useTranslations("ethics");
+    return (
+        <div className="flex flex-col gap-6">
+            <RoundHeading label={t("round3Label")} title={t("round3Title")} hint={t("round3Hint")} />
+            <LessonCardBox tone="muted" className="flex flex-col gap-1">
+                <p className={text.label}>{t("cardOf", { index: index + 1, total })}</p>
+                <p className={text.bodyStrong}>{item.situation}</p>
+            </LessonCardBox>
+            <WordBank
+                tokens={tokens}
+                placed={placed}
+                onChange={onChange}
+                disabled={result !== null}
+                placeholder={t("buildPlaceholder")}
+                outcome={result === null ? undefined : result ? "correct" : "incorrect"}
+            />
+        </div>
+    );
+}
+
+function DilemmaRound({
+    dilemma,
+    index,
+    total,
+    choice,
+    onChoose,
+}: {
+    dilemma: EthicsDilemma;
+    index: number;
+    total: number;
+    choice: 0 | 1 | undefined;
+    onChoose: (side: 0 | 1) => void;
+}) {
+    const t = useTranslations("ethics");
+    return (
+        <div className="flex flex-1 flex-col gap-6">
+            <RoundHeading label={t("round4Label")} title={t("round4Title")} hint={t("round4Hint")} />
+            <LessonCardBox className="flex flex-col gap-2">
+                <p className={text.label}>{t("dilemmaOf", { index: index + 1, total })}</p>
+                <p className="text-[22px] font-bold leading-8 text-lesson-ink">{dilemma.situation}</p>
+            </LessonCardBox>
+            {/* Neither side is marked right: the chosen one simply stays lit. */}
+            <div className="mt-auto grid grid-cols-2 gap-3">
+                {dilemma.sides.map((side, i) => (
+                    <Tile
+                        key={side.label}
+                        label={side.label}
+                        caption={side.reason}
+                        block
+                        className="min-h-28"
+                        state={choice === i ? "selected" : "default"}
+                        onPress={() => onChoose(i as 0 | 1)}
+                    />
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function Finished({ timeMs, wrongAttempts, chosen }: { timeMs: number; wrongAttempts: number; chosen: Record<string, 0 | 1> }) {
     const t = useTranslations("ethics");
     const score = ethicsScore(wrongAttempts);
 
@@ -474,6 +659,19 @@ function Finished({ timeMs, wrongAttempts }: { timeMs: number; wrongAttempts: nu
             </div>
 
             <div className="flex flex-col gap-2">
+                <p className={text.label}>{t("choicesTitle")}</p>
+                {ETHICS_DILEMMAS.map((item) => {
+                    const side = chosen[item.id];
+                    return (
+                        <div key={item.id} className="flex flex-col gap-1 border-b border-lesson-hairline py-2">
+                            <p className={text.caption}>{item.situation}</p>
+                            <p className={text.bodyStrong}>{side === undefined ? "—" : item.sides[side].label}</p>
+                        </div>
+                    );
+                })}
+            </div>
+
+            <div className="flex flex-col gap-2">
                 <p className={text.label}>{t("sayIt")}</p>
                 <LessonCardBox tone="muted" className="flex flex-col gap-2">
                     <p className={text.bodyStrong}>{t("stemGood")}</p>
@@ -483,5 +681,3 @@ function Finished({ timeMs, wrongAttempts }: { timeMs: number; wrongAttempts: nu
         </div>
     );
 }
-
-export type { EthicsMatchPair };

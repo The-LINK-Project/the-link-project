@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import {
+    ETHICS_BUILD_ITEMS,
+    ETHICS_DILEMMAS,
     ETHICS_MATCH_PAIRS,
     ETHICS_SORT_CARDS,
     ETHICS_WORDS,
@@ -11,11 +13,11 @@ import {
 // facilitator able to fix content on the day. These checks keep the bank
 // balanced and short.
 describe("Ethics of AI content", () => {
-    it("has six sort cards, half good and half problem, with unique ids", () => {
-        expect(ETHICS_SORT_CARDS).toHaveLength(6);
+    it("has eight sort cards, half good and half problem, with unique ids", () => {
+        expect(ETHICS_SORT_CARDS).toHaveLength(8);
         const good = ETHICS_SORT_CARDS.filter((card) => card.answer === "good");
-        expect(good).toHaveLength(3);
-        expect(new Set(ETHICS_SORT_CARDS.map((card) => card.id)).size).toBe(6);
+        expect(good).toHaveLength(4);
+        expect(new Set(ETHICS_SORT_CARDS.map((card) => card.id)).size).toBe(8);
     });
 
     it("gives every problem card a tip and every card a stem sentence", () => {
@@ -26,10 +28,10 @@ describe("Ethics of AI content", () => {
         }
     });
 
-    it("has six match pairs, balanced, with no situation reused from round 1", () => {
-        expect(ETHICS_MATCH_PAIRS).toHaveLength(6);
-        expect(ETHICS_MATCH_PAIRS.filter((pair) => pair.verdict === "good")).toHaveLength(3);
-        expect(new Set(ETHICS_MATCH_PAIRS.map((pair) => pair.id)).size).toBe(6);
+    it("has eight match pairs, balanced, with no situation reused from round 1", () => {
+        expect(ETHICS_MATCH_PAIRS).toHaveLength(8);
+        expect(ETHICS_MATCH_PAIRS.filter((pair) => pair.verdict === "good")).toHaveLength(4);
+        expect(new Set(ETHICS_MATCH_PAIRS.map((pair) => pair.id)).size).toBe(8);
         const round1 = new Set(ETHICS_SORT_CARDS.map((card) => card.situation));
         for (const pair of ETHICS_MATCH_PAIRS) expect(round1.has(pair.situation)).toBe(false);
     });
@@ -41,6 +43,23 @@ describe("Ethics of AI content", () => {
         ];
         for (const line of texts) expect(line.split(" ").length).toBeLessThanOrEqual(16);
         expect(ETHICS_WORDS).toHaveLength(6);
+    });
+
+    it("builds six stem sentences whose decoys never appear in the answer", () => {
+        expect(ETHICS_BUILD_ITEMS).toHaveLength(6);
+        for (const item of ETHICS_BUILD_ITEMS) {
+            expect(item.answer.join(" ")).toMatch(/^AI is (good|a problem) because it /);
+            expect(item.decoys).toHaveLength(2);
+            for (const decoy of item.decoys) expect(item.answer).not.toContain(decoy);
+        }
+    });
+
+    it("has three dilemmas with two sides each and no verdict", () => {
+        expect(ETHICS_DILEMMAS).toHaveLength(3);
+        for (const item of ETHICS_DILEMMAS) {
+            expect(item.sides).toHaveLength(2);
+            expect(item.sides[0].label).not.toBe(item.sides[1].label);
+        }
     });
 
     it("scores like Word Match and never goes below zero", () => {
