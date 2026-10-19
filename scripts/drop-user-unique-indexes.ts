@@ -1,43 +1,17 @@
 import { config } from "dotenv";
 import mongoose from "mongoose";
+import { dropUserUniqueIndexes } from "../lib/database/userIndexes";
 
 // Load .env.local before reading process.env
 config({ path: ".env.local" });
 config();
 
-// Drops the unique email and username indexes from the users collection.
-// user.model.ts no longer declares them (clerkId is the only identity, see the
-// note there), but mongoose never drops an index on its own, so the live
-// database keeps enforcing them until this runs.
-//
-// Run it AFTER the schema change is deployed. Until then every cold start of
-// the old code asks mongoose to build the indexes again, and it would.
+// Drops the unique email and username indexes from the users collection, the
+// same check connectToDatabase runs on every cold start (lib/database/
+// userIndexes.ts). The app heals itself; this is for doing it by hand, or for
+// checking what's there.
 //
 // DRY RUN by default: prints what it would drop. Run with --apply to drop.
-
-const STALE_UNIQUE_FIELDS = ["email", "username"];
-
-export async function dropUserUniqueIndexes(
-    users: mongoose.mongo.Collection,
-    { apply }: { apply: boolean },
-) {
-    const dropped: string[] = [];
-
-    for (const index of await users.indexes()) {
-        const fields = Object.keys(index.key);
-        const isStale =
-            index.unique &&
-            fields.length === 1 &&
-            STALE_UNIQUE_FIELDS.includes(fields[0]);
-
-        if (!isStale || !index.name) continue;
-
-        if (apply) await users.dropIndex(index.name);
-        dropped.push(index.name);
-    }
-
-    return dropped;
-}
 
 async function run() {
     const apply = process.argv.includes("--apply");
@@ -65,13 +39,11 @@ async function run() {
     await mongoose.disconnect();
 }
 
-if (process.argv[1]?.endsWith("drop-user-unique-indexes.ts")) {
-    run()
-        .then(() => {
-            process.exit(0);
-        })
-        .catch((error) => {
-            console.error("Dropping indexes failed:", error);
-            process.exit(1);
-        });
-}
+run()
+    .then(() => {
+        process.exit(0);
+    })
+    .catch((error) => {
+        console.error("Dropping indexes failed:", error);
+        process.exit(1);
+    });

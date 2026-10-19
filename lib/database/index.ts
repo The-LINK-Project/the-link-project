@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { dropUserUniqueIndexes } from "./userIndexes";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -26,8 +27,23 @@ export const connectToDatabase = async () => {
                 serverSelectionTimeoutMS: 10000,
                 // bufferCommands: false,
             })
-            .then((conn) => {
+            .then(async (conn) => {
                 console.log("Connected to database");
+
+                // Once per cold start, so the indexes can't quietly come back.
+                // Best effort: a failure here must not take the site down
+                try {
+                    const dropped = await dropUserUniqueIndexes(
+                        conn.connection.db!.collection("users"),
+                        { apply: true },
+                    );
+                    if (dropped.length > 0) {
+                        console.log(`Dropped stale user indexes: ${dropped}`);
+                    }
+                } catch (error) {
+                    console.error("Couldn't check user indexes:", error);
+                }
+
                 return conn;
             });
 

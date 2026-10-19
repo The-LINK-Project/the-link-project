@@ -58,9 +58,7 @@ const { default: LearnerProgress } = await import(
     "@/lib/database/models/learnerProgress.model"
 );
 const { connectToDatabase } = await import("@/lib/database");
-const { dropUserUniqueIndexes } = await import(
-    "@/scripts/drop-user-unique-indexes"
-);
+const { dropUserUniqueIndexes } = await import("@/lib/database/userIndexes");
 
 function clerkUser(
     id: string,
@@ -433,6 +431,25 @@ describe("Clerk webhook", () => {
 // ---- The migration -------------------------------------------------------
 
 describe("drop-user-unique-indexes migration", () => {
+    it("runs by itself on every cold start", async () => {
+        await addLegacyUniqueIndexes();
+        // A cold start: the app's connection cache is empty
+        Object.assign((global as any).mongoose, { conn: null, promise: null });
+        const logged = vi.spyOn(console, "log").mockImplementation(() => {});
+
+        await connectToDatabase();
+
+        const names = (await User.collection.indexes()).map(
+            (index) => index.name,
+        );
+        expect(names).not.toContain("email_1");
+        expect(names).not.toContain("username_1");
+        expect(names).toContain("clerkId_1");
+        expect(logged).toHaveBeenCalledWith(
+            "Dropped stale user indexes: email_1,username_1",
+        );
+    });
+
     it("drops only the stale unique indexes, and only with --apply", async () => {
         await addLegacyUniqueIndexes();
         const users = mongoose.connection.db!.collection("users");
