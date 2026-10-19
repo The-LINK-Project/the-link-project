@@ -1,5 +1,5 @@
 import { auth, currentUser, User } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 import { ADMIN_CONFIG, isAdminEmail } from "@/lib/config/admin";
 
@@ -25,6 +25,23 @@ function getVerifiedPrimaryEmail(user: User): string | undefined {
 }
 
 /**
+ * auth() throws when Clerk's middleware hasn't seen the request. The matcher
+ * only skips paths ending in a file extension (so assets in public/ load), and
+ * no page has one, so such a request is for a page that doesn't exist:
+ * /en/legacy/learn/1.json would otherwise be a 500.
+ */
+async function sessionOrNotFound() {
+  let session: Awaited<ReturnType<typeof auth>> | undefined;
+  try {
+    session = await auth();
+  } catch (error) {
+    console.error("Page reached without Clerk's middleware:", error);
+  }
+  if (!session) notFound();
+  return session;
+}
+
+/**
  * Guard for signed-in-only pages. Layout-level backstop so that middleware.ts
  * is not the single point of failure for every learner page — a matcher hole
  * (one has already been found once) must not be enough on its own to serve a
@@ -34,7 +51,7 @@ function getVerifiedPrimaryEmail(user: User): string | undefined {
  * render of every protected page.
  */
 export async function requireSignedIn() {
-  const { userId } = await auth();
+  const { userId } = await sessionOrNotFound();
 
   if (!userId) {
     redirect(ADMIN_CONFIG.redirectPaths.signIn);
@@ -48,7 +65,18 @@ export async function requireSignedIn() {
  * Redirects unauthorized users appropriately
  */
 export async function requireAdminAccess() {
-  const user = await getCachedCurrentUser();
+  await sessionOrNotFound();
+
+  // currentUser() calls Clerk's API, which can fail (an outage, rate limit,
+  // or an account deleted while its session is still live). Any of those is
+  // "can't confirm you're an admin", not an error page
+  let user: User | null = null;
+  try {
+    user = await getCachedCurrentUser();
+  } catch (error) {
+    console.error("Couldn't load the Clerk user for an admin check:", error);
+    redirect(ADMIN_CONFIG.redirectPaths.unauthorized);
+  }
 
   if (!user) {
     redirect(ADMIN_CONFIG.redirectPaths.signIn);
