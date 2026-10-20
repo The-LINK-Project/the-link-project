@@ -17,6 +17,7 @@ export const PICTURE_KEYS = [
     "mrtFare",
     "money",
     "card",
+    "tapOut",
     "seat",
     "transfer",
     "clock",

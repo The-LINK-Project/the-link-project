@@ -25,6 +25,7 @@ const PICTURE_VISUALS: Record<PictureKey, string> = {
     mrtFare: "/lessons/mrt-fare.jpg",
     money: "/lessons/cash.jpg",
     card: "/lessons/top-up.jpg",
+    tapOut: "/lessons/tap-out.jpg",
     seat: "/lessons/reserved-seat.jpg",
     transfer: "/lessons/interchange.jpg",
     clock: "/lessons/break.jpg",
