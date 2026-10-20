@@ -53,10 +53,15 @@ const PICTURE_VISUALS: Record<PictureKey, string> = {
     salary: "/lessons/salary.jpg",
     repeat: "/lessons/again.jpg",
     // Illustrations rather than photographs: these ideas have no one scene to photograph.
+    artificialIntelligence: "/lessons/ai-artificial-intelligence.svg",
+    machineLearning: "/lessons/ai-machine-learning.svg",
+    trainingData: "/lessons/ai-training-data.svg",
     chatbot: "/lessons/ai-chatbot.svg",
+    prompt: "/lessons/ai-prompt.svg",
     voiceAssistant: "/lessons/ai-voice-assistant.svg",
     imageRecognition: "/lessons/ai-image-recognition.svg",
     generativeAi: "/lessons/ai-generative.svg",
+    hallucination: "/lessons/ai-hallucination.svg",
 };
 
 export function lessonVisual(lessonId: string): string | undefined {

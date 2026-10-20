@@ -48,10 +48,15 @@ export const PICTURE_KEYS = [
     "salary",
     "repeat",
     // Talking about AI
+    "artificialIntelligence",
+    "machineLearning",
+    "trainingData",
     "chatbot",
+    "prompt",
     "voiceAssistant",
     "imageRecognition",
     "generativeAi",
+    "hallucination",
 ] as const;
 
 export type PictureKey = (typeof PICTURE_KEYS)[number];

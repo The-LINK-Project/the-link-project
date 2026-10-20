@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#eef2ff"/>
+  <!-- gear -->
+  <circle cx="200" cy="255" r="92" fill="none" stroke="#1f2937" stroke-width="30" stroke-dasharray="36.1 36.1"/>
+  <circle cx="200" cy="255" r="82" fill="#1f2937"/>
+  <circle cx="200" cy="255" r="30" fill="#eef2ff"/>
+  <!-- graduation cap -->
+  <path d="M142 122 v42 q58 26 116 0 v-42z" fill="#3730a3"/>
+  <path d="M200 70 l120 46 l-120 46 l-120 -46z" fill="#4f46e5"/>
+  <polyline points="200,116 304,124 304,176" fill="none" stroke="#facc15" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="304" cy="184" r="11" fill="#facc15"/>
+  <circle cx="200" cy="116" r="8" fill="#facc15"/>
+</svg>

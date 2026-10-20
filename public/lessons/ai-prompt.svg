@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#fdf2f8"/>
+  <!-- message box with typed words -->
+  <rect x="34" y="70" width="332" height="130" rx="30" fill="#ffffff" stroke="#1f2937" stroke-width="8"/>
+  <rect x="68" y="108" width="176" height="14" rx="7" fill="#475569"/>
+  <rect x="68" y="144" width="112" height="14" rx="7" fill="#475569"/>
+  <rect x="190" y="134" width="7" height="34" rx="3" fill="#1cb0f6"/>
+  <!-- send button -->
+  <circle cx="306" cy="135" r="36" fill="#1cb0f6"/>
+  <path d="M306 112 l-22 24 h14 v22 h16 v-22 h14z" fill="#ffffff"/>
+  <!-- keyboard -->
+  <rect x="54" y="236" width="292" height="120" rx="18" fill="#1f2937"/>
+  <g fill="#e5e7eb">
+    <rect x="72" y="254" width="30" height="24" rx="5"/>
+    <rect x="110" y="254" width="30" height="24" rx="5"/>
+    <rect x="148" y="254" width="30" height="24" rx="5"/>
+    <rect x="186" y="254" width="30" height="24" rx="5"/>
+    <rect x="224" y="254" width="30" height="24" rx="5"/>
+    <rect x="262" y="254" width="30" height="24" rx="5"/>
+    <rect x="300" y="254" width="28" height="24" rx="5"/>
+    <rect x="86" y="286" width="30" height="24" rx="5"/>
+    <rect x="124" y="286" width="30" height="24" rx="5"/>
+    <rect x="162" y="286" width="30" height="24" rx="5"/>
+    <rect x="200" y="286" width="30" height="24" rx="5"/>
+    <rect x="238" y="286" width="30" height="24" rx="5"/>
+    <rect x="276" y="286" width="38" height="24" rx="5"/>
+    <rect x="124" y="318" width="152" height="22" rx="5"/>
+  </g>
+</svg>
