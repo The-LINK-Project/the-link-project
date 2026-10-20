@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
     ETHICS_BUILD_ITEMS,
+    ETHICS_CONCEPT_LABEL,
     ETHICS_DILEMMAS,
     ETHICS_MATCH_PAIRS,
     ETHICS_SORT_CARDS,
@@ -60,6 +61,11 @@ describe("Ethics of AI content", () => {
             expect(item.sides).toHaveLength(2);
             expect(item.sides[0].label).not.toBe(item.sides[1].label);
         }
+    });
+
+    it("names a concept on every sort card and match pair, and uses each concept at least once", () => {
+        const used = new Set([...ETHICS_SORT_CARDS, ...ETHICS_MATCH_PAIRS].map((item) => item.concept));
+        for (const concept of Object.keys(ETHICS_CONCEPT_LABEL)) expect(used.has(concept as never)).toBe(true);
     });
 
     it("scores like Word Match and never goes below zero", () => {

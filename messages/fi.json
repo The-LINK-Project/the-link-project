@@ -320,6 +320,7 @@
         "round4Hint": "There is no wrong answer. Talk, then choose together.",
         "dilemmaSay": "Tell your teacher why. Start with: \"We chose this because …\"",
         "dilemmaOf": "Dilemma {index} of {total}",
+        "conceptsTitle": "Ideas you met today",
         "choicesTitle": "Your team's choices"
     }
 }

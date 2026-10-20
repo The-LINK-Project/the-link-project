@@ -17,12 +17,29 @@
 
 export type EthicsVerdict = "good" | "problem";
 
+/**
+ * The ethics idea a card is really about, named so it is said out loud rather
+ * than left implicit. Each is one word a learner can take away.
+ */
+export type EthicsConcept = "privacy" | "accuracy" | "deepfakes" | "bias" | "consent" | "safety" | "access";
+
+export const ETHICS_CONCEPT_LABEL: Record<EthicsConcept, string> = {
+    privacy: "Privacy",
+    accuracy: "Accuracy",
+    deepfakes: "Deepfakes",
+    bias: "Bias",
+    consent: "Permission",
+    safety: "Safety",
+    access: "Access",
+};
+
 /** Round 1: one situation, sorted into Good or Problem. */
 export type EthicsSortCard = {
     id: string;
     /** The situation, read aloud by the team. */
     situation: string;
     answer: EthicsVerdict;
+    concept: EthicsConcept;
     /** The full stem sentence, shown after the tap whether right or wrong. */
     reason: string;
     /** A one-line tip, only on problem cards: what a person can do. */
@@ -34,6 +51,7 @@ export type EthicsMatchPair = {
     id: string;
     situation: string;
     verdict: EthicsVerdict;
+    concept: EthicsConcept;
     /** No emoji hint here: the team has to read both halves. */
     reason: string;
 };
@@ -75,24 +93,28 @@ export const ETHICS_SORT_CARDS: EthicsSortCard[] = [
         id: "translate",
         situation: "A translate app helps me explain my symptoms to the doctor.",
         answer: "good",
+        concept: "access",
         reason: "AI is good because it helps me communicate clearly.",
     },
     {
         id: "map",
         situation: "A map app finds the fastest route to the MRT when it is raining.",
         answer: "good",
+        concept: "access",
         reason: "AI is good because it saves time and effort.",
     },
     {
         id: "voice",
         situation: "A voice assistant reads my messages aloud while I am cooking.",
         answer: "good",
+        concept: "access",
         reason: "AI is good because it is convenient and hands-free.",
     },
     {
         id: "bus",
         situation: "A chatbot sounds very confident, but gives me the wrong bus timing.",
         answer: "problem",
+        concept: "accuracy",
         reason: "AI is a problem because it can make mistakes while sounding sure.",
         tip: "Always check important information with a second source.",
     },
@@ -100,6 +122,7 @@ export const ETHICS_SORT_CARDS: EthicsSortCard[] = [
         id: "scam-call",
         situation: "A video call looks and sounds like my family, but it is a scam for money.",
         answer: "problem",
+        concept: "deepfakes",
         reason: "AI is a problem because it can copy faces and voices to trick people.",
         tip: "Hang up. Call your family back on their real number.",
     },
@@ -107,6 +130,7 @@ export const ETHICS_SORT_CARDS: EthicsSortCard[] = [
         id: "photos",
         situation: "A photo app uploads my pictures online without asking my permission.",
         answer: "problem",
+        concept: "privacy",
         reason: "AI is a problem because it does not respect my privacy.",
         tip: "Check the app permissions and switch off sharing.",
     },
@@ -114,12 +138,14 @@ export const ETHICS_SORT_CARDS: EthicsSortCard[] = [
         id: "subtitles",
         situation: "AI subtitles let me watch the news in my own language.",
         answer: "good",
+        concept: "access",
         reason: "AI is good because it helps me understand.",
     },
     {
         id: "medical",
         situation: "A chatbot tells me which medicine to take, but it is not a doctor.",
         answer: "problem",
+        concept: "accuracy",
         reason: "AI is a problem because it is not a real expert.",
         tip: "Ask a doctor or a pharmacist before taking anything.",
     },
@@ -130,48 +156,56 @@ export const ETHICS_MATCH_PAIRS: EthicsMatchPair[] = [
         id: "read-aloud",
         situation: "An app reads street signs aloud for people who cannot see well.",
         verdict: "good",
+        concept: "access",
         reason: "It makes everyday life more accessible.",
     },
     {
         id: "practise",
         situation: "A chatbot lets me practise English at midnight after work.",
         verdict: "good",
+        concept: "access",
         reason: "It is available at any time.",
     },
     {
         id: "weather",
         situation: "A weather app warns me an hour before a heavy storm.",
         verdict: "good",
+        concept: "safety",
         reason: "It helps me plan ahead.",
     },
     {
         id: "accent",
         situation: "Voice AI understands some accents much better than others.",
         verdict: "problem",
+        concept: "bias",
         reason: "It is biased and not fair to everyone.",
     },
     {
         id: "fake-photo",
         situation: "A viral photo of a flood turns out to be made by AI.",
         verdict: "problem",
+        concept: "deepfakes",
         reason: "Do not believe everything you see online.",
     },
     {
         id: "my-words",
         situation: "AI writes my whole message in words I would never use.",
         verdict: "problem",
+        concept: "consent",
         reason: "It is not my own voice.",
     },
     {
         id: "scam-warning",
         situation: "My bank app warns me when a message looks like a scam.",
         verdict: "good",
+        concept: "safety",
         reason: "It helps keep my money safe.",
     },
     {
         id: "speaker",
         situation: "A smart speaker listens all day, even when I do not talk to it.",
         verdict: "problem",
+        concept: "privacy",
         reason: "It collects more than it needs.",
     },
 ];

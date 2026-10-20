@@ -13,12 +13,14 @@ import { WordBank } from "@/components/learn/WordBank";
 import { useRouter } from "@/i18n/navigation";
 import {
     ETHICS_BUILD_ITEMS,
+    ETHICS_CONCEPT_LABEL,
     ETHICS_DILEMMAS,
     ETHICS_MATCH_PAIRS,
     ETHICS_SORT_CARDS,
     ETHICS_WORDS,
     ethicsScore,
     type EthicsBuildItem,
+    type EthicsConcept,
     type EthicsDilemma,
     type EthicsSortCard,
     type EthicsVerdict,
@@ -244,6 +246,9 @@ export function AiEthicsGame() {
             case "sort":
                 return picked ? (
                     <Outcome correct={picked === card.answer} onNext={nextCard}>
+                        <div>
+                            <LessonBadge label={ETHICS_CONCEPT_LABEL[card.concept]} tone="accent" />
+                        </div>
                         <p className={text.bodyStrong}>{card.reason}</p>
                         {card.tip ? <p className={text.caption}>{card.tip}</p> : null}
                     </Outcome>
@@ -541,6 +546,9 @@ function Recap() {
                 <LessonCardBox key={item.id} tone="muted" className="flex flex-col gap-1 p-3">
                     <p className={text.bodyStrong}>{item.situation}</p>
                     <p className={text.caption}>{item.reason}</p>
+                    <div className="pt-1">
+                        <LessonBadge label={ETHICS_CONCEPT_LABEL[item.concept]} tone="accent" />
+                    </div>
                 </LessonCardBox>
             ))}
         </div>
@@ -636,6 +644,15 @@ function DilemmaRound({
     );
 }
 
+/** Every idea the cards touched, once each, in the order they were met. */
+function conceptsMet(): EthicsConcept[] {
+    const seen: EthicsConcept[] = [];
+    for (const item of [...ETHICS_SORT_CARDS, ...ETHICS_MATCH_PAIRS]) {
+        if (!seen.includes(item.concept)) seen.push(item.concept);
+    }
+    return seen;
+}
+
 function Finished({ timeMs, wrongAttempts, chosen }: { timeMs: number; wrongAttempts: number; chosen: Record<string, 0 | 1> }) {
     const t = useTranslations("ethics");
     const score = ethicsScore(wrongAttempts);
@@ -656,6 +673,15 @@ function Finished({ timeMs, wrongAttempts, chosen }: { timeMs: number; wrongAtte
                     <p className="text-[44px] font-extrabold leading-tight tabular-nums text-lesson-success">{score}</p>
                     <LessonBadge label={t("wrongTaps", { count: wrongAttempts })} tone={wrongAttempts === 0 ? "success" : "neutral"} />
                 </LessonCardBox>
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <p className={text.label}>{t("conceptsTitle")}</p>
+                <div className="flex flex-wrap gap-2">
+                    {conceptsMet().map((concept) => (
+                        <LessonBadge key={concept} label={ETHICS_CONCEPT_LABEL[concept]} tone="accent" />
+                    ))}
+                </div>
             </div>
 
             <div className="flex flex-col gap-2">
