@@ -12,6 +12,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "record:audio": "tsx --env-file=.env.local scripts/record-lesson-audio.ts",
     "migration:backfill-lesson-completed": "tsx scripts/backfill-lesson-completed.ts",
     "migration:dedupe-lesson-progress": "tsx scripts/dedupe-lesson-progress.ts",
     "migration:drop-user-unique-indexes": "tsx scripts/drop-user-unique-indexes.ts",
@@ -55,6 +56,7 @@
     "tw-animate-css": "^1.2.4"
   },
   "devDependencies": {
+    "@breezystack/lamejs": "^1.2.7",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22.20.5",
     "@types/react": "^19",

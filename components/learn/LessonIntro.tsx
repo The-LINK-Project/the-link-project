@@ -2,10 +2,10 @@
 
 import { Volume1, Volume2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { localized, useLessonLocalized } from "@/lib/lessons/localized";
-import { useSpeech } from "@/lib/lessons/speech";
+import { prefetchSpeech, useSpeech } from "@/lib/lessons/speech";
 import type { Lesson, VocabItem } from "@/lib/lessons/types";
 import { cn } from "@/lib/utils";
 
@@ -46,6 +46,8 @@ export function LessonWords({ lesson }: { lesson: Lesson }) {
     const native = useLessonLocalized();
     const { speak, speaking } = useSpeech();
     const [current, setCurrent] = useState<string | null>(null);
+
+    useEffect(() => prefetchSpeech(lesson.vocab.map((item) => item.term)), [lesson]);
 
     const say = (item: VocabItem) => {
         setCurrent(item.id);

@@ -4,10 +4,12 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useRouter } from "@/i18n/navigation";
+import { exerciseSpokenTexts } from "@/lib/lessons/audio";
 import { getLesson } from "@/lib/lessons/data";
 import { DAILY_MIX_ID } from "@/lib/lessons/data/review";
 import { useLearnerLanguage, useLessonLocalized } from "@/lib/lessons/localized";
 import { restoreSession, snapshotOf, useLessonSession } from "@/lib/lessons/session";
+import { prefetchSpeech } from "@/lib/lessons/speech";
 import type { LessonRecord, SavedRun } from "@/lib/progress/model";
 import { completeLesson, getProgressData, saveRun, setResume } from "@/lib/progress/store";
 import { canPractiseSpeaking, practiceLanguages, runToParams } from "@/lib/speaking/context";
@@ -200,6 +202,17 @@ function LessonRunner({
     useEffect(() => {
         if (reviewOver) onBackToStart?.();
     }, [reviewOver, onBackToStart]);
+
+    // What this exercise and the next will say, fetched ahead of the tap.
+    useEffect(() => {
+        const upcoming = state.queue.slice(state.position, state.position + 2);
+        prefetchSpeech(
+            upcoming.flatMap((id) => {
+                const item = lesson.exercises.find((candidate) => candidate.id === id);
+                return item ? exerciseSpokenTexts(lesson, item) : [];
+            }),
+        );
+    }, [lesson, state.queue, state.position]);
 
     // Leaving by choice is not somewhere to be sent back to.
     useEffect(() => () => setResume(null), []);
