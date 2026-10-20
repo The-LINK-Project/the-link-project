@@ -321,6 +321,9 @@
         "dilemmaSay": "Tell your teacher why. Start with: \"We chose this because …\"",
         "dilemmaOf": "Dilemma {index} of {total}",
         "conceptsTitle": "Ideas you met today",
-        "choicesTitle": "Your team's choices"
+        "choicesTitle": "Your team's choices",
+        "learnOf": "Before you play · {index} of {total}",
+        "learnEarlier": "Earlier today",
+        "learnAsk": "Your team: tap one"
     }
 }

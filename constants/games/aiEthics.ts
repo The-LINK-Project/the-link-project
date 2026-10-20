@@ -9,7 +9,11 @@
 // The two sentence stems the whole game teaches:
 //     "AI is good because it ..."  /  "AI is a problem because it ..."
 //
-// Four rounds, about 15 minutes with a group round each laptop:
+// Four slides first, then four rounds, about 18 minutes with a group round
+// each laptop. The slides come straight after the workshop's "AI exploration"
+// and "AI vs human" segments, so they turn what the team just did (talked to a
+// chatbot, made pictures, took photos) into three questions to ask of any AI:
+// Is it true? Did they say yes? Is it fair? Each slide ends with one tap.
 //   1. Sort      eight situations into Good or Problem, one at a time
 //   2. Match     eight situations against their reasons
 //   3. Build     six stem sentences from word tiles
@@ -31,6 +35,49 @@ export const ETHICS_CONCEPT_LABEL: Record<EthicsConcept, string> = {
     consent: "Permission",
     safety: "Safety",
     access: "Access",
+};
+
+/**
+ * The three questions the slides teach. Every concept the cards name sits
+ * under one of them, so the finish screen can hand the team back the same
+ * three questions they started with.
+ */
+export type EthicsQuestion = "true" | "permission" | "fair";
+
+export const ETHICS_QUESTION_LABEL: Record<EthicsQuestion, string> = {
+    true: "Is it true?",
+    permission: "Did they say yes?",
+    fair: "Is it fair?",
+};
+
+export const ETHICS_CONCEPT_QUESTION: Record<EthicsConcept, EthicsQuestion> = {
+    accuracy: "true",
+    deepfakes: "true",
+    privacy: "permission",
+    consent: "permission",
+    bias: "fair",
+    safety: "fair",
+    access: "fair",
+};
+
+/**
+ * One slide shown before the game. `check` is the single tap that ends it:
+ * the right option gets the green banner, either way the reason is read out.
+ */
+export type EthicsSlide = {
+    id: string;
+    title: string;
+    /** Short lines, read aloud by the facilitator. */
+    lines: string[];
+    /** What the team did earlier in the workshop that this slide is about. */
+    earlier: string;
+    question?: EthicsQuestion;
+    check: {
+        prompt: string;
+        options: [string, string];
+        answer: 0 | 1;
+        reason: string;
+    };
 };
 
 /** Round 1: one situation, sorted into Good or Problem. */
@@ -88,6 +135,76 @@ export const ETHICS_WORDS: EthicsWord[] = [
     { word: "permission", meaning: "saying yes before something happens" },
 ];
 
+export const ETHICS_SLIDES: EthicsSlide[] = [
+    {
+        id: "s-tool",
+        title: "AI is a tool",
+        lines: [
+            "Today you talked to AI, made pictures and used your voice.",
+            "AI did what you asked. It does not know if it is right or kind.",
+            "AI is a tool. The person using it is responsible.",
+        ],
+        earlier: "You asked AI to make something. It made it. You decided what.",
+        check: {
+            prompt: "AI makes a picture for you. Who is responsible for how it is used?",
+            options: ["The person", "The AI"],
+            answer: 0,
+            reason: "AI is a tool. The person using it is responsible, like a knife or a car.",
+        },
+    },
+    {
+        id: "s-true",
+        title: "Is it true?",
+        lines: [
+            "The chatbot sounded sure. It can still be wrong.",
+            "For medicine, money or official letters, ask a real person.",
+            "If a call or message looks strange, check with ScamShield on 1799.",
+        ],
+        earlier: "You asked the chatbot questions. Was every answer correct?",
+        question: "true",
+        check: {
+            prompt: "A chatbot says: take two tablets. What do you do?",
+            options: ["Take them", "Ask the pharmacist"],
+            answer: 1,
+            reason: "The chatbot is not a doctor. It can be wrong and still sound sure.",
+        },
+    },
+    {
+        id: "s-permission",
+        title: "Did they say yes?",
+        lines: [
+            "You made a picture with AI. A picture or voice of a real person needs their permission.",
+            "Photos you upload go to a company. They may keep them.",
+            "Never upload your FIN, work permit or passport to a chatbot or an unknown app.",
+        ],
+        earlier: "You took photos today. Whose face was in them? Did you ask?",
+        question: "permission",
+        check: {
+            prompt: "Your friend's photo is funny. Can you make an AI picture of him?",
+            options: ["Ask him first", "Yes, it is a joke"],
+            answer: 0,
+            reason: "His face is his. A joke for you can be a problem for him.",
+        },
+    },
+    {
+        id: "s-fair",
+        title: "Is it fair?",
+        lines: [
+            "AI learns from examples. It often works better for some people than others.",
+            "A copied voice asking for money. A fake flood photo. These hurt people.",
+            "Good use helps people. Bad use tricks people or leaves them out.",
+        ],
+        earlier: "Did the voice AI understand everyone in your group equally well?",
+        question: "fair",
+        check: {
+            prompt: "A translate app works well for English, but badly for Bengali and Tamil. Is that fair?",
+            options: ["Fair", "Not fair"],
+            answer: 1,
+            reason: "That is bias. AI should work for everyone, not only for some.",
+        },
+    },
+];
+
 export const ETHICS_SORT_CARDS: EthicsSortCard[] = [
     {
         id: "translate",
@@ -124,7 +241,7 @@ export const ETHICS_SORT_CARDS: EthicsSortCard[] = [
         answer: "problem",
         concept: "deepfakes",
         reason: "AI is a problem because it can copy faces and voices to trick people.",
-        tip: "Hang up. Call your family back on their real number.",
+        tip: "Hang up. Call your family back on their real number. Not sure? Call ScamShield on 1799.",
     },
     {
         id: "photos",

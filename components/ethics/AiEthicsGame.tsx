@@ -14,14 +14,19 @@ import { useRouter } from "@/i18n/navigation";
 import {
     ETHICS_BUILD_ITEMS,
     ETHICS_CONCEPT_LABEL,
+    ETHICS_CONCEPT_QUESTION,
     ETHICS_DILEMMAS,
     ETHICS_MATCH_PAIRS,
+    ETHICS_QUESTION_LABEL,
+    ETHICS_SLIDES,
     ETHICS_SORT_CARDS,
     ETHICS_WORDS,
     ethicsScore,
     type EthicsBuildItem,
     type EthicsConcept,
     type EthicsDilemma,
+    type EthicsQuestion,
+    type EthicsSlide,
     type EthicsSortCard,
     type EthicsVerdict,
 } from "@/constants/games/aiEthics";
@@ -31,15 +36,16 @@ import { cn } from "@/lib/utils";
 import { ETHICS_HUE, EthicsCoin } from "./EthicsCoin";
 
 /**
- * Ethics of AI: a four-round team game for the workshop, played on a laptop
- * with a group round it. Sort, Match and Build are timed and scored like Word
- * Match. The Dilemmas are not: the clock stops, the team picks a side, and
- * says why to the teacher.
+ * Ethics of AI: four slides, then a four-round team game for the workshop,
+ * played on a laptop with a group round it. The slides are the lesson, each
+ * ending in one tap that is not scored. Sort, Match and Build are timed and
+ * scored like Word Match. The Dilemmas are not: the clock stops, the team
+ * picks a side, and says why to the teacher.
  *
  * Built from the lesson kit so it looks like every other lesson. Nothing is
  * saved: the finish screen is the result, and teams compare out loud.
  */
-type Phase = "intro" | "sort" | "recap" | "match" | "build" | "dilemma" | "finished";
+type Phase = "learn" | "intro" | "sort" | "recap" | "match" | "build" | "dilemma" | "finished";
 
 const ROUNDS = 4;
 const WRONG_PAIR_FEEDBACK_MS = 600;
@@ -52,8 +58,12 @@ export function AiEthicsGame() {
     const t = useTranslations("ethics");
     const router = useRouter();
 
-    const [phase, setPhase] = useState<Phase>("intro");
+    const [phase, setPhase] = useState<Phase>("learn");
     const [wrongAttempts, setWrongAttempts] = useState(0);
+
+    // Slides
+    const [slideIndex, setSlideIndex] = useState(0);
+    const [slidePick, setSlidePick] = useState<0 | 1 | null>(null);
 
     // Round 1
     const [sortIndex, setSortIndex] = useState(0);
@@ -111,6 +121,16 @@ export function AiEthicsGame() {
         setChosen({});
         resumeClock();
         setPhase("sort");
+    };
+
+    // -------------------------------------------------------------- slides
+
+    const slide = ETHICS_SLIDES[slideIndex];
+
+    const nextSlide = () => {
+        setSlidePick(null);
+        if (slideIndex + 1 < ETHICS_SLIDES.length) setSlideIndex(slideIndex + 1);
+        else setPhase("intro");
     };
 
     // ------------------------------------------------------------- round 1
@@ -210,7 +230,7 @@ export function AiEthicsGame() {
 
     const roundShare = (round: number, within: number) => (round - 1 + within) / ROUNDS;
     const progress =
-        phase === "intro"
+        phase === "learn" || phase === "intro"
             ? 0
             : phase === "sort"
               ? roundShare(1, (sortIndex + (picked ? 1 : 0)) / ETHICS_SORT_CARDS.length)
@@ -224,8 +244,12 @@ export function AiEthicsGame() {
                       ? roundShare(4, (dilemmaIndex + (dilemmaChoice !== undefined ? 1 : 0)) / ETHICS_DILEMMAS.length)
                       : 1;
 
+    // The slides show how far through them the team is, with no clock: the
+    // clock belongs to the game and only starts on the word screen's Start.
     const header =
-        phase === "intro" || phase === "finished" ? null : (
+        phase === "learn" ? (
+            <LessonProgress value={(slideIndex + (slidePick === null ? 0 : 1)) / ETHICS_SLIDES.length} />
+        ) : phase === "intro" || phase === "finished" ? null : (
             <>
                 <LessonProgress value={progress} />
                 <span className="flex shrink-0 items-center gap-1 text-base font-bold tabular-nums text-lesson-muted">
@@ -237,6 +261,12 @@ export function AiEthicsGame() {
 
     const footer = (() => {
         switch (phase) {
+            case "learn":
+                return slidePick === null ? null : (
+                    <Outcome correct={slidePick === slide.check.answer} onNext={nextSlide}>
+                        <p className={text.bodyStrong}>{slide.check.reason}</p>
+                    </Outcome>
+                );
             case "intro":
                 return (
                     <ShellActions>
@@ -301,6 +331,18 @@ export function AiEthicsGame() {
 
     return (
         <LessonShell closeLabel={t("close")} onClose={() => router.push("/dashboard")} header={header} footer={footer}>
+            {phase === "learn" ? (
+                <Slide
+                    slide={slide}
+                    index={slideIndex}
+                    total={ETHICS_SLIDES.length}
+                    picked={slidePick}
+                    onPick={(i) => {
+                        if (slidePick === null) setSlidePick(i);
+                    }}
+                />
+            ) : null}
+
             {phase === "intro" ? <Intro /> : null}
 
             {phase === "sort" ? (
@@ -452,6 +494,78 @@ function Outcome({ correct, onNext, children }: { correct: boolean; onNext: () =
 }
 
 // ------------------------------------------------------------------ screens
+
+/**
+ * One slide of the lesson: a title, three lines the facilitator reads aloud,
+ * the thing the team did earlier that it is about, and a single tap. The tap
+ * tells the facilitator how much the room already knows.
+ */
+function Slide({
+    slide,
+    index,
+    total,
+    picked,
+    onPick,
+}: {
+    slide: EthicsSlide;
+    index: number;
+    total: number;
+    picked: 0 | 1 | null;
+    onPick: (i: 0 | 1) => void;
+}) {
+    const t = useTranslations("ethics");
+    const stateFor = (i: 0 | 1) => {
+        if (picked === null) return "default" as const;
+        if (i === slide.check.answer) return "correct" as const;
+        if (i === picked) return "incorrect" as const;
+        return "default" as const;
+    };
+
+    return (
+        <div className="flex flex-1 flex-col gap-6">
+            <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-4">
+                    <EthicsCoin />
+                    <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                        <p className={text.label}>{t("learnOf", { index: index + 1, total })}</p>
+                        <h1 className="text-balance text-[26px] font-extrabold leading-8 text-lesson-ink">{slide.title}</h1>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                    {slide.lines.map((line) => (
+                        <p key={line} className="text-[19px] font-semibold leading-7 text-lesson-ink">
+                            {line}
+                        </p>
+                    ))}
+                </div>
+            </div>
+
+            <LessonCardBox tone="muted" className="flex flex-col gap-1">
+                <p className={text.label}>{t("learnEarlier")}</p>
+                <p className={text.body}>{slide.earlier}</p>
+            </LessonCardBox>
+
+            <div className="mt-auto flex flex-col gap-3">
+                <div className="flex flex-col gap-1">
+                    <p className={text.label}>{t("learnAsk")}</p>
+                    <p className={text.subheading}>{slide.check.prompt}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    {slide.check.options.map((option, i) => (
+                        <Tile
+                            key={option}
+                            label={option}
+                            block
+                            className="min-h-20"
+                            state={stateFor(i as 0 | 1)}
+                            onPress={picked === null ? () => onPick(i as 0 | 1) : undefined}
+                        />
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
 
 function Intro() {
     const t = useTranslations("ethics");
@@ -644,13 +758,19 @@ function DilemmaRound({
     );
 }
 
-/** Every idea the cards touched, once each, in the order they were met. */
-function conceptsMet(): EthicsConcept[] {
-    const seen: EthicsConcept[] = [];
+const QUESTIONS: EthicsQuestion[] = ["true", "permission", "fair"];
+
+/**
+ * Every idea the cards touched, once each, grouped under the three questions
+ * the slides taught, so the end of the game hands back its beginning.
+ */
+function conceptsMet(): Record<EthicsQuestion, EthicsConcept[]> {
+    const groups: Record<EthicsQuestion, EthicsConcept[]> = { true: [], permission: [], fair: [] };
     for (const item of [...ETHICS_SORT_CARDS, ...ETHICS_MATCH_PAIRS]) {
-        if (!seen.includes(item.concept)) seen.push(item.concept);
+        const group = groups[ETHICS_CONCEPT_QUESTION[item.concept]];
+        if (!group.includes(item.concept)) group.push(item.concept);
     }
-    return seen;
+    return groups;
 }
 
 function Finished({ timeMs, wrongAttempts, chosen }: { timeMs: number; wrongAttempts: number; chosen: Record<string, 0 | 1> }) {
@@ -677,11 +797,16 @@ function Finished({ timeMs, wrongAttempts, chosen }: { timeMs: number; wrongAtte
 
             <div className="flex flex-col gap-2">
                 <p className={text.label}>{t("conceptsTitle")}</p>
-                <div className="flex flex-wrap gap-2">
-                    {conceptsMet().map((concept) => (
-                        <LessonBadge key={concept} label={ETHICS_CONCEPT_LABEL[concept]} tone="accent" />
-                    ))}
-                </div>
+                {QUESTIONS.map((question) => (
+                    <div key={question} className="flex items-center gap-3 border-b border-lesson-hairline py-2">
+                        <p className={cn(text.bodyStrong, "w-40 shrink-0")}>{ETHICS_QUESTION_LABEL[question]}</p>
+                        <div className="flex flex-wrap gap-2">
+                            {conceptsMet()[question].map((concept) => (
+                                <LessonBadge key={concept} label={ETHICS_CONCEPT_LABEL[concept]} tone="accent" />
+                            ))}
+                        </div>
+                    </div>
+                ))}
             </div>
 
             <div className="flex flex-col gap-2">

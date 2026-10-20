@@ -3,8 +3,11 @@ import { describe, expect, it } from "vitest";
 import {
     ETHICS_BUILD_ITEMS,
     ETHICS_CONCEPT_LABEL,
+    ETHICS_CONCEPT_QUESTION,
     ETHICS_DILEMMAS,
     ETHICS_MATCH_PAIRS,
+    ETHICS_QUESTION_LABEL,
+    ETHICS_SLIDES,
     ETHICS_SORT_CARDS,
     ETHICS_WORDS,
     ethicsScore,
@@ -14,6 +17,28 @@ import {
 // facilitator able to fix content on the day. These checks keep the bank
 // balanced and short.
 describe("Ethics of AI content", () => {
+    it("teaches four slides that cover the three questions, each ending in one tap", () => {
+        expect(ETHICS_SLIDES).toHaveLength(4);
+        const questions = new Set(ETHICS_SLIDES.map((slide) => slide.question).filter(Boolean));
+        expect(questions).toEqual(new Set(Object.keys(ETHICS_QUESTION_LABEL)));
+        for (const slide of ETHICS_SLIDES) {
+            expect(slide.lines.length).toBeLessThanOrEqual(3);
+            for (const line of [...slide.lines, slide.earlier, slide.check.prompt, slide.check.reason]) {
+                expect(line.split(" ").length).toBeLessThanOrEqual(18);
+            }
+            expect(slide.check.options).toHaveLength(2);
+            expect([0, 1]).toContain(slide.check.answer);
+        }
+        // Not always the same button, or the tap teaches nothing.
+        expect(new Set(ETHICS_SLIDES.map((slide) => slide.check.answer)).size).toBe(2);
+    });
+
+    it("files every concept under one of the three questions", () => {
+        for (const concept of Object.keys(ETHICS_CONCEPT_LABEL) as (keyof typeof ETHICS_CONCEPT_LABEL)[]) {
+            expect(Object.keys(ETHICS_QUESTION_LABEL)).toContain(ETHICS_CONCEPT_QUESTION[concept]);
+        }
+    });
+
     it("has eight sort cards, half good and half problem, with unique ids", () => {
         expect(ETHICS_SORT_CARDS).toHaveLength(8);
         const good = ETHICS_SORT_CARDS.filter((card) => card.answer === "good");
