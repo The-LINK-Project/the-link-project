@@ -12,6 +12,11 @@
  * lesson costs a request per new word or phrase. Recordings that no lesson
  * uses any more are deleted once everything else is recorded.
  *
+ * Every new recording is listened back to before it is kept: the tutor's text
+ * model transcribes it, and one that does not say its text is deleted and
+ * reported. The voice is a language model, and given a bare word it has made
+ * up a sentence ("prompt") and acted one out ("cough" came back as a cough).
+ *
  * Google limits the speech model per minute and per day, and the live speaking
  * tutor draws on the same limits, so run this outside a workshop. Requests are
  * spaced out to stay under a per-minute limit; when Google still says to wait,
@@ -19,7 +24,7 @@
  * has, and can be run again after the limit resets at midnight Pacific time.
  */
 
-import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { Mp3Encoder } from "@breezystack/lamejs";
@@ -27,11 +32,15 @@ import { Mp3Encoder } from "@breezystack/lamejs";
 import { audioId, lessonSpokenTexts, RECORDING, spokenForm } from "@/lib/lessons/audio";
 import { listLessons, listWorkshopLessons } from "@/lib/lessons/data";
 import { sampleRateOf } from "@/lib/speaking/audio";
-import { GoogleError, QuotaError, responseError, send } from "@/lib/speaking/google";
+import { GoogleError, QuotaError, READ_ALOUD, responseError, send } from "@/lib/speaking/google";
 
 const OUT_DIR = path.join(process.cwd(), "public/lessons/audio");
 const MANIFEST = path.join(process.cwd(), "lib/lessons/audio-manifest.json");
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
+/** Listens back to the recordings: the tutor's own text model, with a quota of its own. */
+const CHECK_MODEL = "gemini-3.8-flash";
+/** Clips sent for checking in one request: a few kilobytes each. */
+const CHECK_BATCH = 50;
 
 /** Request starts are at least this far apart: under 10 a minute. */
 const MIN_GAP_MS = 6_500;
@@ -42,8 +51,12 @@ const TIMEOUT_MS = 60_000;
 const KBPS = 48;
 
 type GenerateResponse = {
-    candidates?: { content?: { parts?: { inlineData?: { mimeType?: string; data?: string } }[] } }[];
+    candidates?: {
+        content?: { parts?: { text?: string; thought?: boolean; inlineData?: { mimeType?: string; data?: string } }[] };
+    }[];
 };
+
+const clipPath = (id: string) => path.join(OUT_DIR, `${id}.mp3`);
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -55,7 +68,9 @@ async function say(apiKey: string, text: string): Promise<{ pcm: Int16Array; rat
             method: "POST",
             headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
             body: JSON.stringify({
-                contents: [{ role: "user", parts: [{ text }] }],
+                // Set out as a script under the tutor's read-aloud instruction, as
+                // readAloud() in lib/speaking/gemini.ts does (that file is server-only).
+                contents: [{ role: "user", parts: [{ text: `${READ_ALOUD}\n\nTRANSCRIPT:\n${text}` }] }],
                 generationConfig: {
                     responseModalities: ["AUDIO"],
                     speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: RECORDING.voice } } },
@@ -97,8 +112,62 @@ function mp3(pcm: Int16Array, rate: number): Buffer {
     return Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)));
 }
 
+/**
+ * Letters and digits only, so "take away" matches "Takeaway" and "MC" matches
+ * "M.C.", but brackets are kept: a transcript of "[cough]" is a sound, not the word.
+ */
+const letters = (text: string) => text.toLowerCase().replace(/[^a-z0-9[\]]+/g, "");
+
+/** The recordings among these that do not say their text, with what they say instead. */
+async function check(apiKey: string, clips: [string, string][]) {
+    const wrong: { id: string; text: string; heard: string }[] = [];
+    for (let start = 0; start < clips.length; start += CHECK_BATCH) {
+        const batch = clips.slice(start, start + CHECK_BATCH);
+        const parts = [
+            {
+                text:
+                    `You will hear ${batch.length} short audio clips, numbered in order. Transcribe exactly what is ` +
+                    `spoken in each, word for word. Write a sound that is not speech in square brackets, like ` +
+                    `[laughs]. Return a JSON array of ${batch.length} strings, one per clip, in order.`,
+            },
+            ...batch.flatMap(([id], index) => [
+                { text: `Clip ${index + 1}:` },
+                { inlineData: { mimeType: "audio/mp3", data: readFileSync(clipPath(id)).toString("base64") } },
+            ]),
+        ];
+        const response = await send(
+            "Gemini",
+            `${ENDPOINT}/${CHECK_MODEL}:generateContent`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+                body: JSON.stringify({
+                    contents: [{ role: "user", parts }],
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: { type: "ARRAY", items: { type: "STRING" } },
+                    },
+                }),
+            },
+            TIMEOUT_MS * 2,
+        );
+        if (!response.ok) throw await responseError("Gemini", response);
+        const body = (await response.json()) as GenerateResponse;
+        const answer = (body.candidates?.[0]?.content?.parts ?? [])
+            .filter((part) => part.text && !part.thought)
+            .map((part) => part.text)
+            .join("");
+        const heard = JSON.parse(answer) as string[];
+        batch.forEach(([id, text], index) => {
+            const said = heard[index] ?? "";
+            if (letters(said) !== letters(text)) wrong.push({ id, text, heard: said });
+        });
+    }
+    return wrong;
+}
+
 function writeManifest(needed: Map<string, string>) {
-    const clips = [...needed.keys()].filter((id) => existsSync(path.join(OUT_DIR, `${id}.mp3`))).sort();
+    const clips = [...needed.keys()].filter((id) => existsSync(clipPath(id))).sort();
     writeFileSync(MANIFEST, `${JSON.stringify({ clips }, null, 4)}\n`);
     return clips.length;
 }
@@ -113,22 +182,22 @@ async function main() {
     for (const lesson of [...listLessons(), ...listWorkshopLessons()]) {
         for (const text of lessonSpokenTexts(lesson)) needed.set(audioId(text), text);
     }
-    const missing = [...needed].filter(([id]) => !existsSync(path.join(OUT_DIR, `${id}.mp3`)));
+    const missing = [...needed].filter(([id]) => !existsSync(clipPath(id)));
     console.log(`${needed.size} texts are read aloud; ${missing.length} still need recording.`);
 
-    let recorded = 0;
+    const recorded: [string, string][] = [];
     let lastStart = 0;
     const failed: string[] = [];
-    for (const [id, text] of missing) {
+    let stopped: string | null = null;
+    recording: for (const [id, text] of missing) {
         for (let attempt = 1; ; attempt++) {
             await sleep(Math.max(0, lastStart + MIN_GAP_MS - Date.now()));
             lastStart = Date.now();
             try {
                 const { pcm, rate } = await say(apiKey, spokenForm(text));
-                writeFileSync(path.join(OUT_DIR, `${id}.mp3`), mp3(trim(pcm, rate), rate));
-                recorded++;
-                console.log(`  [${recorded}/${missing.length}] ${text}`);
-                writeManifest(needed);
+                writeFileSync(clipPath(id), mp3(trim(pcm, rate), rate));
+                recorded.push([id, text]);
+                console.log(`  [${recorded.length}/${missing.length}] ${text}`);
                 break;
             } catch (error) {
                 if (error instanceof QuotaError && error.retryAfterMs <= LONGEST_WAIT_MS && attempt <= 5) {
@@ -138,11 +207,10 @@ async function main() {
                 }
                 if (error instanceof QuotaError) {
                     const reset = new Date(Date.now() + error.retryAfterMs);
-                    console.log(
-                        `\nGoogle's limit for ${RECORDING.model} is used up for now. Recorded ${recorded} of ${missing.length}.` +
-                            `\nRun this again after ${reset.toLocaleString()} to record the rest.`,
-                    );
-                    return;
+                    stopped =
+                        `Google's limit for ${RECORDING.model} is used up for now.` +
+                        ` Run this again after ${reset.toLocaleString()} to record the rest.`;
+                    break recording;
                 }
                 if (attempt < 3) {
                     console.log(`  Retrying "${text}": ${(error as Error).message}`);
@@ -156,10 +224,30 @@ async function main() {
         }
     }
 
-    if (failed.length > 0) {
+    // Listen back before anything is kept.
+    let wrong: Awaited<ReturnType<typeof check>> = [];
+    try {
+        wrong = await check(apiKey, recorded);
+    } catch (error) {
+        console.log(`\nCould not check the new recordings (${(error as Error).message}); they are kept unchecked.`);
+        process.exitCode = 1;
+    }
+    for (const { id, text, heard } of wrong) {
+        rmSync(clipPath(id));
+        console.log(`  Deleted "${text}": it says "${heard}"`);
+    }
+    writeManifest(needed);
+    const kept = recorded.length - wrong.length;
+
+    if (stopped) {
+        console.log(`\nKept ${kept} new recordings. ${stopped}`);
+        return;
+    }
+    const problems = [...failed, ...wrong.map(({ text }) => text)];
+    if (problems.length > 0) {
         console.log(
-            `\nRecorded ${recorded} of ${missing.length}. Gemini gave no audio for: ${failed.map((text) => `"${text}"`).join(", ")}.` +
-                `\nGive each a spoken form in SPOKEN_AS (lib/lessons/audio.ts), then run this again.`,
+            `\nKept ${kept} new recordings. Not recorded: ${problems.map((text) => `"${text}"`).join(", ")}.` +
+                `\nRun this again, or give a text a spoken form in SPOKEN_AS (lib/lessons/audio.ts) if it keeps failing.`,
         );
         process.exitCode = 1;
         return;
@@ -171,7 +259,7 @@ async function main() {
     for (const file of unused) rmSync(path.join(OUT_DIR, file));
     const total = writeManifest(needed);
     console.log(
-        `\nDone: ${total} recordings, ${recorded} new` +
+        `\nDone: ${total} recordings, ${kept} new` +
             (unused.length ? `, ${unused.length} no longer used and deleted.` : "."),
     );
 }

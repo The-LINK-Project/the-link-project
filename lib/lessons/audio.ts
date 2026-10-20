@@ -27,6 +27,9 @@ const SPOKEN_AS: Record<string, string> = {
     // instruction; punctuated they are read aloud.
     break: "Break.",
     "voice assistant": "Voice assistant!",
+    // Bare it came back as a sigh, and as "Cough." an unrelated sentence;
+    // spelled as it sounds, it is said as the word.
+    cough: "coff",
 };
 
 export function spokenForm(text: string): string {
