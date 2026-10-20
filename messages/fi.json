@@ -239,6 +239,8 @@
         "continueTalk": "Pagsasalita: {done} sa {total} ang tapos",
         "doneCount": "Mga araling tapos: {done} sa {total}",
         "mixDoneToday": "Tapos para ngayon",
+        "workshopTitle": "Mga aralin sa workshop",
+        "workshopBody": "Mga aralin para sa aming mga harapang workshop.",
         "lessonsTitle": "Mga aralin",
         "lessonsBody": "I-tap ang isang aralin para magsimula. Mga 5 minuto ang bawat isa.",
         "practiceTitle": "Mabilis na pagsasanay"

@@ -239,6 +239,8 @@
         "continueTalk": "কথা বলা: {total}-এর মধ্যে {done}টি শেষ",
         "doneCount": "শেষ হওয়া পাঠ: {total}-এর মধ্যে {done}",
         "mixDoneToday": "আজ শেষ",
+        "workshopTitle": "ওয়ার্কশপের পাঠ",
+        "workshopBody": "আমাদের সরাসরি ওয়ার্কশপের পাঠ।",
         "lessonsTitle": "পাঠ",
         "lessonsBody": "শুরু করতে একটি পাঠে ট্যাপ করুন। প্রতিটি পাঠে প্রায় ৫ মিনিট লাগে।",
         "practiceTitle": "ছোট অনুশীলন"

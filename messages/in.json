@@ -239,6 +239,8 @@
         "continueTalk": "Latihan bicara: {done} dari {total} selesai",
         "doneCount": "Pelajaran selesai: {done} dari {total}",
         "mixDoneToday": "Selesai hari ini",
+        "workshopTitle": "Pelajaran workshop",
+        "workshopBody": "Pelajaran untuk workshop tatap muka kami.",
         "lessonsTitle": "Pelajaran",
         "lessonsBody": "Ketuk satu pelajaran untuk mulai. Setiap pelajaran sekitar 5 menit.",
         "practiceTitle": "Latihan singkat"

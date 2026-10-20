@@ -15,13 +15,14 @@ import { DAILY_MIX_ID, dailyMix } from "./review";
 import { workSafety } from "./work-safety";
 
 /** The English lessons, in the order a new learner should take them. */
-const ENGLISH_LESSONS: Lesson[] = [mrtBasics, hawkerFood, clinicVisit, workSafety];
+const LESSONS: Lesson[] = [mrtBasics, hawkerFood, clinicVisit, workSafety];
 
 /**
- * Everything on Home. The AI lesson teaches ideas rather than English, so it is
- * kept out of the daily mix, whose job is English practice.
+ * Lessons for the workshops we run, shown above the English lessons on Home.
+ * Add or remove one here as workshops come and go. They are kept out of the
+ * daily mix and the lessons-done count, which are about the English lessons.
  */
-const LESSONS: Lesson[] = [...ENGLISH_LESSONS, aiBasics];
+const WORKSHOP_LESSONS: Lesson[] = [aiBasics];
 
 export function listLessons(): Lesson[] {
     // A copy: this list stands in for an API response, and a caller sorting or
@@ -29,12 +30,16 @@ export function listLessons(): Lesson[] {
     return [...LESSONS];
 }
 
+export function listWorkshopLessons(): Lesson[] {
+    return [...WORKSHOP_LESSONS];
+}
+
 /** Today's short practice drawn from every lesson. */
 export function getDailyMix(): Lesson {
-    return dailyMix(ENGLISH_LESSONS);
+    return dailyMix(LESSONS);
 }
 
 export function getLesson(id: string): Lesson | undefined {
     if (id === DAILY_MIX_ID) return getDailyMix();
-    return LESSONS.find((lesson) => lesson.id === id);
+    return [...LESSONS, ...WORKSHOP_LESSONS].find((lesson) => lesson.id === id);
 }

@@ -239,6 +239,8 @@
         "continueTalk": "Speaking: {done} of {total} done",
         "doneCount": "Lessons done: {done} of {total}",
         "mixDoneToday": "Done today",
+        "workshopTitle": "Workshop lessons",
+        "workshopBody": "Lessons for our in-person workshops.",
         "lessonsTitle": "Lessons",
         "lessonsBody": "Tap a lesson to start. Each one takes about 5 minutes.",
         "practiceTitle": "Quick practice"
