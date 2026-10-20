@@ -1,6 +1,6 @@
 import "server-only";
 
-import { joinSpeech, sampleRateOf } from "./audio";
+import { joinSpeech, sampleRateOf, wavSamples } from "./audio";
 import {
     GoogleError,
     QuotaError,
@@ -367,7 +367,9 @@ async function speakChunk(
         timeoutMs,
     );
     const inline = parts(response).find((part) => part.inlineData?.data)?.inlineData;
-    const pcm = Buffer.from(inline?.data ?? "", "base64");
-    if (pcm.length === 0) throw new GoogleError("Gemini returned no audio");
-    return { pcm, rate: sampleRateOf(inline?.mimeType) };
+    const audio = Buffer.from(inline?.data ?? "", "base64");
+    if (audio.length === 0) throw new GoogleError("Gemini returned no audio");
+    // The 3.8 voices answer with a whole WAV file; older ones with bare PCM.
+    if (audio.toString("ascii", 0, 4) === "RIFF") return wavSamples(audio);
+    return { pcm: audio, rate: sampleRateOf(inline?.mimeType) };
 }
