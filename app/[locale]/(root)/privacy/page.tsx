@@ -8,15 +8,6 @@ export const metadata: Metadata = {
         "How The LINK Project app collects, uses, shares and deletes your information.",
 };
 
-// Placeholder that still needs a real value before the policy goes live.
-function Todo({ children }: { children: ReactNode }) {
-    return (
-        <mark className="rounded-[3px] bg-[#fff3b0] px-[3px] text-inherit">
-            {children}
-        </mark>
-    );
-}
-
 function H2({ children }: { children: ReactNode }) {
     return (
         <h2 className="mb-2 mt-10 border-t border-[#ddd] pt-4 text-[1.25rem] font-bold">
@@ -87,7 +78,7 @@ export default function PrivacyPage() {
                 app.
             </p>
             <p>
-                <strong>Data Protection Officer:</strong> <Todo>[[DPO NAME]]</Todo>{" "}
+                <strong>Data Protection Officer:</strong> Susan Lee{" "}
                 <strong>Email:</strong> thelinkproject.org@gmail.com
             </p>
 
@@ -427,7 +418,7 @@ export default function PrivacyPage() {
             <p>
                 <strong>The LINK Project</strong>
                 <br />
-                Data Protection Officer: <Todo>[[DPO NAME]]</Todo>
+                Data Protection Officer: Susan Lee
                 <br />
                 Email: thelinkproject.org@gmail.com
             </p>
