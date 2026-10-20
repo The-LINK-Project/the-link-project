@@ -176,6 +176,7 @@ export const hawkerFood: Lesson = {
                 ta: "குறைவாக",
                 hi: "कम",
             },
+            picture: "less",
             reviewed: false,
         },
     ],

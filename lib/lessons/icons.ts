@@ -17,11 +17,14 @@ export const PICTURE_KEYS = [
     "mrtFare",
     "money",
     "card",
+    "tapOut",
     "seat",
     "transfer",
     "clock",
     // Seeing a doctor
     "thermometer",
+    "pain",
+    "cough",
     "medicine",
     "clinic",
     "appointment",
@@ -33,6 +36,7 @@ export const PICTURE_KEYS = [
     "bag",
     "flame",
     "drink",
+    "less",
     "price",
     "stall",
     // At work
@@ -41,6 +45,8 @@ export const PICTURE_KEYS = [
     "warning",
     "firstAid",
     "person",
+    "salary",
+    "repeat",
     // Talking about AI
     "chatbot",
     "voiceAssistant",
