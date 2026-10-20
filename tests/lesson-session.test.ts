@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { initSession, isRevisit, sessionReducer, snapshotOf, type SessionState } from "@/lib/lessons/session";
+import {
+    initSession,
+    isRevisit,
+    reviewSession,
+    sessionReducer,
+    snapshotOf,
+    type SessionState,
+} from "@/lib/lessons/session";
 import type { Exercise, Lesson } from "@/lib/lessons/types";
 
 // Stepping back through a lesson (lib/lessons/session.ts): going back is for
@@ -94,6 +101,23 @@ describe("stepping back through a lesson", () => {
         const again = sessionReducer(back, { type: "next" });
         expect(again.phase).toBe("finished");
         expect(again.records).toEqual(finished.records);
+    });
+
+    it("opens a finished lesson on its last exercise, with every one counted as answered", () => {
+        const review = reviewSession(lesson, "en");
+        expect(review.position).toBe(2);
+        expect(review.phase).toBe("answering");
+        expect(isRevisit(review)).toBe(true);
+        // Back all the way, and forward again without answering anything.
+        const first = [{ type: "back" } as const, { type: "back" } as const].reduce(sessionReducer, review);
+        expect(first.position).toBe(0);
+        expect(isRevisit(first)).toBe(true);
+        const end = [{ type: "next" } as const, { type: "next" } as const, { type: "next" } as const].reduce(
+            sessionReducer,
+            first,
+        );
+        expect(end.phase).toBe("finished");
+        expect(end.records).toEqual({});
     });
 
     it("does not let an unanswered exercise be skipped", () => {

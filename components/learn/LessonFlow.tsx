@@ -70,23 +70,28 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
         return lessonId !== DAILY_MIX_ID && found && found.total > 0 ? found : undefined;
     });
     // The daily mix draws on every lesson's words, far too many to list, and
-    // all of them already met in the lesson they came from.
-    const [started, setStarted] = useState(saved !== undefined || lessonId === DAILY_MIX_ID);
+    // all of them already met in the lesson they came from. A review steps back
+    // through a finished lesson from its results.
+    const [mode, setMode] = useState<"start" | "run" | "review">(
+        saved !== undefined || lessonId === DAILY_MIX_ID ? "run" : "start",
+    );
 
-    if (started) {
+    if (mode !== "start") {
         return (
             <LessonRunner
                 lessonId={lessonId}
                 saved={saved}
-                // Back from the first exercise is the word list. The daily mix
-                // has none, so it starts on its first exercise and stays there.
+                review={mode === "review"}
+                // Back from the first exercise is the word list, or the results
+                // for a finished lesson. The daily mix has neither, so it starts
+                // on its first exercise and stays there.
                 onBackToStart={
                     lessonId === DAILY_MIX_ID
                         ? undefined
                         : () => {
                               // Picked up again from where the learner had got to.
                               setSaved(readSaved());
-                              setStarted(false);
+                              setMode("start");
                           }
                 }
             />
@@ -105,18 +110,20 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
             onClose={() => router.push("/dashboard")}
             footer={
                 <ShellActions>
-                    {/* The lesson's first step, so Back is the way home. */}
-                    <WithBack onBack={() => router.push("/dashboard")}>
+                    {/* The word list is the lesson's first step, so Back is the way
+                        home. The results of a finished lesson go back to its
+                        last exercise. */}
+                    <WithBack onBack={record ? () => setMode("review") : () => router.push("/dashboard")}>
                         {record ? (
                             <LessonDoneActions
-                                onAgain={() => setStarted(true)}
+                                onAgain={() => setMode("run")}
                                 onSpeak={canSpeak ? () => router.push(`/lessons/${lesson.id}/speak`) : undefined}
                                 onChat={
                                     lesson.chatPractice ? () => router.push(`/lessons/${lesson.id}/chat`) : undefined
                                 }
                             />
                         ) : (
-                            <LessonButton title={t("introStart")} size="lg" onClick={() => setStarted(true)} />
+                            <LessonButton title={t("introStart")} size="lg" onClick={() => setMode("run")} />
                         )}
                     </WithBack>
                 </ShellActions>
@@ -134,11 +141,14 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
 function LessonRunner({
     lessonId,
     saved,
+    review = false,
     onBackToStart,
 }: {
     lessonId: string;
     saved?: SavedRun;
-    /** Back from the first exercise. */
+    /** Stepping back through a finished lesson, from its results. */
+    review?: boolean;
+    /** Back from the first exercise, and the end of a review. */
     onBackToStart?: () => void;
 }) {
     const t = useTranslations("lessons");
@@ -160,12 +170,15 @@ function LessonRunner({
         back,
         restart,
         summary,
-    } = useLessonSession(lesson, language, SCREEN_READER, saved);
+    } = useLessonSession(lesson, language, SCREEN_READER, saved, review);
 
     // Every answer is written down as it happens. A tab can be closed at any
     // moment, so there is no later to save in.
     const recorded = useRef(false);
     useEffect(() => {
+        // A review changes nothing: it is not a place to come back to, and
+        // reaching its end is not finishing the lesson a second time.
+        if (review) return;
         const snapshot = snapshotOf(state);
         // The lesson is finished by its last answer, not by pressing Continue
         // under it, so a learner who closes the tab on the feedback has still
@@ -180,13 +193,21 @@ function LessonRunner({
         // Nothing answered yet: there is no place to keep.
         if (snapshot.position === 0) return;
         saveRun(lessonId, snapshot, `/lessons/${lessonId}`);
-    }, [state, lessonId, summary.firstTryCorrect, summary.total]);
+    }, [review, state, lessonId, summary.firstTryCorrect, summary.total]);
+
+    // The end of a review is the results it started from.
+    const reviewOver = review && state.phase === "finished";
+    useEffect(() => {
+        if (reviewOver) onBackToStart?.();
+    }, [reviewOver, onBackToStart]);
 
     // Leaving by choice is not somewhere to be sent back to.
     useEffect(() => () => setResume(null), []);
 
     // No "are you sure?": the place is kept, so leaving costs nothing.
     const leave = useCallback(() => router.push("/dashboard"), [router]);
+
+    if (reviewOver) return null;
 
     if (state.phase === "finished") {
         const run = {

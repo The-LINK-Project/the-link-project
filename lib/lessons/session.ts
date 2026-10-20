@@ -263,6 +263,18 @@ export function initSession(
     };
 }
 
+/**
+ * A finished lesson opened again on its last exercise, for stepping back from
+ * its results. A finished run is not kept, so the exercises are laid out
+ * afresh, and every one counts as answered: each can be looked at, tried again
+ * as practice, or passed with Next.
+ */
+export function reviewSession(lesson: Lesson, locale: FirstLanguage, screenReader = false): SessionState {
+    const session = initSession(lesson, locale, screenReader);
+    if (session.queue.length === 0) return session;
+    return { ...session, position: session.queue.length - 1, reached: session.queue.length };
+}
+
 function exerciseById(lesson: Lesson, id: string | undefined): Exercise | undefined {
     return lesson.exercises.find((exercise) => exercise.id === id);
 }
@@ -414,12 +426,15 @@ export function useLessonSession(
     screenReader = false,
     /** A run saved earlier, to continue instead of starting again. */
     saved?: RunSnapshot,
+    /** Step back through a finished lesson rather than run it (see `reviewSession`). */
+    review = false,
 ) {
     // Initialised once; a later language change does not rebuild the queue.
     const [state, dispatch] = useReducer(
         sessionReducer,
-        { lesson, locale, screenReader, saved },
+        { lesson, locale, screenReader, saved, review },
         (initial) =>
+            (initial.review && reviewSession(initial.lesson, initial.locale, initial.screenReader)) ||
             (initial.saved &&
                 restoreSession(
                     initial.lesson,
