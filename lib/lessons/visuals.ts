@@ -30,6 +30,8 @@ const PICTURE_VISUALS: Record<PictureKey, string> = {
     transfer: "/lessons/interchange.jpg",
     clock: "/lessons/break.jpg",
     thermometer: "/lessons/fever.jpg",
+    pain: "/lessons/pain.jpg",
+    cough: "/lessons/cough.jpg",
     medicine: "/lessons/medicine.jpg",
     clinic: "/lessons/clinic-reception.jpg",
     appointment: "/lessons/appointment.jpg",
@@ -40,6 +42,7 @@ const PICTURE_VISUALS: Record<PictureKey, string> = {
     bag: "/lessons/takeaway.jpg",
     flame: "/lessons/spicy.jpg",
     drink: "/lessons/drink.jpg",
+    less: "/lessons/less.jpg",
     price: "/lessons/price.jpg",
     stall: "/lessons/stall.jpg",
     helmet: "/lessons/helmet.jpg",
@@ -47,6 +50,8 @@ const PICTURE_VISUALS: Record<PictureKey, string> = {
     warning: "/lessons/dangerous.jpg",
     firstAid: "/lessons/hurt.jpg",
     person: "/lessons/supervisor.jpg",
+    salary: "/lessons/salary.jpg",
+    repeat: "/lessons/again.jpg",
 };
 
 export function lessonVisual(lessonId: string): string | undefined {

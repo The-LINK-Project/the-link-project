@@ -23,6 +23,8 @@ export const PICTURE_KEYS = [
     "clock",
     // Seeing a doctor
     "thermometer",
+    "pain",
+    "cough",
     "medicine",
     "clinic",
     "appointment",
@@ -34,6 +36,7 @@ export const PICTURE_KEYS = [
     "bag",
     "flame",
     "drink",
+    "less",
     "price",
     "stall",
     // At work
@@ -42,6 +45,8 @@ export const PICTURE_KEYS = [
     "warning",
     "firstAid",
     "person",
+    "salary",
+    "repeat",
 ] as const;
 
 export type PictureKey = (typeof PICTURE_KEYS)[number];

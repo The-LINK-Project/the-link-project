@@ -165,7 +165,7 @@ export const workSafety: Lesson = {
                 ta: "சம்பளம்",
                 hi: "तनख़्वाह",
             },
-            picture: "money",
+            picture: "salary",
             reviewed: false,
         },
         {
@@ -177,6 +177,7 @@ export const workSafety: Lesson = {
                 ta: "மீண்டும்",
                 hi: "फिर से",
             },
+            picture: "repeat",
             reviewed: false,
         },
     ],
