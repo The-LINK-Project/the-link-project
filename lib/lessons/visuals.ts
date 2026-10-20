@@ -46,6 +46,11 @@ const PICTURE_VISUALS: Record<PictureKey, string> = {
     warning: "/lessons/dangerous.jpg",
     firstAid: "/lessons/hurt.jpg",
     person: "/lessons/supervisor.jpg",
+    // Illustrations rather than photographs: these ideas have no one scene to photograph.
+    chatbot: "/lessons/ai-chatbot.svg",
+    voiceAssistant: "/lessons/ai-voice-assistant.svg",
+    imageRecognition: "/lessons/ai-image-recognition.svg",
+    generativeAi: "/lessons/ai-generative.svg",
 };
 
 export function lessonVisual(lessonId: string): string | undefined {

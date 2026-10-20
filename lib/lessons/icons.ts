@@ -41,11 +41,16 @@ export const PICTURE_KEYS = [
     "warning",
     "firstAid",
     "person",
+    // Talking about AI
+    "chatbot",
+    "voiceAssistant",
+    "imageRecognition",
+    "generativeAi",
 ] as const;
 
 export type PictureKey = (typeof PICTURE_KEYS)[number];
 
 /** What a whole lesson is about, drawn on its card on Home. */
-export const LESSON_ICONS = ["train", "clinic", "food", "work", "mix"] as const;
+export const LESSON_ICONS = ["train", "clinic", "food", "work", "ai", "mix"] as const;
 
 export type LessonIcon = (typeof LESSON_ICONS)[number];

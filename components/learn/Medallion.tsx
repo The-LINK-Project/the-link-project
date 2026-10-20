@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, HardHat, Shuffle, Stethoscope, TrainFront, Utensils, type LucideIcon } from "lucide-react";
+import { Check, HardHat, Shuffle, Sparkles, Stethoscope, TrainFront, Utensils, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 import type { LessonIcon } from "@/lib/lessons/icons";
@@ -12,6 +12,7 @@ export const LESSON_ICONS: Record<LessonIcon, LucideIcon> = {
     clinic: Stethoscope,
     food: Utensils,
     work: HardHat,
+    ai: Sparkles,
     mix: Shuffle,
 };
 
@@ -24,6 +25,7 @@ export const LESSON_HUES: Record<LessonIcon, { base: string; dark: string }> = {
     food: { base: "#fa9e0d", dark: "#b86e00" },
     clinic: { base: "#005ec4", dark: "#003f85" },
     work: { base: "#9900aa", dark: "#6a0076" },
+    ai: { base: "#9d5b25", dark: "#6e3f1a" },
     mix: { base: "#d42e12", dark: "#98200c" },
 };
 

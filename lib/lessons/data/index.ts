@@ -7,14 +7,21 @@
  */
 
 import type { Lesson } from "../types";
+import { aiBasics } from "./ai-basics";
 import { clinicVisit } from "./clinic-visit";
 import { hawkerFood } from "./hawker-food";
 import { mrtBasics } from "./mrt-basics";
 import { DAILY_MIX_ID, dailyMix } from "./review";
 import { workSafety } from "./work-safety";
 
-/** In the order a new learner should take them. */
-const LESSONS: Lesson[] = [mrtBasics, hawkerFood, clinicVisit, workSafety];
+/** The English lessons, in the order a new learner should take them. */
+const ENGLISH_LESSONS: Lesson[] = [mrtBasics, hawkerFood, clinicVisit, workSafety];
+
+/**
+ * Everything on Home. The AI lesson teaches ideas rather than English, so it is
+ * kept out of the daily mix, whose job is English practice.
+ */
+const LESSONS: Lesson[] = [...ENGLISH_LESSONS, aiBasics];
 
 export function listLessons(): Lesson[] {
     // A copy: this list stands in for an API response, and a caller sorting or
@@ -24,7 +31,7 @@ export function listLessons(): Lesson[] {
 
 /** Today's short practice drawn from every lesson. */
 export function getDailyMix(): Lesson {
-    return dailyMix(LESSONS);
+    return dailyMix(ENGLISH_LESSONS);
 }
 
 export function getLesson(id: string): Lesson | undefined {

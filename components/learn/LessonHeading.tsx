@@ -16,6 +16,7 @@ const LESSON_INK: Record<Lesson["icon"], string> = {
     food: "#8a5200",
     clinic: "#003f85",
     work: "#6a0076",
+    ai: "#6e3f1a",
     mix: "#98200c",
 };
 
