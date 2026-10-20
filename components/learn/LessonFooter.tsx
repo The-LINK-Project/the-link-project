@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleCheck, CircleX } from "lucide-react";
+import { ArrowLeft, CircleCheck, CircleX } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
@@ -11,7 +11,7 @@ import { LessonButton, text } from "./ui";
 
 /**
  * The footer that grades the lesson: Check while answering, then the outcome
- * banner and Continue.
+ * banner and Continue, with Back beside them to step to the exercise before.
  *
  * Correctness is carried by an icon and a word as well as colour. Green and
  * red look nearly identical under the common forms of colour blindness, so hue
@@ -28,9 +28,26 @@ type Props = {
     isLastStep: boolean;
     /** Hidden for self-grading exercises, which advance on their own. */
     hideSubmit?: boolean;
+    /** Steps back to the exercise before. Absent where there is nothing to go back to. */
+    onBack?: () => void;
+    /**
+     * On an exercise already answered, after stepping back. It can be passed
+     * without answering it again.
+     */
+    revisiting?: boolean;
 };
 
-export function LessonFooter({ phase, canSubmit, result, onSubmit, onNext, isLastStep, hideSubmit }: Props) {
+export function LessonFooter({
+    phase,
+    canSubmit,
+    result,
+    onSubmit,
+    onNext,
+    isLastStep,
+    hideSubmit,
+    onBack,
+    revisiting,
+}: Props) {
     const t = useTranslations("lessons");
     const graded = phase === "graded" && result;
 
@@ -45,17 +62,43 @@ export function LessonFooter({ phase, canSubmit, result, onSubmit, onNext, isLas
         }
     }, [graded, result?.correct]);
 
+    const back = onBack ? (
+        <LessonButton
+            title={t("back")}
+            size="lg"
+            variant="outline"
+            icon={<ArrowLeft className="size-5" />}
+            className="w-auto shrink-0 px-4"
+            onClick={() => onBack()}
+        />
+    ) : null;
+
     if (!graded) {
-        if (hideSubmit) return null;
+        if (hideSubmit && !back && !revisiting) return null;
         return (
-            <div className="bg-white p-4">
-                <LessonButton
-                    title={t("check")}
-                    size="lg"
-                    disabled={!canSubmit}
-                    onClick={() => onSubmit()}
-                    aria-description={canSubmit ? undefined : t("checkHint")}
-                />
+            <div className="flex gap-3 bg-white p-4">
+                {back}
+                {hideSubmit ? (
+                    <div className="flex-1" />
+                ) : (
+                    <LessonButton
+                        title={t("check")}
+                        size="lg"
+                        disabled={!canSubmit}
+                        onClick={() => onSubmit()}
+                        aria-description={canSubmit ? undefined : t("checkHint")}
+                        className="min-w-0 flex-1"
+                    />
+                )}
+                {revisiting ? (
+                    <LessonButton
+                        title={t("next")}
+                        size="lg"
+                        variant="outline"
+                        className="w-auto shrink-0 px-4"
+                        onClick={() => onNext()}
+                    />
+                ) : null}
             </div>
         );
     }
@@ -106,13 +149,17 @@ export function LessonFooter({ phase, canSubmit, result, onSubmit, onNext, isLas
                 <p className={text.caption}>{t("missingWords", { words: result.missing.join(", ") })}</p>
             ) : null}
 
-            <LessonButton
-                autoFocus
-                title={isLastStep ? t("finish") : result.correct ? t("continue") : t("gotIt")}
-                size="lg"
-                variant={result.correct ? "primary" : "destructive"}
-                onClick={() => onNext()}
-            />
+            <div className="flex gap-3">
+                {back}
+                <LessonButton
+                    autoFocus
+                    title={isLastStep ? t("finish") : result.correct ? t("continue") : t("gotIt")}
+                    size="lg"
+                    variant={result.correct ? "primary" : "destructive"}
+                    onClick={() => onNext()}
+                    className="min-w-0 flex-1"
+                />
+            </div>
         </div>
     );
 }

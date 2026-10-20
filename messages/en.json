@@ -186,6 +186,8 @@
         "audioWas": "You heard:",
         "check": "Check",
         "checkHint": "Answer first, then check",
+        "back": "Back",
+        "next": "Next",
         "continue": "Continue",
         "gotIt": "OK",
         "finish": "Finish",

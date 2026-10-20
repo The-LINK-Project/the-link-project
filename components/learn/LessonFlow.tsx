@@ -52,12 +52,14 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
     const router = useRouter();
     const language = useLearnerLanguage();
     const lesson = getLesson(lessonId)!;
-    // Read once. The run is saved again on every answer, and re-reading it
-    // would restart the session underneath the learner each time.
-    const [saved] = useState<SavedRun | undefined>(() => {
+    // Read when the runner starts, not on every render. The run is saved again
+    // on every answer, and re-reading it would restart the session underneath
+    // the learner each time.
+    const readSaved = (): SavedRun | undefined => {
         const run = getProgressData().runs[lessonId];
         return run && restoreSession(lesson, run, SCREEN_READER, language) ? run : undefined;
-    });
+    };
+    const [saved, setSaved] = useState<SavedRun | undefined>(readSaved);
     // Read once as well, or finishing the lesson here would swap the summary
     // for the "done" view the moment the result was recorded. The daily mix is
     // new every morning, so yesterday's finish says nothing about today's. A
@@ -70,7 +72,25 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
     // all of them already met in the lesson they came from.
     const [started, setStarted] = useState(saved !== undefined || lessonId === DAILY_MIX_ID);
 
-    if (started) return <LessonRunner lessonId={lessonId} saved={saved} />;
+    if (started) {
+        return (
+            <LessonRunner
+                lessonId={lessonId}
+                saved={saved}
+                // Back from the first exercise is the word list. The daily mix
+                // has none, so it starts on its first exercise and stays there.
+                onBackToStart={
+                    lessonId === DAILY_MIX_ID
+                        ? undefined
+                        : () => {
+                              // Picked up again from where the learner had got to.
+                              setSaved(readSaved());
+                              setStarted(false);
+                          }
+                }
+            />
+        );
+    }
 
     const canSpeak = canPractiseSpeaking(lesson);
     // The talk is the lesson's second stage, so without it the lesson is in
@@ -105,15 +125,36 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
     );
 }
 
-function LessonRunner({ lessonId, saved }: { lessonId: string; saved?: SavedRun }) {
+function LessonRunner({
+    lessonId,
+    saved,
+    onBackToStart,
+}: {
+    lessonId: string;
+    saved?: SavedRun;
+    /** Back from the first exercise. */
+    onBackToStart?: () => void;
+}) {
     const t = useTranslations("lessons");
     const localized = useLessonLocalized();
     const router = useRouter();
     const language = useLearnerLanguage();
     const lesson = getLesson(lessonId)!;
 
-    const { state, exercise, progress, isLastStep, setDraft, submit, submitAnswer, next, restart, summary } =
-        useLessonSession(lesson, language, SCREEN_READER, saved);
+    const {
+        state,
+        exercise,
+        progress,
+        isLastStep,
+        revisiting,
+        setDraft,
+        submit,
+        submitAnswer,
+        next,
+        back,
+        restart,
+        summary,
+    } = useLessonSession(lesson, language, SCREEN_READER, saved);
 
     // Every answer is written down as it happens. A tab can be closed at any
     // moment, so there is no later to save in.
@@ -203,6 +244,8 @@ function LessonRunner({ lessonId, saved }: { lessonId: string; saved?: SavedRun 
                     onNext={next}
                     isLastStep={isLastStep}
                     hideSubmit={SELF_GRADING.has(exercise.type)}
+                    onBack={state.position > 0 ? back : onBackToStart}
+                    revisiting={revisiting}
                 />
             }
         >

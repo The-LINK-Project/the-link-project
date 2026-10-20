@@ -1,0 +1,119 @@
+import { describe, expect, it } from "vitest";
+
+import { initSession, isRevisit, sessionReducer, snapshotOf, type SessionState } from "@/lib/lessons/session";
+import type { Exercise, Lesson } from "@/lib/lessons/types";
+
+// Stepping back through a lesson (lib/lessons/session.ts): going back is for
+// looking again, so it must never change the score, the mistake queue, how
+// far the learner has got, or where a saved run picks up.
+
+function fill(id: string): Exercise {
+    return {
+        id,
+        type: "fillBlank",
+        instruction: { en: "Which word fits?" },
+        practises: [],
+        sentence: ["It is a", null],
+        choices: [
+            { id: "right", label: "right" },
+            { id: "wrong", label: "wrong" },
+        ],
+        correctChoiceId: "right",
+        grading: { mode: "choice" },
+    };
+}
+
+const lesson: Lesson = {
+    id: "test-lesson",
+    title: { en: "Test" },
+    goal: { en: "Test" },
+    icon: "work",
+    level: "beginner",
+    estimatedMinutes: 1,
+    notes: [],
+    vocab: [],
+    phrases: [],
+    exercises: [fill("a"), fill("b"), fill("c")],
+};
+
+const right = { type: "submit", answer: { kind: "choice", choiceId: "right" } } as const;
+const wrong = { type: "submit", answer: { kind: "choice", choiceId: "wrong" } } as const;
+
+function run(...actions: Parameters<typeof sessionReducer>[1][]): SessionState {
+    return actions.reduce(sessionReducer, initSession(lesson, "en"));
+}
+
+describe("stepping back through a lesson", () => {
+    it("has nothing to go back to on the first exercise", () => {
+        const start = initSession(lesson, "en");
+        expect(sessionReducer(start, { type: "back" })).toBe(start);
+    });
+
+    it("goes back to the exercise before, ready to answer again", () => {
+        const state = run(right, { type: "next" }, { type: "back" });
+        expect(state.position).toBe(0);
+        expect(state.phase).toBe("answering");
+        expect(state.draft).toBeNull();
+        expect(isRevisit(state)).toBe(true);
+        expect(state.reached).toBe(1);
+    });
+
+    it("can go back from the feedback of an answer just given", () => {
+        const state = run(right, { type: "next" }, right, { type: "back" });
+        expect(state.position).toBe(0);
+        expect(state.reached).toBe(2);
+    });
+
+    it("grades a second try but records nothing and queues nothing", () => {
+        const before = run(right, { type: "next" }, { type: "back" });
+        const after = sessionReducer(before, wrong);
+        expect(after.phase).toBe("graded");
+        expect(after.result?.correct).toBe(false);
+        expect(after.records).toEqual(before.records);
+        expect(after.queue).toEqual(before.queue);
+        expect(after.requeued).toEqual(before.requeued);
+        expect(after.reached).toBe(1);
+    });
+
+    it("passes an answered exercise without answering it again", () => {
+        const state = run(right, { type: "next" }, right, { type: "next" }, { type: "back" }, { type: "back" });
+        expect(state.position).toBe(0);
+        const forward = sessionReducer(sessionReducer(state, { type: "next" }), { type: "next" });
+        expect(forward.position).toBe(2);
+        expect(forward.phase).toBe("answering");
+        expect(isRevisit(forward)).toBe(false);
+    });
+
+    it("does not let an unanswered exercise be skipped", () => {
+        const state = run(right, { type: "next" });
+        expect(sessionReducer(state, { type: "next" })).toBe(state);
+    });
+
+    it("saves the run where the learner had got to, not where they looked back to", () => {
+        const state = run(right, { type: "next" }, right, { type: "next" }, { type: "back" }, { type: "back" });
+        expect(snapshotOf(state).position).toBe(2);
+    });
+
+    it("still finishes, and a miss before stepping back still comes round again", () => {
+        const state = run(
+            wrong,
+            { type: "next" },
+            { type: "back" },
+            right,
+            { type: "next" },
+            right,
+            { type: "next" },
+            right,
+            { type: "next" },
+        );
+        // The miss on "a" put it back on the end; getting it right on a look
+        // back does not take it off again.
+        expect(state.queue).toEqual(["a", "b", "c", "a"]);
+        expect(state.records.a.firstTryCorrect).toBe(false);
+        expect(state.position).toBe(3);
+        expect(state.phase).toBe("answering");
+        const done = [right, { type: "next" } as const].reduce(sessionReducer, state);
+        expect(done.phase).toBe("finished");
+        expect(done.reached).toBe(4);
+    });
+});
