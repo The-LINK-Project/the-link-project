@@ -5,6 +5,7 @@ import {
     GoogleError,
     QuotaError,
     QuotaTracker,
+    READ_ALOUD,
     responseError,
     send,
     VOICE,
@@ -339,19 +340,25 @@ export function speechChunks(text: string): string[] {
     return chunks;
 }
 
+/** A piece of the tutor's reply, set out for the voice to read rather than answer. */
+export function readAloud(text: string): string {
+    return `${READ_ALOUD}\n\nTRANSCRIPT:\n${text}`;
+}
+
 async function speakChunk(
     apiKey: string,
     model: string,
     text: string,
     timeoutMs: number,
 ): Promise<Spoken> {
-    // Only checked text is sent. A spoken style instruction would be English the
-    // word rule never saw, and the voice model occasionally reads instructions aloud.
+    // The Gemini API has no field for an instruction apart from the text, so the
+    // reply is set out below one as a transcript. Sent bare, the voice acted on
+    // the reply instead of reading it. The instruction itself is never spoken.
     const response = await generate(
         apiKey,
         model,
         {
-            contents: [{ role: "user", parts: [{ text }] }],
+            contents: [{ role: "user", parts: [{ text: readAloud(text) }] }],
             generationConfig: {
                 responseModalities: ["AUDIO"],
                 speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE } } },
