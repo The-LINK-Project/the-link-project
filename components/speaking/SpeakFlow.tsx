@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -9,6 +10,7 @@ import { ProgressGate } from "@/components/learn/ProgressGate";
 import { LessonButton, text } from "@/components/learn/ui";
 import { useRouter } from "@/i18n/navigation";
 import { getLesson } from "@/lib/lessons/data";
+import { DAILY_MIX_ID } from "@/lib/lessons/data/review";
 import { isTranslationLanguage, type TranslationLanguage } from "@/lib/lessons/languages";
 import { useLearnerLanguage } from "@/lib/lessons/localized";
 import type { Lesson } from "@/lib/lessons/types";
@@ -95,6 +97,7 @@ function SpeakingFlow({
     languages: TranslationLanguage[];
 }) {
     const t = useTranslations("speaking");
+    const tLessons = useTranslations("lessons");
     const router = useRouter();
     const locale = useLearnerLanguage();
     const [chosen, setChosen] = useState<TranslationLanguage | null>(null);
@@ -168,16 +171,31 @@ function SpeakingFlow({
             icon={lesson.icon}
             onClose={() => router.push("/dashboard")}
             footer={
-                // Pinned, like every other way forward in a lesson.
+                // Pinned, like every other way forward in a lesson. Back returns
+                // to the lesson; the daily mix is new each run, so it has no
+                // lesson page to return to and goes home instead.
                 <ShellActions>
-                    <LessonButton
-                        title={t("start")}
-                        size="lg"
-                        disabled={!language}
-                        loading={starting}
-                        aria-description={language ? undefined : t("chooseLanguage")}
-                        onClick={() => void start()}
-                    />
+                    <div className="flex gap-3">
+                        <LessonButton
+                            title={tLessons("back")}
+                            size="lg"
+                            variant="outline"
+                            icon={<ArrowLeft className="size-5" />}
+                            className="w-auto shrink-0 px-4"
+                            onClick={() =>
+                                router.push(lesson.id === DAILY_MIX_ID ? "/dashboard" : `/lessons/${lesson.id}`)
+                            }
+                        />
+                        <LessonButton
+                            title={t("start")}
+                            size="lg"
+                            disabled={!language}
+                            loading={starting}
+                            aria-description={language ? undefined : t("chooseLanguage")}
+                            onClick={() => void start()}
+                            className="min-w-0 flex-1"
+                        />
+                    </div>
                 </ShellActions>
             }
         >
