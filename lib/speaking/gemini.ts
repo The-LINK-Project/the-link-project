@@ -340,9 +340,16 @@ export function speechChunks(text: string): string[] {
     return chunks;
 }
 
-/** A piece of the tutor's reply, set out for the voice to read rather than answer. */
-export function readAloud(text: string): string {
-    return `${READ_ALOUD}\n\nTRANSCRIPT:\n${text}`;
+/** The voices from before 3.8, which act on a bare reply instead of reading it. */
+const NEEDS_READ_ALOUD = /^gemini-(2\.5|3\.1)-/;
+
+/**
+ * A piece of the tutor's reply, set out for this voice to read rather than
+ * answer. The 3.8 voices take their input as a script already, and one of them
+ * reads an instruction out loud, so they get the reply bare.
+ */
+export function readAloud(text: string, model: string): string {
+    return NEEDS_READ_ALOUD.test(model) ? `${READ_ALOUD}\n\nTRANSCRIPT:\n${text}` : text;
 }
 
 async function speakChunk(
@@ -351,14 +358,14 @@ async function speakChunk(
     text: string,
     timeoutMs: number,
 ): Promise<Spoken> {
-    // The Gemini API has no field for an instruction apart from the text, so the
-    // reply is set out below one as a transcript. Sent bare, the voice acted on
-    // the reply instead of reading it. The instruction itself is never spoken.
+    // The Gemini API has no field for an instruction apart from the text, so for
+    // the older voices the reply is set out below one as a transcript. Sent bare,
+    // they acted on the reply instead of reading it.
     const response = await generate(
         apiKey,
         model,
         {
-            contents: [{ role: "user", parts: [{ text: readAloud(text) }] }],
+            contents: [{ role: "user", parts: [{ text: readAloud(text, model) }] }],
             generationConfig: {
                 responseModalities: ["AUDIO"],
                 speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE } } },
