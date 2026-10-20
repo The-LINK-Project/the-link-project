@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleCheck, Clock, Mic } from "lucide-react";
+import { CircleCheck, Clock, MessageCircle, Mic } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import type { Lesson } from "@/lib/lessons/types";
@@ -40,7 +40,11 @@ export function LessonDone({
                 fraction={speakingLeft ? 0.5 : 1}
                 done={!speakingLeft}
             >
-                {speakingLeft ? <p className={text.caption}>{t("summarySpeakNext")}</p> : null}
+                {speakingLeft ? (
+                    <p className={text.caption}>
+                        {lesson.chatPractice ? t("summaryChatNext") : t("summarySpeakNext")}
+                    </p>
+                ) : null}
                 <LessonHero lesson={lesson} />
                 <div className="flex">
                     {speakingLeft ? (
@@ -70,8 +74,38 @@ export function LessonDone({
 }
 
 /** Pinned to the bottom, like every other way forward in a lesson. */
-export function LessonDoneActions({ onAgain, onSpeak }: { onAgain: () => void; onSpeak?: () => void }) {
+export function LessonDoneActions({
+    onAgain,
+    onSpeak,
+    onChat,
+}: {
+    onAgain: () => void;
+    onSpeak?: () => void;
+    /** Present when the lesson ends in prompting practice with LINK Assistant. */
+    onChat?: () => void;
+}) {
     const t = useTranslations("lessons");
+    if (onChat) {
+        return (
+            <div className="flex flex-col gap-2">
+                <LessonButton
+                    title={t("summaryChat")}
+                    size="lg"
+                    icon={<MessageCircle className="size-5" />}
+                    onClick={onChat}
+                />
+                <LessonButton title={t("summaryRetry")} variant="outline" onClick={onAgain} />
+                {onSpeak ? (
+                    <LessonButton
+                        title={t("summarySpeak")}
+                        variant="ghost"
+                        icon={<Mic className="size-5" />}
+                        onClick={onSpeak}
+                    />
+                ) : null}
+            </div>
+        );
+    }
     if (!onSpeak) return <LessonButton title={t("summaryRetry")} size="lg" onClick={onAgain} />;
     return (
         <div className="flex flex-col gap-2">

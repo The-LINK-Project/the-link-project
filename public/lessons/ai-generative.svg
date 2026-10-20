@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#fff7ed"/>
+  <!-- picture being created -->
+  <rect x="70" y="90" width="220" height="190" rx="14" fill="#ffffff" stroke="#1f2937" stroke-width="8"/>
+  <rect x="82" y="102" width="196" height="166" rx="6" fill="#bae6fd"/>
+  <circle cx="232" cy="145" r="22" fill="#facc15"/>
+  <path d="M82 268 l60 -80 l45 55 l30 -35 l61 60z" fill="#16a34a"/>
+  <!-- magic wand -->
+  <line x1="250" y1="330" x2="335" y2="245" stroke="#1f2937" stroke-width="14" stroke-linecap="round"/>
+  <line x1="320" y1="260" x2="335" y2="245" stroke="#fa9e0d" stroke-width="14" stroke-linecap="round"/>
+  <!-- sparkles -->
+  <g fill="#fa9e0d">
+    <path d="M330 170 l8 22 l22 8 l-22 8 l-8 22 l-8 -22 l-22 -8 l22 -8z"/>
+    <path d="M90 300 l6 15 l15 6 l-15 6 l-6 15 l-6 -15 l-15 -6 l15 -6z"/>
+    <path d="M300 60 l5 13 l13 5 l-13 5 l-5 13 l-5 -13 l-13 -5 l13 -5z"/>
+  </g>
+</svg>

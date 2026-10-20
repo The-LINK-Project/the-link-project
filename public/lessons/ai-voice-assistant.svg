@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#f3e8ff"/>
+  <!-- sound waves -->
+  <g fill="none" stroke="#9900aa" stroke-width="10" stroke-linecap="round">
+    <path d="M110 150 q-30 50 0 100" opacity="0.55"/>
+    <path d="M80 125 q-50 75 0 150" opacity="0.3"/>
+    <path d="M290 150 q30 50 0 100" opacity="0.55"/>
+    <path d="M320 125 q50 75 0 150" opacity="0.3"/>
+  </g>
+  <!-- microphone -->
+  <rect x="160" y="80" width="80" height="150" rx="40" fill="#1f2937"/>
+  <g stroke="#4b5563" stroke-width="5" stroke-linecap="round">
+    <line x1="178" y1="120" x2="222" y2="120"/>
+    <line x1="178" y1="140" x2="222" y2="140"/>
+    <line x1="178" y1="160" x2="222" y2="160"/>
+  </g>
+  <path d="M135 190 q0 75 65 75 q65 0 65 -75" fill="none" stroke="#1f2937" stroke-width="12" stroke-linecap="round"/>
+  <line x1="200" y1="265" x2="200" y2="310" stroke="#1f2937" stroke-width="12" stroke-linecap="round"/>
+  <line x1="160" y1="315" x2="240" y2="315" stroke="#1f2937" stroke-width="12" stroke-linecap="round"/>
+</svg>

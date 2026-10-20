@@ -173,6 +173,66 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "where you wait for the train": "మీరు రైలు కోసం వేచి ఉండే చోటు",
         "your body is injured": "మీ శరీరం గాయపడింది",
         "your body is very hot": "మీ శరీరం చాలా వేడిగా ఉంది",
+        // AI Words (workshop lesson)
+        "AI Words": "AI పదాలు",
+        "Know the key words people use when they talk about AI.":
+            "AI గురించి మాట్లాడేటప్పుడు ప్రజలు వాడే ముఖ్యమైన పదాలను తెలుసుకోండి.",
+        "computer programs that can do tasks that usually need a human mind":
+            "సాధారణంగా మనిషి ఆలోచించి చేయాల్సిన పనులను చేయగల కంప్యూటర్ ప్రోగ్రాములు",
+        "how an AI gets better by learning patterns from lots of examples":
+            "చాలా ఉదాహరణలలో మళ్లీ మళ్లీ కనిపించే వాటిని నేర్చుకుని AI మెరుగయ్యే విధానం",
+        "the examples (text, photos, recordings) an AI learns from":
+            "AI నేర్చుకునే ఉదాహరణలు (రాతలు, ఫోటోలు, రికార్డింగ్‌లు)",
+        "an AI you have a conversation with by typing, like ChatGPT or Gemini":
+            "మీరు టైప్ చేసి మాట్లాడుకునే AI, ChatGPT లేదా Gemini లాంటిది",
+        "the question or instruction you type or say to an AI": "మీరు AIకి టైప్ చేసే లేదా చెప్పే ప్రశ్న లేదా సూచన",
+        "AI that creates new things: text, pictures, music or video":
+            "కొత్త వాటిని తయారు చేసే AI: రాతలు, చిత్రాలు, సంగీతం లేదా వీడియో",
+        "an AI that listens to your voice and answers out loud, like Siri":
+            "మీ మాట విని, తిరిగి మాట్లాడి జవాబు చెప్పే AI, Siri లాంటిది",
+        "AI that can tell what is in a photo": "ఫోటోలో ఏముందో చెప్పగల AI",
+        "when an AI confidently gives an answer that is made up or wrong":
+            "AI పూర్తి నమ్మకంతో తనే కల్పించిన లేదా తప్పు జవాబు ఇవ్వడం",
+        "Saying the AI gave a confident answer that was false.": "AI నమ్మకంగా తప్పు జవాబు ఇచ్చిందని చెప్పడం.",
+        "Suggesting a more detailed question to get a better answer.":
+            "మంచి జవాబు రావాలంటే ఇంకా వివరంగా అడగమని సూచించడం.",
+        "Which one is a chatbot?": "వీటిలో chatbot ఏది?",
+        "Which word fits?": "ఏ పదం సరిపోతుంది?",
+        "Your friend has been using a chatbot and looks confused.":
+            "మీ స్నేహితుడు ఒక chatbot వాడుతున్నాడు, అయోమయంగా కనిపిస్తున్నాడు.",
+        "Your friend searched for the book and could not find it anywhere.":
+            "మీ స్నేహితుడు ఆ పుస్తకం కోసం వెతికాడు, కానీ అది ఎక్కడా దొరకలేదు.",
+        "Saying it was an AI that answers out loud.": "అది మాట్లాడి జవాబు చెప్పే AI అని చెప్పడం.",
+        "Saying it was the examples the AI learned from.": "అది AI నేర్చుకున్న ఉదాహరణలు అని చెప్పడం.",
+        "Your friend asked a chatbot to plan a trip.": "మీ స్నేహితుడు ఒక ప్రయాణం ప్లాన్ చేయమని chatbotను అడిగాడు.",
+        "The answer did not have enough detail to be useful.": "ఆ జవాబులో ఉపయోగపడేంత వివరాలు లేవు.",
+        "Suggesting they change what the AI learned from.": "AI నేర్చుకోవడానికి వాడిన వాటిని మార్చమని సూచించడం.",
+        "Suggesting they use an AI that reads photos.": "ఫోటోలను అర్థం చేసుకునే AIని వాడమని సూచించడం.",
+        "A chatbot answers whatever you type, and what you type is your prompt. Try the ideas below, or ask anything you like.":
+            "మీరు ఏది టైప్ చేసినా chatbot జవాబు ఇస్తుంది, మీరు టైప్ చేసేదే మీ prompt. కింద ఉన్న ఆలోచనలను ప్రయత్నించండి, లేదా మీకు నచ్చినది ఏదైనా అడగండి.",
+        "Say exactly what you want.": "మీకు ఏం కావాలో సరిగ్గా చెప్పండి.",
+        "Give context: who it is for, and limits like time or budget.":
+            "సందర్భం చెప్పండి: ఇది ఎవరి కోసం, సమయం లేదా బడ్జెట్ లాంటి పరిమితులు.",
+        "Say the format: a list, three sentences, a short message.":
+            "ఏ రూపంలో కావాలో చెప్పండి: జాబితా, మూడు వాక్యాలు, చిన్న మెసేజ్.",
+        "Not happy with the answer? Ask a follow-up to change it.":
+            "జవాబు నచ్చలేదా? దాన్ని మార్చడానికి follow-up ప్రశ్న అడగండి.",
+        "Ask about an AI word": "ఒక AI పదం గురించి అడగండి",
+        "Pick any word from the lesson and ask the chatbot to explain it.":
+            "పాఠంలోని ఏదైనా ఒక పదాన్ని ఎంచుకుని, దాన్ని వివరించమని chatbotను అడగండి.",
+        "Send a vague prompt": "స్పష్టంగా లేని prompt పంపండి",
+        "Send this short prompt and see what comes back.": "ఈ చిన్న prompt పంపి, ఏం జవాబు వస్తుందో చూడండి.",
+        "Now add the details": "ఇప్పుడు వివరాలు జోడించండి",
+        "Same request with context, limits and a format. Compare the two answers.":
+            "అదే అభ్యర్థన, ఈసారి సందర్భం, పరిమితులు, రూపంతో కలిపి. రెండు జవాబులను పోల్చి చూడండి.",
+        "Make something new": "కొత్తది ఏదైనా తయారు చేయండి",
+        "That's generative AI: it writes something that did not exist before.":
+            "ఇదే generative AI: ఇంతకు ముందు లేనిదాన్ని ఇది రాస్తుంది.",
+        "Ask a follow-up": "ఒక follow-up ప్రశ్న అడగండి",
+        "Change the last answer without starting again.": "మళ్లీ మొదటి నుండి మొదలుపెట్టకుండా, చివరి జవాబును మార్చండి.",
+        "Check for a hallucination": "hallucination ఉందో లేదో చూడండి",
+        "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
+            "నిజాలు అడగండి, తర్వాత అది ఖచ్చితంగా తెలుసా అని అడగండి. chatbotలు నమ్మకంగా మాట్లాడినా తప్పు చెప్పవచ్చు.",
     },
     ml: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -329,6 +389,70 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "where you wait for the train": "ട്രെയിനിനായി കാത്തുനിൽക്കുന്ന സ്ഥലം",
         "your body is injured": "ശരീരത്തിന് പരിക്കേറ്റു",
         "your body is very hot": "ശരീരം വളരെ ചൂടാണ്",
+        // AI Words (workshop lesson)
+        "AI Words": "AI വാക്കുകൾ",
+        "Know the key words people use when they talk about AI.":
+            "AI-യെക്കുറിച്ച് സംസാരിക്കുമ്പോൾ ആളുകൾ ഉപയോഗിക്കുന്ന പ്രധാന വാക്കുകൾ അറിയുക.",
+        "computer programs that can do tasks that usually need a human mind":
+            "സാധാരണയായി മനുഷ്യൻ ചിന്തിച്ച് ചെയ്യുന്ന ജോലികൾ ചെയ്യാൻ കഴിയുന്ന കമ്പ്യൂട്ടർ പ്രോഗ്രാമുകൾ",
+        "how an AI gets better by learning patterns from lots of examples":
+            "ധാരാളം ഉദാഹരണങ്ങളിൽ ആവർത്തിച്ചു വരുന്നവ പഠിച്ച് AI മെച്ചപ്പെടുന്ന രീതി",
+        "the examples (text, photos, recordings) an AI learns from":
+            "AI പഠിക്കാൻ ഉപയോഗിക്കുന്ന ഉദാഹരണങ്ങൾ (എഴുത്തുകൾ, ഫോട്ടോകൾ, റെക്കോർഡിംഗുകൾ)",
+        "an AI you have a conversation with by typing, like ChatGPT or Gemini":
+            "ടൈപ്പ് ചെയ്ത് നിങ്ങൾ സംസാരിക്കുന്ന AI, ChatGPT-യോ Gemini-യോ പോലെ",
+        "the question or instruction you type or say to an AI":
+            "AI-യോട് നിങ്ങൾ ടൈപ്പ് ചെയ്തോ പറഞ്ഞോ നൽകുന്ന ചോദ്യം അല്ലെങ്കിൽ നിർദ്ദേശം",
+        "AI that creates new things: text, pictures, music or video":
+            "പുതിയ കാര്യങ്ങൾ ഉണ്ടാക്കുന്ന AI: എഴുത്ത്, ചിത്രങ്ങൾ, സംഗീതം അല്ലെങ്കിൽ വീഡിയോ",
+        "an AI that listens to your voice and answers out loud, like Siri":
+            "നിങ്ങളുടെ ശബ്ദം കേട്ട് ഉറക്കെ മറുപടി പറയുന്ന AI, Siri പോലെ",
+        "AI that can tell what is in a photo": "ഫോട്ടോയിൽ എന്താണുള്ളതെന്ന് പറയാൻ കഴിയുന്ന AI",
+        "when an AI confidently gives an answer that is made up or wrong":
+            "AI ആത്മവിശ്വാസത്തോടെ കെട്ടിച്ചമച്ചതോ തെറ്റായതോ ആയ ഉത്തരം നൽകുമ്പോൾ",
+        "Saying the AI gave a confident answer that was false.":
+            "AI ആത്മവിശ്വാസത്തോടെ തെറ്റായ ഉത്തരം നൽകിയെന്ന് പറയുന്നു.",
+        "Suggesting a more detailed question to get a better answer.":
+            "നല്ല ഉത്തരം കിട്ടാൻ കൂടുതൽ വിശദമായി ചോദിക്കാൻ നിർദ്ദേശിക്കുന്നു.",
+        "Which one is a chatbot?": "ഇതിൽ ഏതാണ് chatbot?",
+        "Which word fits?": "ഏത് വാക്കാണ് ചേരുന്നത്?",
+        "Your friend has been using a chatbot and looks confused.":
+            "നിങ്ങളുടെ സുഹൃത്ത് കുറച്ചുനേരമായി ഒരു chatbot ഉപയോഗിക്കുന്നു, ആശയക്കുഴപ്പത്തിലാണെന്ന് തോന്നുന്നു.",
+        "Your friend searched for the book and could not find it anywhere.":
+            "നിങ്ങളുടെ സുഹൃത്ത് ആ പുസ്തകം തിരഞ്ഞു, പക്ഷേ എവിടെയും കണ്ടെത്താനായില്ല.",
+        "Saying it was an AI that answers out loud.": "അത് ഉറക്കെ മറുപടി പറയുന്ന ഒരു AI ആണെന്ന് പറയുന്നു.",
+        "Saying it was the examples the AI learned from.": "അത് AI പഠിച്ച ഉദാഹരണങ്ങളാണെന്ന് പറയുന്നു.",
+        "Your friend asked a chatbot to plan a trip.":
+            "നിങ്ങളുടെ സുഹൃത്ത് ഒരു യാത്ര പ്ലാൻ ചെയ്യാൻ chatbot-നോട് ആവശ്യപ്പെട്ടു.",
+        "The answer did not have enough detail to be useful.":
+            "ആ ഉത്തരത്തിൽ ഉപകാരപ്പെടാൻ വേണ്ടത്ര വിശദാംശങ്ങൾ ഉണ്ടായിരുന്നില്ല.",
+        "Suggesting they change what the AI learned from.": "AI പഠിക്കാൻ ഉപയോഗിച്ചവ മാറ്റാൻ നിർദ്ദേശിക്കുന്നു.",
+        "Suggesting they use an AI that reads photos.": "ഫോട്ടോ മനസ്സിലാക്കുന്ന AI ഉപയോഗിക്കാൻ നിർദ്ദേശിക്കുന്നു.",
+        "A chatbot answers whatever you type, and what you type is your prompt. Try the ideas below, or ask anything you like.":
+            "നിങ്ങൾ എന്ത് ടൈപ്പ് ചെയ്താലും chatbot മറുപടി നൽകും, നിങ്ങൾ ടൈപ്പ് ചെയ്യുന്നതാണ് നിങ്ങളുടെ prompt. താഴെയുള്ള ആശയങ്ങൾ പരീക്ഷിക്കുക, അല്ലെങ്കിൽ ഇഷ്ടമുള്ളത് എന്തും ചോദിക്കുക.",
+        "Say exactly what you want.": "നിങ്ങൾക്ക് എന്താണ് വേണ്ടതെന്ന് കൃത്യമായി പറയുക.",
+        "Give context: who it is for, and limits like time or budget.":
+            "സന്ദർഭം നൽകുക: ആർക്കുവേണ്ടിയാണ്, പിന്നെ സമയം, ബജറ്റ് പോലുള്ള പരിധികൾ.",
+        "Say the format: a list, three sentences, a short message.":
+            "ഏത് രൂപത്തിൽ വേണമെന്ന് പറയുക: ഒരു ലിസ്റ്റ്, മൂന്ന് വാചകങ്ങൾ, ഒരു ചെറിയ സന്ദേശം.",
+        "Not happy with the answer? Ask a follow-up to change it.":
+            "ഉത്തരം ഇഷ്ടപ്പെട്ടില്ലേ? അത് മാറ്റാൻ ഒരു follow-up ചോദ്യം ചോദിക്കുക.",
+        "Ask about an AI word": "ഒരു AI വാക്കിനെക്കുറിച്ച് ചോദിക്കുക",
+        "Pick any word from the lesson and ask the chatbot to explain it.":
+            "പാഠത്തിലെ ഏതെങ്കിലും ഒരു വാക്ക് തിരഞ്ഞെടുത്ത് അത് വിശദീകരിക്കാൻ chatbot-നോട് ആവശ്യപ്പെടുക.",
+        "Send a vague prompt": "വ്യക്തമല്ലാത്ത ഒരു prompt അയയ്ക്കുക",
+        "Send this short prompt and see what comes back.": "ഈ ചെറിയ prompt അയച്ച് എന്ത് മറുപടി വരുന്നു എന്ന് നോക്കുക.",
+        "Now add the details": "ഇനി വിശദാംശങ്ങൾ ചേർക്കുക",
+        "Same request with context, limits and a format. Compare the two answers.":
+            "അതേ ആവശ്യം, ഇത്തവണ സന്ദർഭവും പരിധികളും രൂപവും ചേർത്ത്. രണ്ട് ഉത്തരങ്ങളും താരതമ്യം ചെയ്യുക.",
+        "Make something new": "പുതിയ എന്തെങ്കിലും ഉണ്ടാക്കുക",
+        "That's generative AI: it writes something that did not exist before.":
+            "ഇതാണ് generative AI: മുമ്പ് ഇല്ലാതിരുന്ന ഒന്ന് അത് എഴുതുന്നു.",
+        "Ask a follow-up": "ഒരു follow-up ചോദ്യം ചോദിക്കുക",
+        "Change the last answer without starting again.": "വീണ്ടും തുടക്കം മുതൽ തുടങ്ങാതെ അവസാനത്തെ ഉത്തരം മാറ്റുക.",
+        "Check for a hallucination": "hallucination ഉണ്ടോ എന്ന് പരിശോധിക്കുക",
+        "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
+            "വസ്തുതകൾ ചോദിക്കുക, പിന്നെ ഉറപ്പാണോ എന്ന് ചോദിക്കുക. chatbot-കൾ ആത്മവിശ്വാസത്തോടെ സംസാരിച്ചാലും തെറ്റാകാം.",
     },
     bu: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -484,6 +608,69 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "where you wait for the train": "ရထားကို စောင့်သည့်နေရာ",
         "your body is injured": "ကိုယ်ခန္ဓာ ဒဏ်ရာရသည်",
         "your body is very hot": "ကိုယ် အလွန် ပူနေသည်",
+        // AI Words (workshop lesson)
+        "AI Words": "AI စကားလုံးများ",
+        "Know the key words people use when they talk about AI.":
+            "AI အကြောင်း ပြောသည့်အခါ လူများ သုံးသော အဓိက စကားလုံးများကို သိထားပါ။",
+        "computer programs that can do tasks that usually need a human mind":
+            "များသောအားဖြင့် လူက စဉ်းစားပြီး လုပ်ရသော အလုပ်များကို လုပ်နိုင်သည့် ကွန်ပျူတာ ပရိုဂရမ်များ",
+        "how an AI gets better by learning patterns from lots of examples":
+            "AI က ဥပမာ အများအပြားမှ ပုံစံများကို သင်ယူပြီး ပိုတော်လာပုံ",
+        "the examples (text, photos, recordings) an AI learns from":
+            "AI က သင်ယူသည့် ဥပမာများ (စာသား၊ ဓာတ်ပုံ၊ အသံဖမ်းချက်များ)",
+        "an AI you have a conversation with by typing, like ChatGPT or Gemini":
+            "ChatGPT သို့မဟုတ် Gemini ကဲ့သို့ စာရိုက်၍ စကားပြောနိုင်သော AI",
+        "the question or instruction you type or say to an AI":
+            "AI ကို စာရိုက်၍ဖြစ်စေ ပြော၍ဖြစ်စေ ပေးသော မေးခွန်း သို့မဟုတ် ညွှန်ကြားချက်",
+        "AI that creates new things: text, pictures, music or video":
+            "စာ၊ ပုံ၊ ဂီတ သို့မဟုတ် ဗီဒီယို စသည့် အရာအသစ်များကို ဖန်တီးပေးသော AI",
+        "an AI that listens to your voice and answers out loud, like Siri":
+            "Siri ကဲ့သို့ သင့်အသံကို နားထောင်ပြီး အသံထွက်၍ ပြန်ဖြေသော AI",
+        "AI that can tell what is in a photo": "ဓာတ်ပုံထဲတွင် ဘာရှိသည်ကို ပြောပြနိုင်သော AI",
+        "when an AI confidently gives an answer that is made up or wrong":
+            "AI က လုပ်ကြံထားသော သို့မဟုတ် မှားသော အဖြေကို သေချာသကဲ့သို့ ပေးသည့်အခါ",
+        "Saying the AI gave a confident answer that was false.":
+            "AI က မှားသော အဖြေကို သေချာသကဲ့သို့ ပေးခဲ့ကြောင်း ပြောခြင်း။",
+        "Suggesting a more detailed question to get a better answer.":
+            "ပိုကောင်းသော အဖြေရရန် ပိုအသေးစိတ်သော မေးခွန်း မေးဖို့ အကြံပြုခြင်း။",
+        "Which one is a chatbot?": "chatbot က ဘယ်ဟာလဲ?",
+        "Which word fits?": "ဘယ်စကားလုံးက ကိုက်ညီသလဲ?",
+        "Your friend has been using a chatbot and looks confused.":
+            "သင့်သူငယ်ချင်းက chatbot ကို သုံးနေပြီး ခေါင်းရှုပ်နေပုံ ရသည်။",
+        "Your friend searched for the book and could not find it anywhere.":
+            "သင့်သူငယ်ချင်းက ထိုစာအုပ်ကို ရှာခဲ့သော်လည်း ဘယ်နေရာမှာမှ ရှာမတွေ့ပါ။",
+        "Saying it was an AI that answers out loud.": "အသံထွက်၍ ပြန်ဖြေသော AI ဖြစ်ကြောင်း ပြောခြင်း။",
+        "Saying it was the examples the AI learned from.": "AI သင်ယူခဲ့သော ဥပမာများ ဖြစ်ကြောင်း ပြောခြင်း။",
+        "Your friend asked a chatbot to plan a trip.":
+            "သင့်သူငယ်ချင်းက chatbot ကို ခရီးစဉ်တစ်ခု စီစဉ်ပေးရန် တောင်းဆိုခဲ့သည်။",
+        "The answer did not have enough detail to be useful.": "အဖြေတွင် အသုံးဝင်လောက်အောင် အသေးစိတ် မပါပါ။",
+        "Suggesting they change what the AI learned from.": "AI သင်ယူခဲ့သည့် အရာကို ပြောင်းရန် အကြံပြုခြင်း။",
+        "Suggesting they use an AI that reads photos.": "ဓာတ်ပုံကို ကြည့်၍ နားလည်နိုင်သော AI ကို သုံးရန် အကြံပြုခြင်း။",
+        "A chatbot answers whatever you type, and what you type is your prompt. Try the ideas below, or ask anything you like.":
+            "Chatbot က သင်ရိုက်သမျှကို ဖြေပေးပြီး သင်ရိုက်သည့်အရာသည် သင့် prompt ဖြစ်သည်။ အောက်ပါ အကြံများကို စမ်းကြည့်ပါ၊ သို့မဟုတ် ကြိုက်ရာကို မေးပါ။",
+        "Say exactly what you want.": "သင် ဘာလိုချင်သည်ကို တိတိကျကျ ပြောပါ။",
+        "Give context: who it is for, and limits like time or budget.":
+            "အခြေအနေ ပြောပြပါ - ဘယ်သူ့အတွက်လဲ၊ အချိန် သို့မဟုတ် ငွေ ဘယ်လောက်အထိ သုံးနိုင်သလဲ။",
+        "Say the format: a list, three sentences, a short message.":
+            "ပုံစံကို ပြောပါ - စာရင်း၊ စာကြောင်း သုံးကြောင်း၊ စာတိုတစ်စောင်။",
+        "Not happy with the answer? Ask a follow-up to change it.":
+            "အဖြေကို မကျေနပ်ဘူးလား? ပြင်ရန် နောက်ဆက်တွဲ မေးခွန်း မေးပါ။",
+        "Ask about an AI word": "AI စကားလုံးတစ်လုံးအကြောင်း မေးပါ",
+        "Pick any word from the lesson and ask the chatbot to explain it.":
+            "သင်ခန်းစာထဲမှ စကားလုံးတစ်လုံးကို ရွေးပြီး chatbot ကို ရှင်းပြခိုင်းပါ။",
+        "Send a vague prompt": "မရှင်းလင်းသော prompt တစ်ခု ပို့ပါ",
+        "Send this short prompt and see what comes back.": "ဤ prompt တိုကို ပို့ပြီး ဘာပြန်ဖြေသည်ကို ကြည့်ပါ။",
+        "Now add the details": "အခု အသေးစိတ်များ ထည့်ပါ",
+        "Same request with context, limits and a format. Compare the two answers.":
+            "တူညီသော တောင်းဆိုချက်ကို အခြေအနေ၊ ကန့်သတ်ချက်နှင့် ပုံစံ ထည့်၍ ပို့ပါ။ အဖြေနှစ်ခုကို နှိုင်းယှဉ်ပါ။",
+        "Make something new": "အရာအသစ်တစ်ခု ဖန်တီးပါ",
+        "That's generative AI: it writes something that did not exist before.":
+            "ဤသည်မှာ generative AI ဖြစ်သည် - အရင်က မရှိခဲ့သော အရာအသစ်ကို ရေးပေးသည်။",
+        "Ask a follow-up": "နောက်ဆက်တွဲ မေးခွန်း မေးပါ",
+        "Change the last answer without starting again.": "အစက ပြန်မစဘဲ နောက်ဆုံးအဖြေကို ပြင်ပါ။",
+        "Check for a hallucination": "Hallucination ရှိမရှိ စစ်ဆေးပါ",
+        "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
+            "အချက်အလက်များကို မေးပါ၊ ပြီးလျှင် သေချာရဲ့လားဟု မေးပါ။ Chatbot များသည် သေချာသကဲ့သို့ ပြောသော်လည်း မှားနိုင်သည်။",
     },
     fi: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -646,6 +833,70 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "where you wait for the train": "kung saan ka naghihintay ng tren",
         "your body is injured": "nasugatan ang katawan mo",
         "your body is very hot": "napakainit ng katawan mo",
+        // AI Words (workshop lesson)
+        "AI Words": "Mga Salita Tungkol sa AI",
+        "Know the key words people use when they talk about AI.":
+            "Alamin ang mahahalagang salita na ginagamit ng mga tao kapag pinag-uusapan ang AI.",
+        "computer programs that can do tasks that usually need a human mind":
+            "mga computer program na kayang gawin ang mga gawaing karaniwang kailangan ng isip ng tao",
+        "how an AI gets better by learning patterns from lots of examples":
+            "kung paano humuhusay ang AI sa pag-aaral ng mga pattern mula sa maraming halimbawa",
+        "the examples (text, photos, recordings) an AI learns from":
+            "ang mga halimbawang pinag-aaralan ng AI (teksto, litrato, recording)",
+        "an AI you have a conversation with by typing, like ChatGPT or Gemini":
+            "AI na kausap mo sa pamamagitan ng pag-type, tulad ng ChatGPT o Gemini",
+        "the question or instruction you type or say to an AI":
+            "ang tanong o tagubilin na tina-type o sinasabi mo sa AI",
+        "AI that creates new things: text, pictures, music or video":
+            "AI na gumagawa ng mga bagong bagay: teksto, larawan, musika o video",
+        "an AI that listens to your voice and answers out loud, like Siri":
+            "AI na nakikinig sa boses mo at sumasagot nang pasalita, tulad ng Siri",
+        "AI that can tell what is in a photo": "AI na kayang malaman kung ano ang nasa litrato",
+        "when an AI confidently gives an answer that is made up or wrong":
+            "kapag buong tiwalang nagbibigay ang AI ng sagot na gawa-gawa o mali",
+        "Saying the AI gave a confident answer that was false.":
+            "Pagsasabing buong tiwalang nagbigay ang AI ng maling sagot.",
+        "Suggesting a more detailed question to get a better answer.":
+            "Pagmumungkahi ng mas detalyadong tanong para makakuha ng mas magandang sagot.",
+        "Which one is a chatbot?": "Alin ang chatbot?",
+        "Which word fits?": "Aling salita ang angkop?",
+        "Your friend has been using a chatbot and looks confused.":
+            "Gumagamit ng chatbot ang kaibigan mo at mukhang nalilito siya.",
+        "Your friend searched for the book and could not find it anywhere.":
+            "Hinanap ng kaibigan mo ang libro pero hindi niya ito makita kahit saan.",
+        "Saying it was an AI that answers out loud.": "Pagsasabing AI iyon na sumasagot nang pasalita.",
+        "Saying it was the examples the AI learned from.": "Pagsasabing iyon ang mga halimbawang pinag-aralan ng AI.",
+        "Your friend asked a chatbot to plan a trip.":
+            "Hiniling ng kaibigan mo sa isang chatbot na magplano ng biyahe.",
+        "The answer did not have enough detail to be useful.": "Kulang sa detalye ang sagot kaya hindi ito nakatulong.",
+        "Suggesting they change what the AI learned from.": "Pagmumungkahing palitan ang pinag-aralan ng AI.",
+        "Suggesting they use an AI that reads photos.": "Pagmumungkahing gumamit ng AI na nakakaintindi ng litrato.",
+        "A chatbot answers whatever you type, and what you type is your prompt. Try the ideas below, or ask anything you like.":
+            "Sinasagot ng chatbot ang anumang i-type mo, at ang tina-type mo ay ang iyong prompt. Subukan ang mga ideya sa ibaba, o itanong ang kahit ano.",
+        "Say exactly what you want.": "Sabihin nang eksakto ang gusto mo.",
+        "Give context: who it is for, and limits like time or budget.":
+            "Magbigay ng konteksto: para kanino ito, at mga limitasyon tulad ng oras o budget.",
+        "Say the format: a list, three sentences, a short message.":
+            "Sabihin ang format: listahan, tatlong pangungusap, maikling mensahe.",
+        "Not happy with the answer? Ask a follow-up to change it.":
+            "Hindi ka kuntento sa sagot? Mag-follow-up para baguhin ito.",
+        "Ask about an AI word": "Magtanong tungkol sa isang salitang pang-AI",
+        "Pick any word from the lesson and ask the chatbot to explain it.":
+            "Pumili ng kahit anong salita sa aralin at hilingin sa chatbot na ipaliwanag ito.",
+        "Send a vague prompt": "Magpadala ng malabong prompt",
+        "Send this short prompt and see what comes back.":
+            "Ipadala ang maikling prompt na ito at tingnan kung ano ang isasagot.",
+        "Now add the details": "Ngayon, idagdag ang mga detalye",
+        "Same request with context, limits and a format. Compare the two answers.":
+            "Parehong hiling na may konteksto, limitasyon at format. Ikumpara ang dalawang sagot.",
+        "Make something new": "Gumawa ng bagong bagay",
+        "That's generative AI: it writes something that did not exist before.":
+            "Iyan ang generative AI: sumusulat ito ng bagay na wala pa noon.",
+        "Ask a follow-up": "Magtanong ng follow-up",
+        "Change the last answer without starting again.": "Baguhin ang huling sagot nang hindi nagsisimula ulit.",
+        "Check for a hallucination": "Tingnan kung may hallucination",
+        "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
+            "Magtanong ng impormasyon, saka itanong kung sigurado ito. Puwedeng mukhang sigurado ang mga chatbot pero mali pa rin.",
     },
     in: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -799,6 +1050,68 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "where you wait for the train": "tempat Anda menunggu kereta",
         "your body is injured": "tubuh Anda terluka",
         "your body is very hot": "badan Anda sangat panas",
+        // AI Words (workshop lesson)
+        "AI Words": "Istilah AI",
+        "Know the key words people use when they talk about AI.":
+            "Kenali kata-kata penting yang dipakai orang saat membicarakan AI.",
+        "computer programs that can do tasks that usually need a human mind":
+            "program komputer yang bisa melakukan tugas yang biasanya membutuhkan pikiran manusia",
+        "how an AI gets better by learning patterns from lots of examples":
+            "cara AI menjadi lebih baik dengan mempelajari pola dari banyak contoh",
+        "the examples (text, photos, recordings) an AI learns from":
+            "contoh-contoh (teks, foto, rekaman) yang dipelajari AI",
+        "an AI you have a conversation with by typing, like ChatGPT or Gemini":
+            "AI yang bisa Anda ajak bicara lewat ketikan, seperti ChatGPT atau Gemini",
+        "the question or instruction you type or say to an AI":
+            "pertanyaan atau instruksi yang Anda ketik atau ucapkan kepada AI",
+        "AI that creates new things: text, pictures, music or video":
+            "AI yang membuat hal-hal baru: teks, gambar, musik, atau video",
+        "an AI that listens to your voice and answers out loud, like Siri":
+            "AI yang mendengarkan suara Anda lalu menjawab dengan suara, seperti Siri",
+        "AI that can tell what is in a photo": "AI yang bisa tahu apa yang ada di dalam foto",
+        "when an AI confidently gives an answer that is made up or wrong":
+            "saat AI dengan yakin memberi jawaban yang dikarang atau salah",
+        "Saying the AI gave a confident answer that was false.":
+            "Mengatakan bahwa AI dengan yakin memberi jawaban yang salah.",
+        "Suggesting a more detailed question to get a better answer.":
+            "Menyarankan pertanyaan yang lebih rinci agar mendapat jawaban yang lebih baik.",
+        "Which one is a chatbot?": "Mana yang chatbot?",
+        "Which word fits?": "Kata mana yang cocok?",
+        "Your friend has been using a chatbot and looks confused.":
+            "Teman Anda baru saja memakai chatbot dan terlihat bingung.",
+        "Your friend searched for the book and could not find it anywhere.":
+            "Teman Anda mencari buku itu dan tidak bisa menemukannya di mana pun.",
+        "Saying it was an AI that answers out loud.": "Mengatakan bahwa itu AI yang menjawab dengan suara.",
+        "Saying it was the examples the AI learned from.": "Mengatakan bahwa itu contoh-contoh yang dipelajari AI.",
+        "Your friend asked a chatbot to plan a trip.": "Teman Anda meminta chatbot merencanakan perjalanan.",
+        "The answer did not have enough detail to be useful.": "Jawabannya kurang rinci sehingga tidak berguna.",
+        "Suggesting they change what the AI learned from.": "Menyarankan untuk mengganti apa yang dipelajari AI.",
+        "Suggesting they use an AI that reads photos.": "Menyarankan untuk memakai AI yang bisa memahami foto.",
+        "A chatbot answers whatever you type, and what you type is your prompt. Try the ideas below, or ask anything you like.":
+            "Chatbot menjawab apa pun yang Anda ketik, dan yang Anda ketik itu adalah prompt Anda. Coba ide di bawah ini, atau tanyakan apa saja.",
+        "Say exactly what you want.": "Katakan persis apa yang Anda inginkan.",
+        "Give context: who it is for, and limits like time or budget.":
+            "Beri konteks: untuk siapa, dan batasan seperti waktu atau anggaran.",
+        "Say the format: a list, three sentences, a short message.":
+            "Sebutkan formatnya: daftar, tiga kalimat, pesan singkat.",
+        "Not happy with the answer? Ask a follow-up to change it.":
+            "Kurang puas dengan jawabannya? Ajukan pertanyaan lanjutan untuk mengubahnya.",
+        "Ask about an AI word": "Tanyakan satu istilah AI",
+        "Pick any word from the lesson and ask the chatbot to explain it.":
+            "Pilih kata apa saja dari pelajaran ini dan minta chatbot menjelaskannya.",
+        "Send a vague prompt": "Kirim prompt yang kurang jelas",
+        "Send this short prompt and see what comes back.": "Kirim prompt singkat ini dan lihat apa jawabannya.",
+        "Now add the details": "Sekarang tambahkan detailnya",
+        "Same request with context, limits and a format. Compare the two answers.":
+            "Permintaan yang sama dengan konteks, batasan, dan format. Bandingkan kedua jawabannya.",
+        "Make something new": "Buat sesuatu yang baru",
+        "That's generative AI: it writes something that did not exist before.":
+            "Itulah generative AI: ia menulis sesuatu yang sebelumnya tidak ada.",
+        "Ask a follow-up": "Ajukan pertanyaan lanjutan",
+        "Change the last answer without starting again.": "Ubah jawaban terakhir tanpa mulai dari awal.",
+        "Check for a hallucination": "Periksa apakah ada hallucination",
+        "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
+            "Minta fakta, lalu tanyakan apakah ia yakin. Chatbot bisa terdengar yakin tetapi tetap salah.",
     },
     ms: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -959,6 +1272,69 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "where you wait for the train": "tempat anda menunggu tren",
         "your body is injured": "badan anda cedera",
         "your body is very hot": "badan anda sangat panas",
+        // AI Words (workshop lesson)
+        "AI Words": "Istilah AI",
+        "Know the key words people use when they talk about AI.":
+            "Kenali perkataan penting yang digunakan orang apabila bercakap tentang AI.",
+        "computer programs that can do tasks that usually need a human mind":
+            "program komputer yang boleh melakukan tugas yang biasanya memerlukan fikiran manusia",
+        "how an AI gets better by learning patterns from lots of examples":
+            "cara AI menjadi lebih baik dengan mempelajari corak daripada banyak contoh",
+        "the examples (text, photos, recordings) an AI learns from":
+            "contoh-contoh (teks, gambar, rakaman) yang dipelajari oleh AI",
+        "an AI you have a conversation with by typing, like ChatGPT or Gemini":
+            "AI yang anda boleh ajak berbual dengan menaip, seperti ChatGPT atau Gemini",
+        "the question or instruction you type or say to an AI":
+            "soalan atau arahan yang anda taip atau sebut kepada AI",
+        "AI that creates new things: text, pictures, music or video":
+            "AI yang mencipta benda baharu: teks, gambar, muzik atau video",
+        "an AI that listens to your voice and answers out loud, like Siri":
+            "AI yang mendengar suara anda dan menjawab dengan suara, seperti Siri",
+        "AI that can tell what is in a photo": "AI yang boleh tahu apa yang ada dalam gambar",
+        "when an AI confidently gives an answer that is made up or wrong":
+            "apabila AI dengan yakin memberi jawapan yang direka-reka atau salah",
+        "Saying the AI gave a confident answer that was false.":
+            "Mengatakan AI dengan yakin memberi jawapan yang salah.",
+        "Suggesting a more detailed question to get a better answer.":
+            "Mencadangkan soalan yang lebih terperinci untuk mendapat jawapan yang lebih baik.",
+        "Which one is a chatbot?": "Yang mana satu chatbot?",
+        "Which word fits?": "Perkataan mana yang sesuai?",
+        "Your friend has been using a chatbot and looks confused.":
+            "Kawan anda baru menggunakan chatbot dan nampak keliru.",
+        "Your friend searched for the book and could not find it anywhere.":
+            "Kawan anda mencari buku itu dan tidak dapat menjumpainya di mana-mana.",
+        "Saying it was an AI that answers out loud.": "Mengatakan itu AI yang menjawab dengan suara.",
+        "Saying it was the examples the AI learned from.": "Mengatakan itu contoh-contoh yang dipelajari oleh AI.",
+        "Your friend asked a chatbot to plan a trip.": "Kawan anda meminta chatbot merancang perjalanan.",
+        "The answer did not have enough detail to be useful.": "Jawapan itu tidak cukup terperinci untuk berguna.",
+        "Suggesting they change what the AI learned from.": "Mencadangkan supaya menukar apa yang dipelajari oleh AI.",
+        "Suggesting they use an AI that reads photos.":
+            "Mencadangkan supaya menggunakan AI yang boleh memahami gambar.",
+        "A chatbot answers whatever you type, and what you type is your prompt. Try the ideas below, or ask anything you like.":
+            "Chatbot menjawab apa sahaja yang anda taip, dan apa yang anda taip itulah prompt anda. Cuba idea di bawah, atau tanya apa sahaja.",
+        "Say exactly what you want.": "Sebut dengan tepat apa yang anda mahu.",
+        "Give context: who it is for, and limits like time or budget.":
+            "Beri konteks: untuk siapa, dan had seperti masa atau bajet.",
+        "Say the format: a list, three sentences, a short message.":
+            "Sebut formatnya: senarai, tiga ayat, mesej pendek.",
+        "Not happy with the answer? Ask a follow-up to change it.":
+            "Tidak puas hati dengan jawapan? Tanya soalan susulan untuk mengubahnya.",
+        "Ask about an AI word": "Tanya tentang satu istilah AI",
+        "Pick any word from the lesson and ask the chatbot to explain it.":
+            "Pilih mana-mana perkataan daripada pelajaran ini dan minta chatbot menerangkannya.",
+        "Send a vague prompt": "Hantar prompt yang kabur",
+        "Send this short prompt and see what comes back.": "Hantar prompt pendek ini dan lihat apa jawapannya.",
+        "Now add the details": "Sekarang tambah butirannya",
+        "Same request with context, limits and a format. Compare the two answers.":
+            "Permintaan yang sama dengan konteks, had dan format. Bandingkan kedua-dua jawapan.",
+        "Make something new": "Cipta sesuatu yang baharu",
+        "That's generative AI: it writes something that did not exist before.":
+            "Itulah generative AI: ia menulis sesuatu yang tidak pernah wujud sebelum ini.",
+        "Ask a follow-up": "Tanya soalan susulan",
+        "Change the last answer without starting again.": "Ubah jawapan terakhir tanpa bermula semula.",
+        "Check for a hallucination": "Semak jika ada hallucination",
+        "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
+            "Minta fakta, kemudian tanya sama ada ia pasti. Chatbot boleh kedengaran yakin tetapi masih salah.",
     },
     zh: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -1102,6 +1478,49 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "where you wait for the train": "你等车的地方",
         "your body is injured": "你的身体受伤了",
         "your body is very hot": "你的身体很热",
+        // AI Words (workshop lesson)
+        "AI Words": "AI 词汇",
+        "Know the key words people use when they talk about AI.": "认识人们谈论 AI 时常用的关键词。",
+        "computer programs that can do tasks that usually need a human mind": "能做通常需要人脑才能完成的事情的电脑程序",
+        "how an AI gets better by learning patterns from lots of examples": "AI 从大量例子中学习规律、变得越来越好的方式",
+        "the examples (text, photos, recordings) an AI learns from": "AI 用来学习的例子（文字、照片、录音）",
+        "an AI you have a conversation with by typing, like ChatGPT or Gemini": "你打字和它对话的 AI，比如 ChatGPT 或 Gemini",
+        "the question or instruction you type or say to an AI": "你输入或说给 AI 听的问题或要求",
+        "AI that creates new things: text, pictures, music or video": "能创作新东西的 AI：文字、图片、音乐或视频",
+        "an AI that listens to your voice and answers out loud, like Siri": "能听你说话并大声回答你的 AI，比如 Siri",
+        "AI that can tell what is in a photo": "能看出照片里有什么的 AI",
+        "when an AI confidently gives an answer that is made up or wrong": "AI 很自信地给出编造的或错误的答案的时候",
+        "Saying the AI gave a confident answer that was false.": "说 AI 很自信地给出了一个错误的答案。",
+        "Suggesting a more detailed question to get a better answer.": "建议问得更详细一些，以得到更好的答案。",
+        "Which one is a chatbot?": '哪一个是 "chatbot"？',
+        "Which word fits?": "哪个词合适？",
+        "Your friend has been using a chatbot and looks confused.": "你的朋友一直在用聊天机器人，看起来很困惑。",
+        "Your friend searched for the book and could not find it anywhere.": "你的朋友找过那本书，但哪里都找不到。",
+        "Saying it was an AI that answers out loud.": "说那是一个会大声回答的 AI。",
+        "Saying it was the examples the AI learned from.": "说那是 AI 用来学习的例子。",
+        "Your friend asked a chatbot to plan a trip.": "你的朋友让聊天机器人帮忙规划一次旅行。",
+        "The answer did not have enough detail to be useful.": "这个回答不够详细，没什么用。",
+        "Suggesting they change what the AI learned from.": "建议对方改一改 AI 用来学习的内容。",
+        "Suggesting they use an AI that reads photos.": "建议对方用一个能看懂照片的 AI。",
+        "A chatbot answers whatever you type, and what you type is your prompt. Try the ideas below, or ask anything you like.":
+            "聊天机器人会回答你输入的任何内容，你输入的内容就是你的 prompt。试试下面的点子，或者想问什么就问什么。",
+        "Say exactly what you want.": "清楚地说出你想要什么。",
+        "Give context: who it is for, and limits like time or budget.": "说明背景：是给谁的，还有时间、预算等限制。",
+        "Say the format: a list, three sentences, a short message.": "说明格式：列表、三句话、一条短消息。",
+        "Not happy with the answer? Ask a follow-up to change it.": "对回答不满意？继续追问，让它修改。",
+        "Ask about an AI word": "问一个 AI 词语",
+        "Pick any word from the lesson and ask the chatbot to explain it.": "从这节课里任选一个词，请聊天机器人解释它。",
+        "Send a vague prompt": "发一个模糊的 prompt",
+        "Send this short prompt and see what comes back.": "发送这个简短的 prompt，看看会得到什么回答。",
+        "Now add the details": "现在加上细节",
+        "Same request with context, limits and a format. Compare the two answers.": "同样的请求，加上背景、限制和格式。比较两个回答。",
+        "Make something new": "创作新东西",
+        "That's generative AI: it writes something that did not exist before.": "这就是 generative AI：它能写出以前没有的东西。",
+        "Ask a follow-up": "继续追问",
+        "Change the last answer without starting again.": "不用重新开始，直接修改上一个回答。",
+        "Check for a hallucination": "检查有没有 hallucination",
+        "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
+            "先问一些事实，再问它是否确定。聊天机器人听起来很有把握，也可能是错的。",
     },
     th: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -1251,6 +1670,63 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "where you wait for the train": "ที่ที่คุณรอรถไฟ",
         "your body is injured": "ร่างกายของคุณบาดเจ็บ",
         "your body is very hot": "ตัวของคุณร้อนมาก",
+        // AI Words (workshop lesson)
+        "AI Words": "คำศัพท์ AI",
+        "Know the key words people use when they talk about AI.": "รู้จักคำสำคัญที่คนใช้เวลาพูดถึง AI",
+        "computer programs that can do tasks that usually need a human mind":
+            "โปรแกรมคอมพิวเตอร์ที่ทำงานที่ปกติต้องใช้สมองคนได้",
+        "how an AI gets better by learning patterns from lots of examples":
+            "วิธีที่ AI เก่งขึ้นโดยเรียนรู้รูปแบบจากตัวอย่างจำนวนมาก",
+        "the examples (text, photos, recordings) an AI learns from":
+            "ตัวอย่างที่ AI ใช้เรียนรู้ (ข้อความ รูปภาพ เสียงที่บันทึกไว้)",
+        "an AI you have a conversation with by typing, like ChatGPT or Gemini":
+            "AI ที่คุณคุยด้วยโดยการพิมพ์ เช่น ChatGPT หรือ Gemini",
+        "the question or instruction you type or say to an AI": "คำถามหรือคำสั่งที่คุณพิมพ์หรือพูดกับ AI",
+        "AI that creates new things: text, pictures, music or video":
+            "AI ที่สร้างสิ่งใหม่ๆ: ข้อความ รูปภาพ เพลง หรือวิดีโอ",
+        "an AI that listens to your voice and answers out loud, like Siri":
+            "AI ที่ฟังเสียงของคุณและตอบออกมาเป็นเสียง เช่น Siri",
+        "AI that can tell what is in a photo": "AI ที่บอกได้ว่าในรูปภาพมีอะไร",
+        "when an AI confidently gives an answer that is made up or wrong":
+            "เมื่อ AI ตอบอย่างมั่นใจ แต่เป็นคำตอบที่แต่งขึ้นมาเองหรือผิด",
+        "Saying the AI gave a confident answer that was false.": "บอกว่า AI ตอบอย่างมั่นใจ แต่คำตอบนั้นไม่จริง",
+        "Suggesting a more detailed question to get a better answer.":
+            "แนะนำให้ถามละเอียดขึ้นเพื่อให้ได้คำตอบที่ดีกว่า",
+        "Which one is a chatbot?": "อันไหนคือ chatbot?",
+        "Which word fits?": "คำไหนเหมาะที่สุด?",
+        "Your friend has been using a chatbot and looks confused.": "เพื่อนของคุณใช้ chatbot อยู่ และดูสับสน",
+        "Your friend searched for the book and could not find it anywhere.":
+            "เพื่อนของคุณค้นหาหนังสือเล่มนั้น แต่หาไม่เจอที่ไหนเลย",
+        "Saying it was an AI that answers out loud.": "บอกว่านั่นคือ AI ที่ตอบออกมาเป็นเสียง",
+        "Saying it was the examples the AI learned from.": "บอกว่านั่นคือตัวอย่างที่ AI ใช้เรียนรู้",
+        "Your friend asked a chatbot to plan a trip.": "เพื่อนของคุณขอให้ chatbot วางแผนการเดินทาง",
+        "The answer did not have enough detail to be useful.": "คำตอบไม่มีรายละเอียดพอที่จะเอาไปใช้ได้",
+        "Suggesting they change what the AI learned from.": "แนะนำให้เปลี่ยนสิ่งที่ AI ใช้เรียนรู้",
+        "Suggesting they use an AI that reads photos.": "แนะนำให้ใช้ AI ที่อ่านรูปภาพได้",
+        "A chatbot answers whatever you type, and what you type is your prompt. Try the ideas below, or ask anything you like.":
+            "chatbot จะตอบทุกอย่างที่คุณพิมพ์ และสิ่งที่คุณพิมพ์คือ prompt ของคุณ ลองไอเดียด้านล่าง หรือถามอะไรก็ได้ที่อยากรู้",
+        "Say exactly what you want.": "บอกให้ชัดว่าคุณต้องการอะไร",
+        "Give context: who it is for, and limits like time or budget.":
+            "ให้ข้อมูลประกอบ: สำหรับใคร และข้อจำกัด เช่น เวลาหรืองบประมาณ",
+        "Say the format: a list, three sentences, a short message.":
+            "บอกรูปแบบที่ต้องการ: เป็นรายการ สามประโยค หรือข้อความสั้นๆ",
+        "Not happy with the answer? Ask a follow-up to change it.": "ไม่พอใจคำตอบ? ถามต่อ (follow-up) เพื่อให้แก้ไข",
+        "Ask about an AI word": "ถามเกี่ยวกับคำศัพท์ AI",
+        "Pick any word from the lesson and ask the chatbot to explain it.":
+            "เลือกคำไหนก็ได้จากบทเรียน แล้วให้ chatbot อธิบาย",
+        "Send a vague prompt": "ส่ง prompt ที่ไม่ชัดเจน",
+        "Send this short prompt and see what comes back.": "ส่ง prompt สั้นๆ นี้ แล้วดูว่าได้คำตอบอะไร",
+        "Now add the details": "ทีนี้เพิ่มรายละเอียด",
+        "Same request with context, limits and a format. Compare the two answers.":
+            "คำขอเดิม แต่เพิ่มข้อมูลประกอบ ข้อจำกัด และรูปแบบ แล้วเทียบคำตอบทั้งสอง",
+        "Make something new": "สร้างสิ่งใหม่",
+        "That's generative AI: it writes something that did not exist before.":
+            "นี่คือ generative AI: มันเขียนสิ่งที่ไม่เคยมีมาก่อน",
+        "Ask a follow-up": "ถามต่อ (follow-up)",
+        "Change the last answer without starting again.": "แก้คำตอบล่าสุดโดยไม่ต้องเริ่มใหม่",
+        "Check for a hallucination": "ตรวจหา hallucination",
+        "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
+            "ถามข้อเท็จจริง แล้วถามว่ามันแน่ใจไหม chatbot อาจฟังดูมั่นใจแต่ก็ยังผิดได้",
     },
     vi: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -1401,6 +1877,66 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "where you wait for the train": "nơi bạn đợi tàu",
         "your body is injured": "cơ thể bạn bị thương",
         "your body is very hot": "người bạn rất nóng",
+        // AI Words (workshop lesson)
+        "AI Words": "Từ vựng về AI",
+        "Know the key words people use when they talk about AI.":
+            "Biết những từ quan trọng mà mọi người dùng khi nói về AI.",
+        "computer programs that can do tasks that usually need a human mind":
+            "chương trình máy tính làm được những việc thường cần đến bộ óc con người",
+        "how an AI gets better by learning patterns from lots of examples":
+            "cách AI giỏi lên nhờ học các quy luật từ rất nhiều ví dụ",
+        "the examples (text, photos, recordings) an AI learns from":
+            "những ví dụ (chữ viết, ảnh, bản ghi âm) mà AI dùng để học",
+        "an AI you have a conversation with by typing, like ChatGPT or Gemini":
+            "một AI mà bạn trò chuyện bằng cách gõ chữ, như ChatGPT hoặc Gemini",
+        "the question or instruction you type or say to an AI": "câu hỏi hoặc yêu cầu mà bạn gõ hoặc nói với AI",
+        "AI that creates new things: text, pictures, music or video":
+            "AI làm ra những thứ mới: chữ viết, hình ảnh, nhạc hoặc video",
+        "an AI that listens to your voice and answers out loud, like Siri":
+            "một AI nghe bạn nói và trả lời thành tiếng, như Siri",
+        "AI that can tell what is in a photo": "AI có thể cho biết trong ảnh có gì",
+        "when an AI confidently gives an answer that is made up or wrong":
+            "khi AI tự tin đưa ra câu trả lời bịa ra hoặc sai",
+        "Saying the AI gave a confident answer that was false.": "Nói rằng AI đã tự tin đưa ra một câu trả lời sai.",
+        "Suggesting a more detailed question to get a better answer.":
+            "Gợi ý hỏi chi tiết hơn để có câu trả lời tốt hơn.",
+        "Which one is a chatbot?": 'Cái nào là "chatbot"?',
+        "Which word fits?": "Từ nào phù hợp?",
+        "Your friend has been using a chatbot and looks confused.":
+            "Bạn của bạn đang dùng chatbot và trông có vẻ bối rối.",
+        "Your friend searched for the book and could not find it anywhere.":
+            "Bạn của bạn đã tìm cuốn sách đó nhưng không thấy ở đâu cả.",
+        "Saying it was an AI that answers out loud.": "Nói rằng đó là một AI trả lời thành tiếng.",
+        "Saying it was the examples the AI learned from.": "Nói rằng đó là những ví dụ mà AI dùng để học.",
+        "Your friend asked a chatbot to plan a trip.": "Bạn của bạn nhờ chatbot lên kế hoạch cho một chuyến đi.",
+        "The answer did not have enough detail to be useful.": "Câu trả lời không đủ chi tiết để có ích.",
+        "Suggesting they change what the AI learned from.": "Gợi ý bạn ấy thay đổi những gì AI dùng để học.",
+        "Suggesting they use an AI that reads photos.": "Gợi ý bạn ấy dùng một AI biết đọc ảnh.",
+        "A chatbot answers whatever you type, and what you type is your prompt. Try the ideas below, or ask anything you like.":
+            "Chatbot trả lời bất cứ điều gì bạn gõ, và điều bạn gõ chính là prompt của bạn. Hãy thử các gợi ý bên dưới, hoặc hỏi bất cứ điều gì bạn muốn.",
+        "Say exactly what you want.": "Nói chính xác điều bạn muốn.",
+        "Give context: who it is for, and limits like time or budget.":
+            "Cho biết bối cảnh: dành cho ai, và giới hạn như thời gian hoặc ngân sách.",
+        "Say the format: a list, three sentences, a short message.":
+            "Nói rõ hình thức: một danh sách, ba câu, một tin nhắn ngắn.",
+        "Not happy with the answer? Ask a follow-up to change it.":
+            "Chưa hài lòng với câu trả lời? Hãy hỏi tiếp để nó sửa lại.",
+        "Ask about an AI word": "Hỏi về một từ AI",
+        "Pick any word from the lesson and ask the chatbot to explain it.":
+            "Chọn một từ bất kỳ trong bài và nhờ chatbot giải thích.",
+        "Send a vague prompt": "Gửi một prompt mơ hồ",
+        "Send this short prompt and see what comes back.": "Gửi prompt ngắn này và xem nhận được gì.",
+        "Now add the details": "Giờ thêm chi tiết vào",
+        "Same request with context, limits and a format. Compare the two answers.":
+            "Cùng yêu cầu đó, thêm bối cảnh, giới hạn và hình thức. So sánh hai câu trả lời.",
+        "Make something new": "Tạo ra thứ gì đó mới",
+        "That's generative AI: it writes something that did not exist before.":
+            "Đó là generative AI: nó viết ra thứ chưa từng có trước đây.",
+        "Ask a follow-up": "Hỏi tiếp",
+        "Change the last answer without starting again.": "Sửa câu trả lời vừa rồi mà không cần bắt đầu lại.",
+        "Check for a hallucination": "Kiểm tra xem có hallucination không",
+        "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
+            "Hỏi một vài thông tin thực tế, rồi hỏi xem nó có chắc không. Chatbot có thể nói rất tự tin mà vẫn sai.",
     },
     fr: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -1559,6 +2095,69 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "where you wait for the train": "là où vous attendez le train",
         "your body is injured": "votre corps est blessé",
         "your body is very hot": "votre corps est très chaud",
+        // AI Words (workshop lesson)
+        "AI Words": "Les mots de l'IA",
+        "Know the key words people use when they talk about AI.":
+            "Apprenez les mots clés que les gens utilisent quand ils parlent de l'IA.",
+        "computer programs that can do tasks that usually need a human mind":
+            "des programmes d'ordinateur qui peuvent faire des tâches qui demandent d'habitude un cerveau humain",
+        "how an AI gets better by learning patterns from lots of examples":
+            "la façon dont une IA s'améliore en trouvant ce qui se répète dans beaucoup d'exemples",
+        "the examples (text, photos, recordings) an AI learns from":
+            "les exemples (textes, photos, enregistrements) à partir desquels une IA apprend",
+        "an AI you have a conversation with by typing, like ChatGPT or Gemini":
+            "une IA avec qui vous discutez en écrivant, comme ChatGPT ou Gemini",
+        "the question or instruction you type or say to an AI":
+            "la question ou la demande que vous écrivez ou dites à une IA",
+        "AI that creates new things: text, pictures, music or video":
+            "une IA qui crée des choses nouvelles : textes, images, musique ou vidéos",
+        "an AI that listens to your voice and answers out loud, like Siri":
+            "une IA qui écoute ce que vous dites et répond à voix haute, comme Siri",
+        "AI that can tell what is in a photo": "une IA qui peut dire ce qu'il y a sur une photo",
+        "when an AI confidently gives an answer that is made up or wrong":
+            "quand une IA donne avec assurance une réponse inventée ou fausse",
+        "Saying the AI gave a confident answer that was false.":
+            "Dire que l'IA a donné avec assurance une réponse fausse.",
+        "Suggesting a more detailed question to get a better answer.":
+            "Proposer une question plus détaillée pour avoir une meilleure réponse.",
+        "Which one is a chatbot?": 'Lequel est un "chatbot" ?',
+        "Which word fits?": "Quel mot convient ?",
+        "Your friend has been using a chatbot and looks confused.": "Votre ami a utilisé un chatbot et a l'air perdu.",
+        "Your friend searched for the book and could not find it anywhere.":
+            "Votre ami a cherché le livre et ne l'a trouvé nulle part.",
+        "Saying it was an AI that answers out loud.": "Dire que c'était une IA qui répond à voix haute.",
+        "Saying it was the examples the AI learned from.":
+            "Dire que c'étaient les exemples à partir desquels l'IA a appris.",
+        "Your friend asked a chatbot to plan a trip.": "Votre ami a demandé à un chatbot de préparer un voyage.",
+        "The answer did not have enough detail to be useful.":
+            "La réponse n'avait pas assez de détails pour être utile.",
+        "Suggesting they change what the AI learned from.": "Proposer de changer ce que l'IA a utilisé pour apprendre.",
+        "Suggesting they use an AI that reads photos.": "Proposer d'utiliser une IA qui lit les photos.",
+        "A chatbot answers whatever you type, and what you type is your prompt. Try the ideas below, or ask anything you like.":
+            "Un chatbot répond à tout ce que vous écrivez, et ce que vous écrivez, c'est votre prompt. Essayez les idées ci-dessous, ou demandez ce que vous voulez.",
+        "Say exactly what you want.": "Dites exactement ce que vous voulez.",
+        "Give context: who it is for, and limits like time or budget.":
+            "Donnez le contexte : pour qui c'est, et les limites comme le temps ou le budget.",
+        "Say the format: a list, three sentences, a short message.":
+            "Précisez le format : une liste, trois phrases, un court message.",
+        "Not happy with the answer? Ask a follow-up to change it.":
+            "La réponse ne vous plaît pas ? Posez une question de suivi pour la changer.",
+        "Ask about an AI word": "Demandez le sens d'un mot d'IA",
+        "Pick any word from the lesson and ask the chatbot to explain it.":
+            "Choisissez un mot de la leçon et demandez au chatbot de l'expliquer.",
+        "Send a vague prompt": "Envoyez un prompt vague",
+        "Send this short prompt and see what comes back.": "Envoyez ce court prompt et regardez la réponse.",
+        "Now add the details": "Ajoutez maintenant les détails",
+        "Same request with context, limits and a format. Compare the two answers.":
+            "La même demande avec du contexte, des limites et un format. Comparez les deux réponses.",
+        "Make something new": "Créez quelque chose de nouveau",
+        "That's generative AI: it writes something that did not exist before.":
+            "C'est l'IA générative : elle écrit quelque chose qui n'existait pas avant.",
+        "Ask a follow-up": "Posez une question de suivi",
+        "Change the last answer without starting again.": "Modifiez la dernière réponse sans tout recommencer.",
+        "Check for a hallucination": "Vérifiez s'il y a une hallucination",
+        "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
+            "Demandez des faits, puis demandez s'il en est sûr. Les chatbots peuvent avoir l'air sûrs d'eux et pourtant se tromper.",
     },
     es: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -1714,6 +2313,69 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "where you wait for the train": "donde esperas el tren",
         "your body is injured": "tu cuerpo está herido",
         "your body is very hot": "tu cuerpo está muy caliente",
+        // AI Words (workshop lesson)
+        "AI Words": "Palabras sobre la IA",
+        "Know the key words people use when they talk about AI.":
+            "Conoce las palabras clave que la gente usa cuando habla de la IA.",
+        "computer programs that can do tasks that usually need a human mind":
+            "programas de ordenador que pueden hacer tareas que normalmente necesitan una mente humana",
+        "how an AI gets better by learning patterns from lots of examples":
+            "cómo una IA mejora aprendiendo patrones de muchísimos ejemplos",
+        "the examples (text, photos, recordings) an AI learns from":
+            "los ejemplos (textos, fotos, grabaciones) de los que aprende una IA",
+        "an AI you have a conversation with by typing, like ChatGPT or Gemini":
+            "una IA con la que conversas escribiendo, como ChatGPT o Gemini",
+        "the question or instruction you type or say to an AI":
+            "la pregunta o petición que escribes o le dices a una IA",
+        "AI that creates new things: text, pictures, music or video":
+            "una IA que crea cosas nuevas: textos, imágenes, música o vídeos",
+        "an AI that listens to your voice and answers out loud, like Siri":
+            "una IA que escucha lo que dices y te contesta hablando, como Siri",
+        "AI that can tell what is in a photo": "una IA que puede decir qué hay en una foto",
+        "when an AI confidently gives an answer that is made up or wrong":
+            "cuando una IA da con seguridad una respuesta inventada o equivocada",
+        "Saying the AI gave a confident answer that was false.":
+            "Decir que la IA dio con seguridad una respuesta falsa.",
+        "Suggesting a more detailed question to get a better answer.":
+            "Sugerir una pregunta más detallada para obtener una mejor respuesta.",
+        "Which one is a chatbot?": '¿Cuál es un "chatbot"?',
+        "Which word fits?": "¿Qué palabra encaja?",
+        "Your friend has been using a chatbot and looks confused.":
+            "Tu amigo ha estado usando un chatbot y parece confundido.",
+        "Your friend searched for the book and could not find it anywhere.":
+            "Tu amigo buscó el libro y no lo encontró en ningún sitio.",
+        "Saying it was an AI that answers out loud.": "Decir que era una IA que contesta hablando.",
+        "Saying it was the examples the AI learned from.": "Decir que eran los ejemplos de los que aprendió la IA.",
+        "Your friend asked a chatbot to plan a trip.": "Tu amigo le pidió a un chatbot que planeara un viaje.",
+        "The answer did not have enough detail to be useful.":
+            "La respuesta no tenía suficientes detalles para ser útil.",
+        "Suggesting they change what the AI learned from.": "Sugerir cambiar lo que la IA usó para aprender.",
+        "Suggesting they use an AI that reads photos.": "Sugerir usar una IA que lee fotos.",
+        "A chatbot answers whatever you type, and what you type is your prompt. Try the ideas below, or ask anything you like.":
+            "Un chatbot responde a todo lo que escribes, y lo que escribes es tu prompt. Prueba las ideas de abajo o pregunta lo que quieras.",
+        "Say exactly what you want.": "Di exactamente lo que quieres.",
+        "Give context: who it is for, and limits like time or budget.":
+            "Da contexto: para quién es y límites como el tiempo o el presupuesto.",
+        "Say the format: a list, three sentences, a short message.":
+            "Di el formato: una lista, tres frases, un mensaje corto.",
+        "Not happy with the answer? Ask a follow-up to change it.":
+            "¿No te gusta la respuesta? Haz una pregunta de seguimiento para cambiarla.",
+        "Ask about an AI word": "Pregunta por una palabra de IA",
+        "Pick any word from the lesson and ask the chatbot to explain it.":
+            "Elige cualquier palabra de la lección y pide al chatbot que la explique.",
+        "Send a vague prompt": "Envía un prompt poco claro",
+        "Send this short prompt and see what comes back.": "Envía este prompt corto y mira qué te responde.",
+        "Now add the details": "Ahora añade los detalles",
+        "Same request with context, limits and a format. Compare the two answers.":
+            "La misma petición con contexto, límites y formato. Compara las dos respuestas.",
+        "Make something new": "Crea algo nuevo",
+        "That's generative AI: it writes something that did not exist before.":
+            "Eso es IA generativa: escribe algo que no existía antes.",
+        "Ask a follow-up": "Haz una pregunta de seguimiento",
+        "Change the last answer without starting again.": "Cambia la última respuesta sin empezar de nuevo.",
+        "Check for a hallucination": "Comprueba si hay una alucinación",
+        "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
+            "Pide datos y luego pregunta si está seguro. Los chatbots pueden sonar muy seguros y aun así equivocarse.",
     },
 };
 

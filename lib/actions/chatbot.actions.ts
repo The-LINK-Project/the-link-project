@@ -2,7 +2,7 @@
 import OpenAI from "openai";
 import { checkRateLimit } from "../RateLimiter";
 import { auth } from "@clerk/nextjs/server";
-import { chatbotInstructions } from "@/utils/conversation_config";
+import { chatbotInstructions, promptPracticeInstructions } from "@/utils/conversation_config";
 
 // Module-level lazy singleton so requests reuse one client and its
 // keep-alive connection pool
@@ -30,8 +30,26 @@ const MAX_HISTORY_MESSAGES = 40;
 const MAX_MESSAGE_CHARS = 2000;
 const MAX_RESPONSE_TOKENS = 800;
 
+/**
+ * Which LINK Assistant is talking.
+ *
+ * - tutor: the floating English tutor on every page.
+ * - practice: prompting practice after the AI lesson, for fluent adults trying
+ *   out a chatbot. It answers any safe everyday request and coaches vague
+ *   prompts, where the tutor only helps with English.
+ */
+export type ChatbotMode = "tutor" | "practice";
+
+const MODES: Record<ChatbotMode, { instructions: string; maxTokens: number }> = {
+    tutor: { instructions: chatbotInstructions, maxTokens: MAX_RESPONSE_TOKENS },
+    // Short replies: a team reads them together on one screen, and the
+    // prompt asks for under ~120 words anyway.
+    practice: { instructions: promptPracticeInstructions, maxTokens: 500 },
+};
+
 export async function getChatbotResponse(
     history: ChatMessageType[],
+    mode: ChatbotMode = "tutor",
 ): Promise<ChatbotResult> {
     try {
         // Get the current user's Clerk ID for rate limiting
@@ -45,8 +63,12 @@ export async function getChatbotResponse(
             return { success: false, error: "invalid" };
         }
 
+        // Also caller-controlled, so anything but "practice" is the tutor
+        const practice = mode === "practice";
+        const settings = practice ? MODES.practice : MODES.tutor;
+
         // Check rate limit before processing the request
-        const rateLimitResult = await checkRateLimit(userId, "chatbot");
+        const rateLimitResult = await checkRateLimit(userId, practice ? "practice" : "chatbot");
 
         if (!rateLimitResult.success) {
             return { success: false, error: "rate_limit" };
@@ -65,7 +87,7 @@ export async function getChatbotResponse(
         // The instruction prompt lives server-side so it is neither shipped in
         // the client bundle nor round-tripped with every message
         const openAIMessages = [
-            { role: "system" as const, content: chatbotInstructions },
+            { role: "system" as const, content: settings.instructions },
             ...safeHistory.map((message) => ({
                 role:
                     message.role === "model"
@@ -78,7 +100,7 @@ export async function getChatbotResponse(
         const response = await client.chat.completions.create({
             model: "gpt-4o-mini",
             messages: openAIMessages,
-            max_tokens: MAX_RESPONSE_TOKENS,
+            max_tokens: settings.maxTokens,
         });
 
         return {
