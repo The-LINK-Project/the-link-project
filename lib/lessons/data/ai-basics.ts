@@ -13,6 +13,8 @@
  *   AI word names it. Recognising the idea in the wild is the useful skill.
  * - The words lead into the workshop's hands-on part: chatting to an AI, talking
  *   to one by voice, generating images, and taking photos for it to recognise.
+ * - After the exercises the learner tries prompting LINK Assistant (see
+ *   `chatPractice`), which is the workshop's way forward; speaking comes second.
  * - English only, so every item is `reviewed: true`: there is no translation
  *   waiting on a native speaker.
  */
@@ -261,6 +263,59 @@ export const aiBasics: Lesson = {
             grading: { mode: "choice" },
         },
     ],
+
+    // After the exercises, the learner tries prompting LINK Assistant. This is
+    // what the workshop uses in place of the voice chat.
+    chatPractice: {
+        intro: {
+            en: "A chatbot answers whatever you type, and what you type is your prompt. Try the ideas below, or ask anything you like.",
+        },
+        tips: [
+            { en: "Say exactly what you want." },
+            { en: "Give context: who it is for, and limits like time or budget." },
+            { en: "Say the format: a list, three sentences, a short message." },
+            { en: "Not happy with the answer? Ask a follow-up to change it." },
+        ],
+        tasks: [
+            {
+                id: "task-explain",
+                title: { en: "Ask about an AI word" },
+                hint: { en: "Pick any word from the lesson and ask the chatbot to explain it." },
+                starter: "Explain what a hallucination is in AI, in two simple sentences.",
+            },
+            {
+                id: "task-vague",
+                title: { en: "Send a vague prompt" },
+                hint: { en: "Send this short prompt and see what comes back." },
+                starter: "Plan a weekend.",
+            },
+            {
+                id: "task-clear",
+                title: { en: "Now add the details" },
+                hint: { en: "Same request with context, limits and a format. Compare the two answers." },
+                starter:
+                    "Plan a Saturday in Singapore for a family of four with two young kids. Our budget is $100. Give a timetable from 9am to 6pm.",
+            },
+            {
+                id: "task-create",
+                title: { en: "Make something new" },
+                hint: { en: "That's generative AI: it writes something that did not exist before." },
+                starter: "Write a funny four-line poem about waiting for the MRT.",
+            },
+            {
+                id: "task-follow-up",
+                title: { en: "Ask a follow-up" },
+                hint: { en: "Change the last answer without starting again." },
+                starter: "Make it shorter and add an emoji.",
+            },
+            {
+                id: "task-check",
+                title: { en: "Check for a hallucination" },
+                hint: { en: "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong." },
+                starter: "Recommend three books about AI for beginners, with their authors. Are you sure they all exist?",
+            },
+        ],
+    },
 
     // Not used at the workshop, which has no voice chat. Kept so the lesson has
     // the same two stages as the others when it is used later.

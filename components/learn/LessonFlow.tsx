@@ -88,6 +88,7 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
                         <LessonDoneActions
                             onAgain={() => setStarted(true)}
                             onSpeak={canSpeak ? () => router.push(`/lessons/${lesson.id}/speak`) : undefined}
+                            onChat={lesson.chatPractice ? () => router.push(`/lessons/${lesson.id}/chat`) : undefined}
                         />
                     ) : (
                         <LessonButton title={t("introStart")} size="lg" onClick={() => setStarted(true)} />
@@ -167,6 +168,9 @@ function LessonRunner({ lessonId, saved }: { lessonId: string; saved?: SavedRun 
                             // Replaces the lesson rather than stacking on top of
                             // it, so finishing the practice goes straight home.
                             onSpeak={canSpeak ? () => router.replace(speakHref) : undefined}
+                            onChat={
+                                lesson.chatPractice ? () => router.replace(`/lessons/${lesson.id}/chat`) : undefined
+                            }
                         />
                     </ShellActions>
                 }
