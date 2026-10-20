@@ -1,12 +1,13 @@
 "use client";
 
-import { ArrowLeft, CircleCheck, CircleX } from "lucide-react";
+import { CircleCheck, CircleX } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
 import type { GradeResult } from "@/lib/lessons/types";
 import { cn } from "@/lib/utils";
 
+import { BackButton } from "./StepNav";
 import { LessonButton, text } from "./ui";
 
 /**
@@ -62,16 +63,7 @@ export function LessonFooter({
         }
     }, [graded, result?.correct]);
 
-    const back = onBack ? (
-        <LessonButton
-            title={t("back")}
-            size="lg"
-            variant="outline"
-            icon={<ArrowLeft className="size-5" />}
-            className="w-auto shrink-0 px-4"
-            onClick={() => onBack()}
-        />
-    ) : null;
+    const back = onBack ? <BackButton onClick={onBack} /> : null;
 
     if (!graded) {
         if (hideSubmit && !back && !revisiting) return null;

@@ -336,7 +336,8 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
         }
 
         case "back":
-            if (state.phase === "finished" || state.position === 0) return state;
+            // From the results, this is the last exercise.
+            if (state.position === 0) return state;
             return { ...state, position: state.position - 1, phase: "answering", draft: null, result: null };
 
         case "restart":

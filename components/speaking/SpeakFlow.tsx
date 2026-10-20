@@ -1,12 +1,12 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { LessonProgress } from "@/components/learn/LessonProgress";
 import { LessonShell, ShellActions } from "@/components/learn/LessonShell";
 import { ProgressGate } from "@/components/learn/ProgressGate";
+import { StepNav, WithBack } from "@/components/learn/StepNav";
 import { LessonButton, text } from "@/components/learn/ui";
 import { useRouter } from "@/i18n/navigation";
 import { getLesson } from "@/lib/lessons/data";
@@ -87,6 +87,16 @@ function SpeakScreen({ lessonId, words, phrases }: { lessonId: string; words?: s
     return <SpeakingFlow lesson={lesson} run={run} languages={languages} />;
 }
 
+/**
+ * Where Back goes from speaking: the step before it. That is prompting practice
+ * for a lesson about AI, and the lesson itself otherwise. The daily mix is new
+ * each run and has no lesson page to return to, so it goes home.
+ */
+function stepBefore(lesson: Lesson): string {
+    if (lesson.chatPractice) return `/lessons/${lesson.id}/chat`;
+    return lesson.id === DAILY_MIX_ID ? "/dashboard" : `/lessons/${lesson.id}`;
+}
+
 function SpeakingFlow({
     lesson,
     run,
@@ -97,7 +107,6 @@ function SpeakingFlow({
     languages: TranslationLanguage[];
 }) {
     const t = useTranslations("speaking");
-    const tLessons = useTranslations("lessons");
     const router = useRouter();
     const locale = useLearnerLanguage();
     const [chosen, setChosen] = useState<TranslationLanguage | null>(null);
@@ -171,21 +180,9 @@ function SpeakingFlow({
             icon={lesson.icon}
             onClose={() => router.push("/dashboard")}
             footer={
-                // Pinned, like every other way forward in a lesson. Back returns
-                // to the lesson; the daily mix is new each run, so it has no
-                // lesson page to return to and goes home instead.
+                // Pinned, like every other way forward in a lesson.
                 <ShellActions>
-                    <div className="flex gap-3">
-                        <LessonButton
-                            title={tLessons("back")}
-                            size="lg"
-                            variant="outline"
-                            icon={<ArrowLeft className="size-5" />}
-                            className="w-auto shrink-0 px-4"
-                            onClick={() =>
-                                router.push(lesson.id === DAILY_MIX_ID ? "/dashboard" : `/lessons/${lesson.id}`)
-                            }
-                        />
+                    <WithBack onBack={() => router.push(stepBefore(lesson))}>
                         <LessonButton
                             title={t("start")}
                             size="lg"
@@ -193,9 +190,8 @@ function SpeakingFlow({
                             loading={starting}
                             aria-description={language ? undefined : t("chooseLanguage")}
                             onClick={() => void start()}
-                            className="min-w-0 flex-1"
                         />
-                    </div>
+                    </WithBack>
                 </ShellActions>
             }
         >
@@ -278,8 +274,10 @@ function Conversation({
 
     useEffect(() => () => setResume(null), []);
 
-    // The talk is kept, so leaving needs no warning.
+    // The talk is kept, so leaving needs no warning, and coming back to
+    // speaking carries it on.
     const quit = useCallback(() => router.push("/dashboard"), [router]);
+    const goBack = useCallback(() => router.push(stepBefore(lesson)), [router, lesson]);
 
     const record = async () => {
         if (operation.current) return;
@@ -327,10 +325,13 @@ function Conversation({
                 onClose={quit}
                 footer={
                     <ShellActions>
-                        <div className="flex flex-col gap-3">
-                            <LessonButton title={t("done")} size="lg" onClick={quit} />
-                            <LessonButton title={t("again")} variant="outline" onClick={onAgain} />
-                        </div>
+                        {/* Back to the conversation the results came from. */}
+                        <WithBack onBack={() => setShowSummary(false)}>
+                            <div className="flex flex-col gap-3">
+                                <LessonButton title={t("done")} size="lg" onClick={quit} />
+                                <LessonButton title={t("again")} variant="outline" onClick={onAgain} />
+                            </div>
+                        </WithBack>
                     </ShellActions>
                 }
             >
@@ -381,45 +382,53 @@ function Conversation({
             footer={
                 state.phase === "finished" ? (
                     <ShellActions>
-                        <LessonButton
-                            title={t("seeResults")}
-                            size="lg"
-                            onClick={() => {
-                                voice.stop();
-                                setShowSummary(true);
-                            }}
-                        />
+                        <WithBack onBack={goBack}>
+                            <LessonButton
+                                title={t("seeResults")}
+                                size="lg"
+                                onClick={() => {
+                                    voice.stop();
+                                    setShowSummary(true);
+                                }}
+                            />
+                        </WithBack>
                     </ShellActions>
-                ) : opening && state.error ? null : (
-                    <RecordBar
-                        status={recorder.status}
-                        durationMs={recorder.durationMs}
-                        level={recorder.level}
-                        busyLabel={busyLabel}
-                        notice={
-                            recorder.failed
-                                ? t("recordFailed")
-                                : recorder.tooShort
-                                  ? t("tooShort")
-                                  : recorder.tooQuiet
-                                    ? t("tooQuiet")
-                                    : notice
-                        }
-                        reviewPlaying={!!recorder.uri && review.playingUri === recorder.uri}
-                        onRecord={() => void record()}
-                        onStop={recorder.stop}
-                        onCancel={recorder.cancel}
-                        onDelete={() => {
-                            review.stop();
-                            recorder.discard();
-                        }}
-                        onPlayRecording={() => {
-                            voice.stop();
-                            if (recorder.uri) review.play(recorder.uri);
-                        }}
-                        onStopPlayback={review.stop}
-                        onSend={() => void send()}
-                    />
+                ) : opening && state.error ? (
+                    <StepNav onBack={goBack} />
+                ) : (
+                    <>
+                        <RecordBar
+                            status={recorder.status}
+                            durationMs={recorder.durationMs}
+                            level={recorder.level}
+                            busyLabel={busyLabel}
+                            notice={
+                                recorder.failed
+                                    ? t("recordFailed")
+                                    : recorder.tooShort
+                                      ? t("tooShort")
+                                      : recorder.tooQuiet
+                                        ? t("tooQuiet")
+                                        : notice
+                            }
+                            reviewPlaying={!!recorder.uri && review.playingUri === recorder.uri}
+                            onRecord={() => void record()}
+                            onStop={recorder.stop}
+                            onCancel={recorder.cancel}
+                            onDelete={() => {
+                                review.stop();
+                                recorder.discard();
+                            }}
+                            onPlayRecording={() => {
+                                voice.stop();
+                                if (recorder.uri) review.play(recorder.uri);
+                            }}
+                            onStopPlayback={review.stop}
+                            onSend={() => void send()}
+                        />
+                        {/* The record bar fills the footer, so Back has a row of its own. */}
+                        <StepNav onBack={goBack} />
+                    </>
                 )
             }
         >

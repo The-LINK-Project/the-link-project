@@ -84,6 +84,18 @@ describe("stepping back through a lesson", () => {
         expect(isRevisit(forward)).toBe(false);
     });
 
+    it("goes back from the results to the last exercise, and on to the results again", () => {
+        const finished = run(right, { type: "next" }, right, { type: "next" }, right, { type: "next" });
+        expect(finished.phase).toBe("finished");
+        const back = sessionReducer(finished, { type: "back" });
+        expect(back.position).toBe(2);
+        expect(back.phase).toBe("answering");
+        expect(isRevisit(back)).toBe(true);
+        const again = sessionReducer(back, { type: "next" });
+        expect(again.phase).toBe("finished");
+        expect(again.records).toEqual(finished.records);
+    });
+
     it("does not let an unanswered exercise be skipped", () => {
         const state = run(right, { type: "next" });
         expect(sessionReducer(state, { type: "next" })).toBe(state);

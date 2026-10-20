@@ -21,6 +21,7 @@ import { LessonProgress } from "./LessonProgress";
 import { LessonShell, ShellActions } from "./LessonShell";
 import { LessonSummary, LessonSummaryActions } from "./LessonSummary";
 import { ProgressGate } from "./ProgressGate";
+import { WithBack } from "./StepNav";
 import { LessonButton, text } from "./ui";
 
 /** Screen readers cannot be detected from a web page, so picture exercises always run. */
@@ -104,15 +105,20 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
             onClose={() => router.push("/dashboard")}
             footer={
                 <ShellActions>
-                    {record ? (
-                        <LessonDoneActions
-                            onAgain={() => setStarted(true)}
-                            onSpeak={canSpeak ? () => router.push(`/lessons/${lesson.id}/speak`) : undefined}
-                            onChat={lesson.chatPractice ? () => router.push(`/lessons/${lesson.id}/chat`) : undefined}
-                        />
-                    ) : (
-                        <LessonButton title={t("introStart")} size="lg" onClick={() => setStarted(true)} />
-                    )}
+                    {/* The lesson's first step, so Back is the way home. */}
+                    <WithBack onBack={() => router.push("/dashboard")}>
+                        {record ? (
+                            <LessonDoneActions
+                                onAgain={() => setStarted(true)}
+                                onSpeak={canSpeak ? () => router.push(`/lessons/${lesson.id}/speak`) : undefined}
+                                onChat={
+                                    lesson.chatPractice ? () => router.push(`/lessons/${lesson.id}/chat`) : undefined
+                                }
+                            />
+                        ) : (
+                            <LessonButton title={t("introStart")} size="lg" onClick={() => setStarted(true)} />
+                        )}
+                    </WithBack>
                 </ShellActions>
             }
         >
@@ -203,16 +209,19 @@ function LessonRunner({
                 onClose={leave}
                 footer={
                     <ShellActions>
-                        <LessonSummaryActions
-                            speakingLeft={canSpeak && !spoken}
-                            onDone={leave}
-                            // Replaces the lesson rather than stacking on top of
-                            // it, so finishing the practice goes straight home.
-                            onSpeak={canSpeak ? () => router.replace(speakHref) : undefined}
-                            onChat={
-                                lesson.chatPractice ? () => router.replace(`/lessons/${lesson.id}/chat`) : undefined
-                            }
-                        />
+                        {/* Back to the last exercise, to look at it again. */}
+                        <WithBack onBack={back}>
+                            <LessonSummaryActions
+                                speakingLeft={canSpeak && !spoken}
+                                onDone={leave}
+                                // Replaces the lesson rather than stacking on top of
+                                // it, so finishing the practice goes straight home.
+                                onSpeak={canSpeak ? () => router.replace(speakHref) : undefined}
+                                onChat={
+                                    lesson.chatPractice ? () => router.replace(`/lessons/${lesson.id}/chat`) : undefined
+                                }
+                            />
+                        </WithBack>
                     </ShellActions>
                 }
             >

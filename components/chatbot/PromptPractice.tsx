@@ -5,12 +5,14 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 
 import { LessonShell } from "@/components/learn/LessonShell";
+import { StepNav } from "@/components/learn/StepNav";
 import { LessonCardBox, text } from "@/components/learn/ui";
 import { useRouter } from "@/i18n/navigation";
 import { getChatbotResponse } from "@/lib/actions/chatbot.actions";
 import { getLesson } from "@/lib/lessons/data";
 import { useLessonLocalized } from "@/lib/lessons/localized";
 import type { ChatTask } from "@/lib/lessons/types";
+import { canPractiseSpeaking } from "@/lib/speaking/context";
 import { cn } from "@/lib/utils";
 
 /**
@@ -27,6 +29,8 @@ export default function PromptPractice({ lessonId }: { lessonId: string }) {
     const router = useRouter();
     const lesson = getLesson(lessonId)!;
     const practice = lesson.chatPractice!;
+    // The step after this one: speaking, where the lesson has a talk.
+    const speakNext = canPractiseSpeaking(lesson);
 
     const [messages, setMessages] = useState<ChatMessageType[]>([]);
     const [draft, setDraft] = useState("");
@@ -118,27 +122,35 @@ export default function PromptPractice({ lessonId }: { lessonId: string }) {
                 ) : null
             }
             footer={
-                <form onSubmit={send} className="flex items-end gap-2 border-t border-lesson-hairline bg-white p-4">
-                    <textarea
-                        ref={inputRef}
-                        value={draft}
-                        onChange={(event) => setDraft(event.target.value)}
-                        onKeyDown={onKeyDown}
-                        placeholder={t("chatPlaceholder")}
-                        aria-label={t("chatPlaceholder")}
-                        rows={2}
-                        maxLength={2000}
-                        className="min-h-14 flex-1 resize-none rounded-2xl border-2 border-lesson-key bg-white px-4 py-3 text-base leading-6 text-lesson-fg outline-none focus:border-lesson-primary"
+                <>
+                    <form onSubmit={send} className="flex items-end gap-2 border-t border-lesson-hairline bg-white p-4">
+                        <textarea
+                            ref={inputRef}
+                            value={draft}
+                            onChange={(event) => setDraft(event.target.value)}
+                            onKeyDown={onKeyDown}
+                            placeholder={t("chatPlaceholder")}
+                            aria-label={t("chatPlaceholder")}
+                            rows={2}
+                            maxLength={2000}
+                            className="min-h-14 flex-1 resize-none rounded-2xl border-2 border-lesson-key bg-white px-4 py-3 text-base leading-6 text-lesson-fg outline-none focus:border-lesson-primary"
+                        />
+                        <button
+                            type="submit"
+                            aria-label={t("chatSend")}
+                            disabled={pending || draft.trim().length === 0}
+                            className="flex size-14 shrink-0 cursor-pointer items-center justify-center rounded-2xl bg-lesson-primary text-lesson-on-primary shadow-[0_4px_0_var(--color-lesson-primary-lip)] transition-[transform,box-shadow] duration-75 enabled:active:translate-y-1 enabled:active:shadow-none disabled:cursor-not-allowed disabled:bg-lesson-key disabled:text-lesson-key-text disabled:shadow-none"
+                        >
+                            <Send className="size-6" />
+                        </button>
+                    </form>
+                    {/* The message box fills the footer, so Back and Next have a row of their own. */}
+                    <StepNav
+                        onBack={() => router.push(`/lessons/${lesson.id}`)}
+                        onNext={() => router.push(speakNext ? `/lessons/${lesson.id}/speak` : "/dashboard")}
+                        nextLabel={speakNext ? t("next") : t("finish")}
                     />
-                    <button
-                        type="submit"
-                        aria-label={t("chatSend")}
-                        disabled={pending || draft.trim().length === 0}
-                        className="flex size-14 shrink-0 cursor-pointer items-center justify-center rounded-2xl bg-lesson-primary text-lesson-on-primary shadow-[0_4px_0_var(--color-lesson-primary-lip)] transition-[transform,box-shadow] duration-75 enabled:active:translate-y-1 enabled:active:shadow-none disabled:cursor-not-allowed disabled:bg-lesson-key disabled:text-lesson-key-text disabled:shadow-none"
-                    >
-                        <Send className="size-6" />
-                    </button>
-                </form>
+                </>
             }
         >
             <div className="flex flex-col gap-2">
