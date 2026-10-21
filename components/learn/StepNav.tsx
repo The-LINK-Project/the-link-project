@@ -13,8 +13,8 @@ import { LessonButton } from "./ui";
  * explain something without leaving it.
  */
 
-/** Back, beside a step's main button. */
-export function BackButton({ onClick }: { onClick: () => void }) {
+/** Back, beside a step's main button. `compact` is an arrow alone on a phone (see LessonButton). */
+export function BackButton({ onClick, compact = false }: { onClick: () => void; compact?: boolean }) {
     const t = useTranslations("lessons");
     return (
         <LessonButton
@@ -22,6 +22,7 @@ export function BackButton({ onClick }: { onClick: () => void }) {
             size="lg"
             variant="outline"
             icon={<ArrowLeft className="size-5" />}
+            compact={compact}
             className="w-auto shrink-0 px-4"
             onClick={() => onClick()}
         />

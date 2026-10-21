@@ -50,6 +50,7 @@ export function LessonButton({
     size = "md",
     icon,
     loading,
+    compact = false,
     className,
     disabled,
     ...rest
@@ -59,6 +60,12 @@ export function LessonButton({
     size?: ButtonSize;
     icon?: ReactNode;
     loading?: boolean;
+    /**
+     * Only the icon on a phone, with the title kept for screen readers: for a
+     * button sharing its row with two others, where a long word in a learner's
+     * language would otherwise leave the middle one no room.
+     */
+    compact?: boolean;
 }) {
     return (
         <button
@@ -74,7 +81,7 @@ export function LessonButton({
             {...rest}
         >
             {loading ? <Loader2 className="size-5 animate-spin" /> : icon}
-            <span className="py-1 text-center">{title}</span>
+            <span className={cn("py-1 text-center", compact && "max-sm:sr-only")}>{title}</span>
         </button>
     );
 }
