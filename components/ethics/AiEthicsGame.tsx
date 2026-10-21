@@ -2,11 +2,13 @@
 
 import { CircleCheck, CircleX, ThumbsUp, Timer, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import GameTimer, { formatTime } from "@/components/games/GameTimer";
+import { LessonFooter } from "@/components/learn/LessonFooter";
 import { LessonProgress } from "@/components/learn/LessonProgress";
 import { LessonShell, ShellActions } from "@/components/learn/LessonShell";
+import { BackButton, WithBack } from "@/components/learn/StepNav";
 import { Tile } from "@/components/learn/Tile";
 import { LessonBadge, LessonButton, LessonCardBox, text } from "@/components/learn/ui";
 import { WordBank } from "@/components/learn/WordBank";
@@ -47,10 +49,47 @@ import { ETHICS_HUE, EthicsCoin } from "./EthicsCoin";
  * Built from the lesson kit so it looks like every other lesson. Nothing is
  * saved: the finish screen is the result, and teams compare out loud.
  */
-type Phase = "learn" | "intro" | "sort" | "recap" | "match" | "build" | "dilemma" | "finished";
-
 const ROUNDS = 4;
 const WRONG_PAIR_FEEDBACK_MS = 600;
+
+/**
+ * Every screen of the game, in order. Back and Next walk it the way they walk
+ * a lesson (see StepNav): a screen the team has passed can be looked at again
+ * or tried again, but only as practice. The score, the clock and the progress
+ * bar stay where the team had got to, and Next walks on without answering.
+ */
+type Step =
+    | { kind: "learn"; index: number }
+    | { kind: "intro" }
+    | { kind: "sort"; index: number }
+    | { kind: "recap" }
+    | { kind: "match" }
+    | { kind: "build"; index: number }
+    | { kind: "dilemma"; index: number }
+    | { kind: "finished" };
+
+const STEPS: Step[] = [
+    ...ETHICS_SLIDES.map((_, index): Step => ({ kind: "learn", index })),
+    { kind: "intro" },
+    ...ETHICS_SORT_CARDS.map((_, index): Step => ({ kind: "sort", index })),
+    { kind: "recap" },
+    { kind: "match" },
+    ...ETHICS_BUILD_ITEMS.map((_, index): Step => ({ kind: "build", index })),
+    ...ETHICS_DILEMMAS.map((_, index): Step => ({ kind: "dilemma", index })),
+    { kind: "finished" },
+];
+const FIRST_ROUND = STEPS.findIndex((step) => step.kind === "sort");
+
+/**
+ * The clock runs through the three scored rounds, on the screen the team has
+ * got to. It stops on the recap, for the dilemmas, and while the team looks back.
+ */
+const runsClock = (position: number, reached: number) =>
+    position >= reached && ["sort", "match", "build"].includes(STEPS[position].kind);
+
+/** Another go at a screen already passed: graded on screen, never scored. */
+type Practice = { pick: 0 | 1 | null; verdict: EthicsVerdict | null; matched: string[]; built: boolean | null };
+const NO_PRACTICE: Practice = { pick: null, verdict: null, matched: [], built: null };
 
 type Side = "situation" | "reason";
 type Selection = { side: Side; pairId: string } | null;
@@ -60,42 +99,38 @@ export function AiEthicsGame() {
     const t = useTranslations("ethics");
     const router = useRouter();
 
-    const [phase, setPhase] = useState<Phase>("learn");
+    const [position, setPosition] = useState(0);
+    // The furthest screen the team has got to. Anything before it is a revisit.
+    const [reached, setReached] = useState(0);
+    const step = STEPS[position];
+    const revisiting = position < reached;
+    const indexOf = (kind: Step["kind"]) => (step.kind === kind && "index" in step ? step.index : 0);
+
+    // What the team answered on the way forward. Only these count.
+    const [slidePicks, setSlidePicks] = useState<Record<number, 0 | 1>>({});
+    const [sortPicks, setSortPicks] = useState<Record<string, EthicsVerdict>>({});
+    const [matched, setMatched] = useState<string[]>([]);
+    const [builds, setBuilds] = useState<Record<string, { placed: number[]; correct: boolean }>>({});
+    const [chosen, setChosen] = useState<Record<string, 0 | 1>>({});
     const [wrongAttempts, setWrongAttempts] = useState(0);
 
-    // Slides
-    const [slideIndex, setSlideIndex] = useState(0);
-    const [slidePick, setSlidePick] = useState<0 | 1 | null>(null);
-
-    // Round 1
-    const [sortIndex, setSortIndex] = useState(0);
-    const [picked, setPicked] = useState<EthicsVerdict | null>(null);
-
-    // Round 2
-    const situations = useMemo(() => seededShuffle(ETHICS_MATCH_PAIRS, "ethics-situations"), []);
-    // Never the same row as its situation, or the pair reads straight across.
-    const reasons = useMemo(() => seededDerangement(situations, "ethics-reasons"), [situations]);
-    const [matched, setMatched] = useState<string[]>([]);
+    // The screen's own state, cleared on every move: a practice answer, the
+    // sentence being built, and a half-made pair.
+    const [practice, setPractice] = useState<Practice>(NO_PRACTICE);
+    const [placed, setPlaced] = useState<number[]>([]);
     const [selected, setSelected] = useState<Selection>(null);
     const [wrongPair, setWrongPair] = useState<WrongPair>(null);
     const wrongTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // Round 3
-    const [buildIndex, setBuildIndex] = useState(0);
-    const [placed, setPlaced] = useState<number[]>([]);
-    const [buildResult, setBuildResult] = useState<boolean | null>(null);
+    const situations = useMemo(() => seededShuffle(ETHICS_MATCH_PAIRS, "ethics-situations"), []);
+    // Never the same row as its situation, or the pair reads straight across.
+    const reasons = useMemo(() => seededDerangement(situations, "ethics-reasons"), [situations]);
 
-    // Round 4
-    const [dilemmaIndex, setDilemmaIndex] = useState(0);
-    const [chosen, setChosen] = useState<Record<string, 0 | 1>>({});
-
-    // The clock runs through the three scored rounds and stops on the recap
-    // and for the dilemmas, where the team talks. `clockStart` is set so that
-    // Date.now() - clockStart is the total time played so far.
+    // `clockStart` is set so that Date.now() - clockStart is the time played so
+    // far; `playedMs` holds that time while the clock is stopped.
     const [clockStart, setClockStart] = useState(0);
-    const playedMs = useRef(0);
-    const [finalMs, setFinalMs] = useState(0);
-    const timed = phase === "sort" || phase === "match" || phase === "build";
+    const [playedMs, setPlayedMs] = useState(0);
+    const running = runsClock(position, reached);
 
     useEffect(
         () => () => {
@@ -104,74 +139,91 @@ export function AiEthicsGame() {
         [],
     );
 
-    const resumeClock = useCallback(() => setClockStart(Date.now() - playedMs.current), []);
-    const pauseClock = useCallback(() => {
-        playedMs.current = Date.now() - clockStart;
-    }, [clockStart]);
-
-    const start = () => {
-        playedMs.current = 0;
-        setWrongAttempts(0);
-        setSortIndex(0);
-        setPicked(null);
-        setMatched([]);
+    const clearScreen = () => {
+        if (wrongTimer.current) clearTimeout(wrongTimer.current);
+        setPractice(NO_PRACTICE);
+        setPlaced([]);
         setSelected(null);
         setWrongPair(null);
-        setBuildIndex(0);
-        setPlaced([]);
-        setBuildResult(null);
-        setDilemmaIndex(0);
+    };
+
+    const go = (to: number) => {
+        const nextReached = Math.max(reached, to);
+        const willRun = runsClock(to, nextReached);
+        if (running && !willRun) setPlayedMs(Date.now() - clockStart);
+        if (!running && willRun) setClockStart(Date.now() - playedMs);
+        clearScreen();
+        setPosition(to);
+        setReached(nextReached);
+    };
+
+    const next = () => go(position + 1);
+
+    // Back from the first slide leaves, as Back from a lesson's word list does.
+    const back = () => {
+        if (position === 0) router.push("/dashboard");
+        else go(position - 1);
+    };
+
+    // The slides are not played again; they stay behind Back.
+    const playAgain = () => {
+        clearScreen();
+        setWrongAttempts(0);
+        setSortPicks({});
+        setMatched([]);
+        setBuilds({});
         setChosen({});
-        resumeClock();
-        setPhase("sort");
+        setPlayedMs(0);
+        setClockStart(Date.now());
+        setPosition(FIRST_ROUND);
+        setReached(FIRST_ROUND);
     };
 
     // -------------------------------------------------------------- slides
 
-    const slide = ETHICS_SLIDES[slideIndex];
+    const slide = ETHICS_SLIDES[indexOf("learn")];
+    const slidePick = revisiting ? practice.pick : (slidePicks[indexOf("learn")] ?? null);
 
-    const nextSlide = () => {
-        setSlidePick(null);
-        if (slideIndex + 1 < ETHICS_SLIDES.length) setSlideIndex(slideIndex + 1);
-        else setPhase("intro");
+    const pickSlide = (i: 0 | 1) => {
+        if (slidePick !== null) return;
+        if (revisiting) setPractice((prev) => ({ ...prev, pick: i }));
+        else setSlidePicks((prev) => ({ ...prev, [indexOf("learn")]: i }));
     };
 
     // ------------------------------------------------------------- round 1
 
-    const card = ETHICS_SORT_CARDS[sortIndex];
+    const card = ETHICS_SORT_CARDS[indexOf("sort")];
+    const picked = revisiting ? practice.verdict : (sortPicks[card.id] ?? null);
 
     const pick = (verdict: EthicsVerdict) => {
         if (picked) return;
-        setPicked(verdict);
-        if (verdict !== card.answer) setWrongAttempts((n) => n + 1);
-    };
-
-    const nextCard = () => {
-        setPicked(null);
-        if (sortIndex + 1 < ETHICS_SORT_CARDS.length) {
-            setSortIndex(sortIndex + 1);
-        } else {
-            pauseClock();
-            setPhase("recap");
+        if (revisiting) {
+            setPractice((prev) => ({ ...prev, verdict }));
+            return;
         }
+        setSortPicks((prev) => ({ ...prev, [card.id]: verdict }));
+        if (verdict !== card.answer) setWrongAttempts((n) => n + 1);
     };
 
     // ------------------------------------------------------------- round 2
 
+    const board = revisiting ? practice.matched : matched;
+
     const tap = (side: Side, pairId: string) => {
-        if (matched.includes(pairId)) return;
+        if (board.includes(pairId)) return;
         if (!selected || selected.side === side) {
             setSelected({ side, pairId });
             return;
         }
         if (selected.pairId === pairId) {
-            const next = [...matched, pairId];
-            setMatched(next);
+            const done = [...board, pairId];
+            if (revisiting) setPractice((prev) => ({ ...prev, matched: done }));
+            else setMatched(done);
             setSelected(null);
-            if (next.length === ETHICS_MATCH_PAIRS.length) setPhase("build");
+            if (done.length === ETHICS_MATCH_PAIRS.length) next();
             return;
         }
-        setWrongAttempts((n) => n + 1);
+        if (!revisiting) setWrongAttempts((n) => n + 1);
         setWrongPair(
             side === "reason"
                 ? { situation: selected.pairId, reason: pairId }
@@ -184,7 +236,7 @@ export function AiEthicsGame() {
     };
 
     const stateFor = (side: Side, pairId: string) => {
-        if (matched.includes(pairId)) return "used" as const;
+        if (board.includes(pairId)) return "used" as const;
         if (wrongPair?.[side] === pairId) return "incorrect" as const;
         if (selected?.side === side && selected.pairId === pairId) return "selected" as const;
         return "default" as const;
@@ -192,120 +244,124 @@ export function AiEthicsGame() {
 
     // ------------------------------------------------------------- round 3
 
-    const buildItem = ETHICS_BUILD_ITEMS[buildIndex];
+    const buildItem = ETHICS_BUILD_ITEMS[indexOf("build")];
     const buildTokens = useMemo(
         () => seededShuffle([...buildItem.answer, ...buildItem.decoys], buildItem.id),
         [buildItem],
     );
+    const built = revisiting ? undefined : builds[buildItem.id];
+    const buildPlaced = built?.placed ?? placed;
+    const buildResult = revisiting ? practice.built : (built?.correct ?? null);
 
     const checkBuild = () => {
         const sentence = placed.map((i) => buildTokens[i]);
         const correct =
             sentence.length === buildItem.answer.length && sentence.every((word, i) => word === buildItem.answer[i]);
-        if (!correct) setWrongAttempts((n) => n + 1);
-        setBuildResult(correct);
-    };
-
-    const nextBuild = () => {
-        setPlaced([]);
-        setBuildResult(null);
-        if (buildIndex + 1 < ETHICS_BUILD_ITEMS.length) {
-            setBuildIndex(buildIndex + 1);
-        } else {
-            // The scored part ends here; the dilemmas are talk, not a race.
-            pauseClock();
-            setFinalMs(Date.now() - clockStart);
-            setPhase("dilemma");
+        if (revisiting) {
+            setPractice((prev) => ({ ...prev, built: correct }));
+            return;
         }
+        if (!correct) setWrongAttempts((n) => n + 1);
+        setBuilds((prev) => ({ ...prev, [buildItem.id]: { placed, correct } }));
     };
 
     // ------------------------------------------------------------- round 4
 
-    const dilemma = ETHICS_DILEMMAS[dilemmaIndex];
+    const dilemma = ETHICS_DILEMMAS[indexOf("dilemma")];
     const dilemmaChoice = chosen[dilemma.id];
-
-    const nextDilemma = () => {
-        if (dilemmaIndex + 1 < ETHICS_DILEMMAS.length) setDilemmaIndex(dilemmaIndex + 1);
-        else setPhase("finished");
-    };
 
     // --------------------------------------------------------------- frame
 
-    const roundShare = (round: number, within: number) => (round - 1 + within) / ROUNDS;
+    // Counted from the answers, not the screen, so the bar holds still while
+    // the team looks back.
+    const count = (answers: object) => Object.keys(answers).length;
     const progress =
-        phase === "learn" || phase === "intro"
-            ? 0
-            : phase === "sort"
-              ? roundShare(1, (sortIndex + (picked ? 1 : 0)) / ETHICS_SORT_CARDS.length)
-              : phase === "recap"
-                ? roundShare(2, 0)
-                : phase === "match"
-                  ? roundShare(2, matched.length / ETHICS_MATCH_PAIRS.length)
-                  : phase === "build"
-                    ? roundShare(3, (buildIndex + (buildResult !== null ? 1 : 0)) / ETHICS_BUILD_ITEMS.length)
-                    : phase === "dilemma"
-                      ? roundShare(4, (dilemmaIndex + (dilemmaChoice !== undefined ? 1 : 0)) / ETHICS_DILEMMAS.length)
-                      : 1;
+        (count(sortPicks) / ETHICS_SORT_CARDS.length +
+            matched.length / ETHICS_MATCH_PAIRS.length +
+            count(builds) / ETHICS_BUILD_ITEMS.length +
+            count(chosen) / ETHICS_DILEMMAS.length) /
+        ROUNDS;
 
     // The slides show how far through them the team is, with no clock: the
     // clock belongs to the game and only starts on the word screen's Start.
     const header =
-        phase === "learn" ? (
-            <LessonProgress value={(slideIndex + (slidePick === null ? 0 : 1)) / ETHICS_SLIDES.length} />
-        ) : phase === "intro" || phase === "finished" ? null : (
+        step.kind === "learn" ? (
+            <LessonProgress value={count(slidePicks) / ETHICS_SLIDES.length} />
+        ) : step.kind === "intro" || step.kind === "finished" ? null : (
             <>
                 <LessonProgress value={progress} />
                 <span className="flex shrink-0 items-center gap-1 text-base font-bold tabular-nums text-lesson-muted">
                     <Timer className="size-5" />
-                    {phase === "dilemma" ? formatTime(finalMs) : <GameTimer startTime={clockStart} running={timed} />}
+                    {running ? <GameTimer startTime={clockStart} running /> : formatTime(playedMs)}
                 </span>
             </>
         );
 
+    // A screen not answered yet: Back, and Check where there is one. Next only
+    // once the team has been past it.
+    const answering = (check?: { onCheck: () => void; ready: boolean }) => (
+        <LessonFooter
+            phase="answering"
+            canSubmit={check?.ready ?? false}
+            result={null}
+            hideSubmit={!check}
+            onSubmit={() => check?.onCheck()}
+            onNext={next}
+            isLastStep={false}
+            onBack={back}
+            revisiting={revisiting}
+        />
+    );
+
     const footer = (() => {
-        switch (phase) {
+        switch (step.kind) {
             case "learn":
-                return slidePick === null ? null : (
-                    <Outcome correct={slidePick === slide.check.answer} onNext={nextSlide}>
+                return slidePick === null ? (
+                    answering()
+                ) : (
+                    <Outcome correct={slidePick === slide.check.answer} onBack={back} onNext={next}>
                         <p className={text.bodyStrong}>{slide.check.reason}</p>
                     </Outcome>
                 );
             case "intro":
                 return (
                     <ShellActions>
-                        <LessonButton title={t("start")} size="lg" onClick={start} />
+                        <WithBack onBack={back}>
+                            <LessonButton title={revisiting ? t("continue") : t("start")} size="lg" onClick={next} />
+                        </WithBack>
                     </ShellActions>
                 );
             case "sort":
                 return picked ? (
-                    <Outcome correct={picked === card.answer} onNext={nextCard}>
+                    <Outcome correct={picked === card.answer} onBack={back} onNext={next}>
                         <div>
                             <LessonBadge label={ETHICS_CONCEPT_LABEL[card.concept]} tone="accent" />
                         </div>
                         <p className={text.bodyStrong}>{card.reason}</p>
                         {card.tip ? <p className={text.caption}>{card.tip}</p> : null}
                     </Outcome>
-                ) : null;
+                ) : (
+                    answering()
+                );
             case "recap":
                 return (
                     <ShellActions>
-                        <LessonButton
-                            title={t("startRound2")}
-                            size="lg"
-                            onClick={() => {
-                                resumeClock();
-                                setPhase("match");
-                            }}
-                        />
+                        <WithBack onBack={back}>
+                            <LessonButton
+                                title={revisiting ? t("continue") : t("startRound2")}
+                                size="lg"
+                                onClick={next}
+                            />
+                        </WithBack>
                     </ShellActions>
                 );
+            case "match":
+                return answering();
             case "build":
                 return buildResult === null ? (
-                    <ShellActions>
-                        <LessonButton title={t("check")} size="lg" disabled={placed.length === 0} onClick={checkBuild} />
-                    </ShellActions>
+                    answering({ onCheck: checkBuild, ready: placed.length > 0 })
                 ) : (
-                    <Outcome correct={buildResult} onNext={nextBuild}>
+                    <Outcome correct={buildResult} onBack={back} onNext={next}>
                         {buildResult ? null : (
                             <p className={text.caption}>
                                 {t("modelAnswer")} <span className={text.bodyStrong}>{buildItem.answer.join(" ")}</span>
@@ -314,47 +370,62 @@ export function AiEthicsGame() {
                     </Outcome>
                 );
             case "dilemma":
-                return dilemmaChoice === undefined ? null : (
+                return dilemmaChoice === undefined ? (
+                    answering()
+                ) : (
                     <ShellActions>
                         <p className={cn(text.bodyStrong, "pb-3 text-center")}>{t("dilemmaSay")}</p>
-                        <LessonButton title={t("continue")} size="lg" onClick={nextDilemma} />
+                        <WithBack onBack={back}>
+                            <LessonButton title={t("continue")} size="lg" onClick={next} />
+                        </WithBack>
                     </ShellActions>
                 );
             case "finished":
                 return (
                     <ShellActions>
-                        <div className="flex flex-col gap-3 sm:flex-row">
-                            <LessonButton title={t("home")} size="lg" variant="outline" onClick={() => router.push("/dashboard")} />
-                            <LessonButton title={t("playAgain")} size="lg" onClick={start} />
-                        </div>
+                        {/* Back to the last dilemma, to look at it again. */}
+                        <WithBack onBack={back}>
+                            <div className="flex flex-col gap-3 sm:flex-row">
+                                <LessonButton
+                                    title={t("home")}
+                                    size="lg"
+                                    variant="outline"
+                                    onClick={() => router.push("/dashboard")}
+                                />
+                                <LessonButton title={t("playAgain")} size="lg" onClick={playAgain} />
+                            </div>
+                        </WithBack>
                     </ShellActions>
                 );
         }
     })();
 
     return (
-        <LessonShell closeLabel={t("close")} onClose={() => router.push("/dashboard")} header={header} footer={footer}>
-            {phase === "learn" ? (
+        <LessonShell
+            closeLabel={t("close")}
+            onClose={() => router.push("/dashboard")}
+            header={header}
+            footer={footer}
+        >
+            {step.kind === "learn" ? (
                 <Slide
                     slide={slide}
-                    index={slideIndex}
+                    index={step.index}
                     total={ETHICS_SLIDES.length}
                     picked={slidePick}
-                    onPick={(i) => {
-                        if (slidePick === null) setSlidePick(i);
-                    }}
+                    onPick={pickSlide}
                 />
             ) : null}
 
-            {phase === "intro" ? <Intro /> : null}
+            {step.kind === "intro" ? <Intro /> : null}
 
-            {phase === "sort" ? (
-                <SortRound card={card} index={sortIndex} total={ETHICS_SORT_CARDS.length} picked={picked} onPick={pick} />
+            {step.kind === "sort" ? (
+                <SortRound card={card} index={step.index} total={ETHICS_SORT_CARDS.length} picked={picked} onPick={pick} />
             ) : null}
 
-            {phase === "recap" ? <Recap /> : null}
+            {step.kind === "recap" ? <Recap /> : null}
 
-            {phase === "match" ? (
+            {step.kind === "match" ? (
                 <div className="flex flex-col gap-4">
                     <RoundHeading label={t("round2Label")} title={t("round2Title")} hint={t("round2Hint")} />
                     <div className="flex gap-3">
@@ -388,29 +459,29 @@ export function AiEthicsGame() {
                 </div>
             ) : null}
 
-            {phase === "build" ? (
+            {step.kind === "build" ? (
                 <BuildRound
                     item={buildItem}
-                    index={buildIndex}
+                    index={step.index}
                     total={ETHICS_BUILD_ITEMS.length}
                     tokens={buildTokens}
-                    placed={placed}
+                    placed={buildPlaced}
                     onChange={setPlaced}
                     result={buildResult}
                 />
             ) : null}
 
-            {phase === "dilemma" ? (
+            {step.kind === "dilemma" ? (
                 <DilemmaRound
                     dilemma={dilemma}
-                    index={dilemmaIndex}
+                    index={step.index}
                     total={ETHICS_DILEMMAS.length}
                     choice={dilemmaChoice}
                     onChoose={(side) => setChosen((prev) => ({ ...prev, [dilemma.id]: side }))}
                 />
             ) : null}
 
-            {phase === "finished" ? <Finished timeMs={finalMs} wrongAttempts={wrongAttempts} chosen={chosen} /> : null}
+            {step.kind === "finished" ? <Finished timeMs={playedMs} wrongAttempts={wrongAttempts} chosen={chosen} /> : null}
         </LessonShell>
     );
 }
@@ -455,8 +526,18 @@ function VerdictIcon({ verdict }: { verdict: EthicsVerdict }) {
     );
 }
 
-/** The graded banner under an answer, drawn like the lesson footer. */
-function Outcome({ correct, onNext, children }: { correct: boolean; onNext: () => void; children?: React.ReactNode }) {
+/** The graded banner under an answer, drawn like the lesson footer, with Back beside Continue. */
+function Outcome({
+    correct,
+    onBack,
+    onNext,
+    children,
+}: {
+    correct: boolean;
+    onBack: () => void;
+    onNext: () => void;
+    children?: React.ReactNode;
+}) {
     const t = useTranslations("ethics");
     useEffect(() => {
         try {
@@ -485,13 +566,17 @@ function Outcome({ correct, onNext, children }: { correct: boolean; onNext: () =
                 </p>
             </div>
             {children}
-            <LessonButton
-                autoFocus
-                title={t("continue")}
-                size="lg"
-                variant={correct ? "primary" : "destructive"}
-                onClick={onNext}
-            />
+            <div className="flex gap-3">
+                <BackButton onClick={onBack} />
+                <LessonButton
+                    autoFocus
+                    title={t("continue")}
+                    size="lg"
+                    variant={correct ? "primary" : "destructive"}
+                    onClick={onNext}
+                    className="min-w-0 flex-1"
+                />
+            </div>
         </div>
     );
 }
