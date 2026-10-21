@@ -153,3 +153,16 @@ describe("stepping back through a lesson", () => {
         expect(done.reached).toBe(4);
     });
 });
+
+// Starting a lesson again from its top bar (components/learn/RestartLesson.tsx)
+// is the session's `restart`: a fresh run that keeps nothing of the old one.
+describe("starting a lesson again", () => {
+    it("forgets the answers, the mistakes and how far the learner had got", () => {
+        const midway = run(wrong, { type: "next" }, right, { type: "next" }, { type: "back" });
+        expect(midway.queue).toHaveLength(4);
+        const fresh = sessionReducer(midway, { type: "restart" });
+        expect(fresh).toEqual(initSession(lesson, "en"));
+        expect(fresh.reached).toBe(0);
+        expect(snapshotOf(fresh).position).toBe(0);
+    });
+});

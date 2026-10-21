@@ -11,7 +11,7 @@ import { useLearnerLanguage, useLessonLocalized } from "@/lib/lessons/localized"
 import { restoreSession, snapshotOf, useLessonSession } from "@/lib/lessons/session";
 import { prefetchSpeech } from "@/lib/lessons/speech";
 import type { LessonRecord, SavedRun } from "@/lib/progress/model";
-import { completeLesson, getProgressData, saveRun, setResume } from "@/lib/progress/store";
+import { clearRun, completeLesson, getProgressData, saveRun, setResume } from "@/lib/progress/store";
 import { canPractiseSpeaking, practiceLanguages, runToParams } from "@/lib/speaking/context";
 
 import { ExerciseRenderer } from "./ExerciseRenderer";
@@ -220,6 +220,16 @@ function LessonRunner({
     // No "are you sure?": the place is kept, so leaving costs nothing.
     const leave = useCallback(() => router.push("/dashboard"), [router]);
 
+    // From the first exercise, with the saved place forgotten too: a fresh run
+    // saves nothing until its first answer, so the old place would come back.
+    // Offered once there is an answer to lose, and not in a review, which
+    // changes nothing.
+    const startOver = useCallback(() => {
+        clearRun(lessonId);
+        restart();
+    }, [lessonId, restart]);
+    const canRestart = !review && state.reached > 0;
+
     if (reviewOver) return null;
 
     if (state.phase === "finished") {
@@ -278,6 +288,7 @@ function LessonRunner({
             icon={lesson.icon}
             onClose={leave}
             header={<LessonProgress value={progress} />}
+            onRestart={canRestart ? startOver : undefined}
             footer={
                 <LessonFooter
                     phase={state.phase === "graded" ? "graded" : "answering"}

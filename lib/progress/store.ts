@@ -121,6 +121,13 @@ export function saveRun(lessonId: string, run: Omit<SavedRun, "savedAt">, href?:
     });
 }
 
+/** Forget a run the learner chose to start again, so leaving does not bring it back. */
+export function clearRun(lessonId: string) {
+    if (!(lessonId in data.runs)) return;
+    const { [lessonId]: _gone, ...runs } = data.runs;
+    commit({ ...data, runs });
+}
+
 export function completeLesson(
     lessonId: string,
     result: { firstTryCorrect: number; total: number },
