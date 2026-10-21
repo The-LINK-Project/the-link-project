@@ -3,6 +3,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Room for a lesson to sit as a card on a stage (see LessonShell): a tablet or
+   a computer. A phone is `cramped` either way up: on its side it is wide but
+   too short for the card, so a lesson fills the screen there too. */
+@custom-variant roomy (@media (min-width: 40rem) and (min-height: 36rem));
+@custom-variant cramped (@media not all and (min-width: 40rem) and (min-height: 36rem));
+
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
@@ -251,6 +257,15 @@
 
 body {
     letter-spacing: var(--tracking-normal);
+}
+
+/* A lesson or game fills a phone's screen and scrolls inside itself, so a
+   pull down on it could only reload the page: the Ethics game would start
+   again and a learner would lose the step they were on. Chrome takes this
+   from body and the spec from html, so it goes on both. */
+html:has([data-lesson-shell]),
+html:has([data-lesson-shell]) body {
+    overscroll-behavior-y: none;
 }
 
 /* Infinite image marquee — used by the image auto-slider (e.g. the

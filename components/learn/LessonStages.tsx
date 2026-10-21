@@ -40,7 +40,7 @@ export function LessonStages({
     const t = useTranslations("lessons");
     return (
         // Read out by whatever holds it, which already says where the lesson stands.
-        <div aria-hidden className="flex items-center gap-2">
+        <div aria-hidden className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <Stage state={learn} icon="book" label={t("stageLearn")} size={size} />
             <span className={cn("h-0.5 w-4 shrink-0 rounded-sm", learn === "done" ? "bg-lesson-success" : "bg-lesson-border")} />
             <Stage state={speak} icon="mic" label={t("stageSpeak")} size={size} />

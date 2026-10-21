@@ -10,7 +10,8 @@ import {
     DropdownMenuItem,
 } from "../ui/dropdown-menu";
 import { navLinks } from "../../constants";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
+import { LESSON_SCREEN } from "@/lib/lessons/screens";
 import { Button } from "../ui/button";
 import { UserButton, useAuth } from "@clerk/nextjs";
 import { SignedOut } from "@clerk/clerk-react";
@@ -18,6 +19,8 @@ import LocaleSwitcher from "./LocaleSwitcher";
 
 const Header = () => {
     const { isSignedIn } = useAuth();
+    // A lesson fills a phone's screen and has its own way out (see LessonShell)
+    const lessonScreen = LESSON_SCREEN.test(usePathname());
     const filteredLinks = isSignedIn
         ? navLinks.filter(
               (link) => link.name !== "Contact" && link.name !== "About Us",
@@ -25,7 +28,9 @@ const Header = () => {
         : navLinks;
 
     return (
-        <div className="flex flex-row mx-4 sm:mx-8 lg:mx-24 justify-between h-16 sm:h-18 items-center py-2">
+        <div
+            className={`flex flex-row mx-4 sm:mx-8 lg:mx-24 justify-between h-16 sm:h-18 items-center py-2 ${lessonScreen ? "cramped:hidden" : ""}`}
+        >
             <Link href="/" className="flex flex-row gap-1 sm:gap-2 items-center">
                 <Image
                     src="/assets/link_green.png"

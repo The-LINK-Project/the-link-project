@@ -70,14 +70,20 @@ export function Tile({ label, icon, caption, onPress, state = "default", disable
         >
             <span
                 className={cn(
-                    "inline-flex items-center justify-center gap-2 text-center text-base font-semibold leading-6",
+                    // A word too long for a narrow tile (Tamil, on a small phone)
+                    // breaks inside it rather than pushing the page sideways.
+                    "inline-flex items-center justify-center gap-2 text-center text-base font-semibold leading-6 [overflow-wrap:anywhere]",
                     isUsed && "opacity-55",
                 )}
             >
                 {icon}
                 {label}
             </span>
-            {caption ? <span className="text-center text-sm leading-5 text-lesson-muted">{caption}</span> : null}
+            {caption ? (
+                <span className="text-center text-sm leading-5 text-lesson-muted [overflow-wrap:anywhere]">
+                    {caption}
+                </span>
+            ) : null}
         </button>
     );
 }

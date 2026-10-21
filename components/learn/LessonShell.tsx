@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import { X } from "lucide-react";
 import { useState, type CSSProperties, type ReactNode } from "react";
 
@@ -30,9 +28,15 @@ function stageStyle(icon: LessonIcon | undefined): CSSProperties {
  * alongside it at the top, the page in the middle, and the way forward pinned
  * to the bottom so it is always in view.
  *
- * On a phone it is the whole screen. On anything wider it is a card on a stage
- * in the lesson's own colour, so a lesson reads as a place of its own rather
- * than a narrow column on an empty page.
+ * On a phone, either way up, it is the whole screen: the site header is put
+ * away for it (see LESSON_SCREEN), and Close is the way back to the rest of
+ * the site. With room to spare it is a card on a stage in the lesson's own
+ * colour, so a lesson reads as a place of its own rather than a narrow column
+ * on an empty page. `roomy` and `cramped` are defined in globals.css.
+ *
+ * A phone's gestures are kept to the lesson: a pull down cannot reload the page
+ * (see globals.css), nothing drags it sideways, and a quick second tap on a
+ * tile is a tap rather than a zoom.
  *
  * With `onRestart`, the top bar also has a way to start again, which asks
  * first in place of the footer (see RestartLesson).
@@ -62,9 +66,9 @@ export function LessonShell({
     const asking = confirming && onRestart;
 
     return (
-        <div className="sm:px-4 sm:pb-4">
-            <div className="sm:rounded-[2rem] sm:px-4 sm:py-6" style={stageStyle(icon)}>
-                <div className="mx-auto flex h-[calc(100dvh-4.5rem)] w-full max-w-2xl flex-col overflow-hidden bg-white sm:h-[calc(100dvh-9rem)] sm:rounded-3xl sm:border-2 sm:border-lesson-key sm:shadow-[0_4px_0_var(--color-lesson-key)]">
+        <div data-lesson-shell className="roomy:px-4 roomy:pb-4">
+            <div className="roomy:rounded-[2rem] roomy:px-4 roomy:py-6" style={stageStyle(icon)}>
+                <div className="mx-auto flex h-dvh w-full max-w-2xl touch-manipulation flex-col overflow-hidden bg-white roomy:h-[calc(100dvh-9rem)] roomy:rounded-3xl roomy:border-2 roomy:border-lesson-key roomy:shadow-[0_4px_0_var(--color-lesson-key)]">
                     <div className="flex items-center gap-3 px-4 py-3">
                         <button
                             type="button"
@@ -79,7 +83,10 @@ export function LessonShell({
                             <RestartButton open={!!asking} onClick={() => setConfirming(!asking)} />
                         ) : null}
                     </div>
-                    <div ref={scrollRef} className="flex-1 overflow-y-auto">
+                    <div
+                        ref={scrollRef}
+                        className="flex-1 touch-manipulation overflow-y-auto overflow-x-hidden overscroll-contain"
+                    >
                         <div className="flex min-h-full flex-col gap-6 p-4 pb-8">{children}</div>
                     </div>
                     {asking ? (
