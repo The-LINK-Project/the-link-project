@@ -31,7 +31,7 @@ import {
     type EthicsSortCard,
     type EthicsVerdict,
 } from "@/constants/games/aiEthics";
-import { seededShuffle } from "@/lib/lessons/shuffle";
+import { seededDerangement, seededShuffle } from "@/lib/lessons/shuffle";
 import { cn } from "@/lib/utils";
 
 import { ETHICS_HUE, EthicsCoin } from "./EthicsCoin";
@@ -72,7 +72,8 @@ export function AiEthicsGame() {
 
     // Round 2
     const situations = useMemo(() => seededShuffle(ETHICS_MATCH_PAIRS, "ethics-situations"), []);
-    const reasons = useMemo(() => seededShuffle(ETHICS_MATCH_PAIRS, "ethics-reasons"), []);
+    // Never the same row as its situation, or the pair reads straight across.
+    const reasons = useMemo(() => seededDerangement(situations, "ethics-reasons"), [situations]);
     const [matched, setMatched] = useState<string[]>([]);
     const [selected, setSelected] = useState<Selection>(null);
     const [wrongPair, setWrongPair] = useState<WrongPair>(null);

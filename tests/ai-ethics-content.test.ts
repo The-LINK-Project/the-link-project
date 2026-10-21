@@ -13,6 +13,7 @@ import {
     ETHICS_WORDS,
     ethicsScore,
 } from "@/constants/games/aiEthics";
+import { seededDerangement, seededShuffle } from "@/lib/lessons/shuffle";
 
 // The game is played by people reading at a basic level, on a laptop, with no
 // facilitator able to fix content on the day. These checks keep the bank
@@ -67,6 +68,15 @@ describe("Ethics of AI content", () => {
         expect(new Set(ETHICS_MATCH_PAIRS.map((pair) => pair.id)).size).toBe(8);
         const round1 = new Set(ETHICS_SORT_CARDS.map((card) => card.situation));
         for (const pair of ETHICS_MATCH_PAIRS) expect(round1.has(pair.situation)).toBe(false);
+    });
+
+    it("never puts a match pair on the same row in both columns", () => {
+        // The same seeds the game uses, so this checks what the team sees.
+        const situations = seededShuffle(ETHICS_MATCH_PAIRS, "ethics-situations");
+        const reasons = seededDerangement(situations, "ethics-reasons");
+        expect(reasons).toHaveLength(situations.length);
+        expect(new Set(reasons)).toEqual(new Set(situations));
+        for (let i = 0; i < situations.length; i++) expect(reasons[i].id).not.toBe(situations[i].id);
     });
 
     it("keeps every card short enough to read on a tile", () => {

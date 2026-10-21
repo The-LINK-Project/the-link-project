@@ -38,3 +38,18 @@ export function seededShuffle<T>(items: readonly T[], seed: string): T[] {
     }
     return result;
 }
+
+/**
+ * A second ordering of the same items in which no item keeps the index it has
+ * in `first`, for two columns that must be matched across: if a pair ever sat
+ * on the same row, reading straight across would give it away. Tries suffixed
+ * seeds until the orders do not collide, which for a handful of items takes
+ * only a few draws.
+ */
+export function seededDerangement<T>(first: readonly T[], seed: string): T[] {
+    if (first.length < 2) return [...first];
+    for (let attempt = 0; ; attempt++) {
+        const candidate = seededShuffle(first, `${seed}:${attempt}`);
+        if (candidate.every((item, i) => item !== first[i])) return candidate;
+    }
+}
