@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
     initSession,
     isRevisit,
+    restoreSession,
     reviewSession,
     sessionReducer,
     snapshotOf,
@@ -164,5 +165,47 @@ describe("starting a lesson again", () => {
         expect(fresh).toEqual(initSession(lesson, "en"));
         expect(fresh.reached).toBe(0);
         expect(snapshotOf(fresh).position).toBe(0);
+    });
+});
+
+// Coming back to a run after changing language (restoreSession). What a learner
+// has answered stands even when it would not be offered in the new language,
+// so it must not stop the run being picked up again the time after.
+describe("picking a run up again in another language", () => {
+    const translate: Exercise = {
+        id: "t",
+        type: "translateWordBank",
+        instruction: { en: "Say it in English" },
+        practises: [],
+        prompt: { en: "It is right", ta: "அது சரி" },
+        phraseId: "p",
+        tokens: ["It", "is", "right", "wrong"],
+        grading: { mode: "keywords", keywords: ["right"] },
+    } as Exercise;
+    const mixed: Lesson = {
+        ...lesson,
+        phrases: [{ id: "p", text: "It is right", meaning: { en: "It is right" } }],
+        exercises: [translate, fill("a"), fill("b"), fill("c")],
+    } as Lesson;
+    const said: Parameters<typeof sessionReducer>[1] = {
+        type: "submit",
+        answer: { kind: "tokens", tokens: ["It", "is", "right"] },
+    };
+
+    it("keeps an answered translation that the new language would not offer", () => {
+        // Tamil: the translation is on the queue and gets answered.
+        let state = [said, { type: "next" } as const, right, { type: "next" } as const].reduce(
+            sessionReducer,
+            initSession(mixed, "ta"),
+        );
+        expect(state.queue[0]).toBe("t");
+        // Back in English, which has no translation to offer.
+        const english = restoreSession(mixed, snapshotOf(state), false, "en");
+        expect(english?.position).toBe(2);
+        // An answer more, then away and back again in English.
+        state = [right, { type: "next" } as const].reduce(sessionReducer, english!);
+        const again = restoreSession(mixed, snapshotOf(state), false, "en");
+        expect(again?.position).toBe(3);
+        expect(again?.queue.slice(0, 3)).toEqual(state.queue.slice(0, 3));
     });
 });

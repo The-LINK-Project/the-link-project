@@ -147,7 +147,11 @@ export function restoreSession(
         const exercise = exercises.get(id);
         return exercise !== undefined && appliesToLearner(exercise, locale, screenReader);
     };
-    if (!saved.queue.every((id) => fits(id, saved.locale as FirstLanguage))) return null;
+    // What is already answered only has to still exist: a language change keeps
+    // it even where the new language would not offer it, so checking it again
+    // would throw the run away the next time the learner comes back.
+    if (!saved.queue.every((id) => exercises.has(id))) return null;
+    if (!saved.queue.slice(saved.position).every((id) => fits(id, saved.locale as FirstLanguage))) return null;
 
     let queue = saved.queue;
     if (language !== saved.locale) {
