@@ -223,10 +223,13 @@ function LessonRunner({
     // From the first exercise, with the saved place forgotten too: a fresh run
     // saves nothing until its first answer, so the old place would come back.
     // Offered once there is an answer to lose, and not in a review, which
-    // changes nothing.
+    // changes nothing. Each fresh run is a new round, so an exercise on screen
+    // before and after starting again is still drawn afresh.
+    const [round, setRound] = useState(0);
     const startOver = useCallback(() => {
         clearRun(lessonId);
         restart();
+        setRound((value) => value + 1);
     }, [lessonId, restart]);
     const canRestart = !review && state.reached > 0;
 
@@ -305,9 +308,10 @@ function LessonRunner({
         >
             <h1 className={text.heading}>{localized(exercise.instruction)}</h1>
             <ExerciseRenderer
-                // A fresh component per queue position: an exercise that comes
-                // back after a miss starts again rather than showing its old answer.
-                key={`${state.position}-${exercise.id}`}
+                // A fresh component per queue position and per run: an exercise
+                // that comes back after a miss, or after starting again, starts
+                // again rather than showing its old answer.
+                key={`${round}-${state.position}-${exercise.id}`}
                 exercise={exercise}
                 lesson={lesson}
                 draft={state.draft}

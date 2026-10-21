@@ -2,6 +2,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { usePathname } from "@/i18n/navigation";
+import { LESSON_SCREEN } from "@/lib/lessons/screens";
 import ChatbotIcontoggle from "./ChatbotIcontoggle";
 import XIcon from "./XIcon";
 
@@ -13,15 +14,21 @@ const Chatbot = dynamic(() => import("./Chatbot"), { ssr: false });
 // floating one would cover the send button and confuse whoever is typing
 const FULL_PAGE_CHAT = /^\/lessons\/[^/]+\/chat\/?$/;
 
+// The assistant needs an account, so on the sign-in and sign-up pages it could
+// only say so, from on top of the form's Continue button on a phone
+const AUTH_PAGE = /^\/sign-(in|up)(\/.*)?$/;
+
 const ChatbotLauncher = () => {
     const [showChatbot, setShowChatbot] = useState<boolean>(false);
     const [hasOpened, setHasOpened] = useState<boolean>(false);
     const pathname = usePathname();
 
-    if (FULL_PAGE_CHAT.test(pathname)) return null;
+    if (FULL_PAGE_CHAT.test(pathname) || AUTH_PAGE.test(pathname)) return null;
 
     return (
-        <>
+        // Where a lesson fills a phone's screen, Check and Continue sit on its
+        // bottom edge, right where the floating chat would cover them
+        <div className={LESSON_SCREEN.test(pathname) ? "cramped:hidden" : undefined}>
             {/* Toggle Button */}
             <button
                 id="chatbot-toggler"
@@ -57,7 +64,7 @@ const ChatbotLauncher = () => {
             </button>
 
             {hasOpened && <Chatbot showChatbot={showChatbot} />}
-        </>
+        </div>
     );
 };
 

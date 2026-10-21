@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleCheck, CircleX } from "lucide-react";
+import { ArrowRight, CircleCheck, CircleX } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
@@ -67,9 +67,12 @@ export function LessonFooter({
 
     if (!graded) {
         if (hideSubmit && !back && !revisiting) return null;
+        // Back to an answered exercise, three buttons share the row. On a
+        // phone, Back and Next are arrows, so Check keeps its room in a
+        // language with long words (Burmese, Filipino, Indonesian).
         return (
             <div className="flex gap-3 bg-white p-4">
-                {back}
+                {onBack ? <BackButton onClick={onBack} compact={revisiting} /> : null}
                 {hideSubmit ? (
                     <div className="flex-1" />
                 ) : (
@@ -87,6 +90,8 @@ export function LessonFooter({
                         title={t("next")}
                         size="lg"
                         variant="outline"
+                        icon={<ArrowRight className="size-5 sm:hidden" />}
+                        compact
                         className="w-auto shrink-0 px-4"
                         onClick={() => onNext()}
                     />
