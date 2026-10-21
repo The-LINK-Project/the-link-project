@@ -1,6 +1,6 @@
 "use client";
 
-import { Mic } from "lucide-react";
+import { MessageCircle, Mic } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { useLessonLocalized } from "@/lib/lessons/localized";
@@ -48,7 +48,9 @@ export function LessonSummary({
                 {speakingLeft ? (
                     <div className="flex flex-col gap-2 pt-3">
                         <LessonStages learn="done" speak="current" size="lg" />
-                        <p className={text.bodyStrong}>{t("summarySpeakNext")}</p>
+                        <p className={text.bodyStrong}>
+                            {lesson.chatPractice ? t("summaryChatNext") : t("summarySpeakNext")}
+                        </p>
                     </div>
                 ) : null}
             </LessonHeading>
@@ -112,13 +114,40 @@ export function LessonSummaryActions({
     speakingLeft,
     onDone,
     onSpeak,
+    onChat,
 }: {
     speakingLeft: boolean;
     onDone: () => void;
     /** Present when the lesson can be said aloud. */
     onSpeak?: () => void;
+    /** Present when the lesson ends in prompting practice with LINK Assistant. */
+    onChat?: () => void;
 }) {
     const t = useTranslations("lessons");
+    // A lesson about AI goes on to a real chatbot first. Speaking stays on
+    // offer underneath, in place of putting the lesson off.
+    if (onChat) {
+        return (
+            <div className="flex flex-col gap-1">
+                <LessonButton
+                    title={t("summaryChat")}
+                    size="lg"
+                    icon={<MessageCircle className="size-5" />}
+                    onClick={onChat}
+                />
+                {onSpeak ? (
+                    <LessonButton
+                        title={t("summarySpeak")}
+                        variant="ghost"
+                        icon={<Mic className="size-5" />}
+                        onClick={onSpeak}
+                    />
+                ) : (
+                    <LessonButton title={t("summaryDone")} variant="ghost" onClick={onDone} />
+                )}
+            </div>
+        );
+    }
     if (!onSpeak) return <LessonButton title={t("summaryDone")} size="lg" onClick={onDone} />;
     if (!speakingLeft) {
         return (

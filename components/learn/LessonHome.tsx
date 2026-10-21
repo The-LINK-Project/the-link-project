@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { getDailyMix, listLessons } from "@/lib/lessons/data";
+import { getDailyMix, listLessons, listWorkshopLessons } from "@/lib/lessons/data";
 import { fingerprint } from "@/lib/lessons/session";
 import { continuePoint, doneToday, lessonStatus, type LessonRef } from "@/lib/progress/model";
 import { useProgressData } from "@/lib/progress/store";
@@ -32,9 +32,10 @@ function LessonHomeContent() {
     const ethics = useTranslations("ethics");
     const data = useProgressData();
     const lessons = listLessons();
+    const workshop = listWorkshopLessons();
     const mix = getDailyMix();
 
-    const all = [...lessons, mix];
+    const all = [...lessons, ...workshop, mix];
     const refs = new Map<string, LessonRef>(
         all.map((lesson) => [
             lesson.id,
@@ -51,6 +52,10 @@ function LessonHomeContent() {
     // Pointing at a new lesson while another is half done is two instructions.
     const nextIndex = point ? -1 : statuses.findIndex((status) => status.finished === "none");
 
+    // Workshop lessons sit outside the count and the "next" pointer, which
+    // walk a learner through the English lessons.
+    const workshopStatuses = workshop.map((lesson) => lessonStatus(data, refs.get(lesson.id)!));
+
     const mixStatus = lessonStatus(data, refs.get(mix.id)!);
     const mixDone = doneToday(data.progress.lessons[mix.id]);
 
@@ -62,6 +67,32 @@ function LessonHomeContent() {
                     point={point}
                     href={point.kind === "lesson" ? `/lessons/${point.lessonId}` : `/lessons/${point.lessonId}/speak`}
                 />
+            ) : null}
+
+            {workshop.length > 0 ? (
+                <>
+                    <div className="flex flex-col gap-1 pt-2">
+                        <h2 className={text.heading}>{t("workshopTitle")}</h2>
+                        <p className={text.caption}>{t("workshopBody")}</p>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+                        {workshop.map((lesson, index) => {
+                            const status = workshopStatuses[index];
+                            return (
+                                <LessonCard
+                                    key={lesson.id}
+                                    lesson={lesson}
+                                    status={status}
+                                    speakHref={
+                                        status.finished !== "none" && refs.get(lesson.id)!.speakable
+                                            ? `/lessons/${lesson.id}/speak`
+                                            : undefined
+                                    }
+                                />
+                            );
+                        })}
+                    </div>
+                </>
             ) : null}
 
             <div className="flex flex-col gap-1 pt-2">

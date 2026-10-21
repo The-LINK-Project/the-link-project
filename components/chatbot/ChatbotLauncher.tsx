@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { usePathname } from "@/i18n/navigation";
 import ChatbotIcontoggle from "./ChatbotIcontoggle";
 import XIcon from "./XIcon";
 
@@ -8,9 +9,16 @@ import XIcon from "./XIcon";
 // first opens it — no page pays for it up front
 const Chatbot = dynamic(() => import("./Chatbot"), { ssr: false });
 
+// Pages that are already a full-screen LINK Assistant chat, where a second
+// floating one would cover the send button and confuse whoever is typing
+const FULL_PAGE_CHAT = /^\/lessons\/[^/]+\/chat\/?$/;
+
 const ChatbotLauncher = () => {
     const [showChatbot, setShowChatbot] = useState<boolean>(false);
     const [hasOpened, setHasOpened] = useState<boolean>(false);
+    const pathname = usePathname();
+
+    if (FULL_PAGE_CHAT.test(pathname)) return null;
 
     return (
         <>

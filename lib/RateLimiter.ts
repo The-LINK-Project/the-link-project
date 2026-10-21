@@ -19,7 +19,7 @@ import { connectToDatabase } from "@/lib/database";
 // so sustained low-rate use is unbounded — one account held at the per-minute
 // limit all day is ~28,800 lesson turns. Watch provider spend, and add a
 // "day" spec below (e.g. { points: 300, duration: 86400 }) if that shows up.
-type LimiterType = "chatbot" | "conversation" | "tutor";
+type LimiterType = "chatbot" | "conversation" | "tutor" | "practice";
 
 // IP ceilings are deliberately generous. This app's learners sit in dorms,
 // workshops and community centres behind shared wifi and carrier-grade NAT,
@@ -34,6 +34,11 @@ const LIMIT_SPECS = {
     // same small per-learner budget the mobile API gives it.
     "ip:tutor": { points: 240, duration: 60 },
     "user:tutor": { points: 12, duration: 60 },
+    // Prompting practice after the AI lesson: a workshop team of four or five
+    // shares one account, so the per-user budget is a whole table's, not one
+    // person's.
+    "ip:practice": { points: 240, duration: 60 },
+    "user:practice": { points: 15, duration: 60 },
 } as const;
 
 type LimiterKey = keyof typeof LIMIT_SPECS;

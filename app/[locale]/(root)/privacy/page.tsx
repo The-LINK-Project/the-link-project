@@ -8,15 +8,6 @@ export const metadata: Metadata = {
         "How The LINK Project app collects, uses, shares and deletes your information.",
 };
 
-// Placeholder that still needs a real value before the policy goes live.
-function Todo({ children }: { children: ReactNode }) {
-    return (
-        <mark className="rounded-[3px] bg-[#fff3b0] px-[3px] text-inherit">
-            {children}
-        </mark>
-    );
-}
-
 function H2({ children }: { children: ReactNode }) {
     return (
         <h2 className="mb-2 mt-10 border-t border-[#ddd] pt-4 text-[1.25rem] font-bold">
@@ -62,7 +53,7 @@ export default function PrivacyPage() {
                 Privacy Policy: The LINK Project app
             </h1>
             <p>
-                <strong>Effective date:</strong> <Todo>[[EFFECTIVE DATE]]</Todo>
+                <strong>Effective date:</strong> 20 September 2026
             </p>
             <p>
                 This privacy policy explains what information The LINK Project app
@@ -76,14 +67,9 @@ export default function PrivacyPage() {
 
             <H2>1. Who we are</H2>
             <p>
-                The LINK Project is{" "}
-                <Todo>
-                    [[ORGANISATION DESCRIPTION, for example: a student-led initiative
-                    in Singapore that helps migrant workers learn English]]
-                </Todo>
-                . We make The LINK Project app (&quot;the app&quot;). The app is
-                published on Google Play by{" "}
-                <Todo>[[DEVELOPER NAME ON GOOGLE PLAY]]</Todo> on behalf of The LINK
+                The LINK Project is a student-led initiative in Singapore that helps
+                migrant workers learn English. We make The LINK Project app (&quot;the app&quot;). The app is
+                published on Google Play by Ruhan Gupta on behalf of The LINK
                 Project.
             </p>
             <p>
@@ -92,7 +78,7 @@ export default function PrivacyPage() {
                 app.
             </p>
             <p>
-                <strong>Data Protection Officer:</strong> <Todo>[[DPO NAME]]</Todo>{" "}
+                <strong>Data Protection Officer:</strong> Susan Lee{" "}
                 <strong>Email:</strong> thelinkproject.org@gmail.com
             </p>
 
@@ -310,12 +296,10 @@ export default function PrivacyPage() {
 
             <H2>11. Where your information is stored</H2>
             <p>
-                Our team is in Singapore. The companies above may store or process
-                your information in other countries, including{" "}
-                <Todo>
-                    [[DATABASE AND SERVER REGIONS, for example: the United States]]
-                </Todo>
-                . Each of these companies has its own data protection terms. We choose
+                Our team is in Singapore. Our database is stored in Singapore, and
+                our server runs in the United States. The companies above may also
+                store or process your information in other countries, including the
+                United States. Each of these companies has its own data protection terms. We choose
                 companies whose terms protect personal information to a standard
                 comparable to Singapore&apos;s Personal Data Protection Act.
             </p>
@@ -411,8 +395,7 @@ export default function PrivacyPage() {
                 </li>
                 <li>
                     <strong>ask a question or complain:</strong> email{" "}
-                    thelinkproject.org@gmail.com. We will reply within{" "}
-                    <Todo>[[NUMBER]]</Todo> days.
+                    thelinkproject.org@gmail.com. We will reply within 2 days.
                 </li>
             </ul>
             <p>
@@ -435,7 +418,7 @@ export default function PrivacyPage() {
             <p>
                 <strong>The LINK Project</strong>
                 <br />
-                Data Protection Officer: <Todo>[[DPO NAME]]</Todo>
+                Data Protection Officer: Susan Lee
                 <br />
                 Email: thelinkproject.org@gmail.com
             </p>

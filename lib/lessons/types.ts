@@ -306,6 +306,30 @@ export type SpeakingPractice = {
     goals: SpeakingGoal[];
 };
 
+/**
+ * One thing to try on the prompting page. The starter is put in the message
+ * box, not sent, so the learner reads it and can change it first.
+ */
+export type ChatTask = {
+    id: string;
+    title: Localized;
+    /** Why it is worth trying, tied to a word the lesson taught. */
+    hint: Localized;
+    /** An example prompt, in English, as the learner would type it. */
+    starter: string;
+};
+
+/**
+ * Prompting practice with LINK Assistant after the exercises, for a lesson
+ * about AI itself: the learner tries the words out on a real chatbot.
+ */
+export type ChatPractice = {
+    intro: Localized;
+    /** Short rules of thumb for a good prompt. */
+    tips: Localized[];
+    tasks: ChatTask[];
+};
+
 export type Lesson = {
     id: string;
     title: Localized;
@@ -320,6 +344,7 @@ export type Lesson = {
     phrases: Phrase[];
     exercises: Exercise[];
     speaking?: SpeakingPractice;
+    chatPractice?: ChatPractice;
 };
 
 /**

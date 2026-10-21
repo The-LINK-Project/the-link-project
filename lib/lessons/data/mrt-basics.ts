@@ -142,6 +142,7 @@ export const mrtBasics: Lesson = {
                 ta: "வெளியே வரும்போது அட்டையைத் தட்டுவது",
                 hi: "बाहर निकलते समय गेट पर कार्ड छुआना",
             },
+            picture: "tapOut",
             reviewed: false,
         },
         {

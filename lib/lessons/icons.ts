@@ -17,11 +17,14 @@ export const PICTURE_KEYS = [
     "mrtFare",
     "money",
     "card",
+    "tapOut",
     "seat",
     "transfer",
     "clock",
     // Seeing a doctor
     "thermometer",
+    "pain",
+    "cough",
     "medicine",
     "clinic",
     "appointment",
@@ -33,6 +36,7 @@ export const PICTURE_KEYS = [
     "bag",
     "flame",
     "drink",
+    "less",
     "price",
     "stall",
     // At work
@@ -41,11 +45,23 @@ export const PICTURE_KEYS = [
     "warning",
     "firstAid",
     "person",
+    "salary",
+    "repeat",
+    // Talking about AI
+    "artificialIntelligence",
+    "machineLearning",
+    "trainingData",
+    "chatbot",
+    "prompt",
+    "voiceAssistant",
+    "imageRecognition",
+    "generativeAi",
+    "hallucination",
 ] as const;
 
 export type PictureKey = (typeof PICTURE_KEYS)[number];
 
 /** What a whole lesson is about, drawn on its card on Home. */
-export const LESSON_ICONS = ["train", "clinic", "food", "work", "mix"] as const;
+export const LESSON_ICONS = ["train", "clinic", "food", "work", "ai", "mix"] as const;
 
 export type LessonIcon = (typeof LESSON_ICONS)[number];

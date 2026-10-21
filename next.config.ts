@@ -6,6 +6,16 @@ const nextConfig: NextConfig = {
     // (e.g. drizzle-orm) that aren't installed; keeping it external stops
     // webpack from trying to resolve them at build time
     serverExternalPackages: ["mongoose", "rate-limiter-flexible"],
+    // Lesson recordings are named after what they say, so a file never
+    // changes: a phone keeps it for good instead of asking again each play.
+    async headers() {
+        return [
+            {
+                source: "/lessons/audio/:file*",
+                headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+            },
+        ];
+    },
     // The older conversation lessons, games and quiz results now live under
     // /legacy, unlinked. Old bookmarks and shared links still reach them.
     // Temporary (307), so the old addresses can be given to something else.

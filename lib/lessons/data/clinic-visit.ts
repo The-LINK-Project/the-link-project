@@ -105,6 +105,7 @@ export const clinicVisit: Lesson = {
                 ta: "வலி",
                 hi: "दर्द",
             },
+            picture: "pain",
             reviewed: false,
         },
         {
@@ -176,6 +177,7 @@ export const clinicVisit: Lesson = {
                 ta: "இருமல்",
                 hi: "खाँसी",
             },
+            picture: "cough",
             reviewed: false,
         },
     ],

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#fef2f2"/>
+  <!-- the chatbot, sounding sure of itself -->
+  <line x1="110" y1="236" x2="110" y2="212" stroke="#9d5b25" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="110" cy="206" r="10" fill="#9d5b25"/>
+  <rect x="44" y="236" width="132" height="116" rx="28" fill="#9d5b25"/>
+  <rect x="64" y="262" width="92" height="52" rx="14" fill="#ffffff"/>
+  <circle cx="90" cy="286" r="8" fill="#1f2937"/>
+  <circle cx="130" cy="286" r="8" fill="#1f2937"/>
+  <path d="M88 330 q22 14 44 0" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+  <!-- a confident wrong answer -->
+  <path d="M176 196 l-26 46 l64 -46z" fill="#ffffff" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <rect x="140" y="56" width="236" height="144" rx="28" fill="#ffffff" stroke="#1f2937" stroke-width="6"/>
+  <rect x="178" y="190" width="40" height="12" fill="#ffffff"/>
+  <text x="258" y="152" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="62" fill="#1f2937">2+2=5</text>
+  <!-- and it is wrong -->
+  <circle cx="330" cy="250" r="44" fill="#dc2626"/>
+  <path d="M311 231 l38 38 M349 231 l-38 38" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/>
+</svg>

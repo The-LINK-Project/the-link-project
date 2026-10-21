@@ -40,6 +40,8 @@ function getTutor(): TutorModel | null {
         // of quota the next answers instead of the tutor stopping.
         tutorModels: list(process.env.GEMINI_TUTOR_MODEL, ["gemini-3.8-flash", "gemini-3.7-flash"]),
         speechModels: list(process.env.GEMINI_SPEECH_MODEL, [
+            "gemini-3.8-flash-lite-tts",
+            "gemini-3.8-flash-tts",
             "gemini-3.1-flash-tts-preview",
             "gemini-2.5-flash-preview-tts",
             "gemini-2.5-pro-preview-tts",

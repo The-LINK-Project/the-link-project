@@ -1,10 +1,11 @@
 import "server-only";
 
-import { joinSpeech, sampleRateOf } from "./audio";
+import { joinSpeech, sampleRateOf, wavSamples } from "./audio";
 import {
     GoogleError,
     QuotaError,
     QuotaTracker,
+    READ_ALOUD,
     responseError,
     send,
     VOICE,
@@ -339,19 +340,32 @@ export function speechChunks(text: string): string[] {
     return chunks;
 }
 
+/** The voices from before 3.8, which act on a bare reply instead of reading it. */
+const NEEDS_READ_ALOUD = /^gemini-(2\.5|3\.1)-/;
+
+/**
+ * A piece of the tutor's reply, set out for this voice to read rather than
+ * answer. The 3.8 voices take their input as a script already, and one of them
+ * reads an instruction out loud, so they get the reply bare.
+ */
+export function readAloud(text: string, model: string): string {
+    return NEEDS_READ_ALOUD.test(model) ? `${READ_ALOUD}\n\nTRANSCRIPT:\n${text}` : text;
+}
+
 async function speakChunk(
     apiKey: string,
     model: string,
     text: string,
     timeoutMs: number,
 ): Promise<Spoken> {
-    // Only checked text is sent. A spoken style instruction would be English the
-    // word rule never saw, and the voice model occasionally reads instructions aloud.
+    // The Gemini API has no field for an instruction apart from the text, so for
+    // the older voices the reply is set out below one as a transcript. Sent bare,
+    // they acted on the reply instead of reading it.
     const response = await generate(
         apiKey,
         model,
         {
-            contents: [{ role: "user", parts: [{ text }] }],
+            contents: [{ role: "user", parts: [{ text: readAloud(text, model) }] }],
             generationConfig: {
                 responseModalities: ["AUDIO"],
                 speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE } } },
@@ -360,7 +374,9 @@ async function speakChunk(
         timeoutMs,
     );
     const inline = parts(response).find((part) => part.inlineData?.data)?.inlineData;
-    const pcm = Buffer.from(inline?.data ?? "", "base64");
-    if (pcm.length === 0) throw new GoogleError("Gemini returned no audio");
-    return { pcm, rate: sampleRateOf(inline?.mimeType) };
+    const audio = Buffer.from(inline?.data ?? "", "base64");
+    if (audio.length === 0) throw new GoogleError("Gemini returned no audio");
+    // The 3.8 voices answer with a whole WAV file; older ones with bare PCM.
+    if (audio.toString("ascii", 0, 4) === "RIFF") return wavSamples(audio);
+    return { pcm: audio, rate: sampleRateOf(inline?.mimeType) };
 }
