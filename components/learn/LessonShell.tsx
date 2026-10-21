@@ -1,11 +1,14 @@
 "use client";
 
+"use client";
+
 import { X } from "lucide-react";
-import type { CSSProperties, ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 
 import type { LessonIcon } from "@/lib/lessons/icons";
 
 import { LESSON_HUES } from "./Medallion";
+import { RestartButton, RestartConfirm } from "./RestartLesson";
 
 /**
  * The lesson's colour, faint, with the lattice of diamonds the dashboard
@@ -30,6 +33,9 @@ function stageStyle(icon: LessonIcon | undefined): CSSProperties {
  * On a phone it is the whole screen. On anything wider it is a card on a stage
  * in the lesson's own colour, so a lesson reads as a place of its own rather
  * than a narrow column on an empty page.
+ *
+ * With `onRestart`, the top bar also has a way to start again, which asks
+ * first in place of the footer (see RestartLesson).
  */
 export function LessonShell({
     closeLabel,
@@ -39,6 +45,7 @@ export function LessonShell({
     footer,
     children,
     scrollRef,
+    onRestart,
 }: {
     closeLabel: string;
     onClose: () => void;
@@ -48,7 +55,12 @@ export function LessonShell({
     footer?: ReactNode;
     children: ReactNode;
     scrollRef?: React.Ref<HTMLDivElement>;
+    /** Starts the lesson again. Absent while there is nothing to lose. */
+    onRestart?: () => void;
 }) {
+    const [confirming, setConfirming] = useState(false);
+    const asking = confirming && onRestart;
+
     return (
         <div className="sm:px-4 sm:pb-4">
             <div className="sm:rounded-[2rem] sm:px-4 sm:py-6" style={stageStyle(icon)}>
@@ -63,11 +75,26 @@ export function LessonShell({
                             <X className="size-7" strokeWidth={2.5} />
                         </button>
                         {header}
+                        {onRestart ? (
+                            <RestartButton open={!!asking} onClick={() => setConfirming(!asking)} />
+                        ) : null}
                     </div>
                     <div ref={scrollRef} className="flex-1 overflow-y-auto">
                         <div className="flex min-h-full flex-col gap-6 p-4 pb-8">{children}</div>
                     </div>
-                    {footer ? <div className="shrink-0">{footer}</div> : null}
+                    {asking ? (
+                        <div className="shrink-0">
+                            <RestartConfirm
+                                onRestart={() => {
+                                    setConfirming(false);
+                                    onRestart();
+                                }}
+                                onCancel={() => setConfirming(false)}
+                            />
+                        </div>
+                    ) : footer ? (
+                        <div className="shrink-0">{footer}</div>
+                    ) : null}
                 </div>
             </div>
         </div>

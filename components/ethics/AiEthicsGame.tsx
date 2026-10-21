@@ -165,8 +165,7 @@ export function AiEthicsGame() {
         else go(position - 1);
     };
 
-    // The slides are not played again; they stay behind Back.
-    const playAgain = () => {
+    const clearGame = () => {
         clearScreen();
         setWrongAttempts(0);
         setSortPicks({});
@@ -174,9 +173,22 @@ export function AiEthicsGame() {
         setBuilds({});
         setChosen({});
         setPlayedMs(0);
+    };
+
+    // The slides are not played again; they stay behind Back.
+    const playAgain = () => {
+        clearGame();
         setClockStart(Date.now());
         setPosition(FIRST_ROUND);
         setReached(FIRST_ROUND);
+    };
+
+    // Everything, slides too: the room starting over, or a new team sitting down.
+    const startOver = () => {
+        clearGame();
+        setSlidePicks({});
+        setPosition(0);
+        setReached(0);
     };
 
     // -------------------------------------------------------------- slides
@@ -272,9 +284,13 @@ export function AiEthicsGame() {
 
     // --------------------------------------------------------------- frame
 
+    const count = (answers: object) => Object.keys(answers).length;
+
+    // Once there is something to lose. The finish screen has its own Play again.
+    const canRestart = (reached > 0 || count(slidePicks) > 0) && step.kind !== "finished";
+
     // Counted from the answers, not the screen, so the bar holds still while
     // the team looks back.
-    const count = (answers: object) => Object.keys(answers).length;
     const progress =
         (count(sortPicks) / ETHICS_SORT_CARDS.length +
             matched.length / ETHICS_MATCH_PAIRS.length +
@@ -406,6 +422,7 @@ export function AiEthicsGame() {
             onClose={() => router.push("/dashboard")}
             header={header}
             footer={footer}
+            onRestart={canRestart ? startOver : undefined}
         >
             {step.kind === "learn" ? (
                 <Slide
