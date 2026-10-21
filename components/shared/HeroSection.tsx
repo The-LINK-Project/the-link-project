@@ -1,5 +1,6 @@
 import React from "react";
 import GetStartedButton from "./GetStartedButton";
+import WorkshopSurveyButton from "./WorkshopSurveyButton";
 import AwardBadge from "./AwardBadge";
 import { useTranslations } from "next-intl";
 
@@ -39,8 +40,9 @@ const HeroSection = () => {
                 {t("header1")} {t("header2")}
             </p>
 
-            <div className="mt-9">
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
                 <GetStartedButton />
+                <WorkshopSurveyButton />
             </div>
         </section>
     );

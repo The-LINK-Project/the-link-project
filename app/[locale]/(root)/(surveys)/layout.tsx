@@ -6,7 +6,8 @@ interface SurveyLayoutProps {
 
 // The (root) group mixes public marketing pages (/, /about, /contact) with the
 // learner app, so the guard sits on each private subtree rather than on the
-// group. Middleware still gates these routes first; this is the backstop.
+// group. This one covers every survey page. Middleware still gates these
+// routes first; this is the backstop.
 export default async function SurveyLayout({ children }: SurveyLayoutProps) {
     await requireSignedIn();
 

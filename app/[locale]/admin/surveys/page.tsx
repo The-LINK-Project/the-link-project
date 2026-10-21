@@ -1,6 +1,6 @@
 import React from "react";
 import SurveyResultsClient from "@/components/admin/SurveyResultsClient";
-import { SURVEYS, ACTIVE_SURVEY_ID } from "@/constants/survey/feedbackSurvey";
+import { SURVEYS, getOpenSurveys } from "@/constants/survey/feedbackSurvey";
 import { getSurveyResults } from "@/lib/actions/survey.actions";
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
 
@@ -8,6 +8,7 @@ import { AdminPageShell } from "@/components/admin/AdminPageShell";
 // action here re-checks it independently. Responses arrive anonymized — a
 // submission-order number, never a user id.
 const AdminSurveysPage = async () => {
+    const openPaths = getOpenSurveys().map((survey) => survey.path);
     const results = (
         await Promise.all(
             SURVEYS.map((survey) =>
@@ -20,8 +21,8 @@ const AdminSurveysPage = async () => {
         <AdminPageShell
             title="Survey Results"
             description={`${
-                ACTIVE_SURVEY_ID
-                    ? `Survey "${ACTIVE_SURVEY_ID}" is open right now.`
+                openPaths.length > 0
+                    ? `Open right now: ${openPaths.join(", ")}.`
                     : "No survey is open right now."
             } Responses are anonymous — numbered by submission order, with no names or emails anywhere.`}
             backHref="/admin"

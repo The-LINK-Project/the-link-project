@@ -19,7 +19,7 @@ import { getLessonProgressStats } from "@/lib/actions/LessonProgress.actions";
 import { getWordMatchStats } from "@/lib/actions/wordMatch.actions";
 import { getPictureStoryStats } from "@/lib/actions/pictureStory.actions";
 import { getSurveyStats } from "@/lib/actions/survey.actions";
-import { ACTIVE_SURVEY_ID } from "@/constants/survey/feedbackSurvey";
+import { getOpenSurveys } from "@/constants/survey/feedbackSurvey";
 import {
     AdminPageShell,
     ADMIN_ACCENTS,
@@ -157,6 +157,8 @@ const formatSeconds = (ms: number) =>
     ms > 0 ? `${(ms / 1000).toFixed(1)}s` : "—";
 
 const AdminPage = async () => {
+    const latestOpenSurvey = getOpenSurveys().at(-1) ?? null;
+
     try {
         const [
             lessons,
@@ -197,8 +199,9 @@ const AdminPage = async () => {
                 totalPlays: 0,
                 averageAccuracy: 0,
             })),
-            ACTIVE_SURVEY_ID
-                ? getSurveyStats(ACTIVE_SURVEY_ID).catch(() => null)
+            // The newest open survey; /admin/surveys has every one of them
+            latestOpenSurvey
+                ? getSurveyStats(latestOpenSurvey.id).catch(() => null)
                 : Promise.resolve(null),
         ]);
 
@@ -332,8 +335,8 @@ const AdminPage = async () => {
                         href="/admin/surveys"
                         title="Surveys"
                         tagline={
-                            surveyStats
-                                ? `"${surveyStats.surveyId}" · anonymous`
+                            surveyStats && latestOpenSurvey
+                                ? `${latestOpenSurvey.path} · anonymous`
                                 : "Workshop feedback"
                         }
                         cta="View"

@@ -3,18 +3,20 @@ import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { Button } from "@/components/ui/button";
 import SurveyClient from "@/components/survey/SurveyClient";
-import { getActiveSurvey } from "@/constants/survey/feedbackSurvey";
+import { getOpenSurvey } from "@/constants/survey/feedbackSurvey";
 import { getSurveyStateForUser } from "@/lib/actions/survey.actions";
 
-// The feedback survey. Sign-in is enforced by the middleware (this route is
-// not public), and the server only ever reads or writes the signed-in user's
-// own response.
+// One survey's page, shared by every survey route in
+// app/[locale]/(root)/(surveys)/. Sign-in is enforced by the middleware and
+// the group's layout, and the server only ever reads or writes the signed-in
+// user's own response.
 
-// Per-user data — must never be statically prerendered
-export const dynamic = "force-dynamic";
+type SurveyPageProps = {
+    surveyId: string;
+};
 
-const SurveyPage = async () => {
-    const survey = getActiveSurvey();
+const SurveyPage = async ({ surveyId }: SurveyPageProps) => {
+    const survey = getOpenSurvey(surveyId);
 
     if (!survey) {
         return (
@@ -31,7 +33,7 @@ const SurveyPage = async () => {
         );
     }
 
-    const initialState = await getSurveyStateForUser();
+    const initialState = await getSurveyStateForUser(survey.id);
     const { userId } = await auth();
 
     return (
