@@ -17,7 +17,7 @@
 //   1. Sort      eight situations into Good or Problem, one at a time
 //   2. Match     eight situations against their reasons
 //   3. Build     six stem sentences from word tiles
-//   4. Dilemmas  four trade-offs with no right answer, said aloud to the teacher
+//   4. Dilemmas  four trade-offs with no right answer, said aloud to the room
 
 export type EthicsVerdict = "good" | "problem";
 
@@ -388,7 +388,7 @@ export const ETHICS_DILEMMAS: EthicsDilemma[] = [
         situation: "An AI tutor corrects your English, but sometimes it is wrong.",
         sides: [
             { label: "Trust it", reason: "It is right most of the time." },
-            { label: "Check it", reason: "A teacher is more accurate." },
+            { label: "Check it", reason: "A real person is more accurate." },
         ],
     },
     {

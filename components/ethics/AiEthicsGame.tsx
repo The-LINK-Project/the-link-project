@@ -34,6 +34,7 @@ import {
 import { seededDerangement, seededShuffle } from "@/lib/lessons/shuffle";
 import { cn } from "@/lib/utils";
 
+import { markEthicsPlayed } from "./EthicsCard";
 import { ETHICS_HUE, EthicsCoin } from "./EthicsCoin";
 
 /**
@@ -41,7 +42,7 @@ import { ETHICS_HUE, EthicsCoin } from "./EthicsCoin";
  * played on a laptop with a group round it. The slides are the lesson, each
  * ending in one tap that is not scored. Sort, Match and Build are timed and
  * scored like Word Match. The Dilemmas are not: the clock stops, the team
- * picks a side, and says why to the teacher.
+ * picks a side, and says why out loud.
  *
  * Built from the lesson kit so it looks like every other lesson. Nothing is
  * saved: the finish screen is the result, and teams compare out loud.
@@ -705,9 +706,16 @@ function BuildRound({
     return (
         <div className="flex flex-col gap-6">
             <RoundHeading label={t("round3Label")} title={t("round3Title")} hint={t("round3Hint")} />
-            <LessonCardBox tone="muted" className="flex flex-col gap-1">
+            <LessonCardBox className="flex flex-col gap-1">
                 <p className={text.label}>{t("cardOf", { index: index + 1, total })}</p>
                 <p className={text.bodyStrong}>{item.situation}</p>
+            </LessonCardBox>
+            {/* The sentence always begins with one of the two stems; saying so
+                here means the only thing to work out is which, and the ending. */}
+            <LessonCardBox tone="muted" className="flex flex-col gap-1">
+                <p className={text.label}>{t("buildStemsLabel")}</p>
+                <p className={text.bodyStrong}>{t("stemGood")}</p>
+                <p className={text.bodyStrong}>{t("stemProblem")}</p>
             </LessonCardBox>
             <WordBank
                 tokens={tokens}
@@ -778,6 +786,7 @@ function conceptsMet(): Record<EthicsQuestion, EthicsConcept[]> {
 function Finished({ timeMs, wrongAttempts, chosen }: { timeMs: number; wrongAttempts: number; chosen: Record<string, 0 | 1> }) {
     const t = useTranslations("ethics");
     const score = ethicsScore(wrongAttempts);
+    useEffect(markEthicsPlayed, []);
 
     return (
         <div className="flex flex-col gap-6">
