@@ -9,6 +9,7 @@ import {
     ETHICS_QUESTION_LABEL,
     ETHICS_SLIDES,
     ETHICS_SORT_CARDS,
+    ETHICS_TAKEAWAYS,
     ETHICS_WORDS,
     ethicsScore,
 } from "@/constants/games/aiEthics";
@@ -31,6 +32,12 @@ describe("Ethics of AI content", () => {
         }
         // Not always the same button, or the tap teaches nothing.
         expect(new Set(ETHICS_SLIDES.map((slide) => slide.check.answer)).size).toBe(2);
+    });
+
+    it("gives each question one take-home action", () => {
+        for (const question of Object.keys(ETHICS_QUESTION_LABEL) as (keyof typeof ETHICS_TAKEAWAYS)[]) {
+            expect(ETHICS_TAKEAWAYS[question].split(" ").length).toBeLessThanOrEqual(22);
+        }
     });
 
     it("files every concept under one of the three questions", () => {
@@ -80,8 +87,8 @@ describe("Ethics of AI content", () => {
         }
     });
 
-    it("has three dilemmas with two sides each and no verdict", () => {
-        expect(ETHICS_DILEMMAS).toHaveLength(3);
+    it("has four dilemmas with two sides each and no verdict", () => {
+        expect(ETHICS_DILEMMAS).toHaveLength(4);
         for (const item of ETHICS_DILEMMAS) {
             expect(item.sides).toHaveLength(2);
             expect(item.sides[0].label).not.toBe(item.sides[1].label);

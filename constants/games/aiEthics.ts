@@ -17,7 +17,7 @@
 //   1. Sort      eight situations into Good or Problem, one at a time
 //   2. Match     eight situations against their reasons
 //   3. Build     six stem sentences from word tiles
-//   4. Dilemmas  three trade-offs with no right answer, said aloud to the teacher
+//   4. Dilemmas  four trade-offs with no right answer, said aloud to the teacher
 
 export type EthicsVerdict = "good" | "problem";
 
@@ -376,11 +376,11 @@ export const ETHICS_DILEMMAS: EthicsDilemma[] = [
         ],
     },
     {
-        id: "d-camera",
-        situation: "An AI camera at the lift stops theft, but it records everyone, all day.",
+        id: "d-location",
+        situation: "A bus app shows exact arrival times, but it keeps a record of everywhere you go.",
         sides: [
-            { label: "Good", reason: "It keeps everyone safe." },
-            { label: "Problem", reason: "It watches us all the time." },
+            { label: "Use it", reason: "It saves me time every day." },
+            { label: "Switch off location", reason: "Where I go is my business." },
         ],
     },
     {
@@ -391,7 +391,25 @@ export const ETHICS_DILEMMAS: EthicsDilemma[] = [
             { label: "Check it", reason: "A teacher is more accurate." },
         ],
     },
+    {
+        id: "d-write",
+        situation: "An app can write all your English messages for you, perfectly.",
+        sides: [
+            { label: "Let it write", reason: "My messages are clear." },
+            { label: "Write myself", reason: "I want to learn English." },
+        ],
+    },
 ];
+
+/**
+ * The three things to do, one per question, shown on the finish screen and
+ * meant to be the part of the lesson that leaves the room with them.
+ */
+export const ETHICS_TAKEAWAYS: Record<EthicsQuestion, string> = {
+    true: "Check important things with a real person. Not sure about a call or message? ScamShield: 1799.",
+    permission: "Ask before you use someone's face or voice. Never upload your FIN, work permit or passport.",
+    fair: "If AI works badly for you or your language, it is the AI that is wrong, not you. Say so.",
+};
 
 /** Same scoring as Word Match: start at 100, lose 10 for each wrong tap. */
 export const POINTS_PER_WRONG = 10;

@@ -277,7 +277,7 @@
         "title": "Ethics of AI",
         "sectionBody": "Is AI good, or a problem? Play as a team.",
         "cardGoal": "Sort the cards, then match the reasons.",
-        "cardMeta": "Game · 4 rounds",
+        "cardMeta": "Game · 15–20 min",
         "close": "Close game",
         "introBody": "Read the words together. Tap Start when your team is ready. The clock starts.",
         "introWords": "Words in this game",
@@ -324,6 +324,7 @@
         "choicesTitle": "Your team's choices",
         "learnOf": "Before you play · {index} of {total}",
         "learnEarlier": "Earlier today",
-        "learnAsk": "Your team: tap one"
+        "learnAsk": "Your team: tap one",
+        "takeHomeTitle": "Take home"
     }
 }

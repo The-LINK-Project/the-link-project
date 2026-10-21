@@ -20,6 +20,7 @@ import {
     ETHICS_QUESTION_LABEL,
     ETHICS_SLIDES,
     ETHICS_SORT_CARDS,
+    ETHICS_TAKEAWAYS,
     ETHICS_WORDS,
     ethicsScore,
     type EthicsBuildItem,
@@ -807,6 +808,18 @@ function Finished({ timeMs, wrongAttempts, chosen }: { timeMs: number; wrongAtte
                         </div>
                     </div>
                 ))}
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <p className={text.label}>{t("takeHomeTitle")}</p>
+                <LessonCardBox tone="muted" className="flex flex-col gap-3">
+                    {QUESTIONS.map((question) => (
+                        <div key={question} className="flex flex-col gap-0.5">
+                            <p className={text.bodyStrong}>{ETHICS_QUESTION_LABEL[question]}</p>
+                            <p className={text.body}>{ETHICS_TAKEAWAYS[question]}</p>
+                        </div>
+                    ))}
+                </LessonCardBox>
             </div>
 
             <div className="flex flex-col gap-2">
