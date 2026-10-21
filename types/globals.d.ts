@@ -236,11 +236,18 @@ declare type SurveyDefinition = {
     /** Bump this for a new session; responses are keyed on it. */
     id: string;
     title: string;
+    /** Who it was for and when, so admins can tell surveys apart. */
+    label: string;
+    /** The page that serves it, e.g. "/mwcsurvey". */
+    path: string;
+    /** Whether it takes answers. A closed survey keeps its results. */
+    open: boolean;
     /** Shown on the banner, e.g. "about 10 minutes". */
     timeEstimate: string;
     consent: {
         heading: string;
-        body: string;
+        /** Optional: the heading can stand alone. */
+        body?: string;
         startLabel: string;
         declineLabel: string;
     };
@@ -273,6 +280,7 @@ declare type SurveyBannerState =
           show: true;
           variant: "invite" | "resume" | "thanks";
           surveyId: string;
+          path: string;
           timeEstimate: string;
           answeredCount: number;
           questionCount: number;

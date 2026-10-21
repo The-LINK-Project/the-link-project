@@ -387,7 +387,7 @@ export default function SurveyResultsClient({
     if (results.length === 0) {
         return (
             <p className="text-slate-600">
-                No surveys defined yet. Add one in
+                No surveys defined yet. See
                 constants/survey/feedbackSurvey.ts.
             </p>
         );
@@ -411,9 +411,11 @@ export default function SurveyResultsClient({
                             <div className="flex flex-wrap items-center justify-between gap-4">
                                 <div>
                                     <CardTitle className="text-xl text-slate-900">
-                                        {definition.title}
+                                        {definition.label}
                                         <span className="ml-2 font-mono text-sm font-normal text-slate-400">
+                                            {definition.path} ·{" "}
                                             {survey.surveyId}
+                                            {!definition.open && " · closed"}
                                         </span>
                                     </CardTitle>
                                     <CardDescription>

@@ -1,14 +1,11 @@
 import React from "react";
 import { ensureUser } from "@/lib/actions/user.actions";
 import { getSurveyBannerState } from "@/lib/actions/survey.actions";
+import { DASHBOARD_SURVEY_ID } from "@/constants/survey/feedbackSurvey";
 import LessonHome from "@/components/learn/LessonHome";
 import SurveyBanner from "@/components/survey/SurveyBanner";
 import { getTranslations } from "next-intl/server";
 import { unstable_rethrow } from "next/navigation";
-
-// Keep the reusable survey prompt dormant now that the focus group is over.
-// The survey route, responses, and admin reporting remain available.
-const SHOW_SURVEY_BANNER = false;
 
 // Per-user data — must never be statically prerendered
 export const dynamic = "force-dynamic";
@@ -25,8 +22,9 @@ const DashboardPage = async () => {
         console.error("Couldn't prepare the user's row:", error);
     }
 
-    const surveyBannerState = SHOW_SURVEY_BANNER
-        ? await getSurveyBannerState()
+    // Off unless DASHBOARD_SURVEY_ID names a survey (see feedbackSurvey.ts)
+    const surveyBannerState = DASHBOARD_SURVEY_ID
+        ? await getSurveyBannerState(DASHBOARD_SURVEY_ID)
         : null;
     const t = await getTranslations("dashboard");
 

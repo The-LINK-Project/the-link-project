@@ -314,7 +314,7 @@ export default function SurveyClient({
     const handleDecline = async () => {
         setIsLeaving(true);
         try {
-            await declineSurvey();
+            await declineSurvey(survey.id);
         } catch {
             // Even if this fails, leave quietly as asked.
         }
@@ -351,7 +351,7 @@ export default function SurveyClient({
                 );
                 return;
             }
-            const result = await submitSurvey();
+            const result = await submitSurvey(survey.id);
             if (result.success) {
                 clearSurveyDraft(survey.id);
                 setScreen("done");
@@ -407,7 +407,11 @@ export default function SurveyClient({
                 <h1 className="text-3xl font-bold leading-snug">
                     {survey.consent.heading}
                 </h1>
-                <p className="text-xl leading-relaxed">{survey.consent.body}</p>
+                {survey.consent.body && (
+                    <p className="text-xl leading-relaxed">
+                        {survey.consent.body}
+                    </p>
+                )}
                 <p className="text-lg text-muted-foreground">
                     It takes {survey.timeEstimate}.
                 </p>

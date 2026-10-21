@@ -5,7 +5,7 @@ import SurveyResponse from "@/lib/database/models/surveyResponse.model";
 import { ensureUser } from "./user.actions";
 import { isAdmin } from "@/lib/auth";
 import {
-    getActiveSurvey,
+    getOpenSurvey,
     getSurveyById,
     getSurveyQuestions,
 } from "@/constants/survey/feedbackSurvey";
@@ -147,9 +147,11 @@ function serializeState(surveyId: string, response: any): SurveyStateForUser {
  * Everything the dashboard banner needs in one round trip. Never throws — a
  * dead database must not take the dashboard down with it.
  */
-export async function getSurveyBannerState(): Promise<SurveyBannerState> {
+export async function getSurveyBannerState(
+    surveyId: string,
+): Promise<SurveyBannerState> {
     try {
-        const survey = getActiveSurvey();
+        const survey = getOpenSurvey(surveyId);
         if (!survey) return { show: false };
 
         await connectToDatabase();
@@ -174,6 +176,7 @@ export async function getSurveyBannerState(): Promise<SurveyBannerState> {
                 show: true,
                 variant: "thanks",
                 surveyId: survey.id,
+                path: survey.path,
                 timeEstimate: survey.timeEstimate,
                 answeredCount: questionCount,
                 questionCount,
@@ -196,6 +199,7 @@ export async function getSurveyBannerState(): Promise<SurveyBannerState> {
             show: true,
             variant: answeredCount > 0 ? "resume" : "invite",
             surveyId: survey.id,
+            path: survey.path,
             timeEstimate: survey.timeEstimate,
             answeredCount,
             questionCount,
@@ -206,10 +210,12 @@ export async function getSurveyBannerState(): Promise<SurveyBannerState> {
     }
 }
 
-/** The signed-in user's own draft (or submitted state) for the open survey. */
-export async function getSurveyStateForUser(): Promise<SurveyStateForUser | null> {
+/** The signed-in user's own draft (or submitted state) for an open survey. */
+export async function getSurveyStateForUser(
+    surveyId: string,
+): Promise<SurveyStateForUser | null> {
     try {
-        const survey = getActiveSurvey();
+        const survey = getOpenSurvey(surveyId);
         if (!survey) return null;
 
         await connectToDatabase();
@@ -234,9 +240,9 @@ export async function getSurveyStateForUser(): Promise<SurveyStateForUser | null
  * return value and must never interrupt the person mid-survey.
  *
  * `surveyId` is the id of the survey the server handed this session (the page
- * renders it from getActiveSurvey and the client echoes it back). It is the
- * only evidence available of what the caller was actually served, and every
- * write is bound to it.
+ * renders that survey and the client echoes its id back). It is the only
+ * evidence available of what the caller was actually served, and every write
+ * is bound to it.
  */
 export async function saveSurveyAnswer(
     surveyId: string,
@@ -245,19 +251,14 @@ export async function saveSurveyAnswer(
     lastQuestionId?: string,
 ): Promise<SurveySaveResult> {
     try {
-        const survey = getActiveSurvey();
-        if (!survey) return { success: false, message: "No survey is open" };
-
         // A question is only writable if it comes from the question set this
-        // session was served. Without this, a page left open across a survey
-        // change — or any other mix-up between what was shown and what is
-        // being written — files answers under whichever survey happens to be
-        // open now, as if the person had been asked those questions.
+        // session was served, and only while that survey is open. Several
+        // surveys can be open at once, so the id the page was rendered with
+        // decides which one an answer belongs to — never "whichever is open".
         // "Unknown question" is the client's signal to drop a save for good
         // rather than retry it forever; a closed survey can never accept one.
-        if (surveyId !== survey.id) {
-            return { success: false, message: "Unknown question" };
-        }
+        const survey = getOpenSurvey(surveyId);
+        if (!survey) return { success: false, message: "Unknown question" };
 
         const questions = getSurveyQuestions(survey);
         const question = questions.find((item) => item.id === questionId);
@@ -326,9 +327,11 @@ export async function saveSurveyAnswer(
 }
 
 /** "No thank you" on the consent screen. Quietens the banner for a day. */
-export async function declineSurvey(): Promise<SurveySaveResult> {
+export async function declineSurvey(
+    surveyId: string,
+): Promise<SurveySaveResult> {
     try {
-        const survey = getActiveSurvey();
+        const survey = getOpenSurvey(surveyId);
         if (!survey) return { success: false, message: "No survey is open" };
 
         await connectToDatabase();
@@ -365,9 +368,11 @@ export async function declineSurvey(): Promise<SurveySaveResult> {
  * answered; everything else may be blank. Idempotent — submitting twice
  * changes nothing.
  */
-export async function submitSurvey(): Promise<SurveySaveResult> {
+export async function submitSurvey(
+    surveyId: string,
+): Promise<SurveySaveResult> {
     try {
-        const survey = getActiveSurvey();
+        const survey = getOpenSurvey(surveyId);
         if (!survey) return { success: false, message: "No survey is open" };
 
         await connectToDatabase();

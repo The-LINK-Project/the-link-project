@@ -67,6 +67,9 @@ describe("middleware guard", () => {
         "/ta/admin/users",
         "/lessons/mrt-basics",
         "/survey",
+        "/homefgsurvey",
+        "/mwcsurvey",
+        "/bn/mwcsurvey",
         "/legacy",
         "/EN/dashboard",
         "/en/./dashboard",
@@ -88,7 +91,7 @@ describe("middleware guard", () => {
             if (!isRedirect(status)) {
                 // Not redirected: what is served must be public or a 404
                 expect(served ?? "").not.toMatch(
-                    /\/(dashboard|admin|lessons|survey|legacy)(\/|$)/,
+                    /\/(dashboard|admin|lessons|\w*survey|legacy)(\/|$)/,
                 );
                 return;
             }

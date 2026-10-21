@@ -58,7 +58,7 @@ export default function SurveyBanner({ state }: SurveyBannerProps) {
                     size="lg"
                     className="min-h-[56px] w-full text-lg sm:w-auto"
                 >
-                    <Link href="/survey">
+                    <Link href={state.path}>
                         {isResume ? "Continue" : "Start"}
                         <ArrowRight className="h-5 w-5" aria-hidden="true" />
                     </Link>
