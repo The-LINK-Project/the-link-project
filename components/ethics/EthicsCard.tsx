@@ -8,7 +8,7 @@ import { EthicsCoin } from "./EthicsCoin";
 
 /**
  * The Ethics of AI game on the dashboard, drawn like a lesson key so it sits
- * naturally under Quick practice. Nothing is tracked, so the ring is empty
+ * naturally beside the workshop lessons. Nothing is tracked, so the ring is empty
  * and the coin's colour is its own.
  */
 const RING = "#e5e5e5";

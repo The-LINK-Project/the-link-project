@@ -29,7 +29,6 @@ export default function LessonHome() {
 
 function LessonHomeContent() {
     const t = useTranslations("lessons");
-    const ethics = useTranslations("ethics");
     const data = useProgressData();
     const lessons = listLessons();
     const workshop = listWorkshopLessons();
@@ -69,31 +68,31 @@ function LessonHomeContent() {
                 />
             ) : null}
 
-            {workshop.length > 0 ? (
-                <>
-                    <div className="flex flex-col gap-1 pt-2">
-                        <h2 className={text.heading}>{t("workshopTitle")}</h2>
-                        <p className={text.caption}>{t("workshopBody")}</p>
-                    </div>
-                    <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                        {workshop.map((lesson, index) => {
-                            const status = workshopStatuses[index];
-                            return (
-                                <LessonCard
-                                    key={lesson.id}
-                                    lesson={lesson}
-                                    status={status}
-                                    speakHref={
-                                        status.finished !== "none" && refs.get(lesson.id)!.speakable
-                                            ? `/lessons/${lesson.id}/speak`
-                                            : undefined
-                                    }
-                                />
-                            );
-                        })}
-                    </div>
-                </>
-            ) : null}
+            {/* The Ethics of AI game sits with the workshop lessons. Nothing
+                about it is tracked, so it is a plain link rather than a lesson
+                with a status, and it shows even when no workshop lesson does. */}
+            <div className="flex flex-col gap-1 pt-2">
+                <h2 className={text.heading}>{t("workshopTitle")}</h2>
+                <p className={text.caption}>{t("workshopBody")}</p>
+            </div>
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+                {workshop.map((lesson, index) => {
+                    const status = workshopStatuses[index];
+                    return (
+                        <LessonCard
+                            key={lesson.id}
+                            lesson={lesson}
+                            status={status}
+                            speakHref={
+                                status.finished !== "none" && refs.get(lesson.id)!.speakable
+                                    ? `/lessons/${lesson.id}/speak`
+                                    : undefined
+                            }
+                        />
+                    );
+                })}
+                <EthicsCard />
+            </div>
 
             <div className="flex flex-col gap-1 pt-2">
                 <h2 className={text.heading}>{t("lessonsTitle")}</h2>
@@ -141,16 +140,6 @@ function LessonHomeContent() {
                     status={{ finished: "none", run: mixStatus.run, talk: null }}
                     doneLabel={mixDone ? t("mixDoneToday") : undefined}
                 />
-            </div>
-
-            {/* The workshop's AI-literacy game. Nothing about it is tracked,
-                so it is a plain link rather than a lesson with a status. */}
-            <div className="flex flex-col gap-1 pt-2">
-                <h2 className={text.heading}>{ethics("title")}</h2>
-                <p className={text.caption}>{ethics("sectionBody")}</p>
-            </div>
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                <EthicsCard />
             </div>
         </div>
     );
