@@ -22,7 +22,36 @@ import { cn } from "@/lib/utils";
  * team of four or five reads it together on one laptop. Tips and ideas sit
  * above the conversation; an idea fills the message box rather than sending,
  * so the team reads the prompt and can change it before it goes.
+ *
+ * The conversation is kept for the tab, as the Ethics game is. On a phone the
+ * back swipe, or the browser reloading a tab that sat behind another app,
+ * would otherwise throw it away. Back, Next and Close forget it, as New chat
+ * does.
  */
+const chatKey = (lessonId: string) => `link.chat.${lessonId}.v1`;
+
+function readChat(lessonId: string): ChatMessageType[] {
+    try {
+        const saved: unknown = JSON.parse(window.sessionStorage.getItem(chatKey(lessonId)) ?? "[]");
+        if (!Array.isArray(saved)) return [];
+        return saved.filter(
+            (message): message is ChatMessageType =>
+                (message?.role === "user" || message?.role === "model") && typeof message.text === "string",
+        );
+    } catch {
+        return [];
+    }
+}
+
+function writeChat(lessonId: string, messages: ChatMessageType[]) {
+    try {
+        if (messages.length > 0) window.sessionStorage.setItem(chatKey(lessonId), JSON.stringify(messages));
+        else window.sessionStorage.removeItem(chatKey(lessonId));
+    } catch {
+        // Private browsing or a full disk: the chat carries on, unkept.
+    }
+}
+
 export default function PromptPractice({ lessonId }: { lessonId: string }) {
     const t = useTranslations("lessons");
     const native = useLessonLocalized();
@@ -37,6 +66,25 @@ export default function PromptPractice({ lessonId }: { lessonId: string }) {
     const [pending, setPending] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
+
+    // Put back after the first draw, which the server makes without the tab's storage.
+    const [restored, setRestored] = useState(false);
+    useEffect(() => {
+        setMessages(readChat(lessonId));
+        setRestored(true);
+    }, [lessonId]);
+
+    const leaving = useRef(false);
+    useEffect(() => {
+        if (restored && !leaving.current) writeChat(lessonId, messages);
+    }, [restored, lessonId, messages]);
+
+    // The page's own ways out forget the conversation.
+    const leave = (href: string) => {
+        leaving.current = true;
+        writeChat(lessonId, []);
+        router.push(href);
+    };
 
     // Follow the conversation as it grows.
     useEffect(() => {
@@ -106,7 +154,7 @@ export default function PromptPractice({ lessonId }: { lessonId: string }) {
         <LessonShell
             closeLabel={t("quit")}
             icon={lesson.icon}
-            onClose={() => router.push("/dashboard")}
+            onClose={() => leave("/dashboard")}
             scrollRef={scrollRef}
             header={
                 messages.length > 0 ? (
@@ -146,8 +194,8 @@ export default function PromptPractice({ lessonId }: { lessonId: string }) {
                     </form>
                     {/* The message box fills the footer, so Back and Next have a row of their own. */}
                     <StepNav
-                        onBack={() => router.push(`/lessons/${lesson.id}`)}
-                        onNext={() => router.push(speakNext ? `/lessons/${lesson.id}/speak` : "/dashboard")}
+                        onBack={() => leave(`/lessons/${lesson.id}`)}
+                        onNext={() => leave(speakNext ? `/lessons/${lesson.id}/speak` : "/dashboard")}
                         nextLabel={speakNext ? t("next") : t("finish")}
                     />
                 </>
