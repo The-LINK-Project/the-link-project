@@ -53,6 +53,19 @@ import { ETHICS_HUE, EthicsCoin } from "./EthicsCoin";
  * (see SAVED_KEY).
  */
 const ROUNDS = 4;
+
+/**
+ * The slides' share of the one progress bar, by how many things there are to
+ * do: they come first and fill it that far, and the rounds carry on from there,
+ * so the bar never falls back when the game starts.
+ */
+const SLIDES_SHARE =
+    ETHICS_SLIDES.length /
+    (ETHICS_SLIDES.length +
+        ETHICS_SORT_CARDS.length +
+        ETHICS_MATCH_PAIRS.length +
+        ETHICS_BUILD_ITEMS.length +
+        ETHICS_DILEMMAS.length);
 const WRONG_PAIR_FEEDBACK_MS = 600;
 
 /**
@@ -129,6 +142,12 @@ type SavedGame = {
     wrongAttempts: number;
     /** Time played when it was kept. Time away from the game is not counted. */
     playedMs: number;
+    /**
+     * The sentence being built on this screen and not checked yet, as places in
+     * its shuffled words. A phone that reloads the tab behind another app must
+     * not make the team tap it out again.
+     */
+    placed?: number[];
 };
 
 function isSavedGame(value: unknown): value is SavedGame {
@@ -151,6 +170,18 @@ function isSavedGame(value: unknown): value is SavedGame {
         game.playedMs >= 0 &&
         game.playedMs < 24 * 60 * 60 * 1000
     );
+}
+
+/** The saved half-built sentence, if it still fits the screen the game is on. */
+function placedOf(game: SavedGame): number[] {
+    const step = STEPS[game.position];
+    if (step.kind !== "build" || !("index" in step) || !Array.isArray(game.placed)) return [];
+    const item = ETHICS_BUILD_ITEMS[step.index];
+    const size = item.answer.length + item.decoys.length;
+    const fits =
+        game.placed.every((i) => Number.isInteger(i) && i >= 0 && i < size) &&
+        new Set(game.placed).size === game.placed.length;
+    return fits ? game.placed : [];
 }
 
 function readSavedGame(owner: string): SavedGame | null {
@@ -240,6 +271,7 @@ export function AiEthicsGame({ owner }: { owner: string }) {
             setWrongAttempts(saved.wrongAttempts);
             setPlayedMs(saved.playedMs);
             setClockStart(Date.now() - saved.playedMs);
+            setPlaced(placedOf(saved));
         }
         setRestored(true);
     }, [owner, restored]);
@@ -265,11 +297,12 @@ export function AiEthicsGame({ owner }: { owner: string }) {
             chosen,
             wrongAttempts,
             playedMs: Math.max(0, pausedAt.current ?? (running ? Date.now() - clockStart : playedMs)),
+            placed,
         });
     };
     useEffect(() => {
         keep.current();
-    }, [restored, position, reached, slidePicks, sortPicks, matched, builds, chosen, wrongAttempts, playedMs]);
+    }, [restored, position, reached, slidePicks, sortPicks, matched, builds, chosen, wrongAttempts, playedMs, placed]);
     useEffect(() => {
         if (!restored || !running) return;
         const timer = setInterval(() => keep.current(), 2000);
@@ -278,8 +311,12 @@ export function AiEthicsGame({ owner }: { owner: string }) {
 
     // The clock stops while the game is out of sight. A locked phone or another
     // app is not time spent playing, just as a reload is not.
+    // While away the header shows the time it stopped at, and the running
+    // clock is drawn again only together with its new start: a running clock
+    // left ticking in the background showed the time away for a moment first.
     const clock = useRef({ running, clockStart });
     clock.current = { running, clockStart };
+    const [away, setAway] = useState(false);
     useEffect(() => {
         const onVisibility = () => {
             if (document.visibilityState === "hidden") {
@@ -287,10 +324,14 @@ export function AiEthicsGame({ owner }: { owner: string }) {
                     pausedAt.current = Date.now() - clock.current.clockStart;
                     setPlayedMs(pausedAt.current);
                 }
+                setAway(true);
                 keep.current();
-            } else if (pausedAt.current !== null) {
-                if (clock.current.running) setClockStart(Date.now() - pausedAt.current);
+            } else {
+                if (pausedAt.current !== null && clock.current.running) {
+                    setClockStart(Date.now() - pausedAt.current);
+                }
                 pausedAt.current = null;
+                setAway(false);
             }
         };
         const onPageHide = () => keep.current();
@@ -473,25 +514,26 @@ export function AiEthicsGame({ owner }: { owner: string }) {
     const canRestart = reached > 0 || count(slidePicks) > 0;
 
     // Counted from the answers, not the screen, so the bar holds still while
-    // the team looks back.
-    const progress =
+    // the team looks back. One bar for the slides and the rounds after them.
+    const rounds =
         (count(sortPicks) / ETHICS_SORT_CARDS.length +
             matched.length / ETHICS_MATCH_PAIRS.length +
             count(builds) / ETHICS_BUILD_ITEMS.length +
             count(chosen) / ETHICS_DILEMMAS.length) /
         ROUNDS;
+    const progress = SLIDES_SHARE * (count(slidePicks) / ETHICS_SLIDES.length) + (1 - SLIDES_SHARE) * rounds;
 
-    // The slides show how far through them the team is, with no clock: the
-    // clock belongs to the game and only starts on the word screen's Start.
+    // No clock on the slides and the word screen: the clock belongs to the
+    // game and only starts on the word screen's Start.
     const header =
-        step.kind === "learn" ? (
-            <LessonProgress value={count(slidePicks) / ETHICS_SLIDES.length} />
-        ) : step.kind === "intro" || step.kind === "finished" ? null : (
+        step.kind === "learn" || step.kind === "intro" ? (
+            <LessonProgress value={progress} />
+        ) : step.kind === "finished" ? null : (
             <>
                 <LessonProgress value={progress} />
                 <span className="flex shrink-0 items-center gap-1 text-base font-bold tabular-nums text-lesson-muted">
                     <Timer className="size-5" />
-                    {running ? <GameTimer startTime={clockStart} running /> : formatTime(playedMs)}
+                    {running && !away ? <GameTimer startTime={clockStart} running /> : formatTime(playedMs)}
                 </span>
             </>
         );
