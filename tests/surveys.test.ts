@@ -6,6 +6,8 @@ import {
     HOME_PAGE_SURVEY_ID,
     SURVEYS,
     getOpenSurvey,
+    getSurveyAdminHref,
+    getSurveyByPath,
     getSurveyQuestions,
 } from "@/constants/survey/feedbackSurvey";
 import { HOME_FG_SURVEY } from "@/constants/survey/homeFgSurvey";
@@ -35,6 +37,15 @@ describe("survey definitions", () => {
                 `${survey.path} has no page`,
             ).toBe(true);
         }
+    });
+
+    it("gives every survey its own admin results page", () => {
+        for (const survey of SURVEYS) {
+            const href = getSurveyAdminHref(survey);
+            expect(href).toBe(`/admin/surveys${survey.path}`);
+            expect(getSurveyByPath(survey.path)).toBe(survey);
+        }
+        expect(getSurveyByPath("/nope")).toBeNull();
     });
 
     it.each(SURVEYS.map((survey) => [survey.id, survey] as const))(
