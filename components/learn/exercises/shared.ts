@@ -30,6 +30,11 @@ export type ExerciseProps<E extends Exercise> = {
     result: GradeResult | null;
     /** True after grading: inputs must stop responding. */
     locked: boolean;
+    /**
+     * Shown before in this run and missed: its options come in a different
+     * order this time (see retryOrder).
+     */
+    again?: boolean;
 };
 
 /** Exercise types that grade themselves and need no Check button. */

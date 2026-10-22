@@ -29,7 +29,8 @@ const DashboardPage = async () => {
     const t = await getTranslations("dashboard");
 
     return (
-        <section className="p-6">
+        // Room at the bottom so the last card can scroll clear of the floating chat button
+        <section className="p-6 pb-28">
             {surveyBannerState && <SurveyBanner state={surveyBannerState} />}
 
             <div className="mb-8 flex justify-between items-start">

@@ -6,7 +6,7 @@ import { getDailyMix, listLessons, listWorkshopLessons } from "@/lib/lessons/dat
 import { fingerprint } from "@/lib/lessons/session";
 import { continuePoint, doneToday, lessonStatus, type LessonRef } from "@/lib/progress/model";
 import { useProgressData } from "@/lib/progress/store";
-import { canPractiseSpeaking } from "@/lib/speaking/context";
+import { canPractiseSpeaking, speakingOwed } from "@/lib/speaking/context";
 
 import { EthicsCard } from "@/components/ethics/EthicsCard";
 
@@ -38,17 +38,13 @@ function LessonHomeContent() {
     const refs = new Map<string, LessonRef>(
         all.map((lesson) => [
             lesson.id,
-            { id: lesson.id, fingerprint: fingerprint(lesson), speakable: canPractiseSpeaking(lesson) },
+            // A workshop lesson is done with its exercises (see speakingOwed),
+            // so it is never left "in progress" waiting for a talk, and the
+            // Continue card never points at one.
+            { id: lesson.id, fingerprint: fingerprint(lesson), speakable: speakingOwed(lesson) },
         ]),
     );
-    // A workshop lesson's run in progress can be continued from here, but its
-    // talk is not offered: the workshops have no voice chat, and the way on
-    // from AI Words is the chat it ends with.
-    const workshopIds = new Set(workshop.map((lesson) => lesson.id));
-    const point = continuePoint(
-        data,
-        [...refs.values()].map((ref) => (workshopIds.has(ref.id) ? { ...ref, speakable: false } : ref)),
-    );
+    const point = continuePoint(data, [...refs.values()]);
     const continuing = point ? all.find((lesson) => lesson.id === point.lessonId) : undefined;
 
     const statuses = lessons.map((lesson) => lessonStatus(data, refs.get(lesson.id)!));
@@ -90,8 +86,9 @@ function LessonHomeContent() {
                             key={lesson.id}
                             lesson={lesson}
                             status={status}
+                            // Still on offer once the exercises are done, as another go.
                             speakHref={
-                                status.finished !== "none" && refs.get(lesson.id)!.speakable
+                                status.finished !== "none" && canPractiseSpeaking(lesson)
                                     ? `/lessons/${lesson.id}/speak`
                                     : undefined
                             }

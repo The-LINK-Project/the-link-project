@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useLessonLocalized } from "@/lib/lessons/localized";
 import { vocabByIds } from "@/lib/lessons/lookup";
-import { seededDerangement, seededShuffle } from "@/lib/lessons/shuffle";
+import { retryOrder, seededDerangement, seededShuffle } from "@/lib/lessons/shuffle";
 import type { MatchPairsExercise } from "@/lib/lessons/types";
 
 import { Tile } from "../Tile";
@@ -29,10 +29,19 @@ type Selection = { side: Side; pairId: string } | null;
  */
 type WrongPair = Record<Side, string> | null;
 
-export function TapThePairs({ exercise, lesson, onSelfSubmit, locked }: ExerciseProps<MatchPairsExercise>) {
+export function TapThePairs({
+    exercise,
+    lesson,
+    onSelfSubmit,
+    locked,
+    again = false,
+}: ExerciseProps<MatchPairsExercise>) {
     const localized = useLessonLocalized();
     const pairs = useMemo(() => vocabByIds(lesson, exercise.vocabIds), [lesson, exercise.vocabIds]);
-    const terms = useMemo(() => seededShuffle(pairs, `${exercise.id}-terms`), [pairs, exercise.id]);
+    const terms = useMemo(
+        () => retryOrder(seededShuffle(pairs, `${exercise.id}-terms`), `${exercise.id}-terms`, again),
+        [pairs, exercise.id, again],
+    );
     // Never on the same row as its term, or reading straight across gives it away.
     const meanings = useMemo(() => seededDerangement(terms, `${exercise.id}-meanings`), [terms, exercise.id]);
 

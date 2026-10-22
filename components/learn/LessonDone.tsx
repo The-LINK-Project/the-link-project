@@ -40,7 +40,7 @@ export function LessonDone({
                 fraction={speakingLeft ? 0.5 : 1}
                 done={!speakingLeft}
             >
-                {speakingLeft ? (
+                {speakingLeft || lesson.chatPractice ? (
                     <p className={text.caption}>
                         {lesson.chatPractice ? t("summaryChatNext") : t("summarySpeakNext")}
                     </p>
@@ -74,12 +74,21 @@ export function LessonDone({
 }
 
 /** Pinned to the bottom, like every other way forward in a lesson. */
+/**
+ * A step's buttons, one under another; side by side on a phone held sideways,
+ * where stacked they would leave the page above them no room.
+ */
+export const ACTIONS = "flex flex-col gap-2 short:flex-row short:*:min-w-0 short:*:flex-1";
+
 export function LessonDoneActions({
     onAgain,
+    resuming = false,
     onSpeak,
     onChat,
 }: {
     onAgain: () => void;
+    /** Another go is already part-way through, and `onAgain` carries on with it. */
+    resuming?: boolean;
     onSpeak?: () => void;
     /** Present when the lesson ends in prompting practice with LINK Assistant. */
     onChat?: () => void;
@@ -87,14 +96,14 @@ export function LessonDoneActions({
     const t = useTranslations("lessons");
     if (onChat) {
         return (
-            <div className="flex flex-col gap-2">
+            <div className={ACTIONS}>
                 <LessonButton
                     title={t("summaryChat")}
                     size="lg"
                     icon={<MessageCircle className="size-5" />}
                     onClick={onChat}
                 />
-                <LessonButton title={t("summaryRetry")} variant="outline" onClick={onAgain} />
+                <LessonButton title={t(resuming ? "continue" : "summaryRetry")} variant="outline" onClick={onAgain} />
                 {onSpeak ? (
                     <LessonButton
                         title={t("summarySpeak")}
@@ -106,11 +115,11 @@ export function LessonDoneActions({
             </div>
         );
     }
-    if (!onSpeak) return <LessonButton title={t("summaryRetry")} size="lg" onClick={onAgain} />;
+    if (!onSpeak) return <LessonButton title={t(resuming ? "continue" : "summaryRetry")} size="lg" onClick={onAgain} />;
     return (
-        <div className="flex flex-col gap-2">
+        <div className={ACTIONS}>
             <LessonButton title={t("summarySpeak")} size="lg" icon={<Mic className="size-5" />} onClick={onSpeak} />
-            <LessonButton title={t("summaryRetry")} variant="outline" onClick={onAgain} />
+            <LessonButton title={t(resuming ? "continue" : "summaryRetry")} variant="outline" onClick={onAgain} />
         </div>
     );
 }

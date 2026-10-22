@@ -8,6 +8,8 @@
    too short for the card, so a lesson fills the screen there too. */
 @custom-variant roomy (@media (min-width: 40rem) and (min-height: 36rem));
 @custom-variant cramped (@media not all and (min-width: 40rem) and (min-height: 36rem));
+/* A phone held sideways: too short to stack a step's buttons under its page. */
+@custom-variant short (@media (max-height: 30rem));
 
 @theme inline {
     --color-background: var(--background);
@@ -289,6 +291,28 @@ html:has([data-lesson-shell]) body {
 /* A survey is answered on a phone at a workshop; the floating chat would sit
    on its buttons and is no part of it. */
 body:has([data-survey]) [data-chat-launcher] {
+    display: none;
+}
+
+/* The same again for browsers without :has(), from the mark the lesson or
+   survey puts on the page once it runs (components/shared/PageMark.tsx). Kept
+   as rules of their own: a browser that cannot read one selector in a list
+   drops the whole rule. */
+html[data-lesson],
+html[data-lesson] body {
+    overscroll-behavior-y: none;
+}
+@media not all and (min-width: 40rem) and (min-height: 36rem) {
+    html[data-lesson] [data-site-header] {
+        display: none;
+    }
+}
+@media (max-width: 63.99rem) {
+    html[data-lesson] [data-chat-launcher] {
+        display: none;
+    }
+}
+html[data-survey] [data-chat-launcher] {
     display: none;
 }
 

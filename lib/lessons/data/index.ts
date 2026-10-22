@@ -24,6 +24,11 @@ const LESSONS: Lesson[] = [mrtBasics, hawkerFood, clinicVisit, workSafety];
  */
 const WORKSHOP_LESSONS: Lesson[] = [aiBasics];
 
+/** Whether a lesson is one of the workshop lessons above. */
+export function isWorkshopLesson(id: string): boolean {
+    return WORKSHOP_LESSONS.some((lesson) => lesson.id === id);
+}
+
 export function listLessons(): Lesson[] {
     // A copy: this list stands in for an API response, and a caller sorting or
     // filtering it in place must not reorder the catalogue for everyone else.

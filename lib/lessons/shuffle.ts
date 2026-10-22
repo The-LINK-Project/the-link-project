@@ -53,3 +53,20 @@ export function seededDerangement<T>(first: readonly T[], seed: string): T[] {
         if (candidate.every((item, i) => item !== first[i])) return candidate;
     }
 }
+
+/**
+ * The order an exercise's options are shown in. The first time it is `first`
+ * (as written, or a shuffle seeded by the exercise). Coming back after a miss
+ * it is a different order, so the retry is answered by knowing the answer and
+ * not by remembering where its tile was: a missed last exercise comes back
+ * straight after its own feedback.
+ */
+export function retryOrder<T>(first: readonly T[], seed: string, again: boolean): T[] {
+    if (!again || first.length < 2) return [...first];
+    for (let attempt = 1; attempt <= 12; attempt++) {
+        const order = seededShuffle(first, `${seed}:again:${attempt}`);
+        if (order.some((item, i) => item !== first[i])) return order;
+    }
+    // Every shuffle tried came out as it was; turning it round still differs.
+    return [...first].reverse();
+}

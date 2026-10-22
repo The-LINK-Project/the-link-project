@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
 import { phraseById } from "@/lib/lessons/lookup";
-import { seededShuffle } from "@/lib/lessons/shuffle";
+import { retryOrder, seededShuffle } from "@/lib/lessons/shuffle";
 import { useSpeech } from "@/lib/lessons/speech";
 import type { ListenArrangeWordsExercise } from "@/lib/lessons/types";
 
@@ -27,13 +27,14 @@ export function ListenArrangeWords({
     onDraftChange,
     result,
     locked,
+    again = false,
 }: ExerciseProps<ListenArrangeWordsExercise>) {
     const t = useTranslations("lessons");
     const { speak, speaking, hasPlayed } = useSpeech();
     const sentence = phraseById(lesson, exercise.phraseId)?.text ?? "";
     const tokens = useMemo(
-        () => seededShuffle(exercise.tokens, exercise.id),
-        [exercise.id, exercise.tokens],
+        () => retryOrder(seededShuffle(exercise.tokens, exercise.id), exercise.id, again),
+        [exercise.id, exercise.tokens, again],
     );
     const placed = draft?.kind === "tokens" ? tokenIndices(draft.tokens, tokens) : [];
 

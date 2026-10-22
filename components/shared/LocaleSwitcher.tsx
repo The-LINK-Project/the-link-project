@@ -45,7 +45,8 @@ export default function LocaleSwitcher() {
                 <Button
                     variant="outline"
                     size="sm"
-                    className="px-2 py-1 text-xs sm:text-sm gap-1 rounded-md border-gray-300/80"
+                    // Reaches past its edges to a thumb-sized 44px (see Header).
+                    className="relative px-2 py-1 text-xs sm:text-sm gap-1 rounded-md border-gray-300/80 after:absolute after:-inset-x-1.5 after:-inset-y-2 after:content-['']"
                 >
                     {currentLabel}
                     {open ? (

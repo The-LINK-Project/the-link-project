@@ -1,3 +1,4 @@
+import { PageMark } from "@/components/shared/PageMark";
 import { requireSignedIn } from "@/lib/auth";
 
 interface SurveyLayoutProps {
@@ -15,6 +16,7 @@ export default async function SurveyLayout({ children }: SurveyLayoutProps) {
     // sits on the survey's own buttons (see globals.css).
     return (
         <div data-survey className="contents">
+            <PageMark name="survey" />
             {children}
         </div>
     );

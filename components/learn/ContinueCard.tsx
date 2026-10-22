@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { useLessonLocalized } from "@/lib/lessons/localized";
 import type { Lesson } from "@/lib/lessons/types";
 import type { ContinuePoint } from "@/lib/progress/model";
-import { canPractiseSpeaking } from "@/lib/speaking/context";
+import { speakingOwed } from "@/lib/speaking/context";
 
 import { Medallion } from "./Medallion";
 import { text } from "./ui";
@@ -32,7 +32,7 @@ export function ContinueCard({ lesson, point, href }: { lesson: Lesson; point: C
     const share = point.kind === "speak" ? 0.5 : point.done / point.total;
     // How far through the whole lesson, for the ring, the same as on its card:
     // with the exercises behind them and the talk ahead, the lesson is half done.
-    const half = canPractiseSpeaking(lesson) ? 0.5 : 1;
+    const half = speakingOwed(lesson) ? 0.5 : 1;
     const whole =
         point.kind === "speak" ? half : point.kind === "talk" ? half + (1 - half) * share : half * share;
 

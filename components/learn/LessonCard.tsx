@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { useLessonLocalized } from "@/lib/lessons/localized";
 import type { Lesson } from "@/lib/lessons/types";
 import { lessonStage, type LessonStatus } from "@/lib/progress/model";
-import { canPractiseSpeaking } from "@/lib/speaking/context";
+import { speakingOwed } from "@/lib/speaking/context";
 import { cn } from "@/lib/utils";
 
 import { Medallion, STAGE_COLORS } from "./Medallion";
@@ -63,7 +63,7 @@ export function LessonCard({ lesson, status, next = false, doneLabel, speakHref 
             ? t("continueTalk", talk)
             : t("statusSpeakingLeft");
 
-    const fraction = progressShare(status, canPractiseSpeaking(lesson));
+    const fraction = progressShare(status, speakingOwed(lesson));
     // Owed, not optional, until the talk is done: it is the way to finish.
     const speakOwed = stage !== "done";
 
