@@ -23,18 +23,24 @@ import { cn } from "@/lib/utils";
  * above the conversation; an idea fills the message box rather than sending,
  * so the team reads the prompt and can change it before it goes.
  *
- * The conversation is kept for the tab, as the Ethics game is. On a phone the
- * back swipe, or the browser reloading a tab that sat behind another app,
- * would otherwise throw it away. Back, Next and Close forget it, as New chat
- * does.
+ * The conversation is kept for the tab, as the Ethics game is: however the
+ * page is left (Back, Next, Close, a back swipe, or the browser reloading a tab
+ * that sat behind another app), coming back shows it again. New chat clears it
+ * for the next team. It is kept for the account that wrote it, and for a few
+ * hours.
  */
-const chatKey = (lessonId: string) => `link.chat.${lessonId}.v1`;
+const CHAT_FOR_MS = 3 * 60 * 60 * 1000;
+const chatKey = (owner: string, lessonId: string) => `link.chat.${owner}.${lessonId}.v2`;
 
-function readChat(lessonId: string): ChatMessageType[] {
+function readChat(owner: string, lessonId: string): ChatMessageType[] {
     try {
-        const saved: unknown = JSON.parse(window.sessionStorage.getItem(chatKey(lessonId)) ?? "[]");
-        if (!Array.isArray(saved)) return [];
-        return saved.filter(
+        const saved = JSON.parse(window.sessionStorage.getItem(chatKey(owner, lessonId)) ?? "null") as {
+            savedAt?: unknown;
+            messages?: unknown;
+        } | null;
+        if (!saved || !Array.isArray(saved.messages) || typeof saved.savedAt !== "number") return [];
+        if (Date.now() - saved.savedAt >= CHAT_FOR_MS) return [];
+        return saved.messages.filter(
             (message): message is ChatMessageType =>
                 (message?.role === "user" || message?.role === "model") && typeof message.text === "string",
         );
@@ -43,16 +49,18 @@ function readChat(lessonId: string): ChatMessageType[] {
     }
 }
 
-function writeChat(lessonId: string, messages: ChatMessageType[]) {
+function writeChat(owner: string, lessonId: string, messages: ChatMessageType[]) {
     try {
-        if (messages.length > 0) window.sessionStorage.setItem(chatKey(lessonId), JSON.stringify(messages));
-        else window.sessionStorage.removeItem(chatKey(lessonId));
+        const key = chatKey(owner, lessonId);
+        if (messages.length > 0) window.sessionStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), messages }));
+        else window.sessionStorage.removeItem(key);
     } catch {
         // Private browsing or a full disk: the chat carries on, unkept.
     }
 }
 
-export default function PromptPractice({ lessonId }: { lessonId: string }) {
+/** `owner` is the signed-in account, from the server, whose conversation to show again. */
+export default function PromptPractice({ lessonId, owner }: { lessonId: string; owner: string }) {
     const t = useTranslations("lessons");
     const native = useLessonLocalized();
     const router = useRouter();
@@ -70,21 +78,23 @@ export default function PromptPractice({ lessonId }: { lessonId: string }) {
     // Put back after the first draw, which the server makes without the tab's storage.
     const [restored, setRestored] = useState(false);
     useEffect(() => {
-        setMessages(readChat(lessonId));
+        if (restored) return;
+        const saved = readChat(owner, lessonId);
+        // A prompt left while its reply was on the way has no reply coming: it
+        // goes back in the box to send again, rather than waiting for ever.
+        const last = saved[saved.length - 1];
+        if (last?.role === "user") {
+            setMessages(saved.slice(0, -1));
+            setDraft(last.text);
+        } else {
+            setMessages(saved);
+        }
         setRestored(true);
-    }, [lessonId]);
+    }, [owner, lessonId, restored]);
 
-    const leaving = useRef(false);
     useEffect(() => {
-        if (restored && !leaving.current) writeChat(lessonId, messages);
-    }, [restored, lessonId, messages]);
-
-    // The page's own ways out forget the conversation.
-    const leave = (href: string) => {
-        leaving.current = true;
-        writeChat(lessonId, []);
-        router.push(href);
-    };
+        if (restored) writeChat(owner, lessonId, messages);
+    }, [restored, owner, lessonId, messages]);
 
     // Follow the conversation as it grows.
     useEffect(() => {
@@ -114,15 +124,16 @@ export default function PromptPractice({ lessonId }: { lessonId: string }) {
 
         try {
             const result = await getChatbotResponse(history, "practice");
-            const reply: ChatMessageType = result.success
-                ? { role: "model", text: result.text || t("chatError") }
+            // An empty reply is a failure too, and is not sent back to the model.
+            const reply: ChatMessageType = result.success && result.text
+                ? { role: "model", text: result.text }
                 : {
                       role: "model",
                       isError: true,
                       text:
-                          result.error === "rate_limit"
+                          !result.success && result.error === "rate_limit"
                               ? t("chatErrorLimit")
-                              : result.error === "auth"
+                              : !result.success && result.error === "auth"
                                 ? t("chatErrorAuth")
                                 : t("chatError"),
                   };
@@ -154,7 +165,7 @@ export default function PromptPractice({ lessonId }: { lessonId: string }) {
         <LessonShell
             closeLabel={t("quit")}
             icon={lesson.icon}
-            onClose={() => leave("/dashboard")}
+            onClose={() => router.push("/dashboard")}
             scrollRef={scrollRef}
             header={
                 messages.length > 0 ? (
@@ -194,8 +205,8 @@ export default function PromptPractice({ lessonId }: { lessonId: string }) {
                     </form>
                     {/* The message box fills the footer, so Back and Next have a row of their own. */}
                     <StepNav
-                        onBack={() => leave(`/lessons/${lesson.id}`)}
-                        onNext={() => leave(speakNext ? `/lessons/${lesson.id}/speak` : "/dashboard")}
+                        onBack={() => router.push(`/lessons/${lesson.id}`)}
+                        onNext={() => router.push(speakNext ? `/lessons/${lesson.id}/speak` : "/dashboard")}
                         nextLabel={speakNext ? t("next") : t("finish")}
                     />
                 </>

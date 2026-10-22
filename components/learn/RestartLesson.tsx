@@ -31,8 +31,16 @@ export function RestartButton({ open, onClick }: { open: boolean; onClick: () =>
     );
 }
 
-/** Asked in place of the footer. */
-export function RestartConfirm({ onRestart, onCancel }: { onRestart: () => void; onCancel: () => void }) {
+/** Asked in place of the footer. `labels` word it for something other than a lesson. */
+export function RestartConfirm({
+    onRestart,
+    onCancel,
+    labels,
+}: {
+    onRestart: () => void;
+    onCancel: () => void;
+    labels?: { title: string; body: string; confirm: string; keep: string };
+}) {
     const t = useTranslations("lessons");
     const title = useId();
     const body = useId();
@@ -49,15 +57,15 @@ export function RestartConfirm({ onRestart, onCancel }: { onRestart: () => void;
             <div className="flex items-center gap-2">
                 <RotateCcw className="size-6 shrink-0 text-lesson-ink" strokeWidth={2.5} />
                 <p id={title} className={text.subheading}>
-                    {t("restartTitle")}
+                    {labels?.title ?? t("restartTitle")}
                 </p>
             </div>
             <p id={body} className={text.body}>
-                {t("restartBody")}
+                {labels?.body ?? t("restartBody")}
             </p>
             <div className="flex gap-3">
                 <LessonButton
-                    title={t("restartConfirm")}
+                    title={labels?.confirm ?? t("restartConfirm")}
                     size="lg"
                     variant="outline"
                     className="min-w-0 flex-1"
@@ -65,7 +73,7 @@ export function RestartConfirm({ onRestart, onCancel }: { onRestart: () => void;
                 />
                 <LessonButton
                     autoFocus
-                    title={t("restartKeep")}
+                    title={labels?.keep ?? t("restartKeep")}
                     size="lg"
                     className="min-w-0 flex-1"
                     onClick={onCancel}

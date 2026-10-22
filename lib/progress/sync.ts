@@ -15,16 +15,22 @@ import { useEffect } from "react";
 import { getLearnerProgress, saveLearnerProgress } from "@/lib/actions/learnerProgress.actions";
 
 import { readProgress } from "./model";
-import { getProgressData, mergeRemoteProgress, setProgressListener } from "./store";
+import { getProgressData, mergeRemoteProgress, progressOwner, setProgressListener } from "./store";
 
 let inFlight: Promise<void> | null = null;
 let again = false;
 
 async function syncOnce(): Promise<void> {
+    // A shared phone or computer can change hands mid-sync. What the server sent
+    // belongs to whoever was signed in when it was asked for, and must not be
+    // folded into the next person's progress.
+    const owner = progressOwner();
     const remote = readProgress(await getLearnerProgress());
+    if (progressOwner() !== owner) return;
     const browserKnowsMore = mergeRemoteProgress(remote);
     if (!browserKnowsMore) return;
     const saved = await saveLearnerProgress(getProgressData().progress);
+    if (progressOwner() !== owner) return;
     mergeRemoteProgress(readProgress(saved));
 }
 

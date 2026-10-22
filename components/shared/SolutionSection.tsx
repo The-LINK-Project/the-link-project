@@ -16,7 +16,7 @@ const SolutionSection = () => {
                         <p className="text-xs font-bold uppercase tracking-[0.22em] text-eyebrow">
                             {t("subtitle")}
                         </p>
-                        <h2 className="mt-4 max-w-md font-heading text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-5xl">
+                        <h2 className="mt-4 max-w-md font-heading [overflow-wrap:anywhere] text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-5xl">
                             {t("title")}
                         </h2>
 
@@ -29,7 +29,7 @@ const SolutionSection = () => {
                                     <span className="font-heading text-3xl font-bold text-primary">
                                         {String(i + 1).padStart(2, "0")}
                                     </span>
-                                    <h3 className="text-lg font-semibold text-ink">
+                                    <h3 className="min-w-0 break-words text-lg font-semibold text-ink">
                                         {step}
                                     </h3>
                                 </div>

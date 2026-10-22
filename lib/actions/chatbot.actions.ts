@@ -74,8 +74,10 @@ export async function getChatbotResponse(
             return { success: false, error: "rate_limit" };
         }
 
+        // Error notes (signing in, the rate limit) were shown to the learner,
+        // never said by the model, so they are not passed off as its replies
         const safeHistory = history
-            .filter((message) => typeof message?.text === "string")
+            .filter((message) => typeof message?.text === "string" && !message.isError)
             .slice(-MAX_HISTORY_MESSAGES);
 
         if (safeHistory.length === 0) {

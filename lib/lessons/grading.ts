@@ -205,7 +205,10 @@ export function gradeAnswer(lesson: Lesson, exercise: Exercise, answer: Answer):
             // wrong pairing along the way does not fail the exercise, but it does
             // mean this was not a clean first pass.
             const clean = answer.kind === "pairs" && answer.wrongAttempts === 0;
-            return { correct: true, modelAnswer, accepted: !clean, firstPassClean: clean };
+            // Not "accepted": that is for a sentence put another way, and a
+            // matching round has no other way. A slip in it is right, just not
+            // right first time.
+            return { correct: true, modelAnswer, firstPassClean: clean };
         }
 
         case "selectPicture":

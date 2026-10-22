@@ -27,7 +27,7 @@ const ProblemSection = () => {
                 <p className="text-xs font-bold uppercase tracking-[0.22em] text-eyebrow">
                     {t("subtitle")}
                 </p>
-                <h2 className="mt-4 font-heading text-4xl font-bold leading-tight tracking-tight text-ink sm:text-5xl">
+                <h2 className="mt-4 break-words font-heading text-4xl font-bold leading-tight tracking-tight text-ink sm:text-5xl">
                     {t("title")}
                 </h2>
             </div>

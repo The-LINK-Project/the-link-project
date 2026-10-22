@@ -2,7 +2,6 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { usePathname } from "@/i18n/navigation";
-import { LESSON_SCREEN } from "@/lib/lessons/screens";
 import ChatbotIcontoggle from "./ChatbotIcontoggle";
 import XIcon from "./XIcon";
 
@@ -26,9 +25,9 @@ const ChatbotLauncher = () => {
     if (FULL_PAGE_CHAT.test(pathname) || AUTH_PAGE.test(pathname)) return null;
 
     return (
-        // Where a lesson fills a phone's screen, Check and Continue sit on its
-        // bottom edge, right where the floating chat would cover them
-        <div className={LESSON_SCREEN.test(pathname) ? "cramped:hidden" : undefined}>
+        // Put away while a lesson is on show on anything smaller than a laptop,
+        // where Check and Continue sit right where it floats (see globals.css)
+        <div data-chat-launcher>
             {/* Toggle Button */}
             <button
                 id="chatbot-toggler"

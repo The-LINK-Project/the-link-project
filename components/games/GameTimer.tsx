@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 export function formatTime(ms: number) {
-    const totalSeconds = Math.floor(ms / 1000);
+    // A phone clock set back mid-game must not show a negative time.
+    const totalSeconds = Math.floor(Math.max(0, ms) / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
@@ -21,7 +22,9 @@ const GameTimer = ({
 }) => {
     const [elapsedMs, setElapsedMs] = useState(0);
 
-    useEffect(() => {
+    // Before the browser paints, so a clock picked up part-way (a game resumed,
+    // the page back from hiding) never shows 0:00 or a stale time first.
+    useLayoutEffect(() => {
         if (!running) return;
         setElapsedMs(Date.now() - startTime);
         const id = setInterval(() => {

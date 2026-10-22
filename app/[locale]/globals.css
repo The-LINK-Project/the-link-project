@@ -268,6 +268,30 @@ html:has([data-lesson-shell]) body {
     overscroll-behavior-y: none;
 }
 
+/* While a lesson fills a phone's screen, the site header steps aside: the
+   lesson has its own Close. It is the lesson being on show that decides, not
+   the address, so a lesson still loading keeps the header and its way out. */
+/* The same screens as `cramped`, written out flat for browsers without nesting. */
+@media not all and (min-width: 40rem) and (min-height: 36rem) {
+    body:has([data-lesson-shell]) [data-site-header] {
+        display: none;
+    }
+}
+
+/* The floating LINK Assistant sits where a lesson's Check and Continue are on
+   anything smaller than a laptop, so it waits until the lesson is closed. */
+@media (max-width: 63.99rem) {
+    body:has([data-lesson-shell]) [data-chat-launcher] {
+        display: none;
+    }
+}
+
+/* A survey is answered on a phone at a workshop; the floating chat would sit
+   on its buttons and is no part of it. */
+body:has([data-survey]) [data-chat-launcher] {
+    display: none;
+}
+
 /* Infinite image marquee — used by the image auto-slider (e.g. the
      International Migrants Day gallery on the landing page). */
 @keyframes marquee {

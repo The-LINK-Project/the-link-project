@@ -29,7 +29,9 @@ export default function LocaleSwitcher() {
 
     const switchLocale = (newLocale: string) => {
         if (newLocale !== locale) {
-            router.replace(pathname, { locale: newLocale });
+            // The query is part of the page: a talk opened for one run's words
+            // (?words=…) must stay that talk in the other language.
+            router.replace(`${pathname}${window.location.search}`, { locale: newLocale });
             router.refresh();
         }
     };

@@ -52,8 +52,33 @@ describe("middleware redirects", () => {
             const { status, location } = await visit(path, signedIn);
             if (isRedirect(status)) {
                 expect(location?.origin).toBe(ORIGIN);
+                // Nor afterwards, from sign-in
+                const back = location?.searchParams.get("redirect_url");
+                if (back) expect(new URL(back).origin).toBe(ORIGIN);
             }
         }
+    });
+
+    // A workshop survey link opened signed out comes back to the survey once
+    // the learner has signed in, not to the home page
+    it.each([
+        ["/mwcsurvey", "/en/sign-in"],
+        ["/bn/lessons/mrt-basics?x=1", "/bn/sign-in"],
+        ["/dashboard", "/en/sign-up"],
+    ])("sends %s to sign in, and back again afterwards", async (path, signIn) => {
+        const { status, location } = await visit(path);
+        expect(isRedirect(status)).toBe(true);
+        expect(location?.origin).toBe(ORIGIN);
+        expect(location?.pathname).toBe(signIn);
+        expect(location?.searchParams.get("redirect_url")).toBe(ORIGIN + path);
+    });
+
+    it("never names another site as the page to come back to", async () => {
+        const { status, location } = await visit("//example.net/dashboard");
+        expect(isRedirect(status)).toBe(true);
+        expect(location?.origin).toBe(ORIGIN);
+        const back = location?.searchParams.get("redirect_url");
+        if (back) expect(new URL(back).origin).toBe(ORIGIN);
     });
 });
 

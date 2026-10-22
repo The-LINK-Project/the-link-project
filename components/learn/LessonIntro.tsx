@@ -68,7 +68,9 @@ export function LessonWords({ lesson }: { lesson: Lesson }) {
                         className="flex min-h-[92px] cursor-pointer items-center gap-3 rounded-2xl border-2 border-lesson-key bg-white p-3 text-left shadow-[0_4px_0_var(--color-lesson-key)] transition-[transform,box-shadow] duration-75 hover:bg-lesson-primary-soft/40 active:translate-y-1 active:shadow-none"
                     >
                         {item.picture ? <VocabularyVisual picture={item.picture} /> : null}
-                        <span className="flex flex-1 flex-col gap-0.5">
+                        {/* Long words (Tamil, on a small phone) break here rather than
+                            pushing the speaker out of the card. */}
+                        <span className="flex min-w-0 flex-1 flex-col gap-0.5 [overflow-wrap:anywhere]">
                             <span className={text.subheading}>{item.term}</span>
                             <span className={text.caption}>{native(item.meaning)}</span>
                         </span>

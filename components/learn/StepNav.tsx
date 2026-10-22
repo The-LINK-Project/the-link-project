@@ -13,7 +13,11 @@ import { LessonButton } from "./ui";
  * explain something without leaving it.
  */
 
-/** Back, beside a step's main button. `compact` is an arrow alone on a phone (see LessonButton). */
+/**
+ * Back, beside a step's main button. `compact` is an arrow alone on a phone
+ * (see LessonButton). `data-steady` keeps quick repeated taps on it live
+ * (see LessonShell).
+ */
 export function BackButton({ onClick, compact = false }: { onClick: () => void; compact?: boolean }) {
     const t = useTranslations("lessons");
     return (
@@ -24,6 +28,7 @@ export function BackButton({ onClick, compact = false }: { onClick: () => void; 
             icon={<ArrowLeft className="size-5" />}
             compact={compact}
             className="w-auto shrink-0 px-4"
+            data-steady="back"
             onClick={() => onClick()}
         />
     );
@@ -62,6 +67,7 @@ export function StepNav({
                 variant="outline"
                 icon={<ArrowLeft className="size-4" />}
                 className="w-auto px-4"
+                data-steady="back"
                 onClick={() => onBack()}
             />
             {onNext ? (
@@ -70,6 +76,7 @@ export function StepNav({
                     size="sm"
                     variant="outline"
                     className="w-auto px-4"
+                    data-steady="next"
                     onClick={() => onNext()}
                 />
             ) : null}

@@ -8,6 +8,7 @@ import GameTimer, { formatTime } from "@/components/games/GameTimer";
 import { LessonFooter } from "@/components/learn/LessonFooter";
 import { LessonProgress } from "@/components/learn/LessonProgress";
 import { LessonShell, ShellActions } from "@/components/learn/LessonShell";
+import { RestartConfirm } from "@/components/learn/RestartLesson";
 import { BackButton, WithBack } from "@/components/learn/StepNav";
 import { Tile } from "@/components/learn/Tile";
 import { LessonBadge, LessonButton, LessonCardBox, text } from "@/components/learn/ui";
@@ -48,7 +49,7 @@ import { ETHICS_HUE, EthicsCoin } from "./EthicsCoin";
  *
  * Built from the lesson kit so it looks like every other lesson. Nothing is
  * recorded: the finish screen is the result, and teams compare out loud. The
- * game in progress is only kept for the tab, in case it is left by accident
+ * game in progress is only kept for the tab, so leaving it costs nothing
  * (see SAVED_KEY).
  */
 const ROUNDS = 4;
@@ -94,15 +95,30 @@ type Practice = { pick: 0 | 1 | null; verdict: EthicsVerdict | null; matched: st
 const NO_PRACTICE: Practice = { pick: null, verdict: null, matched: [], built: null };
 
 /**
- * Where the team has got to, kept for the tab. On a phone the game is easily
- * left by accident: the back swipe, or the browser reloading a tab that sat
- * behind the camera. Coming back to it in the same tab picks up where the team
- * was, clock and score included. Leaving by the game's own Close, Back or Home
- * forgets it, so the next team starts fresh.
+ * Where the team has got to, kept for the tab, as a lesson keeps its place.
+ * However the game is left (Close, Back, Home, the site's own links, a back
+ * swipe, or the browser reloading a tab that sat behind the camera), coming
+ * back to it picks up where the team was, clock and score included. A new team
+ * starts over with Restart, which asks first and is on every screen. The game
+ * is kept for the account that played it, for the content it was played with,
+ * and for a few hours: the next workshop starts fresh.
  */
-const SAVED_KEY = "link.ethics.run.v1";
+const SAVED_KEY = "link.ethics.run.v2";
+const SAVED_FOR_MS = 3 * 60 * 60 * 1000;
+
+/** The game's content, so a game saved before an edit is not put back into one it no longer fits. */
+const CONTENT = [
+    ...ETHICS_SLIDES.map((slide) => slide.id),
+    ...ETHICS_SORT_CARDS.map((card) => card.id),
+    ...ETHICS_MATCH_PAIRS.map((pair) => pair.id),
+    ...ETHICS_BUILD_ITEMS.map((item) => `${item.id}:${item.answer.length + item.decoys.length}`),
+    ...ETHICS_DILEMMAS.map((dilemma) => `${dilemma.id}:${dilemma.sides.length}`),
+].join("|");
 
 type SavedGame = {
+    owner: string;
+    content: string;
+    savedAt: number;
     position: number;
     reached: number;
     slidePicks: Record<number, 0 | 1>;
@@ -120,30 +136,37 @@ function isSavedGame(value: unknown): value is SavedGame {
     const isStep = (n: unknown) => Number.isInteger(n) && (n as number) >= 0 && (n as number) < STEPS.length;
     return (
         !!game &&
+        typeof game.owner === "string" &&
+        game.content === CONTENT &&
+        Number.isFinite(game.savedAt) &&
         isStep(game.position) &&
         isStep(game.reached) &&
+        game.position <= game.reached &&
         Array.isArray(game.matched) &&
         [game.slidePicks, game.sortPicks, game.builds, game.chosen].every(
             (part) => !!part && typeof part === "object",
         ) &&
         Number.isFinite(game.wrongAttempts) &&
-        Number.isFinite(game.playedMs)
+        Number.isFinite(game.playedMs) &&
+        game.playedMs >= 0 &&
+        game.playedMs < 24 * 60 * 60 * 1000
     );
 }
 
-function readSavedGame(): SavedGame | null {
+function readSavedGame(owner: string): SavedGame | null {
     try {
         const saved: unknown = JSON.parse(window.sessionStorage.getItem(SAVED_KEY) ?? "null");
-        return isSavedGame(saved) ? saved : null;
+        return isSavedGame(saved) && saved.owner === owner && Date.now() - saved.savedAt < SAVED_FOR_MS
+            ? saved
+            : null;
     } catch {
         return null;
     }
 }
 
-function writeSavedGame(game: SavedGame | null) {
+function writeSavedGame(game: SavedGame) {
     try {
-        if (game) window.sessionStorage.setItem(SAVED_KEY, JSON.stringify(game));
-        else window.sessionStorage.removeItem(SAVED_KEY);
+        window.sessionStorage.setItem(SAVED_KEY, JSON.stringify(game));
     } catch {
         // Private browsing or a full disk: the game carries on, unkept.
     }
@@ -153,7 +176,8 @@ type Side = "situation" | "reason";
 type Selection = { side: Side; pairId: string } | null;
 type WrongPair = Record<Side, string> | null;
 
-export function AiEthicsGame() {
+/** `owner` is the signed-in account, from the server, whose game to pick back up. */
+export function AiEthicsGame({ owner }: { owner: string }) {
     const t = useTranslations("ethics");
     const router = useRouter();
 
@@ -173,12 +197,13 @@ export function AiEthicsGame() {
     const [wrongAttempts, setWrongAttempts] = useState(0);
 
     // The screen's own state, cleared on every move: a practice answer, the
-    // sentence being built, and a half-made pair.
+    // sentence being built, a half-made pair, and Play again being asked.
     const [practice, setPractice] = useState<Practice>(NO_PRACTICE);
     const [placed, setPlaced] = useState<number[]>([]);
     const [selected, setSelected] = useState<Selection>(null);
     const [wrongPair, setWrongPair] = useState<WrongPair>(null);
     const wrongTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [askingAgain, setAskingAgain] = useState(false);
 
     const situations = useMemo(() => seededShuffle(ETHICS_MATCH_PAIRS, "ethics-situations"), []);
     // Never the same row as its situation, or the pair reads straight across.
@@ -202,7 +227,8 @@ export function AiEthicsGame() {
     // flash up in place of the team's own screen.
     const [restored, setRestored] = useState(false);
     useEffect(() => {
-        const saved = readSavedGame();
+        if (restored) return;
+        const saved = readSavedGame(owner);
         if (saved) {
             setPosition(saved.position);
             setReached(saved.reached);
@@ -216,15 +242,20 @@ export function AiEthicsGame() {
             setClockStart(Date.now() - saved.playedMs);
         }
         setRestored(true);
-    }, []);
+    }, [owner, restored]);
 
-    // Kept on every answer and move, and again when the page is hidden or
-    // left, which is when the clock's latest second gets written down.
-    const leaving = useRef(false);
+    // Kept on every answer and move, every few seconds while the clock runs,
+    // and again when the page is hidden or left. Not every browser says so on
+    // a reload, so the clock's time is never more than a moment out of date.
+    // While the page is hidden the clock stands where it stopped.
+    const pausedAt = useRef<number | null>(null);
     const keep = useRef(() => {});
     keep.current = () => {
-        if (!restored || leaving.current) return;
+        if (!restored) return;
         writeSavedGame({
+            owner,
+            content: CONTENT,
+            savedAt: Date.now(),
             position,
             reached,
             slidePicks,
@@ -233,32 +264,47 @@ export function AiEthicsGame() {
             builds,
             chosen,
             wrongAttempts,
-            playedMs: running ? Date.now() - clockStart : playedMs,
+            playedMs: Math.max(0, pausedAt.current ?? (running ? Date.now() - clockStart : playedMs)),
         });
     };
     useEffect(() => {
         keep.current();
     }, [restored, position, reached, slidePicks, sortPicks, matched, builds, chosen, wrongAttempts, playedMs]);
     useEffect(() => {
-        const onHidden = () => {
-            if (document.visibilityState === "hidden") keep.current();
+        if (!restored || !running) return;
+        const timer = setInterval(() => keep.current(), 2000);
+        return () => clearInterval(timer);
+    }, [restored, running]);
+
+    // The clock stops while the game is out of sight. A locked phone or another
+    // app is not time spent playing, just as a reload is not.
+    const clock = useRef({ running, clockStart });
+    clock.current = { running, clockStart };
+    useEffect(() => {
+        const onVisibility = () => {
+            if (document.visibilityState === "hidden") {
+                if (clock.current.running) {
+                    pausedAt.current = Date.now() - clock.current.clockStart;
+                    setPlayedMs(pausedAt.current);
+                }
+                keep.current();
+            } else if (pausedAt.current !== null) {
+                if (clock.current.running) setClockStart(Date.now() - pausedAt.current);
+                pausedAt.current = null;
+            }
         };
         const onPageHide = () => keep.current();
-        document.addEventListener("visibilitychange", onHidden);
+        document.addEventListener("visibilitychange", onVisibility);
         window.addEventListener("pagehide", onPageHide);
         return () => {
-            document.removeEventListener("visibilitychange", onHidden);
+            document.removeEventListener("visibilitychange", onVisibility);
             window.removeEventListener("pagehide", onPageHide);
             keep.current();
         };
     }, []);
 
-    // The game's own ways out forget it.
-    const leave = () => {
-        leaving.current = true;
-        writeSavedGame(null);
-        router.push("/dashboard");
-    };
+    // Leaving keeps the game, as leaving a lesson keeps its place.
+    const leave = () => router.push("/dashboard");
 
     const clearScreen = () => {
         if (wrongTimer.current) clearTimeout(wrongTimer.current);
@@ -266,6 +312,7 @@ export function AiEthicsGame() {
         setPlaced([]);
         setSelected(null);
         setWrongPair(null);
+        setAskingAgain(false);
     };
 
     const go = (to: number) => {
@@ -353,7 +400,7 @@ export function AiEthicsGame() {
             if (revisiting) setPractice((prev) => ({ ...prev, matched: done }));
             else setMatched(done);
             setSelected(null);
-            if (done.length === ETHICS_MATCH_PAIRS.length) next();
+            if (done.length >= ETHICS_MATCH_PAIRS.length) next();
             return;
         }
         if (!revisiting) setWrongAttempts((n) => n + 1);
@@ -403,12 +450,27 @@ export function AiEthicsGame() {
     const dilemma = ETHICS_DILEMMAS[indexOf("dilemma")];
     const dilemmaChoice = chosen[dilemma.id];
 
+    // Whether this screen's footer shows its outcome yet, for LessonShell's
+    // footerKey: a tap landing on the outcome's button straight after the
+    // answer is the end of a double tap.
+    const answered =
+        step.kind === "learn"
+            ? slidePick !== null
+            : step.kind === "sort"
+              ? picked !== null
+              : step.kind === "build"
+                ? buildResult !== null
+                : step.kind === "dilemma"
+                  ? dilemmaChoice !== undefined
+                  : false;
+
     // --------------------------------------------------------------- frame
 
     const count = (answers: object) => Object.keys(answers).length;
 
-    // Once there is something to lose. The finish screen has its own Play again.
-    const canRestart = (reached > 0 || count(slidePicks) > 0) && step.kind !== "finished";
+    // Once there is something to lose, and on the finish screen too: Play again
+    // keeps the slides behind Back, but a new team sitting down needs them.
+    const canRestart = reached > 0 || count(slidePicks) > 0;
 
     // Counted from the answers, not the screen, so the bar holds still while
     // the team looks back.
@@ -456,7 +518,7 @@ export function AiEthicsGame() {
                 return slidePick === null ? (
                     answering()
                 ) : (
-                    <Outcome correct={slidePick === slide.check.answer} onBack={back} onNext={next}>
+                    <Outcome correct={slidePick === slide.check.answer} onBack={back} onNext={next} steady={revisiting}>
                         <p className={text.bodyStrong}>{slide.check.reason}</p>
                     </Outcome>
                 );
@@ -464,13 +526,18 @@ export function AiEthicsGame() {
                 return (
                     <ShellActions>
                         <WithBack onBack={back}>
-                            <LessonButton title={revisiting ? t("continue") : t("start")} size="lg" onClick={next} />
+                            <LessonButton
+                                title={revisiting ? t("continue") : t("start")}
+                                size="lg"
+                                data-steady={revisiting ? "next" : undefined}
+                                onClick={next}
+                            />
                         </WithBack>
                     </ShellActions>
                 );
             case "sort":
                 return picked ? (
-                    <Outcome correct={picked === card.answer} onBack={back} onNext={next}>
+                    <Outcome correct={picked === card.answer} onBack={back} onNext={next} steady={revisiting}>
                         <div>
                             <LessonBadge label={ETHICS_CONCEPT_LABEL[card.concept]} tone="accent" />
                         </div>
@@ -487,6 +554,7 @@ export function AiEthicsGame() {
                             <LessonButton
                                 title={revisiting ? t("continue") : t("startRound2")}
                                 size="lg"
+                                data-steady={revisiting ? "next" : undefined}
                                 onClick={next}
                             />
                         </WithBack>
@@ -498,7 +566,7 @@ export function AiEthicsGame() {
                 return buildResult === null ? (
                     answering({ onCheck: checkBuild, ready: placed.length > 0 })
                 ) : (
-                    <Outcome correct={buildResult} onBack={back} onNext={next}>
+                    <Outcome correct={buildResult} onBack={back} onNext={next} steady={revisiting}>
                         {buildResult ? null : (
                             <p className={text.caption}>
                                 {t("modelAnswer")} <span className={text.bodyStrong}>{buildItem.answer.join(" ")}</span>
@@ -513,18 +581,39 @@ export function AiEthicsGame() {
                     <ShellActions>
                         <p className={cn(text.bodyStrong, "pb-3 text-center")}>{t("dilemmaSay")}</p>
                         <WithBack onBack={back}>
-                            <LessonButton title={t("continue")} size="lg" onClick={next} />
+                            <LessonButton
+                                title={t("continue")}
+                                size="lg"
+                                data-steady={revisiting ? "next" : undefined}
+                                onClick={next}
+                            />
                         </WithBack>
                     </ShellActions>
                 );
             case "finished":
-                return (
+                // Play again clears the time and score the team is to compare,
+                // so it asks first.
+                return askingAgain ? (
+                    <RestartConfirm
+                        labels={{
+                            title: t("playAgainTitle"),
+                            body: t("playAgainBody"),
+                            confirm: t("playAgain"),
+                            keep: t("playAgainKeep"),
+                        }}
+                        onRestart={() => {
+                            setAskingAgain(false);
+                            playAgain();
+                        }}
+                        onCancel={() => setAskingAgain(false)}
+                    />
+                ) : (
                     <ShellActions>
                         {/* Back to the last dilemma, to look at it again. */}
                         <WithBack onBack={back}>
                             <div className="flex flex-col gap-3 sm:flex-row">
                                 <LessonButton title={t("home")} size="lg" variant="outline" onClick={leave} />
-                                <LessonButton title={t("playAgain")} size="lg" onClick={playAgain} />
+                                <LessonButton title={t("playAgain")} size="lg" onClick={() => setAskingAgain(true)} />
                             </div>
                         </WithBack>
                     </ShellActions>
@@ -546,6 +635,8 @@ export function AiEthicsGame() {
             onClose={leave}
             header={header}
             footer={footer}
+            step={position}
+            footerKey={`${position}-${answered}-${askingAgain}`}
             onRestart={canRestart ? startOver : undefined}
         >
             {step.kind === "learn" ? (
@@ -672,11 +763,14 @@ function Outcome({
     correct,
     onBack,
     onNext,
+    steady,
     children,
 }: {
     correct: boolean;
     onBack: () => void;
     onNext: () => void;
+    /** On a screen already passed, where Continue is a way on like Next (see LessonShell). */
+    steady?: boolean;
     children?: React.ReactNode;
 }) {
     const t = useTranslations("ethics");
@@ -714,6 +808,7 @@ function Outcome({
                     title={t("continue")}
                     size="lg"
                     variant={correct ? "primary" : "destructive"}
+                    data-steady={steady ? "next" : undefined}
                     onClick={onNext}
                     className="min-w-0 flex-1"
                 />

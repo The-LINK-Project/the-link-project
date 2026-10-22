@@ -1,9 +1,10 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
 import type { LessonIcon } from "@/lib/lessons/icons";
+import { cn } from "@/lib/utils";
 
 import { LESSON_HUES } from "./Medallion";
 import { RestartButton, RestartConfirm } from "./RestartLesson";
@@ -24,12 +25,28 @@ function stageStyle(icon: LessonIcon | undefined): CSSProperties {
 }
 
 /**
+ * How long a tap on a footer that has just changed is let fall (see below).
+ * Long enough for the second tap of a double tap, too short to wait out.
+ */
+const SETTLE_MS = 400;
+
+/**
+ * Back and Next (marked `data-steady`) stay live while the footer settles
+ * after a press of their own kind: Back where Back was is the next tap of a
+ * learner stepping back quickly, not a slip. Literal for Tailwind.
+ */
+const STEADY_LIVE: Record<string, string> = {
+    back: "[&_[data-steady=back]]:pointer-events-auto",
+    next: "[&_[data-steady=next]]:pointer-events-auto",
+};
+
+/**
  * The frame every lesson and talk sits in: a close button and whatever runs
  * alongside it at the top, the page in the middle, and the way forward pinned
  * to the bottom so it is always in view.
  *
  * On a phone, either way up, it is the whole screen: the site header is put
- * away for it (see LESSON_SCREEN), and Close is the way back to the rest of
+ * away for it (see globals.css), and Close is the way back to the rest of
  * the site. With room to spare it is a card on a stage in the lesson's own
  * colour, so a lesson reads as a place of its own rather than a narrow column
  * on an empty page. `roomy` and `cramped` are defined in globals.css.
@@ -49,6 +66,8 @@ export function LessonShell({
     footer,
     children,
     scrollRef,
+    step,
+    footerKey,
     onRestart,
 }: {
     closeLabel: string;
@@ -59,11 +78,53 @@ export function LessonShell({
     footer?: ReactNode;
     children: ReactNode;
     scrollRef?: React.Ref<HTMLDivElement>;
+    /**
+     * Which page of the lesson is in the middle. A new one opens at its top:
+     * on a phone the answers sit low and get scrolled to, and the next page
+     * would otherwise open scrolled past its own instruction.
+     */
+    step?: string | number;
+    /** What the footer offers, where that changes within a page (an answer graded). Defaults to `step`. */
+    footerKey?: string | number;
     /** Starts the lesson again. Absent while there is nothing to lose. */
     onRestart?: () => void;
 }) {
     const [confirming, setConfirming] = useState(false);
     const asking = confirming && onRestart;
+
+    // A question asked about one page is not left open over the next.
+    useEffect(() => {
+        setConfirming(false);
+    }, [step]);
+
+    // A tap on the footer just after it changed is the second half of a double
+    // tap on the button that changed it, not a choice: Continue under the last
+    // dilemma sits exactly where Play again appears, Check where Continue does,
+    // and Keep going over the footer it gives back. Such taps are let fall for
+    // a moment, except on Back or Next after a press of the same (see above).
+    const settleKey = footerKey ?? step;
+    const confirmOpen = !!asking;
+    const pressed = useRef<string | null>(null);
+    const [settling, setSettling] = useState<string | false>(false);
+    useEffect(() => {
+        const steady = pressed.current;
+        pressed.current = null;
+        if (settleKey === undefined) return;
+        setSettling(steady ?? "");
+        const timer = setTimeout(() => setSettling(false), SETTLE_MS);
+        return () => clearTimeout(timer);
+    }, [settleKey, confirmOpen]);
+
+    // Which kind of button a footer press was on, for the effect above. A
+    // press that changed nothing is forgotten before the next one.
+    const notePress = (event: React.MouseEvent) => {
+        const target = event.target instanceof Element ? event.target : null;
+        pressed.current = target?.closest("[data-steady]")?.getAttribute("data-steady") ?? null;
+        setTimeout(() => {
+            pressed.current = null;
+        }, 0);
+    };
+    const settled = cn("shrink-0", settling !== false && "pointer-events-none", settling && STEADY_LIVE[settling]);
 
     return (
         <div data-lesson-shell className="roomy:px-4 roomy:pb-4">
@@ -84,13 +145,14 @@ export function LessonShell({
                         ) : null}
                     </div>
                     <div
+                        key={step}
                         ref={scrollRef}
                         className="flex-1 touch-manipulation overflow-y-auto overflow-x-hidden overscroll-contain"
                     >
                         <div className="flex min-h-full flex-col gap-6 p-4 pb-8">{children}</div>
                     </div>
                     {asking ? (
-                        <div className="shrink-0">
+                        <div className={settled} onClickCapture={notePress}>
                             <RestartConfirm
                                 onRestart={() => {
                                     setConfirming(false);
@@ -100,7 +162,9 @@ export function LessonShell({
                             />
                         </div>
                     ) : footer ? (
-                        <div className="shrink-0">{footer}</div>
+                        <div className={settled} onClickCapture={notePress}>
+                            {footer}
+                        </div>
                     ) : null}
                 </div>
             </div>
