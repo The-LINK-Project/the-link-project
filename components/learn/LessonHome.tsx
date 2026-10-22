@@ -41,7 +41,14 @@ function LessonHomeContent() {
             { id: lesson.id, fingerprint: fingerprint(lesson), speakable: canPractiseSpeaking(lesson) },
         ]),
     );
-    const point = continuePoint(data, [...refs.values()]);
+    // A workshop lesson's run in progress can be continued from here, but its
+    // talk is not offered: the workshops have no voice chat, and the way on
+    // from AI Words is the chat it ends with.
+    const workshopIds = new Set(workshop.map((lesson) => lesson.id));
+    const point = continuePoint(
+        data,
+        [...refs.values()].map((ref) => (workshopIds.has(ref.id) ? { ...ref, speakable: false } : ref)),
+    );
     const continuing = point ? all.find((lesson) => lesson.id === point.lessonId) : undefined;
 
     const statuses = lessons.map((lesson) => lessonStatus(data, refs.get(lesson.id)!));

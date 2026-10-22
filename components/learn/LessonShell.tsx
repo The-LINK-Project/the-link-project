@@ -29,7 +29,7 @@ function stageStyle(icon: LessonIcon | undefined): CSSProperties {
  * to the bottom so it is always in view.
  *
  * On a phone, either way up, it is the whole screen: the site header is put
- * away for it (see LESSON_SCREEN), and Close is the way back to the rest of
+ * away for it (see globals.css), and Close is the way back to the rest of
  * the site. With room to spare it is a card on a stage in the lesson's own
  * colour, so a lesson reads as a place of its own rather than a narrow column
  * on an empty page. `roomy` and `cramped` are defined in globals.css.
@@ -49,6 +49,7 @@ export function LessonShell({
     footer,
     children,
     scrollRef,
+    step,
     onRestart,
 }: {
     closeLabel: string;
@@ -59,6 +60,12 @@ export function LessonShell({
     footer?: ReactNode;
     children: ReactNode;
     scrollRef?: React.Ref<HTMLDivElement>;
+    /**
+     * Which page of the lesson is in the middle. A new one opens at its top:
+     * on a phone the answers sit low and get scrolled to, and the next page
+     * would otherwise open scrolled past its own instruction.
+     */
+    step?: string | number;
     /** Starts the lesson again. Absent while there is nothing to lose. */
     onRestart?: () => void;
 }) {
@@ -84,6 +91,7 @@ export function LessonShell({
                         ) : null}
                     </div>
                     <div
+                        key={step}
                         ref={scrollRef}
                         className="flex-1 touch-manipulation overflow-y-auto overflow-x-hidden overscroll-contain"
                     >

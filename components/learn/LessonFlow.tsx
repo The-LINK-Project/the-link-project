@@ -67,10 +67,11 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
     // for the "done" view the moment the result was recorded. The daily mix is
     // new every morning, so yesterday's finish says nothing about today's. A
     // record with no exercises in it came from speaking alone.
-    const [record] = useState<LessonRecord | undefined>(() => {
+    const readRecord = (): LessonRecord | undefined => {
         const found = getProgressData().progress.lessons[lessonId];
         return lessonId !== DAILY_MIX_ID && found && found.total > 0 ? found : undefined;
-    });
+    };
+    const [record, setRecord] = useState<LessonRecord | undefined>(readRecord);
     // The daily mix draws on every lesson's words, far too many to list, and
     // all of them already met in the lesson they came from. A review steps back
     // through a finished lesson from its results.
@@ -91,8 +92,10 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
                     lessonId === DAILY_MIX_ID
                         ? undefined
                         : () => {
-                              // Picked up again from where the learner had got to.
+                              // Picked up again from where the learner had got to,
+                              // and a lesson just finished opens on its results.
                               setSaved(readSaved());
+                              setRecord(readRecord());
                               setMode("start");
                           }
                 }
@@ -254,6 +257,7 @@ function LessonRunner({
                 closeLabel={t("quit")}
                 icon={lesson.icon}
                 onClose={leave}
+                step="results"
                 footer={
                     <ShellActions>
                         {/* Back to the last exercise, to look at it again. */}
@@ -291,6 +295,7 @@ function LessonRunner({
             icon={lesson.icon}
             onClose={leave}
             header={<LessonProgress value={progress} />}
+            step={`${round}-${state.position}`}
             onRestart={canRestart ? startOver : undefined}
             footer={
                 <LessonFooter
