@@ -32,7 +32,9 @@ export function LessonSummary({
 }) {
     const t = useTranslations("lessons");
     const native = useLessonLocalized();
-    const perfect = summary.reviewed === 0;
+    // Every exercise right the first time. Nothing coming round again is not
+    // enough: a matching round with a wrong pairing in it passes, but not cleanly.
+    const perfect = summary.firstTryCorrect === summary.total;
 
     return (
         <div className="flex flex-col gap-6 pb-6">
@@ -42,9 +44,11 @@ export function LessonSummary({
                 fraction={speakingLeft ? 0.5 : 1}
                 done={!speakingLeft}
             >
-                <p className={text.caption}>
-                    {perfect ? t("summaryPerfect") : t("summaryReviewed", { count: summary.reviewed })}
-                </p>
+                {perfect || summary.reviewed > 0 ? (
+                    <p className={text.caption}>
+                        {perfect ? t("summaryPerfect") : t("summaryReviewed", { count: summary.reviewed })}
+                    </p>
+                ) : null}
                 {speakingLeft ? (
                     <div className="flex flex-col gap-2 pt-3">
                         <LessonStages learn="done" speak="current" size="lg" />
