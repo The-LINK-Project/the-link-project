@@ -45,6 +45,7 @@ type Props = {
     onSelfSubmit: (answer: Answer) => void;
     result: GradeResult | null;
     locked: boolean;
+    again?: boolean;
 };
 
 /**

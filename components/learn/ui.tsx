@@ -72,7 +72,7 @@ export function LessonButton({
             type="button"
             disabled={disabled || loading}
             className={cn(
-                "flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border font-extrabold uppercase tracking-wide shadow-[0_4px_0_var(--lip)] transition-[transform,box-shadow] duration-75",
+                "flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border font-extrabold uppercase tracking-wide shadow-[0_4px_0_var(--lip)] transition-[transform,box-shadow] duration-75 [&>svg]:shrink-0",
                 "enabled:active:translate-y-1 enabled:active:shadow-none disabled:cursor-not-allowed disabled:opacity-50",
                 BUTTON_VARIANT[variant],
                 BUTTON_SIZE[size],

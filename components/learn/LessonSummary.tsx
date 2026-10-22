@@ -6,7 +6,9 @@ import { useTranslations } from "next-intl";
 import { useLessonLocalized } from "@/lib/lessons/localized";
 import type { SessionSummary } from "@/lib/lessons/session";
 import type { Lesson } from "@/lib/lessons/types";
+import { cn } from "@/lib/utils";
 
+import { ACTIONS } from "./LessonDone";
 import { LessonHeading } from "./LessonHeading";
 import { LessonStages } from "./LessonStages";
 import { LessonBadge, LessonButton, LessonCardBox, text } from "./ui";
@@ -56,6 +58,9 @@ export function LessonSummary({
                             {lesson.chatPractice ? t("summaryChatNext") : t("summarySpeakNext")}
                         </p>
                     </div>
+                ) : lesson.chatPractice ? (
+                    // Done, and the chat it ends with still the way on.
+                    <p className={cn(text.bodyStrong, "pt-3")}>{t("summaryChatNext")}</p>
                 ) : null}
             </LessonHeading>
 
@@ -132,7 +137,7 @@ export function LessonSummaryActions({
     // offer underneath, in place of putting the lesson off.
     if (onChat) {
         return (
-            <div className="flex flex-col gap-1">
+            <div className={cn(ACTIONS, "gap-1")}>
                 <LessonButton
                     title={t("summaryChat")}
                     size="lg"
@@ -155,7 +160,7 @@ export function LessonSummaryActions({
     if (!onSpeak) return <LessonButton title={t("summaryDone")} size="lg" onClick={onDone} />;
     if (!speakingLeft) {
         return (
-            <div className="flex flex-col gap-1">
+            <div className={cn(ACTIONS, "gap-1")}>
                 <LessonButton title={t("summaryDone")} size="lg" onClick={onDone} />
                 <LessonButton
                     title={t("summarySpeak")}
@@ -167,7 +172,7 @@ export function LessonSummaryActions({
         );
     }
     return (
-        <div className="flex flex-col gap-1">
+        <div className={cn(ACTIONS, "gap-1")}>
             <LessonButton title={t("summarySpeak")} size="lg" icon={<Mic className="size-5" />} onClick={onSpeak} />
             <LessonButton title={t("summarySpeakLater")} variant="ghost" onClick={onDone} />
         </div>

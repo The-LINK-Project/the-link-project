@@ -9,6 +9,7 @@
  */
 
 import type { TutorTurnRequest } from "./types";
+import { isWorkshopLesson } from "@/lib/lessons/data";
 import { TRANSLATION_LANGUAGES } from "@/lib/lessons/languages";
 import { localized } from "@/lib/lessons/localized";
 import { phraseById, vocabByIds } from "@/lib/lessons/lookup";
@@ -104,6 +105,16 @@ export function practiceLanguages(lesson: Lesson, run: PractisedRun): TutorLangu
 /** Whether a finished lesson has anything to say aloud, taking every exercise as done. */
 export function canPractiseSpeaking(lesson: Lesson): boolean {
     return practiceLanguages(lesson, runFromParams(lesson, {})).length > 0;
+}
+
+/**
+ * Whether saying the lesson aloud is the second half of it, still owed once
+ * the exercises are done. Not for a workshop lesson: the workshops have no
+ * voice chat, so a learner there is done with the exercises, and the talk is
+ * on offer rather than owed.
+ */
+export function speakingOwed(lesson: Lesson): boolean {
+    return !isWorkshopLesson(lesson.id) && canPractiseSpeaking(lesson);
 }
 
 /** Route params can only carry strings. */

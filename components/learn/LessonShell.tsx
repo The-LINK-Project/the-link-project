@@ -6,6 +6,8 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import type { LessonIcon } from "@/lib/lessons/icons";
 import { cn } from "@/lib/utils";
 
+import { PageMark } from "@/components/shared/PageMark";
+
 import { LESSON_HUES } from "./Medallion";
 import { RestartButton, RestartConfirm } from "./RestartLesson";
 
@@ -128,6 +130,7 @@ export function LessonShell({
 
     return (
         <div data-lesson-shell className="roomy:px-4 roomy:pb-4">
+            <PageMark name="lesson" />
             <div className="roomy:rounded-[2rem] roomy:px-4 roomy:py-6" style={stageStyle(icon)}>
                 <div className="mx-auto flex h-dvh w-full max-w-2xl touch-manipulation flex-col overflow-hidden bg-white roomy:h-[calc(100dvh-9rem)] roomy:rounded-3xl roomy:border-2 roomy:border-lesson-key roomy:shadow-[0_4px_0_var(--color-lesson-key)]">
                     <div className="flex items-center gap-3 px-4 py-3">

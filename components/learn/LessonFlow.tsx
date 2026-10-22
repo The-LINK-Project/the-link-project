@@ -5,10 +5,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useRouter } from "@/i18n/navigation";
 import { exerciseSpokenTexts } from "@/lib/lessons/audio";
-import { getLesson } from "@/lib/lessons/data";
+import { getLesson, isWorkshopLesson } from "@/lib/lessons/data";
 import { DAILY_MIX_ID } from "@/lib/lessons/data/review";
 import { useLearnerLanguage, useLessonLocalized } from "@/lib/lessons/localized";
-import { restoreSession, snapshotOf, useLessonSession } from "@/lib/lessons/session";
+import { fingerprint, restoreSession, snapshotOf, useLessonSession } from "@/lib/lessons/session";
 import { prefetchSpeech } from "@/lib/lessons/speech";
 import type { LessonRecord, SavedRun } from "@/lib/progress/model";
 import {
@@ -20,7 +20,7 @@ import {
     setResume,
     useProgressData,
 } from "@/lib/progress/store";
-import { canPractiseSpeaking, practiceLanguages, runToParams } from "@/lib/speaking/context";
+import { canPractiseSpeaking, practiceLanguages, runToParams, speakingOwed } from "@/lib/speaking/context";
 
 import { ExerciseRenderer } from "./ExerciseRenderer";
 import { SELF_GRADING } from "./exercises/shared";
@@ -131,7 +131,11 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
     const canSpeak = canPractiseSpeaking(lesson);
     // The talk is the lesson's second stage, so without it the lesson is in
     // progress, and its way forward is the talk rather than a second run.
-    const speakingLeft = canSpeak && !record?.speaking;
+    // Not in a workshop lesson, where it is on offer but not owed.
+    const speakingLeft = speakingOwed(lesson) && !record?.speaking;
+    // Another go already part-way through is carried on, and says so.
+    const stored = getProgressData().runs[lessonId];
+    const resuming = !!stored && stored.position > 0 && stored.fingerprint === fingerprint(lesson);
 
     return (
         <LessonShell
@@ -148,6 +152,7 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
                         {record ? (
                             <LessonDoneActions
                                 onAgain={startFromStored}
+                                resuming={resuming}
                                 onSpeak={canSpeak ? () => router.push(`/lessons/${lesson.id}/speak`) : undefined}
                                 onChat={
                                     lesson.chatPractice ? () => router.push(`/lessons/${lesson.id}/chat`) : undefined
@@ -329,6 +334,8 @@ function LessonRunner({
         const ownTalk = practiceLanguages(lesson, run).length > 0;
         const canSpeak = ownTalk || canPractiseSpeaking(lesson);
         const spoken = getProgressData().progress.lessons[lessonId]?.speaking !== undefined;
+        // A workshop lesson is done here; its talk is on offer, not owed.
+        const speakingLeft = canSpeak && !spoken && !isWorkshopLesson(lesson.id);
         const speakHref = ownTalk
             ? `/lessons/${lesson.id}/speak?${new URLSearchParams(runToParams(run)).toString()}`
             : `/lessons/${lesson.id}/speak`;
@@ -343,7 +350,7 @@ function LessonRunner({
                         {/* Back to the last exercise, to look at it again. */}
                         <WithBack onBack={back}>
                             <LessonSummaryActions
-                                speakingLeft={canSpeak && !spoken}
+                                speakingLeft={speakingLeft}
                                 onDone={leave}
                                 // Replaces the lesson rather than stacking on top of
                                 // it, so finishing the practice goes straight home.
@@ -356,7 +363,7 @@ function LessonRunner({
                     </ShellActions>
                 }
             >
-                <LessonSummary lesson={lesson} summary={summary} speakingLeft={canSpeak && !spoken} onRetry={restart} />
+                <LessonSummary lesson={lesson} summary={summary} speakingLeft={speakingLeft} onRetry={restart} />
             </LessonShell>
         );
     }
@@ -405,6 +412,8 @@ function LessonRunner({
                 onSelfSubmit={submitAnswer}
                 result={state.result}
                 locked={state.phase === "graded"}
+                // A second showing after a miss: its options in a new order.
+                again={state.queue.indexOf(exercise.id) < state.position}
             />
         </LessonShell>
     );

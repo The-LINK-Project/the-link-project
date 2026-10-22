@@ -2,17 +2,18 @@
 
 import { Bot, RotateCcw, Send, ShieldAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type KeyboardEvent } from "react";
 
 import { LessonShell } from "@/components/learn/LessonShell";
 import { StepNav } from "@/components/learn/StepNav";
 import { LessonCardBox, text } from "@/components/learn/ui";
 import { useRouter } from "@/i18n/navigation";
 import { getChatbotResponse } from "@/lib/actions/chatbot.actions";
+import { typedLineBreak } from "@/lib/chat/typedLineBreak";
 import { getLesson } from "@/lib/lessons/data";
 import { useLessonLocalized } from "@/lib/lessons/localized";
 import type { ChatTask } from "@/lib/lessons/types";
-import { canPractiseSpeaking } from "@/lib/speaking/context";
+import { speakingOwed } from "@/lib/speaking/context";
 import { cn } from "@/lib/utils";
 
 /**
@@ -66,8 +67,9 @@ export default function PromptPractice({ lessonId, owner }: { lessonId: string; 
     const router = useRouter();
     const lesson = getLesson(lessonId)!;
     const practice = lesson.chatPractice!;
-    // The step after this one: speaking, where the lesson has a talk.
-    const speakNext = canPractiseSpeaking(lesson);
+    // The step after this one: speaking, where the lesson has a talk still
+    // owed. A workshop lesson ends here (see speakingOwed).
+    const speakNext = speakingOwed(lesson);
 
     const [messages, setMessages] = useState<ChatMessageType[]>([]);
     const [draft, setDraft] = useState("");
@@ -107,9 +109,9 @@ export default function PromptPractice({ lessonId, owner }: { lessonId: string; 
         inputRef.current?.focus();
     };
 
-    const send = async (event?: FormEvent) => {
+    const send = async (event?: FormEvent, text: string = draft) => {
         event?.preventDefault();
-        const prompt = draft.trim();
+        const prompt = text.trim();
         if (!prompt || pending) return;
 
         // Error notes are for the team to read, not part of the conversation
@@ -147,11 +149,30 @@ export default function PromptPractice({ lessonId, owner }: { lessonId: string; 
     };
 
     // Enter sends, as in any chat app. Shift+Enter starts a new line.
+    const newLineAsked = useRef(false);
     const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+        newLineAsked.current = event.key === "Enter" && event.shiftKey;
         if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
             event.preventDefault();
             void send();
         }
+    };
+
+    // Android keyboards (Gboard) often give no Enter key to catch above, only
+    // the line break itself, so that sends too (see typedLineBreak).
+    const onChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+        const value = event.target.value;
+        const message = typedLineBreak(draft, value, {
+            inputType: (event.nativeEvent as InputEvent).inputType ?? "",
+            newLineAsked: newLineAsked.current,
+            caret: event.target.selectionStart ?? value.length,
+        });
+        if (message === null) {
+            setDraft(value);
+            return;
+        }
+        setDraft(message);
+        void send(undefined, message);
     };
 
     // Teams take turns on one laptop, so the next team can start clean.
@@ -186,8 +207,9 @@ export default function PromptPractice({ lessonId, owner }: { lessonId: string; 
                         <textarea
                             ref={inputRef}
                             value={draft}
-                            onChange={(event) => setDraft(event.target.value)}
+                            onChange={onChange}
                             onKeyDown={onKeyDown}
+                            enterKeyHint="send"
                             placeholder={t("chatPlaceholder")}
                             aria-label={t("chatPlaceholder")}
                             rows={2}

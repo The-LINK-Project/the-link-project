@@ -6,7 +6,7 @@ import { useMemo } from "react";
 
 import { useLessonLocalized } from "@/lib/lessons/localized";
 import { dialogueReplies } from "@/lib/lessons/lookup";
-import { seededShuffle } from "@/lib/lessons/shuffle";
+import { retryOrder, seededShuffle } from "@/lib/lessons/shuffle";
 import { useSpeech } from "@/lib/lessons/speech";
 import type { DialogueChoiceExercise } from "@/lib/lessons/types";
 
@@ -28,14 +28,15 @@ export function DialogueChoice({
     onDraftChange,
     result,
     locked,
+    again = false,
 }: ExerciseProps<DialogueChoiceExercise>) {
     const t = useTranslations("lessons");
     const localized = useLessonLocalized();
     const { speak, speaking } = useSpeech();
     const chosen = draft?.kind === "choice" ? draft.choiceId : null;
     const replies = useMemo(
-        () => seededShuffle(dialogueReplies(lesson, exercise), exercise.id),
-        [lesson, exercise],
+        () => retryOrder(seededShuffle(dialogueReplies(lesson, exercise), exercise.id), exercise.id, again),
+        [lesson, exercise, again],
     );
 
     return (

@@ -5,7 +5,7 @@ import { useMemo } from "react";
 
 import { useLessonLocalized } from "@/lib/lessons/localized";
 import { exercisePicture, phraseById } from "@/lib/lessons/lookup";
-import { seededShuffle } from "@/lib/lessons/shuffle";
+import { retryOrder, seededShuffle } from "@/lib/lessons/shuffle";
 import type { ArrangeWordsExercise } from "@/lib/lessons/types";
 
 import { PromptCard } from "../PromptCard";
@@ -28,13 +28,14 @@ export function ArrangeWords({
     onDraftChange,
     result,
     locked,
+    again = false,
 }: ExerciseProps<ArrangeWordsExercise>) {
     const t = useTranslations("lessons");
     const localized = useLessonLocalized();
     const phrase = phraseById(lesson, exercise.phraseId);
     const tokens = useMemo(
-        () => seededShuffle(exercise.tokens, exercise.id),
-        [exercise.id, exercise.tokens],
+        () => retryOrder(seededShuffle(exercise.tokens, exercise.id), exercise.id, again),
+        [exercise.id, exercise.tokens, again],
     );
     const placed = draft?.kind === "tokens" ? tokenIndices(draft.tokens, tokens) : [];
 

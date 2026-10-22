@@ -1,9 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 
 import { useLessonLocalized } from "@/lib/lessons/localized";
 import { choiceText } from "@/lib/lessons/lookup";
+import { retryOrder } from "@/lib/lessons/shuffle";
 import { useSpeech } from "@/lib/lessons/speech";
 import type { ListenChooseMeaningExercise } from "@/lib/lessons/types";
 
@@ -25,7 +27,9 @@ export function ListenChooseMeaning({
     onDraftChange,
     result,
     locked,
+    again = false,
 }: ExerciseProps<ListenChooseMeaningExercise>) {
+    const choices = useMemo(() => retryOrder(exercise.choices, exercise.id, again), [exercise, again]);
     const t = useTranslations("lessons");
     const localized = useLessonLocalized();
     const { speak, speaking, hasPlayed } = useSpeech();
@@ -43,7 +47,7 @@ export function ListenChooseMeaning({
                 no cue that the circle is the thing to press. */}
             {hasPlayed ? null : <p className={`${text.caption} text-center`}>{t("tapToListen")}</p>}
             <div className="flex flex-col gap-3">
-                {exercise.choices.map((choice) => (
+                {choices.map((choice) => (
                     <Tile
                         key={choice.id}
                         label={localized(choiceText(lesson, choice))}

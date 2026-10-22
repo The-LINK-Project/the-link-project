@@ -1,5 +1,8 @@
 "use client";
 
+import { useMemo } from "react";
+
+import { retryOrder } from "@/lib/lessons/shuffle";
 import type { FillBlankExercise } from "@/lib/lessons/types";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +16,15 @@ import { choiceTileState, type ExerciseProps } from "./shared";
  * The lesson closes on this type on purpose. It is the easiest thing in the
  * run, so the learner finishes on something they get right.
  */
-export function FillBlank({ exercise, draft, onDraftChange, result, locked }: ExerciseProps<FillBlankExercise>) {
+export function FillBlank({
+    exercise,
+    draft,
+    onDraftChange,
+    result,
+    locked,
+    again = false,
+}: ExerciseProps<FillBlankExercise>) {
+    const choices = useMemo(() => retryOrder(exercise.choices, exercise.id, again), [exercise, again]);
     const chosen = draft?.kind === "choice" ? draft.choiceId : null;
     const chosenLabel = exercise.choices.find((choice) => choice.id === chosen)?.label;
 
@@ -43,7 +54,7 @@ export function FillBlank({ exercise, draft, onDraftChange, result, locked }: Ex
                 )}
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-                {exercise.choices.map((choice) => (
+                {choices.map((choice) => (
                     <Tile
                         key={choice.id}
                         label={choice.label}
