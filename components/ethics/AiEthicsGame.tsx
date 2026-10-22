@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
 import { CircleCheck, CircleX, ThumbsUp, Timer, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -48,7 +49,7 @@ import { ETHICS_HUE, EthicsCoin } from "./EthicsCoin";
  *
  * Built from the lesson kit so it looks like every other lesson. Nothing is
  * recorded: the finish screen is the result, and teams compare out loud. The
- * game in progress is only kept for the tab, in case it is left by accident
+ * game in progress is only kept for the tab, so leaving it costs nothing
  * (see SAVED_KEY).
  */
 const ROUNDS = 4;
@@ -94,15 +95,30 @@ type Practice = { pick: 0 | 1 | null; verdict: EthicsVerdict | null; matched: st
 const NO_PRACTICE: Practice = { pick: null, verdict: null, matched: [], built: null };
 
 /**
- * Where the team has got to, kept for the tab. On a phone the game is easily
- * left by accident: the back swipe, or the browser reloading a tab that sat
- * behind the camera. Coming back to it in the same tab picks up where the team
- * was, clock and score included. Leaving by the game's own Close, Back or Home
- * forgets it, so the next team starts fresh.
+ * Where the team has got to, kept for the tab, as a lesson keeps its place.
+ * However the game is left (Close, Back, Home, the site's own links, a back
+ * swipe, or the browser reloading a tab that sat behind the camera), coming
+ * back to it picks up where the team was, clock and score included. A new team
+ * starts over with Restart, which asks first and is on every screen. The game
+ * is kept for the account that played it, for the content it was played with,
+ * and for a few hours: the next workshop starts fresh.
  */
-const SAVED_KEY = "link.ethics.run.v1";
+const SAVED_KEY = "link.ethics.run.v2";
+const SAVED_FOR_MS = 3 * 60 * 60 * 1000;
+
+/** The game's content, so a game saved before an edit is not put back into one it no longer fits. */
+const CONTENT = [
+    ...ETHICS_SLIDES.map((slide) => slide.id),
+    ...ETHICS_SORT_CARDS.map((card) => card.id),
+    ...ETHICS_MATCH_PAIRS.map((pair) => pair.id),
+    ...ETHICS_BUILD_ITEMS.map((item) => `${item.id}:${item.answer.length + item.decoys.length}`),
+    ...ETHICS_DILEMMAS.map((dilemma) => `${dilemma.id}:${dilemma.sides.length}`),
+].join("|");
 
 type SavedGame = {
+    owner: string;
+    content: string;
+    savedAt: number;
     position: number;
     reached: number;
     slidePicks: Record<number, 0 | 1>;
@@ -120,6 +136,9 @@ function isSavedGame(value: unknown): value is SavedGame {
     const isStep = (n: unknown) => Number.isInteger(n) && (n as number) >= 0 && (n as number) < STEPS.length;
     return (
         !!game &&
+        typeof game.owner === "string" &&
+        game.content === CONTENT &&
+        Number.isFinite(game.savedAt) &&
         isStep(game.position) &&
         isStep(game.reached) &&
         Array.isArray(game.matched) &&
@@ -131,19 +150,20 @@ function isSavedGame(value: unknown): value is SavedGame {
     );
 }
 
-function readSavedGame(): SavedGame | null {
+function readSavedGame(owner: string): SavedGame | null {
     try {
         const saved: unknown = JSON.parse(window.sessionStorage.getItem(SAVED_KEY) ?? "null");
-        return isSavedGame(saved) ? saved : null;
+        return isSavedGame(saved) && saved.owner === owner && Date.now() - saved.savedAt < SAVED_FOR_MS
+            ? saved
+            : null;
     } catch {
         return null;
     }
 }
 
-function writeSavedGame(game: SavedGame | null) {
+function writeSavedGame(game: SavedGame) {
     try {
-        if (game) window.sessionStorage.setItem(SAVED_KEY, JSON.stringify(game));
-        else window.sessionStorage.removeItem(SAVED_KEY);
+        window.sessionStorage.setItem(SAVED_KEY, JSON.stringify(game));
     } catch {
         // Private browsing or a full disk: the game carries on, unkept.
     }
@@ -156,6 +176,8 @@ type WrongPair = Record<Side, string> | null;
 export function AiEthicsGame() {
     const t = useTranslations("ethics");
     const router = useRouter();
+    const { isLoaded, userId } = useAuth();
+    const owner = userId ?? "";
 
     const [position, setPosition] = useState(0);
     // The furthest screen the team has got to. Anything before it is a revisit.
@@ -202,7 +224,8 @@ export function AiEthicsGame() {
     // flash up in place of the team's own screen.
     const [restored, setRestored] = useState(false);
     useEffect(() => {
-        const saved = readSavedGame();
+        if (!isLoaded || restored) return;
+        const saved = readSavedGame(owner);
         if (saved) {
             setPosition(saved.position);
             setReached(saved.reached);
@@ -216,15 +239,17 @@ export function AiEthicsGame() {
             setClockStart(Date.now() - saved.playedMs);
         }
         setRestored(true);
-    }, []);
+    }, [isLoaded, owner, restored]);
 
     // Kept on every answer and move, and again when the page is hidden or
     // left, which is when the clock's latest second gets written down.
-    const leaving = useRef(false);
     const keep = useRef(() => {});
     keep.current = () => {
-        if (!restored || leaving.current) return;
+        if (!restored) return;
         writeSavedGame({
+            owner,
+            content: CONTENT,
+            savedAt: Date.now(),
             position,
             reached,
             slidePicks,
@@ -239,26 +264,37 @@ export function AiEthicsGame() {
     useEffect(() => {
         keep.current();
     }, [restored, position, reached, slidePicks, sortPicks, matched, builds, chosen, wrongAttempts, playedMs]);
+
+    // The clock stops while the game is out of sight. A locked phone or another
+    // app is not time spent playing, just as a reload is not.
+    const clock = useRef({ running, clockStart });
+    clock.current = { running, clockStart };
+    const pausedAt = useRef<number | null>(null);
     useEffect(() => {
-        const onHidden = () => {
-            if (document.visibilityState === "hidden") keep.current();
+        const onVisibility = () => {
+            if (document.visibilityState === "hidden") {
+                if (clock.current.running) {
+                    pausedAt.current = Date.now() - clock.current.clockStart;
+                    setPlayedMs(pausedAt.current);
+                }
+                keep.current();
+            } else if (pausedAt.current !== null) {
+                if (clock.current.running) setClockStart(Date.now() - pausedAt.current);
+                pausedAt.current = null;
+            }
         };
         const onPageHide = () => keep.current();
-        document.addEventListener("visibilitychange", onHidden);
+        document.addEventListener("visibilitychange", onVisibility);
         window.addEventListener("pagehide", onPageHide);
         return () => {
-            document.removeEventListener("visibilitychange", onHidden);
+            document.removeEventListener("visibilitychange", onVisibility);
             window.removeEventListener("pagehide", onPageHide);
             keep.current();
         };
     }, []);
 
-    // The game's own ways out forget it.
-    const leave = () => {
-        leaving.current = true;
-        writeSavedGame(null);
-        router.push("/dashboard");
-    };
+    // Leaving keeps the game, as leaving a lesson keeps its place.
+    const leave = () => router.push("/dashboard");
 
     const clearScreen = () => {
         if (wrongTimer.current) clearTimeout(wrongTimer.current);
@@ -353,7 +389,7 @@ export function AiEthicsGame() {
             if (revisiting) setPractice((prev) => ({ ...prev, matched: done }));
             else setMatched(done);
             setSelected(null);
-            if (done.length === ETHICS_MATCH_PAIRS.length) next();
+            if (done.length >= ETHICS_MATCH_PAIRS.length) next();
             return;
         }
         if (!revisiting) setWrongAttempts((n) => n + 1);
@@ -407,8 +443,9 @@ export function AiEthicsGame() {
 
     const count = (answers: object) => Object.keys(answers).length;
 
-    // Once there is something to lose. The finish screen has its own Play again.
-    const canRestart = (reached > 0 || count(slidePicks) > 0) && step.kind !== "finished";
+    // Once there is something to lose, and on the finish screen too: Play again
+    // keeps the slides behind Back, but a new team sitting down needs them.
+    const canRestart = reached > 0 || count(slidePicks) > 0;
 
     // Counted from the answers, not the screen, so the bar holds still while
     // the team looks back.
@@ -546,6 +583,7 @@ export function AiEthicsGame() {
             onClose={leave}
             header={header}
             footer={footer}
+            step={position}
             onRestart={canRestart ? startOver : undefined}
         >
             {step.kind === "learn" ? (
