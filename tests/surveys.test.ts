@@ -57,18 +57,44 @@ describe("survey definitions", () => {
                 if (question.kind === "scale") {
                     expect(question.labels.length, question.id).toBe(5);
                 }
+                if (question.kind === "rating") {
+                    expect(Number.isInteger(question.min), question.id).toBe(
+                        true,
+                    );
+                    expect(Number.isInteger(question.max), question.id).toBe(
+                        true,
+                    );
+                    expect(question.max, question.id).toBeGreaterThan(
+                        question.min,
+                    );
+                    expect(question.minLabel && question.maxLabel).toBeTruthy();
+                }
             }
         },
     );
 
-    it("files a question shared with HOME under HOME's export column", () => {
-        const homeKeys = new Map(
-            getSurveyQuestions(HOME_FG_SURVEY).map((q) => [q.id, q.exportKey]),
+    // Same question asked the same way: same column, so the exports line up.
+    // Asked a different way (a 1 to 5 word scale became a 0 to 5 number): a
+    // column of its own, so the two are never averaged together.
+    it("lines up MWC's export columns with HOME's only where they match", () => {
+        const home = new Map(
+            getSurveyQuestions(HOME_FG_SURVEY).map((q) => [q.id, q]),
         );
         for (const question of getSurveyQuestions(MWC_SURVEY)) {
-            const homeKey = homeKeys.get(question.id);
-            if (homeKey) expect(question.exportKey, question.id).toBe(homeKey);
+            const twin = home.get(question.id);
+            if (!twin) continue;
+            if (twin.kind === question.kind) {
+                expect(question.exportKey, question.id).toBe(twin.exportKey);
+            } else {
+                expect(question.exportKey, question.id).not.toBe(
+                    twin.exportKey,
+                );
+            }
         }
+    });
+
+    it("keeps em dashes out of everything people read in the MWC survey", () => {
+        expect(JSON.stringify(MWC_SURVEY)).not.toContain("\u2014");
     });
 
     it("only hands out open surveys, and only for known ids", () => {

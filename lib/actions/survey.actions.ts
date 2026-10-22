@@ -65,6 +65,17 @@ function validateAnswer(
             }
             return { kind: "scale", value };
         }
+        case "rating": {
+            const value = Number(answer.value);
+            if (
+                !Number.isInteger(value) ||
+                value < question.min ||
+                value > question.max
+            ) {
+                return null;
+            }
+            return { kind: "rating", value };
+        }
         case "multi": {
             if (!Array.isArray(answer.values)) return null;
             const valid = question.options.filter((option) =>
@@ -597,7 +608,8 @@ function csvCell(value: string | number | null | undefined): string {
 
 /**
  * Every submitted response, one row each, in submission order. Columns use
- * each question's exportKey; scales export the numeric value 1-5, the split
+ * each question's exportKey; scales export the numeric value 1-5, ratings the
+ * number picked (e.g. 0-5), the split
  * question exports as two numeric columns, multi-selects as one 0/1 column
  * per option plus a free-text "other" column. No user identifiers anywhere.
  */
@@ -663,6 +675,17 @@ export async function getSurveyCsv(surveyId: string): Promise<string | null> {
                     cell: (answers) => {
                         const answer = answers[question.id];
                         return answer?.kind === "scale" ? answer.value : null;
+                    },
+                });
+                break;
+            }
+            case "rating": {
+                // The number they picked, as is: 0 is a real answer
+                columns.push({
+                    header: question.exportKey,
+                    cell: (answers) => {
+                        const answer = answers[question.id];
+                        return answer?.kind === "rating" ? answer.value : null;
                     },
                 });
                 break;

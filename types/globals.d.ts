@@ -207,6 +207,14 @@ declare type SurveyQuestion =
     | (SurveyQuestionBase & { kind: "single"; options: SurveyOption[] })
     | (SurveyQuestionBase & { kind: "scale"; labels: string[] })
     | (SurveyQuestionBase & {
+          /** Pick a number, e.g. 0 to 5. Only the two ends are worded. */
+          kind: "rating";
+          min: number;
+          max: number;
+          minLabel: string;
+          maxLabel: string;
+      })
+    | (SurveyQuestionBase & {
           kind: "multi";
           options: SurveyOption[];
           /** Enforced with an explanation, never a silent failure. */
@@ -257,6 +265,7 @@ declare type SurveyDefinition = {
 declare type SurveyAnswer =
     | { kind: "single"; value: string; otherText?: string }
     | { kind: "scale"; value: number }
+    | { kind: "rating"; value: number }
     | { kind: "multi"; values: string[]; otherText?: string }
     | { kind: "split"; left: number; right: number }
     | { kind: "text"; text: string };
