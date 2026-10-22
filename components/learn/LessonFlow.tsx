@@ -11,7 +11,14 @@ import { useLearnerLanguage, useLessonLocalized } from "@/lib/lessons/localized"
 import { restoreSession, snapshotOf, useLessonSession } from "@/lib/lessons/session";
 import { prefetchSpeech } from "@/lib/lessons/speech";
 import type { LessonRecord, SavedRun } from "@/lib/progress/model";
-import { clearRun, completeLesson, getProgressData, saveRun, setResume } from "@/lib/progress/store";
+import {
+    clearRun,
+    completeLesson,
+    getProgressData,
+    saveRun,
+    setResume,
+    useProgressData,
+} from "@/lib/progress/store";
 import { canPractiseSpeaking, practiceLanguages, runToParams } from "@/lib/speaking/context";
 
 import { ExerciseRenderer } from "./ExerciseRenderer";
@@ -78,13 +85,24 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
     const [mode, setMode] = useState<"start" | "run" | "review">(
         saved !== undefined || lessonId === DAILY_MIX_ID ? "run" : "start",
     );
+    // A fresh runner, picked up from what another tab stored (see LessonRunner).
+    const [runKey, setRunKey] = useState(0);
+    const pickUpStored = () => {
+        const run = readSaved();
+        setSaved(run);
+        setRecord(readRecord());
+        setMode(run !== undefined || lessonId === DAILY_MIX_ID ? "run" : "start");
+        setRunKey((value) => value + 1);
+    };
 
     if (mode !== "start") {
         return (
             <LessonRunner
+                key={runKey}
                 lessonId={lessonId}
                 saved={saved}
                 review={mode === "review"}
+                onStale={pickUpStored}
                 // Back from the first exercise is the word list, or the results
                 // for a finished lesson. The daily mix has neither, so it starts
                 // on its first exercise and stays there.
@@ -113,6 +131,7 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
             closeLabel={t("quit")}
             icon={lesson.icon}
             onClose={() => router.push("/dashboard")}
+            step="start"
             footer={
                 <ShellActions>
                     {/* The word list is the lesson's first step, so Back is the way
@@ -143,11 +162,24 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
     );
 }
 
+/** The same place in the same run, whenever either was saved. */
+function sameRun(stored: SavedRun, snapshot: ReturnType<typeof snapshotOf>): boolean {
+    return (
+        stored.fingerprint === snapshot.fingerprint &&
+        stored.locale === snapshot.locale &&
+        stored.position === snapshot.position &&
+        stored.queue.join() === snapshot.queue.join() &&
+        stored.requeued.join() === snapshot.requeued.join() &&
+        JSON.stringify(stored.records) === JSON.stringify(snapshot.records)
+    );
+}
+
 function LessonRunner({
     lessonId,
     saved,
     review = false,
     onBackToStart,
+    onStale,
 }: {
     lessonId: string;
     saved?: SavedRun;
@@ -155,6 +187,8 @@ function LessonRunner({
     review?: boolean;
     /** Back from the first exercise, and the end of a review. */
     onBackToStart?: () => void;
+    /** Another tab has moved this lesson on; what is stored should take over. */
+    onStale?: () => void;
 }) {
     const t = useTranslations("lessons");
     const localized = useLessonLocalized();
@@ -180,6 +214,10 @@ function LessonRunner({
     // Every answer is written down as it happens. A tab can be closed at any
     // moment, so there is no later to save in.
     const recorded = useRef(false);
+    // When this runner started, and when it last saved its run, to tell its
+    // own writes from another tab's.
+    const startedAt = useRef(new Date().toISOString());
+    const ownSave = useRef<string | undefined>(saved?.savedAt);
     useEffect(() => {
         // A review changes nothing: it is not a place to come back to, and
         // reaching its end is not finishing the lesson a second time.
@@ -197,8 +235,29 @@ function LessonRunner({
         recorded.current = false;
         // Nothing answered yet: there is no place to keep.
         if (snapshot.position === 0) return;
+        // A run just picked up is what is stored already. Writing it again
+        // would look, to a tab that also has this lesson open, like news.
+        const stored = getProgressData().runs[lessonId];
+        if (stored && sameRun(stored, snapshot)) return;
         saveRun(lessonId, snapshot, `/lessons/${lessonId}`);
+        ownSave.current = getProgressData().runs[lessonId]?.savedAt;
     }, [review, state, lessonId, summary.firstTryCorrect, summary.total]);
+
+    // Another tab may carry on with this lesson: on a phone a link from a chat
+    // opens a new tab and leaves this one behind. Once that tab has saved
+    // further or finished the lesson, this run is out of date. It gives way to
+    // what is stored before another answer is taken here, or this tab's older
+    // answers would be written over the newer ones.
+    const data = useProgressData();
+    useEffect(() => {
+        if (review || !onStale) return;
+        const stored = data.runs[lessonId]?.savedAt;
+        const finished = data.progress.lessons[lessonId]?.completedAt;
+        const savedElsewhere =
+            stored !== undefined && stored !== ownSave.current && stored > (ownSave.current ?? startedAt.current);
+        const finishedElsewhere = !recorded.current && finished !== undefined && finished > startedAt.current;
+        if (savedElsewhere || finishedElsewhere) onStale();
+    }, [data, review, lessonId, onStale]);
 
     // The end of a review is the results it started from.
     const reviewOver = review && state.phase === "finished";
@@ -296,6 +355,7 @@ function LessonRunner({
             onClose={leave}
             header={<LessonProgress value={progress} />}
             step={`${round}-${state.position}`}
+            footerKey={`${round}-${state.position}-${state.phase}`}
             onRestart={canRestart ? startOver : undefined}
             footer={
                 <LessonFooter

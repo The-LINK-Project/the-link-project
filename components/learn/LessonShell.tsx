@@ -1,9 +1,10 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 
 import type { LessonIcon } from "@/lib/lessons/icons";
+import { cn } from "@/lib/utils";
 
 import { LESSON_HUES } from "./Medallion";
 import { RestartButton, RestartConfirm } from "./RestartLesson";
@@ -22,6 +23,12 @@ function stageStyle(icon: LessonIcon | undefined): CSSProperties {
         backgroundImage: `url("data:image/svg+xml,${diamond}")`,
     };
 }
+
+/**
+ * How long a tap on a footer that has just changed is let fall (see below).
+ * Long enough for the second tap of a double tap, too short to wait out.
+ */
+const SETTLE_MS = 400;
 
 /**
  * The frame every lesson and talk sits in: a close button and whatever runs
@@ -50,6 +57,7 @@ export function LessonShell({
     children,
     scrollRef,
     step,
+    footerKey,
     onRestart,
 }: {
     closeLabel: string;
@@ -66,11 +74,31 @@ export function LessonShell({
      * would otherwise open scrolled past its own instruction.
      */
     step?: string | number;
+    /** What the footer offers, where that changes within a page (an answer graded). Defaults to `step`. */
+    footerKey?: string | number;
     /** Starts the lesson again. Absent while there is nothing to lose. */
     onRestart?: () => void;
 }) {
     const [confirming, setConfirming] = useState(false);
     const asking = confirming && onRestart;
+
+    // A question asked about one page is not left open over the next.
+    useEffect(() => {
+        setConfirming(false);
+    }, [step]);
+
+    // A tap on the footer just after it changed is the second half of a double
+    // tap on the button that changed it, not a choice: Continue under the last
+    // dilemma sits exactly where Play again appears, and Check where Continue
+    // does. Such taps are let fall for a moment.
+    const settleKey = footerKey ?? step;
+    const [settling, setSettling] = useState(false);
+    useEffect(() => {
+        if (settleKey === undefined) return;
+        setSettling(true);
+        const timer = setTimeout(() => setSettling(false), SETTLE_MS);
+        return () => clearTimeout(timer);
+    }, [settleKey]);
 
     return (
         <div data-lesson-shell className="roomy:px-4 roomy:pb-4">
@@ -108,7 +136,7 @@ export function LessonShell({
                             />
                         </div>
                     ) : footer ? (
-                        <div className="shrink-0">{footer}</div>
+                        <div className={cn("shrink-0", settling && "pointer-events-none")}>{footer}</div>
                     ) : null}
                 </div>
             </div>
