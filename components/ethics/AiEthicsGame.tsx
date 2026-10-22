@@ -823,6 +823,7 @@ function Finished({ timeMs, wrongAttempts, chosen }: { timeMs: number; wrongAtte
             <div className="flex flex-col gap-2">
                 <p className={text.label}>{t("takeHomeTitle")}</p>
                 <LessonCardBox tone="muted" className="flex flex-col gap-3">
+                    <p className={text.bodyStrong}>{t("takeHomeLead")}</p>
                     {QUESTIONS.map((question) => (
                         <div key={question} className="flex flex-col gap-0.5">
                             <p className={text.bodyStrong}>{ETHICS_QUESTION_LABEL[question]}</p>
