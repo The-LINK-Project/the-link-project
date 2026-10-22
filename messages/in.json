@@ -307,7 +307,7 @@
         "start": "Start",
         "round1Label": "Round 1 of 4",
         "round1Title": "Good or problem?",
-        "round1Hint": "Read the card out loud together. Decide as a team, then tap.",
+        "round1Hint": "Who is helped? Who could be hurt? Read the card out loud, decide as a team, then tap.",
         "cardOf": "Card {index} of {total}",
         "good": "Good",
         "goodSub": "AI helps",
@@ -340,7 +340,7 @@
         "modelAnswer": "The sentence is:",
         "round4Label": "Round 4 of 4",
         "round4Title": "What would your team do?",
-        "round4Hint": "There is no wrong answer. Talk, then choose together.",
+        "round4Hint": "Both sides are possible. Ethics is choosing, and saying why.",
         "dilemmaSay": "Say why out loud. Start with: \"We chose this because …\"",
         "dilemmaOf": "Dilemma {index} of {total}",
         "conceptsTitle": "Ideas you met today",
@@ -349,6 +349,7 @@
         "learnEarlier": "Earlier today",
         "learnAsk": "Your team: tap one",
         "takeHomeTitle": "Take home",
-        "buildStemsLabel": "Start with"
+        "buildStemsLabel": "Start with",
+        "takeHomeLead": "Ethics means thinking about people before you use a tool. Ask the three questions."
     }
 }
