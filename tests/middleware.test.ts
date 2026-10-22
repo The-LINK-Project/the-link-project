@@ -64,13 +64,22 @@ describe("middleware redirects", () => {
     it.each([
         ["/mwcsurvey", "/en/sign-in"],
         ["/bn/lessons/mrt-basics?x=1", "/bn/sign-in"],
-        ["/dashboard", "/en/sign-up"],
+        // A learner signed out on the dashboard is coming back, not new
+        ["/dashboard", "/en/sign-in"],
+        ["/bn/dashboard", "/bn/sign-in"],
     ])("sends %s to sign in, and back again afterwards", async (path, signIn) => {
         const { status, location } = await visit(path);
         expect(isRedirect(status)).toBe(true);
         expect(location?.origin).toBe(ORIGIN);
         expect(location?.pathname).toBe(signIn);
         expect(location?.searchParams.get("redirect_url")).toBe(ORIGIN + path);
+    });
+
+    // The landing page's button decides on the page itself (sign-up or the
+    // dashboard), so middleware must let a signed-out visitor through
+    it.each(["/start", "/bn/start"])("lets %s through signed out", async (path) => {
+        const { status, location } = await visit(path);
+        expect(isRedirect(status) && location?.pathname.includes("/sign-")).toBe(false);
     });
 
     it("never names another site as the page to come back to", async () => {

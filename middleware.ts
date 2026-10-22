@@ -17,6 +17,8 @@ const publicRoutePatterns = [
     /^\/contact$/,
     /^\/about$/,
     /^\/privacy$/,
+    // Sends on to sign-up or the dashboard itself (app/[locale]/(root)/start).
+    /^\/start$/,
 ];
 
 const isPublicPath = (path: string) =>
@@ -96,13 +98,11 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     } else if (!isPublicPath(normalizedPath)) {
         const { userId } = await auth();
         if (!userId) {
-            const isDashboardRoute =
-                normalizedPath === "/dashboard" ||
-                normalizedPath.startsWith("/dashboard/");
-            const redirectPath = isDashboardRoute
-                ? `/${locale}/sign-up`
-                : `/${locale}/sign-in`;
-            return NextResponse.redirect(withReturn(redirectPath));
+            // Sign in, the dashboard included: someone signed out there is
+            // most likely coming back, and progress belongs to the account
+            // they had. Sign-in links to sign-up for anyone new, and the
+            // landing page's own button goes to sign-up (see /start).
+            return NextResponse.redirect(withReturn(`/${locale}/sign-in`));
         }
     }
 
