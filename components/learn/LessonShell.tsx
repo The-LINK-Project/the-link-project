@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
 import type { LessonIcon } from "@/lib/lessons/icons";
 import { cn } from "@/lib/utils";
@@ -29,6 +29,16 @@ function stageStyle(icon: LessonIcon | undefined): CSSProperties {
  * Long enough for the second tap of a double tap, too short to wait out.
  */
 const SETTLE_MS = 400;
+
+/**
+ * Back and Next (marked `data-steady`) stay live while the footer settles
+ * after a press of their own kind: Back where Back was is the next tap of a
+ * learner stepping back quickly, not a slip. Literal for Tailwind.
+ */
+const STEADY_LIVE: Record<string, string> = {
+    back: "[&_[data-steady=back]]:pointer-events-auto",
+    next: "[&_[data-steady=next]]:pointer-events-auto",
+};
 
 /**
  * The frame every lesson and talk sits in: a close button and whatever runs
@@ -89,16 +99,32 @@ export function LessonShell({
 
     // A tap on the footer just after it changed is the second half of a double
     // tap on the button that changed it, not a choice: Continue under the last
-    // dilemma sits exactly where Play again appears, and Check where Continue
-    // does. Such taps are let fall for a moment.
+    // dilemma sits exactly where Play again appears, Check where Continue does,
+    // and Keep going over the footer it gives back. Such taps are let fall for
+    // a moment, except on Back or Next after a press of the same (see above).
     const settleKey = footerKey ?? step;
-    const [settling, setSettling] = useState(false);
+    const confirmOpen = !!asking;
+    const pressed = useRef<string | null>(null);
+    const [settling, setSettling] = useState<string | false>(false);
     useEffect(() => {
+        const steady = pressed.current;
+        pressed.current = null;
         if (settleKey === undefined) return;
-        setSettling(true);
+        setSettling(steady ?? "");
         const timer = setTimeout(() => setSettling(false), SETTLE_MS);
         return () => clearTimeout(timer);
-    }, [settleKey]);
+    }, [settleKey, confirmOpen]);
+
+    // Which kind of button a footer press was on, for the effect above. A
+    // press that changed nothing is forgotten before the next one.
+    const notePress = (event: React.MouseEvent) => {
+        const target = event.target instanceof Element ? event.target : null;
+        pressed.current = target?.closest("[data-steady]")?.getAttribute("data-steady") ?? null;
+        setTimeout(() => {
+            pressed.current = null;
+        }, 0);
+    };
+    const settled = cn("shrink-0", settling !== false && "pointer-events-none", settling && STEADY_LIVE[settling]);
 
     return (
         <div data-lesson-shell className="roomy:px-4 roomy:pb-4">
@@ -126,7 +152,7 @@ export function LessonShell({
                         <div className="flex min-h-full flex-col gap-6 p-4 pb-8">{children}</div>
                     </div>
                     {asking ? (
-                        <div className="shrink-0">
+                        <div className={settled} onClickCapture={notePress}>
                             <RestartConfirm
                                 onRestart={() => {
                                     setConfirming(false);
@@ -136,7 +162,9 @@ export function LessonShell({
                             />
                         </div>
                     ) : footer ? (
-                        <div className={cn("shrink-0", settling && "pointer-events-none")}>{footer}</div>
+                        <div className={settled} onClickCapture={notePress}>
+                            {footer}
+                        </div>
                     ) : null}
                 </div>
             </div>

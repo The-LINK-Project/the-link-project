@@ -8,6 +8,7 @@ import GameTimer, { formatTime } from "@/components/games/GameTimer";
 import { LessonFooter } from "@/components/learn/LessonFooter";
 import { LessonProgress } from "@/components/learn/LessonProgress";
 import { LessonShell, ShellActions } from "@/components/learn/LessonShell";
+import { RestartConfirm } from "@/components/learn/RestartLesson";
 import { BackButton, WithBack } from "@/components/learn/StepNav";
 import { Tile } from "@/components/learn/Tile";
 import { LessonBadge, LessonButton, LessonCardBox, text } from "@/components/learn/ui";
@@ -196,12 +197,13 @@ export function AiEthicsGame({ owner }: { owner: string }) {
     const [wrongAttempts, setWrongAttempts] = useState(0);
 
     // The screen's own state, cleared on every move: a practice answer, the
-    // sentence being built, and a half-made pair.
+    // sentence being built, a half-made pair, and Play again being asked.
     const [practice, setPractice] = useState<Practice>(NO_PRACTICE);
     const [placed, setPlaced] = useState<number[]>([]);
     const [selected, setSelected] = useState<Selection>(null);
     const [wrongPair, setWrongPair] = useState<WrongPair>(null);
     const wrongTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [askingAgain, setAskingAgain] = useState(false);
 
     const situations = useMemo(() => seededShuffle(ETHICS_MATCH_PAIRS, "ethics-situations"), []);
     // Never the same row as its situation, or the pair reads straight across.
@@ -310,6 +312,7 @@ export function AiEthicsGame({ owner }: { owner: string }) {
         setPlaced([]);
         setSelected(null);
         setWrongPair(null);
+        setAskingAgain(false);
     };
 
     const go = (to: number) => {
@@ -515,7 +518,7 @@ export function AiEthicsGame({ owner }: { owner: string }) {
                 return slidePick === null ? (
                     answering()
                 ) : (
-                    <Outcome correct={slidePick === slide.check.answer} onBack={back} onNext={next}>
+                    <Outcome correct={slidePick === slide.check.answer} onBack={back} onNext={next} steady={revisiting}>
                         <p className={text.bodyStrong}>{slide.check.reason}</p>
                     </Outcome>
                 );
@@ -523,13 +526,18 @@ export function AiEthicsGame({ owner }: { owner: string }) {
                 return (
                     <ShellActions>
                         <WithBack onBack={back}>
-                            <LessonButton title={revisiting ? t("continue") : t("start")} size="lg" onClick={next} />
+                            <LessonButton
+                                title={revisiting ? t("continue") : t("start")}
+                                size="lg"
+                                data-steady={revisiting ? "next" : undefined}
+                                onClick={next}
+                            />
                         </WithBack>
                     </ShellActions>
                 );
             case "sort":
                 return picked ? (
-                    <Outcome correct={picked === card.answer} onBack={back} onNext={next}>
+                    <Outcome correct={picked === card.answer} onBack={back} onNext={next} steady={revisiting}>
                         <div>
                             <LessonBadge label={ETHICS_CONCEPT_LABEL[card.concept]} tone="accent" />
                         </div>
@@ -546,6 +554,7 @@ export function AiEthicsGame({ owner }: { owner: string }) {
                             <LessonButton
                                 title={revisiting ? t("continue") : t("startRound2")}
                                 size="lg"
+                                data-steady={revisiting ? "next" : undefined}
                                 onClick={next}
                             />
                         </WithBack>
@@ -557,7 +566,7 @@ export function AiEthicsGame({ owner }: { owner: string }) {
                 return buildResult === null ? (
                     answering({ onCheck: checkBuild, ready: placed.length > 0 })
                 ) : (
-                    <Outcome correct={buildResult} onBack={back} onNext={next}>
+                    <Outcome correct={buildResult} onBack={back} onNext={next} steady={revisiting}>
                         {buildResult ? null : (
                             <p className={text.caption}>
                                 {t("modelAnswer")} <span className={text.bodyStrong}>{buildItem.answer.join(" ")}</span>
@@ -572,18 +581,39 @@ export function AiEthicsGame({ owner }: { owner: string }) {
                     <ShellActions>
                         <p className={cn(text.bodyStrong, "pb-3 text-center")}>{t("dilemmaSay")}</p>
                         <WithBack onBack={back}>
-                            <LessonButton title={t("continue")} size="lg" onClick={next} />
+                            <LessonButton
+                                title={t("continue")}
+                                size="lg"
+                                data-steady={revisiting ? "next" : undefined}
+                                onClick={next}
+                            />
                         </WithBack>
                     </ShellActions>
                 );
             case "finished":
-                return (
+                // Play again clears the time and score the team is to compare,
+                // so it asks first.
+                return askingAgain ? (
+                    <RestartConfirm
+                        labels={{
+                            title: t("playAgainTitle"),
+                            body: t("playAgainBody"),
+                            confirm: t("playAgain"),
+                            keep: t("playAgainKeep"),
+                        }}
+                        onRestart={() => {
+                            setAskingAgain(false);
+                            playAgain();
+                        }}
+                        onCancel={() => setAskingAgain(false)}
+                    />
+                ) : (
                     <ShellActions>
                         {/* Back to the last dilemma, to look at it again. */}
                         <WithBack onBack={back}>
                             <div className="flex flex-col gap-3 sm:flex-row">
                                 <LessonButton title={t("home")} size="lg" variant="outline" onClick={leave} />
-                                <LessonButton title={t("playAgain")} size="lg" onClick={playAgain} />
+                                <LessonButton title={t("playAgain")} size="lg" onClick={() => setAskingAgain(true)} />
                             </div>
                         </WithBack>
                     </ShellActions>
@@ -606,7 +636,7 @@ export function AiEthicsGame({ owner }: { owner: string }) {
             header={header}
             footer={footer}
             step={position}
-            footerKey={`${position}-${answered}`}
+            footerKey={`${position}-${answered}-${askingAgain}`}
             onRestart={canRestart ? startOver : undefined}
         >
             {step.kind === "learn" ? (
@@ -733,11 +763,14 @@ function Outcome({
     correct,
     onBack,
     onNext,
+    steady,
     children,
 }: {
     correct: boolean;
     onBack: () => void;
     onNext: () => void;
+    /** On a screen already passed, where Continue is a way on like Next (see LessonShell). */
+    steady?: boolean;
     children?: React.ReactNode;
 }) {
     const t = useTranslations("ethics");
@@ -775,6 +808,7 @@ function Outcome({
                     title={t("continue")}
                     size="lg"
                     variant={correct ? "primary" : "destructive"}
+                    data-steady={steady ? "next" : undefined}
                     onClick={onNext}
                     className="min-w-0 flex-1"
                 />
