@@ -12,6 +12,7 @@ import { restoreSession, snapshotOf, useLessonSession } from "@/lib/lessons/sess
 import { prefetchSpeech } from "@/lib/lessons/speech";
 import type { LessonRecord, SavedRun } from "@/lib/progress/model";
 import {
+    catchUpProgress,
     clearRun,
     completeLesson,
     getProgressData,
@@ -87,6 +88,12 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
     );
     // A fresh runner, picked up from what another tab stored (see LessonRunner).
     const [runKey, setRunKey] = useState(0);
+    // From the word list or the results, with what is stored now: another tab
+    // may have moved this lesson on while this one sat here.
+    const startFromStored = () => {
+        setSaved(readSaved());
+        setMode("run");
+    };
     const pickUpStored = () => {
         const run = readSaved();
         setSaved(run);
@@ -140,14 +147,14 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
                     <WithBack onBack={record ? () => setMode("review") : () => router.push("/dashboard")}>
                         {record ? (
                             <LessonDoneActions
-                                onAgain={() => setMode("run")}
+                                onAgain={startFromStored}
                                 onSpeak={canSpeak ? () => router.push(`/lessons/${lesson.id}/speak`) : undefined}
                                 onChat={
                                     lesson.chatPractice ? () => router.push(`/lessons/${lesson.id}/chat`) : undefined
                                 }
                             />
                         ) : (
-                            <LessonButton title={t("introStart")} size="lg" onClick={() => setMode("run")} />
+                            <LessonButton title={t("introStart")} size="lg" onClick={startFromStored} />
                         )}
                     </WithBack>
                 </ShellActions>
@@ -214,14 +221,42 @@ function LessonRunner({
     // Every answer is written down as it happens. A tab can be closed at any
     // moment, so there is no later to save in.
     const recorded = useRef(false);
-    // When this runner started, and when it last saved its run, to tell its
-    // own writes from another tab's.
-    const startedAt = useRef(new Date().toISOString());
-    const ownSave = useRef<string | undefined>(saved?.savedAt);
+
+    // Another tab may carry on with this lesson: on a phone a link from a chat
+    // opens a new tab and leaves this one behind. Once that tab has saved this
+    // lesson's run, or finished the lesson and so cleared it, this run is out
+    // of date, and gives way to what is stored rather than writing its older
+    // answers over the newer ones. "Out of date" is any change to the stored
+    // run this runner did not make itself. Times are never compared, as
+    // another device's clock need not agree with this one's. Records are left
+    // out: the server can bring an old one in at any moment, and a run kept
+    // only in this browser has nothing to lose to it.
+    const readStored = () => getProgressData().runs[lessonId]?.savedAt;
+    const known = useRef(readStored());
+    const movedOnElsewhere = () => readStored() !== known.current;
+    const gaveWay = useRef(false);
+    const giveWay = () => {
+        if (gaveWay.current || !onStale) return;
+        gaveWay.current = true;
+        onStale();
+    };
+    // Drawn again whenever the store changes (another tab's write arrives), so
+    // the check after every draw sees it.
+    useProgressData();
+    useEffect(() => {
+        if (!review && movedOnElsewhere()) giveWay();
+    });
+
     useEffect(() => {
         // A review changes nothing: it is not a place to come back to, and
         // reaching its end is not finishing the lesson a second time.
         if (review) return;
+        // Checked again just before writing, in case the news has not arrived.
+        catchUpProgress();
+        if (movedOnElsewhere()) {
+            giveWay();
+            return;
+        }
         const snapshot = snapshotOf(state);
         // The lesson is finished by its last answer, not by pressing Continue
         // under it, so a learner who closes the tab on the feedback has still
@@ -230,6 +265,7 @@ function LessonRunner({
             if (recorded.current) return;
             recorded.current = true;
             completeLesson(lessonId, { firstTryCorrect: summary.firstTryCorrect, total: summary.total });
+            known.current = readStored();
             return;
         }
         recorded.current = false;
@@ -240,24 +276,8 @@ function LessonRunner({
         const stored = getProgressData().runs[lessonId];
         if (stored && sameRun(stored, snapshot)) return;
         saveRun(lessonId, snapshot, `/lessons/${lessonId}`);
-        ownSave.current = getProgressData().runs[lessonId]?.savedAt;
+        known.current = readStored();
     }, [review, state, lessonId, summary.firstTryCorrect, summary.total]);
-
-    // Another tab may carry on with this lesson: on a phone a link from a chat
-    // opens a new tab and leaves this one behind. Once that tab has saved
-    // further or finished the lesson, this run is out of date. It gives way to
-    // what is stored before another answer is taken here, or this tab's older
-    // answers would be written over the newer ones.
-    const data = useProgressData();
-    useEffect(() => {
-        if (review || !onStale) return;
-        const stored = data.runs[lessonId]?.savedAt;
-        const finished = data.progress.lessons[lessonId]?.completedAt;
-        const savedElsewhere =
-            stored !== undefined && stored !== ownSave.current && stored > (ownSave.current ?? startedAt.current);
-        const finishedElsewhere = !recorded.current && finished !== undefined && finished > startedAt.current;
-        if (savedElsewhere || finishedElsewhere) onStale();
-    }, [data, review, lessonId, onStale]);
 
     // The end of a review is the results it started from.
     const reviewOver = review && state.phase === "finished";
@@ -290,6 +310,7 @@ function LessonRunner({
     const [round, setRound] = useState(0);
     const startOver = useCallback(() => {
         clearRun(lessonId);
+        known.current = readStored();
         restart();
         setRound((value) => value + 1);
     }, [lessonId, restart]);

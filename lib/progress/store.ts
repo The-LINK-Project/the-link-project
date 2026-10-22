@@ -80,6 +80,11 @@ function catchUp(): boolean {
     }
 }
 
+/** Take up another tab's writes now, telling whoever is listening if anything changed. */
+export function catchUpProgress() {
+    if (catchUp()) notify();
+}
+
 // Another tab's change shows here too, and a tab coming back to the front
 // shows what was done elsewhere in the meantime.
 if (typeof window !== "undefined") {
