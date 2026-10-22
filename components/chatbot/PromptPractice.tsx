@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { Bot, RotateCcw, Send, ShieldAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
@@ -60,12 +59,11 @@ function writeChat(owner: string, lessonId: string, messages: ChatMessageType[])
     }
 }
 
-export default function PromptPractice({ lessonId }: { lessonId: string }) {
+/** `owner` is the signed-in account, from the server, whose conversation to show again. */
+export default function PromptPractice({ lessonId, owner }: { lessonId: string; owner: string }) {
     const t = useTranslations("lessons");
     const native = useLessonLocalized();
     const router = useRouter();
-    const { isLoaded, userId } = useAuth();
-    const owner = userId ?? "";
     const lesson = getLesson(lessonId)!;
     const practice = lesson.chatPractice!;
     // The step after this one: speaking, where the lesson has a talk.
@@ -80,7 +78,7 @@ export default function PromptPractice({ lessonId }: { lessonId: string }) {
     // Put back after the first draw, which the server makes without the tab's storage.
     const [restored, setRestored] = useState(false);
     useEffect(() => {
-        if (!isLoaded || restored) return;
+        if (restored) return;
         const saved = readChat(owner, lessonId);
         // A prompt left while its reply was on the way has no reply coming: it
         // goes back in the box to send again, rather than waiting for ever.
@@ -92,7 +90,7 @@ export default function PromptPractice({ lessonId }: { lessonId: string }) {
             setMessages(saved);
         }
         setRestored(true);
-    }, [isLoaded, owner, lessonId, restored]);
+    }, [owner, lessonId, restored]);
 
     useEffect(() => {
         if (restored) writeChat(owner, lessonId, messages);

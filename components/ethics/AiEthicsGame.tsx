@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { CircleCheck, CircleX, ThumbsUp, Timer, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -141,12 +140,15 @@ function isSavedGame(value: unknown): value is SavedGame {
         Number.isFinite(game.savedAt) &&
         isStep(game.position) &&
         isStep(game.reached) &&
+        game.position <= game.reached &&
         Array.isArray(game.matched) &&
         [game.slidePicks, game.sortPicks, game.builds, game.chosen].every(
             (part) => !!part && typeof part === "object",
         ) &&
         Number.isFinite(game.wrongAttempts) &&
-        Number.isFinite(game.playedMs)
+        Number.isFinite(game.playedMs) &&
+        game.playedMs >= 0 &&
+        game.playedMs < 24 * 60 * 60 * 1000
     );
 }
 
@@ -173,11 +175,10 @@ type Side = "situation" | "reason";
 type Selection = { side: Side; pairId: string } | null;
 type WrongPair = Record<Side, string> | null;
 
-export function AiEthicsGame() {
+/** `owner` is the signed-in account, from the server, whose game to pick back up. */
+export function AiEthicsGame({ owner }: { owner: string }) {
     const t = useTranslations("ethics");
     const router = useRouter();
-    const { isLoaded, userId } = useAuth();
-    const owner = userId ?? "";
 
     const [position, setPosition] = useState(0);
     // The furthest screen the team has got to. Anything before it is a revisit.
@@ -224,7 +225,7 @@ export function AiEthicsGame() {
     // flash up in place of the team's own screen.
     const [restored, setRestored] = useState(false);
     useEffect(() => {
-        if (!isLoaded || restored) return;
+        if (restored) return;
         const saved = readSavedGame(owner);
         if (saved) {
             setPosition(saved.position);
@@ -239,10 +240,13 @@ export function AiEthicsGame() {
             setClockStart(Date.now() - saved.playedMs);
         }
         setRestored(true);
-    }, [isLoaded, owner, restored]);
+    }, [owner, restored]);
 
-    // Kept on every answer and move, and again when the page is hidden or
-    // left, which is when the clock's latest second gets written down.
+    // Kept on every answer and move, every few seconds while the clock runs,
+    // and again when the page is hidden or left. Not every browser says so on
+    // a reload, so the clock's time is never more than a moment out of date.
+    // While the page is hidden the clock stands where it stopped.
+    const pausedAt = useRef<number | null>(null);
     const keep = useRef(() => {});
     keep.current = () => {
         if (!restored) return;
@@ -258,18 +262,22 @@ export function AiEthicsGame() {
             builds,
             chosen,
             wrongAttempts,
-            playedMs: running ? Date.now() - clockStart : playedMs,
+            playedMs: Math.max(0, pausedAt.current ?? (running ? Date.now() - clockStart : playedMs)),
         });
     };
     useEffect(() => {
         keep.current();
     }, [restored, position, reached, slidePicks, sortPicks, matched, builds, chosen, wrongAttempts, playedMs]);
+    useEffect(() => {
+        if (!restored || !running) return;
+        const timer = setInterval(() => keep.current(), 2000);
+        return () => clearInterval(timer);
+    }, [restored, running]);
 
     // The clock stops while the game is out of sight. A locked phone or another
     // app is not time spent playing, just as a reload is not.
     const clock = useRef({ running, clockStart });
     clock.current = { running, clockStart };
-    const pausedAt = useRef<number | null>(null);
     useEffect(() => {
         const onVisibility = () => {
             if (document.visibilityState === "hidden") {
@@ -439,6 +447,20 @@ export function AiEthicsGame() {
     const dilemma = ETHICS_DILEMMAS[indexOf("dilemma")];
     const dilemmaChoice = chosen[dilemma.id];
 
+    // Whether this screen's footer shows its outcome yet, for LessonShell's
+    // footerKey: a tap landing on the outcome's button straight after the
+    // answer is the end of a double tap.
+    const answered =
+        step.kind === "learn"
+            ? slidePick !== null
+            : step.kind === "sort"
+              ? picked !== null
+              : step.kind === "build"
+                ? buildResult !== null
+                : step.kind === "dilemma"
+                  ? dilemmaChoice !== undefined
+                  : false;
+
     // --------------------------------------------------------------- frame
 
     const count = (answers: object) => Object.keys(answers).length;
@@ -584,6 +606,7 @@ export function AiEthicsGame() {
             header={header}
             footer={footer}
             step={position}
+            footerKey={`${position}-${answered}`}
             onRestart={canRestart ? startOver : undefined}
         >
             {step.kind === "learn" ? (
