@@ -42,7 +42,7 @@ const Chatbot = ({ showChatbot }: { showChatbot: boolean }) => {
             const result = await getChatbotResponse(history);
 
             if (result.success) {
-                updateHistory(result.text || "Sorry, no response.");
+                updateHistory(result.text || "Sorry, no response.", !result.text);
                 setIsRateLimited(false);
             } else if (result.error === "rate_limit") {
                 setIsRateLimited(true);
