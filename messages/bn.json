@@ -200,6 +200,7 @@
         "acceptedTitle": "ভালো, আমরা বুঝেছি",
         "incorrectTitle": "একটু ভুল হয়েছে",
         "modelAnswer": "এভাবেও বলা যায়:",
+        "rightAnswer": "সঠিক উত্তর:",
         "missingWords": "বাদ পড়েছে: {words}",
         "exerciseMissing": "এই অনুশীলনটি লোড করা যায়নি।",
         "summaryTitle": "পাঠ শেষ!",

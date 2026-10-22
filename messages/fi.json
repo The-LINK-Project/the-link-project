@@ -200,6 +200,7 @@
         "acceptedTitle": "Ayos, naiintindihan ka namin",
         "incorrectTitle": "Hindi pa tama",
         "modelAnswer": "Puwede mo ring sabihin:",
+        "rightAnswer": "Ang tamang sagot:",
         "missingWords": "Kulang: {words}",
         "exerciseMissing": "Hindi ma-load ang pagsasanay na ito.",
         "summaryTitle": "Tapos na ang aralin!",

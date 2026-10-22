@@ -200,6 +200,7 @@
         "acceptedTitle": "Bagus, kami mengerti",
         "incorrectTitle": "Belum tepat",
         "modelAnswer": "Anda juga bisa berkata:",
+        "rightAnswer": "Jawaban yang benar:",
         "missingWords": "Kurang: {words}",
         "exerciseMissing": "Latihan ini tidak bisa dimuat.",
         "summaryTitle": "Pelajaran selesai!",

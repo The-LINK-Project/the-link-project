@@ -200,6 +200,7 @@
         "acceptedTitle": "ကောင်းပါသည်၊ နားလည်ပါသည်",
         "incorrectTitle": "မမှန်သေးပါ",
         "modelAnswer": "ဤသို့လည်း ပြောနိုင်သည်:",
+        "rightAnswer": "အဖြေမှန်:",
         "missingWords": "လိုနေသည်: {words}",
         "exerciseMissing": "ဤလေ့ကျင့်ခန်းကို မဖွင့်နိုင်ပါ။",
         "summaryTitle": "သင်ခန်းစာ ပြီးပါပြီ!",

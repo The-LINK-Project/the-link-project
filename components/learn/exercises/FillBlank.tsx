@@ -1,6 +1,7 @@
 "use client";
 
 import type { FillBlankExercise } from "@/lib/lessons/types";
+import { cn } from "@/lib/utils";
 
 import { Tile } from "../Tile";
 import { text } from "../ui";
@@ -25,7 +26,14 @@ export function FillBlank({ exercise, draft, onDraftChange, result, locked }: Ex
                     part === null ? (
                         <span
                             key={`blank-${index}`}
-                            className="inline-block min-w-16 border-b-2 border-lesson-border px-1 text-center text-lesson-primary-dark"
+                            className={cn(
+                                "inline-block min-w-16 border-b-2 border-lesson-border px-1 text-center",
+                                // A missed word is marked as missed, not left in the
+                                // brand green that reads as right.
+                                result && !result.correct
+                                    ? "text-lesson-destructive line-through"
+                                    : "text-lesson-primary-dark",
+                            )}
                         >
                             {chosenLabel ? ` ${chosenLabel} ` : " "}
                         </span>

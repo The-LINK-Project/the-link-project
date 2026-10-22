@@ -137,7 +137,8 @@ export function LessonFooter({
             {!result.modelAnswer ||
             (result.correct && !result.accepted && result.modelAnswerKind !== "audio") ? null : (
                 <p className={text.caption}>
-                    {t(result.modelAnswerKind === "audio" ? "audioWas" : "modelAnswer")}{" "}
+                    {/* After a miss it is the right answer, not another way to say theirs. */}
+                    {t(result.modelAnswerKind === "audio" ? "audioWas" : result.correct ? "modelAnswer" : "rightAnswer")}{" "}
                     <span className={text.bodyStrong}>{result.modelAnswer}</span>
                 </p>
             )}
