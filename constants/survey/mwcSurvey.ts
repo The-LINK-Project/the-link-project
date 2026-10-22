@@ -1,4 +1,4 @@
-// MWC workshop survey, for migrant workers (23 October 2026). Served at
+// MWC workshop survey, for migrant workers (22 October 2026). Served at
 // /mwcsurvey, and linked from the button on the home page. Read the editing
 // notes in feedbackSurvey.ts before changing anything.
 //
@@ -302,7 +302,7 @@ const NEXT: SurveySection = {
 export const MWC_SURVEY: SurveyDefinition = {
     id: "mwc-2026-10",
     title: "Tell us about today",
-    label: "MWC workshop · migrant workers · 23 Oct 2026",
+    label: "MWC workshop · migrant workers · 22 Oct 2026",
     path: "/mwcsurvey",
     open: true,
     timeEstimate: "about 7 minutes",
