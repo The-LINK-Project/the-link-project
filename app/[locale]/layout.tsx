@@ -121,7 +121,9 @@ export default async function RootLayout({
     );
 
     return (
-        <ClerkProvider>
+        // Signing in or up from anywhere without a page to return to (the
+        // header's buttons) leads to the dashboard rather than back to the home page
+        <ClerkProvider signInFallbackRedirectUrl="/dashboard" signUpFallbackRedirectUrl="/dashboard">
             <html lang={locale}>
                 {/* The container classes live on a wrapper div, NOT on body:
                     dialog scroll-locking injects margin/padding styles onto

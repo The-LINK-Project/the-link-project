@@ -76,13 +76,22 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 
     const normalizedPath = pathForMatching || "/";
 
+    // Signing in brings the learner back to the page they were opening (a
+    // survey link from a workshop QR code, a lesson), not the home page. It is
+    // this request's own URL, so it cannot name another site: rebuilding it
+    // from the path would turn //example.net into one.
+    const withReturn = (path: string) => {
+        const url = new URL(path, req.url);
+        url.searchParams.set("redirect_url", req.url);
+        return url;
+    };
+
     // Only protected routes pay for the auth() call — public pages
     // (landing, about, contact, sign-in/up) skip Clerk entirely
     if (isAdminPath(normalizedPath)) {
         const { userId } = await auth();
         if (!userId) {
-            const signInUrl = new URL(`/${locale}/sign-in`, req.url);
-            return NextResponse.redirect(signInUrl);
+            return NextResponse.redirect(withReturn(`/${locale}/sign-in`));
         }
     } else if (!isPublicPath(normalizedPath)) {
         const { userId } = await auth();
@@ -93,8 +102,7 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
             const redirectPath = isDashboardRoute
                 ? `/${locale}/sign-up`
                 : `/${locale}/sign-in`;
-            const redirectUrl = new URL(redirectPath, req.url);
-            return NextResponse.redirect(redirectUrl);
+            return NextResponse.redirect(withReturn(redirectPath));
         }
     }
 
