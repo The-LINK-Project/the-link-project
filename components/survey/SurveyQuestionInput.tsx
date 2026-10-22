@@ -181,6 +181,88 @@ function ScaleChoice({
     );
 }
 
+function RatingChoice({
+    question,
+    value,
+    onChange,
+}: {
+    question: Extract<SurveyQuestion, { kind: "rating" }>;
+    value: SurveyAnswer | undefined;
+    onChange: (answer: SurveyAnswer | null) => void;
+}) {
+    const current = value?.kind === "rating" ? value.value : undefined;
+    const points = Array.from(
+        { length: question.max - question.min + 1 },
+        (_, index) => question.min + index,
+    );
+
+    // One row of numbers, with only the two ends put into words. Six fit
+    // across a 320px phone. The chosen number is drawn inverted, so it reads
+    // as picked without relying on colour.
+    return (
+        <div>
+            <div
+                role="radiogroup"
+                aria-label={question.prompt}
+                className="flex gap-1.5"
+            >
+                {points.map((point) => {
+                    const selected = current === point;
+                    const inputId = `${question.id}-${point}`;
+                    const endLabel =
+                        point === question.min
+                            ? question.minLabel
+                            : point === question.max
+                              ? question.maxLabel
+                              : null;
+                    return (
+                        <div key={point} className="flex-1">
+                            <input
+                                type="radio"
+                                id={inputId}
+                                name={question.id}
+                                className="peer sr-only"
+                                checked={selected}
+                                onChange={() =>
+                                    onChange({ kind: "rating", value: point })
+                                }
+                            />
+                            <label
+                                htmlFor={inputId}
+                                className={cn(
+                                    "flex min-h-[56px] w-full cursor-pointer items-center justify-center rounded-xl border-2 text-xl font-semibold tabular-nums transition-colors",
+                                    "peer-focus-visible:ring-[3px] peer-focus-visible:ring-ring/50 peer-focus-visible:border-ring",
+                                    selected
+                                        ? "border-foreground bg-foreground text-background"
+                                        : "border-border bg-card hover:bg-accent",
+                                )}
+                            >
+                                {point}
+                                {endLabel && (
+                                    <span className="sr-only">
+                                        , {endLabel}
+                                    </span>
+                                )}
+                            </label>
+                        </div>
+                    );
+                })}
+            </div>
+            <div
+                aria-hidden="true"
+                className="mt-2 flex justify-between gap-4 text-base text-muted-foreground"
+            >
+                <span>
+                    {question.min} = {question.minLabel}
+                </span>
+                <span className="text-right">
+                    {question.max} = {question.maxLabel}
+                </span>
+            </div>
+        </div>
+    );
+}
+
 function MultiChoice({
     question,
     value,
@@ -200,7 +282,7 @@ function MultiChoice({
         if (values.includes(option.value)) {
             next = values.filter((item) => item !== option.value);
         } else if (option.exclusive) {
-            // "Nothing" wipes the rest — they contradict each other.
+            // "Nothing" wipes the rest: they contradict each other.
             next = [option.value];
         } else {
             // Any real answer un-ticks "Nothing".
@@ -423,6 +505,14 @@ export default function SurveyQuestionInput({
         case "scale":
             return (
                 <ScaleChoice
+                    question={question}
+                    value={value}
+                    onChange={onChange}
+                />
+            );
+        case "rating":
+            return (
+                <RatingChoice
                     question={question}
                     value={value}
                     onChange={onChange}

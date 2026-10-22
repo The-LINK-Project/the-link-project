@@ -2,9 +2,15 @@
 // /mwcsurvey, and linked from the button on the home page. Read the editing
 // notes in feedbackSurvey.ts before changing anything.
 //
-// Questions that ask the same thing as the HOME survey keep its ids and
-// exportKeys, so the two CSV exports line up column for column. New
-// questions carry on the numbering from q30.
+// House style for this survey: "how much" questions are a number from 0 to 5
+// with only the two ends put into words, and no em dashes anywhere in what
+// people read.
+//
+// Questions that ask the same thing in the same way as the HOME survey keep
+// its ids and exportKeys, so the two CSV exports line up column for column.
+// A question that changed shape (HOME's 1 to 5 word scales are 0 to 5 numbers
+// here) keeps its id but gets its own column, so the two are never averaged
+// together by mistake. New questions carry on the numbering from q30.
 
 const ANY_LANGUAGE_HINT = "You can write in any language.";
 
@@ -86,50 +92,35 @@ const TODAY: SurveySection = {
     questions: [
         {
             id: "enjoyment",
-            exportKey: "q5_enjoyed",
-            kind: "scale",
+            exportKey: "q5_enjoyed_0to5",
+            kind: "rating",
             prompt: "How much did you enjoy today?",
-            labels: ["Not at all", "A little", "OK", "A lot", "Very much"],
+            min: 0,
+            max: 5,
+            minLabel: "Not at all",
+            maxLabel: "Very much",
         },
         {
             id: "confidence-before",
-            exportKey: "q7_confidence_before",
-            kind: "scale",
+            exportKey: "q7_confidence_before_0to5",
+            kind: "rating",
             prompt: "Before today, how confident were you speaking English to a new person?",
-            labels: [
-                "Not confident",
-                "A little",
-                "OK",
-                "Confident",
-                "Very confident",
-            ],
-        },
-        {
-            id: "confidence-now",
-            exportKey: "q8_confidence_now",
-            kind: "scale",
-            prompt: "Right now, how confident do you feel speaking English to a new person?",
-            labels: [
-                "Not confident",
-                "A little",
-                "OK",
-                "Confident",
-                "Very confident",
-            ],
+            min: 0,
+            max: 5,
+            minLabel: "Not at all",
+            maxLabel: "Very confident",
         },
         {
             id: "balance-today",
-            exportKey: "q14_balance_today",
-            kind: "scale",
-            // Middle answer is the good one. Nothing in the UI treats 5 as a
-            // win, so this needs no special handling — just don't add any.
+            exportKey: "q14_balance_today_3way",
+            kind: "single",
+            // Three plain choices rather than a 0 to 5 number: the good
+            // answer is the middle one, which a number line can't show.
             prompt: "How was the mix of games and teaching today?",
-            labels: [
-                "Too many games",
-                "A few too many games",
-                "A good balance",
-                "A bit too much teaching",
-                "Too much teaching",
+            options: [
+                { value: "too-many-games", label: "Too many games" },
+                { value: "good-mix", label: "A good mix" },
+                { value: "too-much-teaching", label: "Too much teaching" },
             ],
         },
         {
@@ -138,7 +129,14 @@ const TODAY: SurveySection = {
             kind: "text",
             required: true,
             prompt: "What is one new thing you can say in English now?",
-            hint: "One word or a full sentence — anything you learned today.",
+            hint: "One word or a full sentence. Anything you learned today.",
+        },
+        {
+            id: "liked-most",
+            exportKey: "q35_liked_most",
+            kind: "text",
+            prompt: "What did you like most about today?",
+            hint: ANY_LANGUAGE_HINT,
         },
     ],
 };
@@ -149,14 +147,17 @@ const THE_APP: SurveySection = {
     questions: [
         {
             id: "signup-ease",
-            exportKey: "q15_signup_ease",
-            kind: "scale",
+            exportKey: "q15_signup_ease_0to5",
+            kind: "rating",
             prompt: "How easy was it to sign up and log in?",
-            labels: ["Very hard", "Hard", "OK", "Easy", "Very easy"],
+            min: 0,
+            max: 5,
+            minLabel: "Very hard",
+            maxLabel: "Very easy",
         },
         {
             id: "app-hard",
-            exportKey: "q29_app_hard",
+            exportKey: "q29_app_hard_yes_no",
             kind: "single",
             // One tap for most people; the box to write in only opens on
             // "Yes". In the HOME survey this was a written answer everyone
@@ -166,17 +167,28 @@ const THE_APP: SurveySection = {
                 { value: "no", label: "No, it was OK" },
                 {
                     value: "yes",
-                    label: "Yes — tell us what happened",
+                    label: "Yes, tell us what happened",
                     isOther: true,
                 },
+            ],
+        },
+        {
+            id: "app-or-website",
+            exportKey: "q36_app_or_website",
+            kind: "single",
+            prompt: "Do you want LINK as a phone app or as a website?",
+            help: "A phone app comes from the Play Store or App Store. A website opens in Chrome or Safari.",
+            options: [
+                { value: "app", label: "A phone app I download" },
+                { value: "website", label: "A website on my phone" },
+                { value: "either", label: "Both are OK" },
+                { value: "not-sure", label: "I'm not sure" },
             ],
         },
         {
             id: "when-use-app",
             exportKey: "q32_when_use_app",
             kind: "multi",
-            // Asks when, not where: for most people in this room, home is a
-            // dormitory.
             prompt: "When could you use the app? Pick all that fit.",
             options: [
                 { value: "after-work", label: "After work" },
@@ -191,17 +203,25 @@ const THE_APP: SurveySection = {
             ],
         },
         {
-            id: "phone-internet",
-            exportKey: "q33_phone_internet",
-            kind: "single",
-            // Lessons and the voice tutor need internet, so this shows who
-            // can't use the app at all.
-            prompt: "Can you use the internet on your phone most days?",
+            id: "internet-where",
+            exportKey: "q34_internet_where",
+            kind: "multi",
+            // Lessons and the voice tutor need internet, so this shows where
+            // people can actually use the app, and who can't at all.
+            prompt: "Where can you use the internet? Pick all that fit.",
             options: [
-                { value: "always", label: "Yes, always" },
-                { value: "wifi-only", label: "Only with Wi-Fi" },
-                { value: "sometimes", label: "Sometimes" },
-                { value: "no", label: "No" },
+                { value: "home", label: "At home" },
+                { value: "work", label: "At work" },
+                { value: "phone-data", label: "Anywhere, with my phone data" },
+                {
+                    value: "free-wifi",
+                    label: "On free Wi-Fi (MRT, library, shops)",
+                },
+                {
+                    value: "none",
+                    label: "I can't use the internet",
+                    exclusive: true,
+                },
             ],
         },
     ],
@@ -216,9 +236,13 @@ const NEXT: SurveySection = {
             exportKey: "q20_want_to_learn",
             kind: "multi",
             maxSelections: 3,
-            prompt: "What do you want to learn most? Pick up to 3.",
+            prompt: "What would you like to learn in the app? Pick up to 3.",
             options: [
                 { value: "speaking-english", label: "Speaking English" },
+                {
+                    value: "reading-writing-english",
+                    label: "Reading and writing English",
+                },
                 { value: "work-safety", label: "Safety words at work" },
                 {
                     value: "talking-to-supervisor",
@@ -229,18 +253,24 @@ const NEXT: SurveySection = {
                     value: "getting-around",
                     label: "Bus, MRT and finding places",
                 },
+                { value: "saving-money", label: "Saving money and budgeting" },
                 {
-                    value: "money-sending-home",
-                    label: "Money and sending money home",
+                    value: "sending-money-home",
+                    label: "Sending money home safely",
                 },
-                { value: "phone-apps", label: "Using phone apps" },
+                { value: "phone-apps", label: "Using my phone and apps" },
+                { value: "online-scams", label: "Spotting scams online" },
+                { value: "using-ai", label: "Using AI, like ChatGPT" },
                 { value: "rights-at-work", label: "My rights at work" },
-                {
-                    value: "reading-writing-english",
-                    label: "Reading and writing English",
-                },
                 { value: "other", label: "Other", isOther: true },
             ],
+        },
+        {
+            id: "learn-more",
+            exportKey: "q37_learn_more",
+            kind: "text",
+            prompt: "What else would you like to learn in the app?",
+            hint: "Write any topic. For example: a money skill, a phone skill, or something about AI. You can write in any language.",
         },
         {
             id: "best-time",
@@ -269,28 +299,13 @@ const NEXT: SurveySection = {
     ],
 };
 
-const YOUR_WORDS: SurveySection = {
-    id: "your-words",
-    title: "Your words",
-    questions: [
-        {
-            id: "change-next-time",
-            exportKey: "q25_change_next_time",
-            kind: "text",
-            required: true,
-            prompt: "What is one thing we should change next time?",
-            hint: ANY_LANGUAGE_HINT,
-        },
-    ],
-};
-
 export const MWC_SURVEY: SurveyDefinition = {
     id: "mwc-2026-10",
     title: "Tell us about today",
     label: "MWC workshop · migrant workers · 23 Oct 2026",
     path: "/mwcsurvey",
     open: true,
-    timeEstimate: "about 6 minutes",
+    timeEstimate: "about 7 minutes",
     consent: {
         // The heading alone, on purpose. Lines about bosses or work permits
         // plant a worry the survey has nothing to do with.
@@ -298,5 +313,5 @@ export const MWC_SURVEY: SurveyDefinition = {
         startLabel: "Start",
         declineLabel: "No thank you",
     },
-    sections: [ABOUT_YOU, TODAY, THE_APP, NEXT, YOUR_WORDS],
+    sections: [ABOUT_YOU, TODAY, THE_APP, NEXT],
 };

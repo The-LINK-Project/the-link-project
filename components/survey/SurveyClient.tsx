@@ -55,6 +55,10 @@ function answerSummary(
             if (answer.kind !== "scale") return null;
             return question.labels[answer.value - 1] ?? null;
         }
+        case "rating": {
+            if (answer.kind !== "rating") return null;
+            return String(answer.value);
+        }
         case "multi": {
             if (answer.kind !== "multi" || answer.values.length === 0)
                 return null;
@@ -347,7 +351,7 @@ export default function SurveyClient({
             await flush();
             if (pendingRef.current.size > 0) {
                 setSubmitNote(
-                    "No connection right now. Your answers are saved on this phone — please try again in a moment.",
+                    "No connection right now. Your answers are saved on this phone. Please try again in a moment.",
                 );
                 return;
             }
@@ -359,12 +363,12 @@ export default function SurveyClient({
             } else {
                 setSubmitNote(
                     result.message ??
-                        "That did not go through. Your answers are safe — please try again.",
+                        "That did not go through. Your answers are safe. Please try again.",
                 );
             }
         } catch {
             setSubmitNote(
-                "No connection right now. Your answers are saved on this phone — please try again in a moment.",
+                "No connection right now. Your answers are saved on this phone. Please try again in a moment.",
             );
         } finally {
             setIsSubmitting(false);

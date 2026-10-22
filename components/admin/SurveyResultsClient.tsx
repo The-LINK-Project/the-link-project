@@ -51,6 +51,10 @@ function answerText(
             if (answer.kind !== "scale") return null;
             return question.labels[answer.value - 1] ?? null;
         }
+        case "rating": {
+            if (answer.kind !== "rating") return null;
+            return String(answer.value);
+        }
         case "multi": {
             if (answer.kind !== "multi" || answer.values.length === 0)
                 return null;
@@ -194,6 +198,46 @@ function QuestionBreakdown({
                                 ).toFixed(1)}
                             </span>{" "}
                             of {question.labels.length}
+                        </p>
+                    )}
+                </div>
+            );
+            break;
+        }
+        case "rating": {
+            const points = Array.from(
+                { length: question.max - question.min + 1 },
+                (_, index) => question.min + index,
+            );
+            const picked = answers.flatMap((answer) =>
+                answer.kind === "rating" ? [answer.value] : [],
+            );
+            body = (
+                <div className="space-y-2">
+                    {points.map((point) => (
+                        <DistributionBar
+                            key={point}
+                            label={
+                                point === question.min
+                                    ? `${point} (${question.minLabel})`
+                                    : point === question.max
+                                      ? `${point} (${question.maxLabel})`
+                                      : String(point)
+                            }
+                            count={picked.filter((value) => value === point).length}
+                            total={answered}
+                        />
+                    ))}
+                    {picked.length > 0 && (
+                        <p className="pt-1 text-sm text-slate-600">
+                            Average:{" "}
+                            <span className="font-semibold text-slate-900">
+                                {(
+                                    picked.reduce((sum, value) => sum + value, 0) /
+                                    picked.length
+                                ).toFixed(1)}
+                            </span>{" "}
+                            of {question.max}
                         </p>
                     )}
                 </div>
