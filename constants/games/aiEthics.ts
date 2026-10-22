@@ -9,11 +9,12 @@
 // The two sentence stems the whole game teaches:
 //     "AI is good because it ..."  /  "AI is a problem because it ..."
 //
-// Four slides first, then four rounds, about 18 minutes with a group round
+// Six slides first, then four rounds, about 20 minutes with a group round
 // each laptop. The slides come straight after the workshop's "AI exploration"
-// and "AI vs human" segments, so they turn what the team just did (talked to a
-// chatbot, made pictures, took photos) into three questions to ask of any AI:
-// Is it true? Did they say yes? Is it fair? Each slide ends with one tap.
+// and "AI vs human" segments. The first two say what ethics is and why AI
+// cannot do it for you; the next four turn what the team just did (talked to
+// a chatbot, made pictures, took photos) into three questions to ask of any
+// AI: Is it true? Did they say yes? Is it fair? Each slide ends with one tap.
 //   1. Sort      eight situations into Good or Problem, one at a time
 //   2. Match     eight situations against their reasons
 //   3. Build     six stem sentences from word tiles
@@ -137,11 +138,43 @@ export const ETHICS_WORDS: EthicsWord[] = [
 
 export const ETHICS_SLIDES: EthicsSlide[] = [
     {
+        id: "s-ethics",
+        title: "What is ethics?",
+        lines: [
+            "AI can do many things. Ethics asks a different question: should it?",
+            "Something can be useful, and still hurt someone.",
+            "Ethics means thinking about people before you use a tool. Who is helped? Who is hurt?",
+        ],
+        earlier: "Today you made pictures with AI. Could any of them hurt someone?",
+        check: {
+            prompt: "An app can copy your friend's voice perfectly. Is that an ethics question?",
+            options: ["Yes, someone could be hurt", "No, it is only technology"],
+            answer: 0,
+            reason: "Yes. Your friend could be tricked or embarrassed. When a person can be hurt, it is ethics.",
+        },
+    },
+    {
+        id: "s-no-feelings",
+        title: "Can AI tell right from wrong?",
+        lines: [
+            "AI learned from millions of examples. It does not know you, your friend, or your family.",
+            "It does not feel anything. It will do a kind thing or an unkind thing the same way.",
+            "So AI cannot do ethics for you. Only people can.",
+        ],
+        earlier: "When you asked AI for a picture, did it ask you if that was okay?",
+        check: {
+            prompt: "AI writes a message in your name. Does AI know if it is true?",
+            options: ["Yes, it checked", "No, it only guessed"],
+            answer: 1,
+            reason: "No. AI only guesses the likely words. Checking if it is true is your job.",
+        },
+    },
+    {
         id: "s-tool",
         title: "AI is a tool",
         lines: [
             "Today you talked to AI, made pictures and used your voice.",
-            "AI did what you asked. It does not know if it is right or kind.",
+            "AI did what you asked. It did not stop to think about anyone.",
             "AI is a tool. The person using it is responsible.",
         ],
         earlier: "You asked AI to make something. It made it. You decided what.",

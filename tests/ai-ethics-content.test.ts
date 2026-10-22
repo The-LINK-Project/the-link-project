@@ -19,8 +19,9 @@ import { seededDerangement, seededShuffle } from "@/lib/lessons/shuffle";
 // facilitator able to fix content on the day. These checks keep the bank
 // balanced and short.
 describe("Ethics of AI content", () => {
-    it("teaches four slides that cover the three questions, each ending in one tap", () => {
-        expect(ETHICS_SLIDES).toHaveLength(4);
+    it("teaches six slides that cover the three questions, each ending in one tap", () => {
+        expect(ETHICS_SLIDES).toHaveLength(6);
+        expect(ETHICS_SLIDES[0].title).toMatch(/ethics/i);
         const questions = new Set(ETHICS_SLIDES.map((slide) => slide.question).filter(Boolean));
         expect(questions).toEqual(new Set(Object.keys(ETHICS_QUESTION_LABEL)));
         for (const slide of ETHICS_SLIDES) {
