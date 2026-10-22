@@ -16,7 +16,8 @@ import {
 } from "@/constants/survey/feedbackSurvey";
 import { Download, MessageSquareText } from "lucide-react";
 
-// Admin-only results browser for the feedback survey. Two views per survey:
+// Admin-only results browser for one survey (each has its own page under
+// /admin/surveys). Two views:
 //   - "By question": option/scale distributions as bars, written answers as
 //     a readable list.
 //   - "Each response": every submitted response, numbered in submission
@@ -25,7 +26,7 @@ import { Download, MessageSquareText } from "lucide-react";
 // The CSV download stays for spreadsheet analysis.
 
 type SurveyResultsClientProps = {
-    results: SurveyResults[];
+    results: SurveyResults;
 };
 
 const BAR_COLOR = "bg-[rgb(90,199,219)]";
@@ -224,7 +225,9 @@ function QuestionBreakdown({
                                       ? `${point} (${question.maxLabel})`
                                       : String(point)
                             }
-                            count={picked.filter((value) => value === point).length}
+                            count={
+                                picked.filter((value) => value === point).length
+                            }
                             total={answered}
                         />
                     ))}
@@ -233,8 +236,10 @@ function QuestionBreakdown({
                             Average:{" "}
                             <span className="font-semibold text-slate-900">
                                 {(
-                                    picked.reduce((sum, value) => sum + value, 0) /
-                                    picked.length
+                                    picked.reduce(
+                                        (sum, value) => sum + value,
+                                        0,
+                                    ) / picked.length
                                 ).toFixed(1)}
                             </span>{" "}
                             of {question.max}
@@ -402,20 +407,24 @@ function ResponseCard({
 export default function SurveyResultsClient({
     results,
 }: SurveyResultsClientProps) {
-    const [downloading, setDownloading] = useState<string | null>(null);
+    const [downloading, setDownloading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const handleDownload = async (surveyId: string) => {
-        setDownloading(surveyId);
+    const definition = getSurveyById(results.surveyId);
+    if (!definition) return null;
+    const questions = getSurveyQuestions(definition);
+
+    const handleDownload = async () => {
+        setDownloading(true);
         setError(null);
         try {
-            const csv = await getSurveyCsv(surveyId);
+            const csv = await getSurveyCsv(results.surveyId);
             if (!csv) throw new Error("No CSV returned");
             const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
-            link.download = `${surveyId}-responses.csv`;
+            link.download = `${results.surveyId}-responses.csv`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -424,113 +433,74 @@ export default function SurveyResultsClient({
             console.error("CSV download failed:", err);
             setError("Download failed. Check the console and try again.");
         } finally {
-            setDownloading(null);
+            setDownloading(false);
         }
     };
 
-    if (results.length === 0) {
-        return (
-            <p className="text-slate-600">
-                No surveys defined yet. See
-                constants/survey/feedbackSurvey.ts.
-            </p>
-        );
-    }
-
     return (
-        <div className="space-y-8">
-            {error && <p className="font-medium text-red-600">{error}</p>}
+        <Card className="bg-white border-slate-200">
+            <CardHeader>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <CardTitle className="text-xl text-slate-900">
+                            {results.submitted} submitted
+                        </CardTitle>
+                        <CardDescription>
+                            {results.started} started · {results.completionRate}
+                            % finished
+                        </CardDescription>
+                    </div>
+                    <Button onClick={handleDownload} disabled={downloading}>
+                        <Download className="h-4 w-4" aria-hidden="true" />
+                        {downloading ? "Preparing…" : "Download CSV"}
+                    </Button>
+                </div>
+                {error && <p className="font-medium text-red-600">{error}</p>}
+            </CardHeader>
+            <CardContent>
+                {results.submitted === 0 ? (
+                    <div className="flex items-center gap-3 rounded-lg bg-slate-50 p-6 text-slate-500">
+                        <MessageSquareText className="h-5 w-5" />
+                        No submitted responses yet. Results appear here as
+                        people finish the survey.
+                    </div>
+                ) : (
+                    <Tabs defaultValue="questions">
+                        <TabsList className="mb-4">
+                            <TabsTrigger value="questions">
+                                By question
+                            </TabsTrigger>
+                            <TabsTrigger value="responses">
+                                Each response ({results.submitted})
+                            </TabsTrigger>
+                        </TabsList>
 
-            {results.map((survey) => {
-                const definition = getSurveyById(survey.surveyId);
-                if (!definition) return null;
-                const questions = getSurveyQuestions(definition);
-
-                return (
-                    <Card
-                        key={survey.surveyId}
-                        className="bg-white border-slate-200"
-                    >
-                        <CardHeader>
-                            <div className="flex flex-wrap items-center justify-between gap-4">
-                                <div>
-                                    <CardTitle className="text-xl text-slate-900">
-                                        {definition.label}
-                                        <span className="ml-2 font-mono text-sm font-normal text-slate-400">
-                                            {definition.path} ·{" "}
-                                            {survey.surveyId}
-                                            {!definition.open && " · closed"}
-                                        </span>
-                                    </CardTitle>
-                                    <CardDescription>
-                                        {survey.started} started ·{" "}
-                                        {survey.submitted} submitted ·{" "}
-                                        {survey.completionRate}% finished
-                                    </CardDescription>
-                                </div>
-                                <Button
-                                    onClick={() =>
-                                        handleDownload(survey.surveyId)
-                                    }
-                                    disabled={downloading === survey.surveyId}
-                                >
-                                    <Download
-                                        className="h-4 w-4"
-                                        aria-hidden="true"
+                        <TabsContent value="questions">
+                            <div>
+                                {questions.map((question) => (
+                                    <QuestionBreakdown
+                                        key={question.id}
+                                        question={question}
+                                        responses={results.responses}
                                     />
-                                    {downloading === survey.surveyId
-                                        ? "Preparing…"
-                                        : "Download CSV"}
-                                </Button>
+                                ))}
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            {survey.submitted === 0 ? (
-                                <div className="flex items-center gap-3 rounded-lg bg-slate-50 p-6 text-slate-500">
-                                    <MessageSquareText className="h-5 w-5" />
-                                    No submitted responses yet. Results appear
-                                    here as people finish the survey.
-                                </div>
-                            ) : (
-                                <Tabs defaultValue="questions">
-                                    <TabsList className="mb-4">
-                                        <TabsTrigger value="questions">
-                                            By question
-                                        </TabsTrigger>
-                                        <TabsTrigger value="responses">
-                                            Each response ({survey.submitted})
-                                        </TabsTrigger>
-                                    </TabsList>
+                        </TabsContent>
 
-                                    <TabsContent value="questions">
-                                        <div>
-                                            {questions.map((question) => (
-                                                <QuestionBreakdown
-                                                    key={question.id}
-                                                    question={question}
-                                                    responses={survey.responses}
-                                                />
-                                            ))}
-                                        </div>
-                                    </TabsContent>
-
-                                    <TabsContent value="responses">
-                                        <div className="grid gap-4 lg:grid-cols-2">
-                                            {survey.responses.map((row) => (
-                                                <ResponseCard
-                                                    key={row.number}
-                                                    row={row}
-                                                    questions={questions}
-                                                />
-                                            ))}
-                                        </div>
-                                    </TabsContent>
-                                </Tabs>
-                            )}
-                        </CardContent>
-                    </Card>
-                );
-            })}
-        </div>
+                        <TabsContent value="responses">
+                            <div className="grid gap-4 lg:grid-cols-2">
+                                {results.responses.map((row) => (
+                                    <ResponseCard
+                                        key={row.number}
+                                        row={row}
+                                        questions={questions}
+                                    />
+                                ))}
+                            </div>
+                        </TabsContent>
+                    </Tabs>
+                )}
+            </CardContent>
+        </Card>
     );
 }

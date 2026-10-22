@@ -28,7 +28,9 @@
 // surveys can be open at once.
 //
 // To close a survey, set its `open` to false. Its page then says there is
-// nothing to fill in, and its results stay in /admin/surveys.
+// nothing to fill in, and its results stay in the admin area: every survey
+// has its own results page at /admin/surveys plus its path, e.g.
+// /admin/surveys/mwcsurvey.
 //
 // LANGUAGE
 // --------
@@ -62,6 +64,16 @@ export const DASHBOARD_SURVEY_ID: string | null = null;
 
 export function getSurveyById(surveyId: string): SurveyDefinition | null {
     return SURVEYS.find((survey) => survey.id === surveyId) ?? null;
+}
+
+/** The survey served at this page path, e.g. "/mwcsurvey". */
+export function getSurveyByPath(path: string): SurveyDefinition | null {
+    return SURVEYS.find((survey) => survey.path === path) ?? null;
+}
+
+/** Where an admin reads a survey's results, e.g. /admin/surveys/mwcsurvey. */
+export function getSurveyAdminHref(survey: SurveyDefinition): string {
+    return `/admin/surveys${survey.path}`;
 }
 
 /**
