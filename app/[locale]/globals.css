@@ -286,6 +286,12 @@ html:has([data-lesson-shell]) body {
     }
 }
 
+/* A survey is answered on a phone at a workshop; the floating chat would sit
+   on its buttons and is no part of it. */
+body:has([data-survey]) [data-chat-launcher] {
+    display: none;
+}
+
 /* Infinite image marquee — used by the image auto-slider (e.g. the
      International Migrants Day gallery on the landing page). */
 @keyframes marquee {

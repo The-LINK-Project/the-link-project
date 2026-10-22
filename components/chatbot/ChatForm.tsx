@@ -81,7 +81,7 @@ const ChatForm: FC<ChatFormProps> = ({
                 ref={inputRef}
                 type="text"
                 placeholder={disabledState ? "Please wait..." : "Message..."}
-                className="border-none outline-none w-full bg-transparent h-[47px] px-[17px] text-[0.95rem]"
+                className="border-none outline-none w-full bg-transparent h-[47px] px-[17px] text-base"
                 required
                 disabled={disabledState}
             />

@@ -87,7 +87,7 @@ const Chatbot = ({ showChatbot }: { showChatbot: boolean }) => {
             <div
                 className={`
                     chatbot-popup
-                    fixed z-50 bottom-[90px] right-[20px] w-[95vw] max-w-[320px] bg-white
+                    fixed z-50 bottom-[90px] right-[20px] w-[calc(100vw-40px)] max-w-[320px] bg-white
                     rounded-[15px] shadow-[0_0_128px_0_rgba(0,0,0,0.1),0_32px_64px_-48px_rgba(0,0,0,0.5)]
                     transition-all duration-100 origin-bottom-right overflow-hidden
                     ${showChatbot
@@ -113,7 +113,7 @@ const Chatbot = ({ showChatbot }: { showChatbot: boolean }) => {
                 <div
                     ref={chatBodyRef}
                     className="
-                        chat-body flex flex-col gap-[20px] h-[360px] mb-[82px] overflow-y-auto
+                        chat-body flex flex-col gap-[20px] h-[min(360px,calc(100dvh-270px))] mb-[82px] overflow-y-auto
                         p-[25px_22px] scrollbar-thin scrollbar-thumb-[#B2E8F1] scrollbar-track-transparent
                     "
                 >
