@@ -232,14 +232,15 @@ describe("random walks through every lesson", () => {
                         // lesson is recorded as done and opens on its results.
                         if (snapshot.position === 0 || snapshot.position >= snapshot.queue.length) break;
                         if (resumed === null) {
-                            // Only acceptable when nothing is left for this learner.
                             const misfits = snapshot.queue.filter((id) => {
                                 const item = lesson.exercises.find((candidate) => candidate.id === id);
                                 return !item || !appliesToLearner(item, current, screenReader);
                             });
+                            // A run that was saved can always be picked up again,
+                            // in any language: finished, if nothing is left in it.
                             check(
                                 walk,
-                                reading !== current,
+                                false,
                                 `a run in progress could not be picked up again (fingerprint ${snapshot.fingerprint === fingerprint(lesson) ? "same" : "changed"}, position ${snapshot.position} of ${snapshot.queue.length}, locale ${snapshot.locale}, misfits ${misfits.join(",") || "none"})`,
                             );
                             break;

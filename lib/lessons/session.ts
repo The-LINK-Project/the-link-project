@@ -125,7 +125,8 @@ function isRunLanguage(value: string): value is FirstLanguage {
 /**
  * Pick a saved run back up, or null when it no longer fits: the lesson changed,
  * the run was already over, or a screen reader has been switched on since and
- * the queue holds picture exercises it cannot do.
+ * the queue holds picture exercises it cannot do. A run a change of language
+ * leaves nothing more in comes back finished.
  *
  * `language` is the one the learner reads now. When it is not the one the run
  * was built for, what they have answered stands and the rest of the queue is
@@ -165,8 +166,6 @@ export function restoreSession(
                 screenReader,
             ),
         ];
-        // Nothing left that this learner can do: the run is over, not resumable.
-        if (saved.position >= queue.length) return null;
     }
     return {
         lesson,
@@ -175,7 +174,10 @@ export function restoreSession(
         queue,
         position: saved.position,
         reached: saved.position,
-        phase: "answering",
+        // Nothing left that this learner can do, when the new language drops
+        // what was still ahead: the run is over, and opens on its results so it
+        // is recorded as finished rather than thrown away.
+        phase: saved.position >= queue.length ? "finished" : "answering",
         draft: null,
         result: null,
         records: saved.records,

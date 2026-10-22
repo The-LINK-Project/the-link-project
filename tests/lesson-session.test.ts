@@ -208,4 +208,23 @@ describe("picking a run up again in another language", () => {
         expect(again?.position).toBe(3);
         expect(again?.queue.slice(0, 3)).toEqual(state.queue.slice(0, 3));
     });
+
+    it("finishes a run the new language leaves nothing more in", () => {
+        // Tamil: the translation is missed, so it comes round again at the end,
+        // and that retry is all that is left when the learner leaves.
+        const missed: Parameters<typeof sessionReducer>[1] = {
+            type: "submit",
+            answer: { kind: "tokens", tokens: ["wrong"] },
+        };
+        const next = { type: "next" } as const;
+        const state = [missed, next, right, next, right, next, right, next].reduce(
+            sessionReducer,
+            initSession(mixed, "ta"),
+        );
+        expect(state.queue).toEqual(["t", "a", "b", "c", "t"]);
+        // In English the retry is not offered: the run is over, not lost.
+        const english = restoreSession(mixed, snapshotOf(state), false, "en");
+        expect(english?.phase).toBe("finished");
+        expect(english?.records).toEqual(state.records);
+    });
 });
