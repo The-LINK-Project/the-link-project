@@ -140,7 +140,6 @@ function LessonFlow({ lessonId }: { lessonId: string }) {
     return (
         <LessonShell
             closeLabel={t("quit")}
-            icon={lesson.icon}
             onClose={() => router.push("/dashboard")}
             step="start"
             footer={
@@ -342,7 +341,6 @@ function LessonRunner({
         return (
             <LessonShell
                 closeLabel={t("quit")}
-                icon={lesson.icon}
                 onClose={leave}
                 step="results"
                 footer={
@@ -370,7 +368,7 @@ function LessonRunner({
 
     if (!exercise) {
         return (
-            <LessonShell closeLabel={t("quit")} icon={lesson.icon} onClose={leave}>
+            <LessonShell closeLabel={t("quit")} onClose={leave}>
                 <p className={text.body}>{t("exerciseMissing")}</p>
             </LessonShell>
         );
@@ -379,7 +377,6 @@ function LessonRunner({
     return (
         <LessonShell
             closeLabel={t("quit")}
-            icon={lesson.icon}
             onClose={leave}
             header={<LessonProgress value={progress} />}
             step={`${round}-${state.position}`}

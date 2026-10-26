@@ -92,11 +92,13 @@
 }
 
 :root {
-    --background: #fcfcfc;
+    /* White, like the page itself: an off-white here showed up as a faint
+       grey slab wherever a page or card painted its background. */
+    --background: #ffffff;
     --foreground: #171717;
-    --card: #fcfcfc;
+    --card: #ffffff;
     --card-foreground: #171717;
-    --popover: #fcfcfc;
+    --popover: #ffffff;
     --popover-foreground: #525252;
     --primary: #72e3ad;
     --primary-foreground: #1e2723;
