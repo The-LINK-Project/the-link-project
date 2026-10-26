@@ -26,22 +26,22 @@ export const frequentlyAskedQuestions = [
 
 export const aboutUsInformation = [
     {
-        name: "Adrish Majumder",
+        name: "Adrish",
         role: "Co-Founder",
         image: "/assets/about-us/mun.jpeg",
     },
     {
-        name: "Alexandre Lee",
+        name: "Alexandre",
         role: "Co-Founder",
         image: "/assets/about-us/Alex.jpeg",
     },
     {
-        name: "Ruhan Gupta",
+        name: "Ruhan",
         role: "Co-Founder",
         image: "/assets/about-us/Ruhan.jpeg",
     },
     {
-        name: "Videep Agarwal",
+        name: "Videep",
         role: "Co-Founder",
         image: "/assets/about-us/Videep.jpeg",
     },
