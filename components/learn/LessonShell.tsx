@@ -1,30 +1,13 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
-import type { LessonIcon } from "@/lib/lessons/icons";
 import { cn } from "@/lib/utils";
 
 import { PageMark } from "@/components/shared/PageMark";
 
-import { LESSON_HUES } from "./Medallion";
 import { RestartButton, RestartConfirm } from "./RestartLesson";
-
-/**
- * The lesson's colour, faint, with the lattice of diamonds the dashboard
- * draws on its cards. Only shown on wider screens, around the lesson.
- */
-function stageStyle(icon: LessonIcon | undefined): CSSProperties {
-    const hue = icon ? LESSON_HUES[icon].base : "#72e3ad";
-    const diamond = encodeURIComponent(
-        `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><path d="M16 11l5 5-5 5-5-5z" fill="${hue}" fill-opacity="0.13"/></svg>`,
-    );
-    return {
-        backgroundColor: `color-mix(in srgb, ${hue} 7%, white)`,
-        backgroundImage: `url("data:image/svg+xml,${diamond}")`,
-    };
-}
 
 /**
  * How long a tap on a footer that has just changed is let fall (see below).
@@ -49,9 +32,8 @@ const STEADY_LIVE: Record<string, string> = {
  *
  * On a phone, either way up, it is the whole screen: the site header is put
  * away for it (see globals.css), and Close is the way back to the rest of
- * the site. With room to spare it is a card on a stage in the lesson's own
- * colour, so a lesson reads as a place of its own rather than a narrow column
- * on an empty page. `roomy` and `cramped` are defined in globals.css.
+ * the site. With room to spare it is a card in the middle of the page.
+ * `roomy` and `cramped` are defined in globals.css.
  *
  * A phone's gestures are kept to the lesson: a pull down cannot reload the page
  * (see globals.css), nothing drags it sideways, and a quick second tap on a
@@ -63,7 +45,6 @@ const STEADY_LIVE: Record<string, string> = {
 export function LessonShell({
     closeLabel,
     onClose,
-    icon,
     header,
     footer,
     children,
@@ -74,8 +55,6 @@ export function LessonShell({
 }: {
     closeLabel: string;
     onClose: () => void;
-    /** The lesson's picture, which also gives the stage its colour. */
-    icon?: LessonIcon;
     header?: ReactNode;
     footer?: ReactNode;
     children: ReactNode;
@@ -129,47 +108,45 @@ export function LessonShell({
     const settled = cn("shrink-0", settling !== false && "pointer-events-none", settling && STEADY_LIVE[settling]);
 
     return (
-        <div data-lesson-shell className="roomy:px-4 roomy:pb-4">
+        <div data-lesson-shell className="roomy:px-8 roomy:pb-10 roomy:pt-6">
             <PageMark name="lesson" />
-            <div className="roomy:rounded-[2rem] roomy:px-4 roomy:py-6" style={stageStyle(icon)}>
-                <div className="mx-auto flex h-dvh w-full max-w-2xl touch-manipulation flex-col overflow-hidden bg-white roomy:h-[calc(100dvh-9rem)] roomy:rounded-3xl roomy:border-2 roomy:border-lesson-key roomy:shadow-[0_4px_0_var(--color-lesson-key)]">
-                    <div className="flex items-center gap-3 px-4 py-3">
-                        <button
-                            type="button"
-                            aria-label={closeLabel}
-                            onClick={onClose}
-                            className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-full text-lesson-muted hover:bg-lesson-muted-surface"
-                        >
-                            <X className="size-7" strokeWidth={2.5} />
-                        </button>
-                        {header}
-                        {onRestart ? (
-                            <RestartButton open={!!asking} onClick={() => setConfirming(!asking)} />
-                        ) : null}
-                    </div>
-                    <div
-                        key={step}
-                        ref={scrollRef}
-                        className="flex-1 touch-manipulation overflow-y-auto overflow-x-hidden overscroll-contain"
+            <div className="mx-auto flex h-dvh w-full max-w-2xl touch-manipulation flex-col overflow-hidden bg-white roomy:h-[calc(100dvh-9rem)] roomy:rounded-3xl roomy:border-2 roomy:border-lesson-key roomy:shadow-[0_4px_0_var(--color-lesson-key)]">
+                <div className="flex items-center gap-3 px-4 py-3">
+                    <button
+                        type="button"
+                        aria-label={closeLabel}
+                        onClick={onClose}
+                        className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-full text-lesson-muted hover:bg-lesson-muted-surface"
                     >
-                        <div className="flex min-h-full flex-col gap-6 p-4 pb-8">{children}</div>
-                    </div>
-                    {asking ? (
-                        <div className={settled} onClickCapture={notePress}>
-                            <RestartConfirm
-                                onRestart={() => {
-                                    setConfirming(false);
-                                    onRestart();
-                                }}
-                                onCancel={() => setConfirming(false)}
-                            />
-                        </div>
-                    ) : footer ? (
-                        <div className={settled} onClickCapture={notePress}>
-                            {footer}
-                        </div>
+                        <X className="size-7" strokeWidth={2.5} />
+                    </button>
+                    {header}
+                    {onRestart ? (
+                        <RestartButton open={!!asking} onClick={() => setConfirming(!asking)} />
                     ) : null}
                 </div>
+                <div
+                    key={step}
+                    ref={scrollRef}
+                    className="flex-1 touch-manipulation overflow-y-auto overflow-x-hidden overscroll-contain"
+                >
+                    <div className="flex min-h-full flex-col gap-6 p-4 pb-8">{children}</div>
+                </div>
+                {asking ? (
+                    <div className={settled} onClickCapture={notePress}>
+                        <RestartConfirm
+                            onRestart={() => {
+                                setConfirming(false);
+                                onRestart();
+                            }}
+                            onCancel={() => setConfirming(false)}
+                        />
+                    </div>
+                ) : footer ? (
+                    <div className={settled} onClickCapture={notePress}>
+                        {footer}
+                    </div>
+                ) : null}
             </div>
         </div>
     );

@@ -185,7 +185,6 @@ export default function PromptPractice({ lessonId, owner }: { lessonId: string; 
     return (
         <LessonShell
             closeLabel={t("quit")}
-            icon={lesson.icon}
             onClose={() => router.push("/dashboard")}
             scrollRef={scrollRef}
             header={

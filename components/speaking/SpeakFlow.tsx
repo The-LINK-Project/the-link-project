@@ -79,7 +79,7 @@ function SpeakScreen({ lessonId, words, phrases }: { lessonId: string; words?: s
 
     if (languages.length === 0) {
         return (
-            <LessonShell closeLabel={t("close")} icon={lesson.icon} onClose={() => router.push("/dashboard")}>
+            <LessonShell closeLabel={t("close")} onClose={() => router.push("/dashboard")}>
                 <p className={text.body}>{t("nothingToPractise")}</p>
             </LessonShell>
         );
@@ -177,7 +177,6 @@ function SpeakingFlow({
     return (
         <LessonShell
             closeLabel={t("close")}
-            icon={lesson.icon}
             onClose={() => router.push("/dashboard")}
             footer={
                 // Pinned, like every other way forward in a lesson.
@@ -321,7 +320,6 @@ function Conversation({
         return (
             <LessonShell
                 closeLabel={t("close")}
-                icon={lesson.icon}
                 onClose={quit}
                 footer={
                     <ShellActions>
@@ -363,7 +361,6 @@ function Conversation({
     return (
         <LessonShell
             closeLabel={t("close")}
-            icon={lesson.icon}
             onClose={quit}
             scrollRef={scroll}
             header={
