@@ -9,7 +9,8 @@
         "header1": "Learn English with personalized,",
         "header2": "AI-powered lessons built for the real world.",
         "name": "The LINK Project",
-        "award": "Young Aurora Award Winners · $10,000 Grant"
+        "award": "Young Aurora Award Winners · $10,000 Grant",
+        "altDashboard": "The LINK Project dashboard, with a lesson in progress and the list of lessons"
     },
     "getstartedbutton": {
         "start": "Start Learning Now!"
@@ -58,11 +59,25 @@
         "title": "Learning English takes time and support."
     },
     "solutionsection": {
-        "part1": "Smart objectives",
-        "part2": "Realtime conversations",
-        "part3": "Intelligent chatbot",
+        "part1": "Practise with short lessons and real photos",
+        "part2": "Speak with an AI tutor in your language",
+        "part3": "Ask LINK Assistant your English questions",
         "subtitle": "THE SOLUTION",
-        "title": "Personalized learning powered by"
+        "title": "Learn English the way you'll use it",
+        "altExercise": "A lesson on a laptop asking which photo shows a platform, with the right photo marked Correct",
+        "altSpeaking": "A learner says Which platform for Jurong East in English, and the AI tutor replies in Bengali with the next task"
+    },
+    "mobileapp": {
+        "title": "Download the <tape>mobile app</tape>",
+        "description": "Short lessons for the MRT, food, the clinic and work. Then practise speaking with an AI tutor that explains in your language while you answer in English.",
+        "lessonMrt": "Taking the MRT",
+        "lessonFood": "Buying food",
+        "lessonDoctor": "Seeing a doctor",
+        "lessonWork": "At work",
+        "lessonNote": "Each lesson takes about 5 minutes.",
+        "altHome": "The app's home screen with the lesson Taking the MRT in progress",
+        "altLesson": "A lesson screen with a photo of an MRT platform and the words platform, fare and top up explained in Tamil",
+        "altTutor": "The AI tutor explaining top up in Tamil, with a microphone button to answer in English"
     },
     "aboutUs": {
         "headerCall": "Meet the team",
@@ -149,13 +164,13 @@
     },
     "faq": {
         "q1": "What is the LINK Project?",
-        "a1": "The LINK Project supports English learning for migrant workers in Singapore through a personalized AI voice assistant, helping improve daily communication and confidence.",
+        "a1": "The LINK Project helps migrant workers in Singapore learn English for daily life, through short lessons and an AI speaking tutor.",
         "q3": "How can I contribute towards the LINK Project?",
-        "a3": "You can share your ideas on the google form linked to the website to inform us of what you would like to see and any suggestions you have. You can also contact us with any suggestions or questions you may have.",
+        "a3": "You can contact us with your ideas, suggestions or questions, and tell us what you would like to see.",
         "q4": "Will the LINK Project be free?",
         "a4": "Yes, the LINK Project is completely free and no payment will be required.",
         "q5": "What kind of support does the LINK Project provide?",
-        "a5": "The Link Project gives you a free AI voice assistant to help improve your English anytime, anywhere. It helps you learn words, speak clearly, and feel more confident talking to your boss or in daily life."
+        "a5": "The LINK Project gives you free short lessons for daily life and work, an AI tutor to practise speaking in your language, and LINK Assistant for your English questions."
     },
     "events": {
         "subtitle": "OUT IN THE COMMUNITY",

@@ -424,3 +424,41 @@ html[data-survey] [data-chat-launcher] {
         transition: none;
     }
 }
+
+/* The landing page's app section: the two side phones start tucked in behind
+   the middle one and fan out as the page scrolls them into view. They rest in
+   the fanned position, so a browser without scroll-driven animations, or someone
+   who asked for less motion, simply sees them fanned. */
+@keyframes app-phone-fan-left {
+    from {
+        translate: 55% 18%;
+        rotate: 0deg;
+    }
+}
+
+@keyframes app-phone-fan-right {
+    from {
+        translate: -55% 18%;
+        rotate: 0deg;
+    }
+}
+
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        [data-app-phone] {
+            animation-duration: auto;
+            animation-fill-mode: both;
+            animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+            animation-timeline: view();
+            animation-range: entry 15% cover 45%;
+        }
+
+        [data-app-phone="left"] {
+            animation-name: app-phone-fan-left;
+        }
+
+        [data-app-phone="right"] {
+            animation-name: app-phone-fan-right;
+        }
+    }
+}

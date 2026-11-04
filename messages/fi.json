@@ -9,7 +9,8 @@
         "header1": "Mag-aral ng Ingles na may personalisadong,",
         "header2": "Mga aralin na may AI-powered na ginawa para sa totoong mundo.",
         "name": "Ang LINK Project",
-        "award": "Mga Nagwagi ng Young Aurora Award · $10,000 na Grant"
+        "award": "Mga Nagwagi ng Young Aurora Award · $10,000 na Grant",
+        "altDashboard": "Dashboard ng LINK Project, may araling kasalukuyang ginagawa at listahan ng mga aralin"
     },
     "getstartedbutton": {
         "start": "Magsimula ng Pag-aaral Ngayon!"
@@ -58,11 +59,25 @@
         "title": "Ang Pagkatuto ng Ingles ay Nangangailangan ng Oras at Suporta."
     },
     "solutionsection": {
-        "part1": "Matalinong mga layunin",
-        "part2": "Mga pag-uusap sa real-time",
-        "part3": "Matalinong chatbot",
+        "part1": "Magsanay sa maiikling aralin at totoong larawan",
+        "part2": "Makipag-usap sa AI tutor sa sarili mong wika",
+        "part3": "Itanong sa LINK Assistant ang mga tanong mo sa Ingles",
         "subtitle": "ANG SOLUSYON",
-        "title": "Personalized na pagkatuto na pinapalakas ng"
+        "title": "Matuto ng Ingles sa paraang gagamitin mo ito",
+        "altExercise": "Aralin sa laptop na nagtatanong kung aling larawan ang platform, at may markang Correct ang tamang larawan",
+        "altSpeaking": "Sinasabi ng nag-aaral ang Which platform for Jurong East sa Ingles, at sumasagot ang AI tutor sa Bengali gamit ang susunod na gawain"
+    },
+    "mobileapp": {
+        "title": "I-download ang <tape>mobile app</tape>",
+        "description": "Maiikling aralin para sa MRT, pagkain, klinika at trabaho. Pagkatapos, magsanay magsalita kasama ang AI tutor: nagpapaliwanag ito sa wika mo, at sasagot ka sa Ingles.",
+        "lessonMrt": "Pagsakay sa MRT",
+        "lessonFood": "Pagbili ng pagkain",
+        "lessonDoctor": "Pagpunta sa doktor",
+        "lessonWork": "Sa trabaho",
+        "lessonNote": "Mga 5 minuto lang ang bawat aralin.",
+        "altHome": "Home screen ng app, kasalukuyang ginagawa ang araling Taking the MRT",
+        "altLesson": "Screen ng aralin na may larawan ng platform ng MRT at mga salitang platform, fare at top up na ipinaliwanag sa Tamil",
+        "altTutor": "Ipinapaliwanag ng AI tutor ang top up sa Tamil, may button ng mikropono para sumagot sa Ingles"
     },
     "aboutUs": {
         "headerCall": "Kilalanin ang Koponan",
@@ -149,13 +164,13 @@
     },
     "faq": {
         "q1": "Ano ang LINK Project?",
-        "a1": "Ang LINK Project ay sumusuporta sa pagkatuto ng Ingles para sa mga migranteng manggagawa sa Singapore...",
+        "a1": "Tinutulungan ng LINK Project ang mga migranteng manggagawa sa Singapore na matuto ng Ingles para sa araw-araw, sa pamamagitan ng maiikling aralin at AI tutor sa pagsasalita.",
         "q3": "Paano ako makakatulong sa LINK Project?",
-        "a3": "Maaari mong ibahagi ang iyong mga ideya sa Google form...",
+        "a3": "Maaari kang makipag-ugnayan sa amin para sa iyong mga ideya, mungkahi o tanong, at sabihin sa amin kung ano ang gusto mong makita.",
         "q4": "Libre ba ang LINK Project?",
         "a4": "Oo, ang LINK Project ay ganap na libre at walang kinakailangang bayad.",
         "q5": "Anong uri ng suporta ang ibinibigay ng LINK Project?",
-        "a5": "Ang LINK Project ay nagbibigay sa iyo ng isang libreng AI voice assistant..."
+        "a5": "Nagbibigay ang LINK Project ng libreng maiikling aralin para sa araw-araw at sa trabaho, AI tutor para magsanay magsalita sa sarili mong wika, at LINK Assistant para sa mga tanong mo sa Ingles."
     },
     "events": {
         "subtitle": "KASAMA ANG KOMUNIDAD",
