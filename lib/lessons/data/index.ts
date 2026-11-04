@@ -8,14 +8,31 @@
 
 import type { Lesson } from "../types";
 import { aiBasics } from "./ai-basics";
+import { busDirections } from "./bus-directions";
 import { clinicVisit } from "./clinic-visit";
+import { constructionScience } from "./construction-science";
 import { hawkerFood } from "./hawker-food";
+import { homeHelp } from "./home-help";
+import { meetPeople } from "./meet-people";
 import { mrtBasics } from "./mrt-basics";
+import { readingSigns } from "./reading-signs";
 import { DAILY_MIX_ID, dailyMix } from "./review";
+import { supermarket } from "./supermarket";
 import { workSafety } from "./work-safety";
 
 /** The English lessons, in the order a new learner should take them. */
-const LESSONS: Lesson[] = [mrtBasics, hawkerFood, clinicVisit, workSafety];
+const LESSONS: Lesson[] = [
+    mrtBasics,
+    hawkerFood,
+    clinicVisit,
+    workSafety,
+    meetPeople,
+    homeHelp,
+    readingSigns,
+    busDirections,
+    supermarket,
+    constructionScience,
+];
 
 /**
  * Lessons for the workshops we run, shown above the English lessons on Home.
