@@ -115,7 +115,7 @@ export const config = {
         // Skip internal paths (_next, _vercel), API routes, and real static
         // assets. Only genuine file extensions anchored at the end of the path
         // are excluded — a bare "." must not switch the auth gate off.
-        "/((?!api|_next|_vercel|.*\\.(?:ico|png|jpe?g|gif|svg|webp|avif|css|js|mjs|map|txt|xml|json|webmanifest|woff2?|ttf|otf|eot|mp4|webm|mp3|wav|pdf)$).*)",
+        "/((?!api|_next|_vercel|.*\\.(?:ico|png|jpe?g|gif|svg|webp|avif|css|js|mjs|map|txt|xml|json|webmanifest|woff2?|ttf|otf|eot|mp4|webm|mp3|wav|pdf|onnx)$).*)",
         // The speaking tutor checks the session with auth(), which only works
         // on requests Clerk's middleware has seen. The handler above passes
         // every /api/ path straight through, so nothing else changes for it.
