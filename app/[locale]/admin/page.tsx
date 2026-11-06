@@ -11,6 +11,7 @@ import {
     ArrowRight,
     Timer,
     Images,
+    ScanFace,
 } from "lucide-react";
 import { getAllLessons } from "@/lib/actions/Lesson.actions";
 import { getAllQuizzes, getQuizResultStats } from "@/lib/actions/quiz.actions";
@@ -391,6 +392,23 @@ const AdminPage = async () => {
                                 delta={`+${userStats.newUsersThisWeek} this week`}
                             />
                         </div>
+                    </DomainPanel>
+
+                    {/* Row 4 — tools, in the same slim band */}
+                    <DomainPanel
+                        href="/admin/face-blur"
+                        title="Face Blur"
+                        tagline="Photos ready to share"
+                        cta="Open"
+                        icon={ScanFace}
+                        accent="brand"
+                        className="lg:col-span-12 lg:flex-row lg:items-center lg:gap-12 lg:[&>div:first-child]:mb-0"
+                    >
+                        <p className="text-sm text-slate-600">
+                            Drop in photos and every face except the LINK
+                            team&apos;s is blurred, then download them all as
+                            one ZIP. Photos never leave your browser.
+                        </p>
                     </DomainPanel>
                 </div>
             </AdminPageShell>

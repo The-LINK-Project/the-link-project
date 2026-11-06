@@ -14,6 +14,12 @@ const nextConfig: NextConfig = {
                 source: "/lessons/audio/:file*",
                 headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
             },
+            // The face blur tool's models (17 MB and 14 MB) never change under
+            // the same name either, so a browser downloads them once.
+            {
+                source: "/face-blur/:file*",
+                headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+            },
         ];
     },
     // The older conversation lessons, games and quiz results now live under
