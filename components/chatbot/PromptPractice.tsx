@@ -1,9 +1,10 @@
 "use client";
 
-import { Bot, RotateCcw, Send, ShieldAlert } from "lucide-react";
+import { RotateCcw, Send, ShieldAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type KeyboardEvent } from "react";
 
+import { AssistantBubble } from "@/components/chatbot/AssistantBubble";
 import { LessonShell } from "@/components/learn/LessonShell";
 import { StepNav } from "@/components/learn/StepNav";
 import { LessonCardBox, text } from "@/components/learn/ui";
@@ -278,64 +279,12 @@ export default function PromptPractice({ lessonId, owner }: { lessonId: string; 
             </div>
 
             <div className="flex flex-col gap-4 border-t border-lesson-hairline pt-6" aria-live="polite">
-                <Bubble role="model" text={t("chatGreeting")} />
+                <AssistantBubble role="model" text={t("chatGreeting")} />
                 {messages.map((message, index) => (
-                    <Bubble key={index} role={message.role} text={message.text} error={message.isError} />
+                    <AssistantBubble key={index} role={message.role} text={message.text} error={message.isError} />
                 ))}
-                {pending ? <Bubble role="model" text={t("chatThinking")} thinking /> : null}
+                {pending ? <AssistantBubble role="model" text={t("chatThinking")} thinking /> : null}
             </div>
         </LessonShell>
-    );
-}
-
-function Bubble({
-    role,
-    text: body,
-    error = false,
-    thinking = false,
-}: {
-    role: ChatMessageType["role"];
-    text: string;
-    error?: boolean;
-    thinking?: boolean;
-}) {
-    if (role === "user") {
-        return (
-            <p className="ml-auto max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-sm bg-lesson-primary-soft px-4 py-3 text-base leading-6 text-lesson-fg">
-                {body}
-            </p>
-        );
-    }
-    return (
-        <div className="flex max-w-[90%] items-start gap-2">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-lesson-primary-dark text-white">
-                <Bot className="size-5" />
-            </span>
-            <p
-                className={cn(
-                    "whitespace-pre-wrap break-words rounded-2xl rounded-tl-sm bg-lesson-muted-surface px-4 py-3 text-base leading-6",
-                    error ? "text-lesson-destructive" : "text-lesson-fg",
-                    thinking && "animate-pulse text-lesson-muted",
-                )}
-            >
-                {thinking || error ? body : <Formatted text={body} />}
-            </p>
-        </div>
-    );
-}
-
-/**
- * The model is asked for plain text but still reaches for markdown now and
- * then. Bold is kept as bold, heading marks are dropped, and nothing else is
- * interpreted: the reply is never rendered as HTML.
- */
-function Formatted({ text: reply }: { text: string }) {
-    const cleaned = reply.replace(/^#{1,6}\s+/gm, "");
-    return (
-        <>
-            {cleaned.split(/\*\*(.+?)\*\*/g).map((part, index) =>
-                index % 2 === 1 ? <strong key={index}>{part}</strong> : part,
-            )}
-        </>
     );
 }

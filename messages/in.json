@@ -9,7 +9,8 @@
         "header1": "Belajar Bahasa Inggris secara personal,",
         "header2": "dengan pelajaran berbasis AI untuk kehidupan nyata.",
         "name": "Proyek LINK",
-        "award": "Pemenang Penghargaan Young Aurora · Hibah $10.000"
+        "award": "Pemenang Penghargaan Young Aurora · Hibah $10.000",
+        "altDashboard": "Dasbor Proyek LINK, dengan pelajaran yang sedang berjalan dan daftar pelajaran"
     },
     "getstartedbutton": {
         "start": "Mulai Belajar Sekarang!"
@@ -58,11 +59,51 @@
         "title": "Belajar Bahasa Inggris membutuhkan waktu dan dukungan."
     },
     "solutionsection": {
-        "part1": "Tujuan yang Cerdas",
-        "part2": "Percakapan Waktu Nyata",
-        "part3": "Chatbot Cerdas",
+        "part1": "Berlatih dengan pelajaran singkat dan foto nyata",
+        "part2": "Berbicara dengan tutor AI dalam bahasa Anda",
+        "part3": "Tanyakan soal bahasa Inggris kepada LINK Assistant",
         "subtitle": "SOLUSINYA",
-        "title": "Pembelajaran personal dengan dukungan"
+        "title": "Belajar bahasa Inggris seperti yang akan Anda gunakan",
+        "altExercise": "Pelajaran di laptop yang menanyakan foto mana yang menunjukkan platform, dengan foto yang benar ditandai Correct",
+        "altSpeaking": "Pelajar mengucapkan Which platform for Jurong East dalam bahasa Inggris, dan tutor AI membalas dalam bahasa Bengali dengan tugas berikutnya",
+        "altAssistant": "LINK Assistant membetulkan sebuah kalimat bahasa Inggris"
+    },
+    "mobileapp": {
+        "title": "Unduh <tape>aplikasi seluler</tape>",
+        "description": "Pelajaran singkat untuk MRT, makanan, klinik, dan pekerjaan. Lalu berlatih berbicara dengan tutor AI: tutor menjelaskan dalam bahasa Anda, dan Anda menjawab dalam bahasa Inggris.",
+        "lessonMrt": "Naik MRT",
+        "lessonFood": "Membeli makanan",
+        "lessonDoctor": "Pergi ke dokter",
+        "lessonWork": "Di tempat kerja",
+        "lessonNote": "Setiap pelajaran sekitar 5 menit.",
+        "altHome": "Layar beranda aplikasi dengan pelajaran Taking the MRT yang sedang berjalan",
+        "altLesson": "Layar pelajaran dengan foto peron MRT serta kata platform, fare, dan top up yang dijelaskan dalam bahasa Tamil",
+        "altTutor": "Tutor AI menjelaskan top up dalam bahasa Tamil, dengan tombol mikrofon untuk menjawab dalam bahasa Inggris"
+    },
+    "team": {
+        "title": "Dibuat oleh <tape>empat pelajar</tape> di Singapura",
+        "description": "Kami mengadakan lokakarya bersama pekerja migran dan pekerja rumah tangga, dan apa yang mereka sampaikan menentukan apa yang kami buat selanjutnya.",
+        "names": "Dari kiri: Ruhan, Alexandre, Adrish, dan Videep",
+        "altGroup": "Ruhan, Alexandre, Adrish, dan Videep, tim di balik The LINK Project",
+        "altWalking": "Tim berjalan sambil mengobrol bersama"
+    },
+    "assistant": {
+        "open": "Buka LINK Assistant",
+        "close": "Tutup",
+        "tagline": "Tanya saya soal bahasa Inggris",
+        "greeting": "Hai! Saya LINK Assistant. Tanyakan apa saja tentang bahasa Inggris. Anda juga boleh menulis dalam bahasa Anda sendiri.",
+        "suggestCheck": "Apakah kalimat ini benar?",
+        "suggestMeaning": "Apa arti kata ini?",
+        "suggestSay": "Bagaimana mengatakan ini dalam bahasa Inggris?",
+        "placeholder": "Tanya soal bahasa Inggris…",
+        "send": "Kirim",
+        "thinking": "Sedang berpikir…",
+        "newChat": "Obrolan baru",
+        "errorLimit": "Terlalu banyak pesan dalam satu menit. Tunggu sebentar, lalu coba lagi.",
+        "errorAuth": "Silakan masuk untuk menggunakan LINK Assistant.",
+        "error": "Maaf, ada yang salah. Silakan coba lagi.",
+        "signInPrompt": "Masuk untuk bertanya soal bahasa Inggris kepada LINK Assistant.",
+        "signIn": "Masuk"
     },
     "aboutUs": {
         "headerCall": "Kenali tim kami",
@@ -149,13 +190,13 @@
     },
     "faq": {
         "q1": "Apa itu Proyek LINK?",
-        "a1": "Proyek LINK mendukung pembelajaran Bahasa Inggris bagi pekerja migran di Singapura...",
+        "a1": "Proyek LINK membantu pekerja migran di Singapura belajar bahasa Inggris untuk kehidupan sehari-hari, melalui pelajaran singkat dan tutor bicara AI.",
         "q3": "Bagaimana saya bisa berkontribusi pada Proyek LINK?",
-        "a3": "Anda dapat berbagi ide melalui formulir Google...",
+        "a3": "Anda dapat menghubungi kami dengan ide, saran, atau pertanyaan Anda, dan memberi tahu apa yang ingin Anda lihat.",
         "q4": "Apakah Proyek LINK gratis?",
         "a4": "Ya, Proyek LINK sepenuhnya gratis dan tidak memerlukan pembayaran.",
         "q5": "Dukungan apa yang diberikan oleh Proyek LINK?",
-        "a5": "Proyek LINK menyediakan asisten suara AI gratis untuk membantu Anda berlatih Bahasa Inggris."
+        "a5": "Proyek LINK memberi Anda pelajaran singkat gratis untuk kehidupan sehari-hari dan pekerjaan, tutor AI untuk berlatih berbicara dalam bahasa Anda, dan LINK Assistant untuk pertanyaan bahasa Inggris Anda."
     },
     "events": {
         "subtitle": "DI TENGAH KOMUNITAS",
