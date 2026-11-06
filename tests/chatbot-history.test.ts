@@ -5,17 +5,16 @@ import { describe, expect, it, vi } from "vitest";
 // prompts) were never said by the model, so they must not reach it dressed
 // up as its own replies.
 
-const sent = vi.hoisted(() => ({ messages: [] as { role: string; content: string }[] }));
+type Turn = { role: string; parts: { text: string }[] };
+const sent = vi.hoisted(() => ({ contents: [] as Turn[] }));
 
 vi.mock("@clerk/nextjs/server", () => ({ auth: async () => ({ userId: "user_A" }) }));
-vi.mock("openai", () => ({
-    default: class {
-        chat = {
-            completions: {
-                create: async ({ messages }: { messages: { role: string; content: string }[] }) => {
-                    sent.messages = messages;
-                    return { choices: [{ message: { content: "A reply" } }] };
-                },
+vi.mock("@google/genai", () => ({
+    GoogleGenAI: class {
+        models = {
+            generateContent: async ({ contents }: { contents: Turn[] }) => {
+                sent.contents = contents;
+                return { text: "A reply" };
             },
         };
     },
@@ -36,12 +35,11 @@ describe("the conversation sent to LINK Assistant", () => {
             "practice",
         );
         expect(result).toEqual({ success: true, text: "A reply" });
-        const turns = sent.messages.filter((message) => message.role !== "system");
-        expect(turns).toEqual([
-            { role: "user", content: "First prompt" },
-            { role: "user", content: "Second prompt" },
-            { role: "assistant", content: "A real reply" },
-            { role: "user", content: "Third prompt" },
+        expect(sent.contents).toEqual([
+            { role: "user", parts: [{ text: "First prompt" }] },
+            { role: "user", parts: [{ text: "Second prompt" }] },
+            { role: "model", parts: [{ text: "A real reply" }] },
+            { role: "user", parts: [{ text: "Third prompt" }] },
         ]);
     });
 });
