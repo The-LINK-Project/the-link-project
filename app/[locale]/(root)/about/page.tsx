@@ -43,15 +43,13 @@ export default function AboutPage() {
                                         className="object-cover"
                                     />
                                 </div>
-                                <div className="flex flex-col items-center gap-2 px-2 pb-3 pt-4 sm:pb-4">
+                                <div className="px-2 pb-4 pt-4 text-center sm:pb-5">
                                     <h3 className="font-heading text-lg font-bold leading-tight text-ink sm:text-xl">
                                         {person.name}
                                     </h3>
-                                    {/* Darker than text-eyebrow so the label clears
-                                        4.5:1 on the mint fill */}
-                                    <span className="inline-flex min-h-6 items-center rounded-full bg-[#eafaf2] px-2.5 py-1 text-center text-xs font-semibold leading-tight sm:min-h-7 sm:px-3 sm:text-[13px] text-[#15784a] ring-1 ring-inset ring-[#1d9d63]/20">
+                                    <p className="mt-1 text-sm leading-snug text-ink-soft sm:text-[15px]">
                                         {t("role")}
-                                    </span>
+                                    </p>
                                 </div>
                             </li>
                         ))}
