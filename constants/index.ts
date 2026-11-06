@@ -28,22 +28,22 @@ export const aboutUsInformation = [
     {
         name: "Adrish",
         role: "Co-Founder",
-        image: "/assets/about-us/mun.jpeg",
+        image: "/assets/about-us/adrish.jpg",
     },
     {
         name: "Alexandre",
         role: "Co-Founder",
-        image: "/assets/about-us/Alex.jpeg",
+        image: "/assets/about-us/alex.jpg",
     },
     {
         name: "Ruhan",
         role: "Co-Founder",
-        image: "/assets/about-us/Ruhan.jpeg",
+        image: "/assets/about-us/ruhan.jpg",
     },
     {
         name: "Videep",
         role: "Co-Founder",
-        image: "/assets/about-us/Videep.jpeg",
+        image: "/assets/about-us/videep.jpg",
     },
 ];
 
