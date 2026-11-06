@@ -8,6 +8,7 @@ export const ADMIN_CONFIG = {
     "ruhangupta01@gmail.com",
     "goutammajumder@yahoo.co.in",
     "agarw76685@gapps.uwcsea.edu.sg",
+    "videepagarwal@gmail.com",
     "gupta56411@gapps.uwcsea.edu.sg",
   ],
 
