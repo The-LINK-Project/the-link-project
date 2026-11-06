@@ -233,6 +233,210 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "Check for a hallucination": "hallucination ఉందో లేదో చూడండి",
         "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
             "నిజాలు అడగండి, తర్వాత అది ఖచ్చితంగా తెలుసా అని అడగండి. chatbotలు నమ్మకంగా మాట్లాడినా తప్పు చెప్పవచ్చు.",
+        "Getting to know someone": "కొత్తవారితో పరిచయం",
+        "Say your name and where you are from, and ask new people about themselves.":
+            "మీ పేరు, మీరు ఎక్కడి నుంచి వచ్చారో చెప్పండి. కొత్తగా కలిసినవారిని వారి గురించి అడగండి.",
+        "People in Singapore often say \"Have you eaten?\" as a friendly hello. You can say \"Yes, thank you.\"":
+            "సింగపూర్‌లో పలకరించడానికి తరచూ \"Have you eaten?\" అంటారు. మీరు \"Yes, thank you.\" అనవచ్చు.",
+        "People may call an older woman \"Aunty\" and an older man \"Uncle\". It is polite, even if you are not family.":
+            "పెద్ద వయసు మహిళను \"Aunty\" అని, పురుషుడిని \"Uncle\" అని పిలవవచ్చు. బంధువులు కాకపోయినా ఇలా పిలవడం మర్యాద.",
+        "You do not have to answer every question. If someone asks about your pay or your family and you do not want to say, you can smile and change the topic.":
+            "ప్రతి ప్రశ్నకూ జవాబు చెప్పాల్సిన అవసరం లేదు. జీతం లేదా కుటుంబం గురించి అడిగితే చెప్పడం ఇష్టం లేకపోతే, నవ్వుతూ వేరే విషయం మాట్లాడవచ్చు.",
+        "The best way to learn is to talk. Say hello to one new person on your day off.":
+            "మాట్లాడితే బాగా నేర్చుకుంటారు. మీ సెలవు రోజున ఒక కొత్త వ్యక్తిని పలకరించండి.",
+        "what people call you": "మిమ్మల్ని పిలిచే పేరు",
+        "a place like India or Bangladesh": "భారతదేశం లేదా బంగ్లాదేశ్ వంటి దేశం",
+        "your parents, husband or wife, and children": "మీ తల్లిదండ్రులు, భర్త లేదా భార్య, పిల్లలు",
+        "young boys and girls; sons and daughters":
+            "చిన్న అబ్బాయిలు, అమ్మాయిలు; కొడుకులు, కూతుళ్లు",
+        "someone you like and spend time with": "మీకు నచ్చి, మీరు సమయం గడిపే వ్యక్తి",
+        "the work you do for money": "డబ్బు కోసం మీరు చేసే పని",
+        "something you like to do in your free time": "ఖాళీ సమయంలో మీకు చేయడం ఇష్టమైన పని",
+        "the day after Saturday; many workers rest":
+            "శనివారం తర్వాతి రోజు; చాలామంది కార్మికులు విశ్రాంతి తీసుకుంటారు",
+        "Asking someone's name.": "ఒకరి పేరు అడగడం.",
+        "Telling someone your name.": "మీ పేరు చెప్పడం.",
+        "Asking which country someone comes from.": "ఒకరు ఏ దేశం నుంచి వచ్చారో అడగడం.",
+        "Asking what work someone does.": "ఒకరు ఏ పని చేస్తారో అడగడం.",
+        "Saying you are happy to meet someone new.":
+            "కొత్త వ్యక్తిని కలవడం సంతోషంగా ఉందని చెప్పడం.",
+        "Asking about someone's day off.": "ఒకరి సెలవు రోజు గురించి అడగడం.",
+        "You meet someone new at the park on your day off.":
+            "మీ సెలవు రోజున పార్కులో కొత్త వ్యక్తిని కలుస్తారు.",
+        "The new person asks your name.": "కొత్తగా కలిసిన వ్యక్తి మీ పేరు అడుగుతున్నారు.",
+        "Your friend brings a new person to meet you.":
+            "మీ స్నేహితుడు కొత్త వ్యక్తిని మీకు పరిచయం చేయడానికి తీసుకొస్తారు.",
+        "The new person tells you her name.": "కొత్తగా కలిసిన మహిళ తన పేరు చెబుతున్నారు.",
+        "What is your job?": "మీరు ఏ పని చేస్తారు?",
+        "Helping at home": "ఇంటిపనిలో సహాయం",
+        "Understand what to do at home, say what you have finished, and ask when you are not sure.":
+            "ఇంట్లో ఏం చేయాలో తెలుసుకోండి. ఏ పని పూర్తయిందో చెప్పండి. తెలియకపోతే అడగండి.",
+        "Never lean out of a window to clean it or to hang clothes. If someone asks you to, say it is not safe.":
+            "కిటికీ శుభ్రం చేయడానికైనా, బట్టలు ఆరేయడానికైనా బయటకు వంగకండి. ఎవరైనా అలా చేయమంటే సురక్షితం కాదని చెప్పండి.",
+        "Never throw anything out of a window. Put rubbish in the rubbish chute or the bin.":
+            "కిటికీ నుంచి ఏదీ బయటకు విసరకండి. చెత్తను వంటగదిలోని చెత్త వేసే లోహపు తలుపు ఉన్న గొట్టంలో లేదా చెత్తబుట్టలో వేయండి.",
+        "Never mix bleach with other cleaning products. The gas can hurt you.":
+            "బ్లీచ్‌ను ఇతర శుభ్రపరిచే పదార్థాలతో కలపకండి. వచ్చే వాయువు మీకు హాని చేయవచ్చు.",
+        "If you do not know how to use a machine, ask first. It is better to ask than to break it.":
+            "యంత్రం ఎలా వాడాలో తెలియకపోతే ముందు అడగండి. పాడుచేయడం కంటే అడగడం మంచిది.",
+        "clothes to wash": "ఉతకాల్సిన బట్టలు",
+        "a hot tool that makes clothes flat": "బట్టల ముడతలు పోగొట్టే వేడి పరికరం",
+        "a stick with cloth for washing the floor": "నేలను కడగడానికి గుడ్డ ఉన్న కర్ర",
+        "plates and bowls you eat from": "మీరు తినడానికి వాడే ప్లేట్లు, గిన్నెలు",
+        "things you throw away": "మీరు పారవేసే వస్తువులు",
+        "a cold box that keeps food fresh": "ఆహారం తాజాగా ఉండేలా చల్లగా ఉంచే పెట్టె",
+        "where you cook food with fire": "మంటతో వంట చేసే చోటు",
+        "a place with doors to keep things": "వస్తువులు పెట్టుకోవడానికి తలుపులున్న చోటు",
+        "Asking what work comes after this.": "దీని తర్వాత ఏ పని చేయాలో అడగడం.",
+        "Saying the laundry is done.": "బట్టలు ఉతకడం పూర్తయిందని చెప్పడం.",
+        "Asking where something goes.": "ఒక వస్తువును ఎక్కడ పెట్టాలో అడగడం.",
+        "Asking someone to show you the way to do it.": "ఎలా చేయాలో చూపించమని అడగడం.",
+        "Saying sorry and telling the truth about a broken plate.":
+            "ప్లేటు పగిలినందుకు క్షమాపణ చెప్పి నిజం చెప్పడం.",
+        "You finished washing the clothes. Your employer comes into the room.":
+            "మీరు బట్టలు ఉతకడం పూర్తి చేశారు. మీ యజమాని గదిలోకి వస్తున్నారు.",
+        "Your employer asks if the clothes are washed.":
+            "బట్టలు ఉతికారా అని మీ యజమాని అడుగుతున్నారు.",
+        "There is a new iron at home. You do not know how to use it.":
+            "ఇంట్లో కొత్త ఇస్త్రీ పెట్టె ఉంది. దాన్ని ఎలా వాడాలో మీకు తెలియదు.",
+        "Your employer asks you to iron the shirts.":
+            "చొక్కాలు ఇస్త్రీ చేయమని మీ యజమాని అడుగుతున్నారు.",
+        "Sorry, I broke a plate.": "క్షమించండి, నేను ఒక ప్లేటు పగలగొట్టాను.",
+        "Reading signs": "సైన్ బోర్డులు చదవడం",
+        "Read the signs you see every day, and ask when you do not understand one.":
+            "రోజూ కనిపించే సైన్ బోర్డులు చదవండి. అర్థం కాకపోతే అడగండి.",
+        "Red signs usually mean stop or danger. Yellow means be careful. Green usually means safe, or the way out.":
+            "ఎరుపు బోర్డులు సాధారణంగా ఆగమని లేదా ప్రమాదమని చెబుతాయి. పసుపు అంటే జాగ్రత్త. ఆకుపచ్చ అంటే సాధారణంగా సురక్షితం లేదా బయటకు వెళ్లే దారి.",
+        "You can be fined for smoking where it is not allowed. Many places have a yellow box that shows where you can smoke.":
+            "అనుమతి లేని చోట పొగ తాగితే జరిమానా పడవచ్చు. పొగ తాగవచ్చే చోట చాలా సార్లు పసుపు రంగు గీతలతో పెట్టె ఆకారంలో గుర్తు ఉంటుంది.",
+        "Many signs in Singapore are in English, Chinese, Malay and Tamil. If your language is there, read it first, then look for the English word.":
+            "సింగపూర్‌లో చాలా బోర్డులు ఇంగ్లీషు, చైనీస్, మలయ్, తమిళంలో ఉంటాయి. మీ భాష ఉంటే ముందు అది చదివి, తర్వాత ఇంగ్లీషు పదాన్ని చూడండి.",
+        "Not sure what a sign means? Take a photo and ask someone. Do not go past a danger sign.":
+            "బోర్డు అర్థం తెలియదా? ఫోటో తీసి ఎవరినైనా అడగండి. ప్రమాద బోర్డును దాటి వెళ్లకండి.",
+        "the floor has water; you can slip": "నేలపై నీరు ఉంది; జారిపడవచ్చు",
+        "do not go in": "లోపలికి వెళ్లకండి",
+        "do not smoke here": "ఇక్కడ పొగ తాగకండి",
+        "not open now": "ఇప్పుడు తెరిచి లేదు",
+        "press the door away from you": "తలుపును మీ నుంచి దూరంగా నెట్టండి",
+        "bring the door towards you": "తలుపును మీ వైపు లాగండి",
+        "the room with a toilet, in a public place": "బహిరంగ ప్రదేశంలో మరుగుదొడ్డి ఉన్న గది",
+        "something here can hurt you": "ఇక్కడ ఉన్నది మీకు హాని చేయవచ్చు",
+        "Asking someone to explain a sign.": "బోర్డు అర్థం చెప్పమని అడగడం.",
+        "Telling someone to be careful of the wet floor.": "తడి నేలపై జాగ్రత్తగా ఉండమని చెప్పడం.",
+        "Asking the way to the toilet.": "మరుగుదొడ్డికి దారి అడగడం.",
+        "Saying a shop is not open.": "దుకాణం తెరిచి లేదని చెప్పడం.",
+        "Telling someone they are not allowed to enter.":
+            "లోపలికి వెళ్లడానికి అనుమతి లేదని చెప్పడం.",
+        "You are new in a building and you need the toilet. You see a cleaner.":
+            "ఈ భవనానికి మీరు కొత్త. మరుగుదొడ్డికి వెళ్లాలి. శుభ్రం చేసే వ్యక్తి కనిపిస్తారు.",
+        "The cleaner asks if you need help.": "సహాయం కావాలా అని శుభ్రం చేసే వ్యక్తి అడుగుతున్నారు.",
+        "Your friend is walking to a door with a red No Entry sign.":
+            "మీ స్నేహితుడు ఎరుపు No Entry బోర్డు ఉన్న తలుపు వైపు నడుస్తున్నారు.",
+        "Your friend asks if they can go in.":
+            "లోపలికి వెళ్లవచ్చా అని మీ స్నేహితుడు అడుగుతున్నారు.",
+        "The shop is closed.": "దుకాణం మూసి ఉంది.",
+        "Buses and finding your way": "బస్సులు, దారి తెలుసుకోవడం",
+        "Find the right bus, get off at your stop, and ask for directions when you are lost.":
+            "సరైన బస్సు ఎక్కండి, మీ స్టాప్‌లో దిగండి. దారి తప్పితే దారి అడగండి.",
+        "Tap your card when you get on the bus and again when you get off. If you forget to tap when you get off, you can pay more.":
+            "బస్సు ఎక్కేటప్పుడు, దిగేటప్పుడు మీ కార్డును ట్యాప్ చేయండి. దిగేటప్పుడు మరిస్తే ఎక్కువ డబ్బు చెల్లించాల్సి రావచ్చు.",
+        "Press the bell just before your stop. If nobody presses it and nobody is waiting, the bus does not stop.":
+            "మీ స్టాప్ రావడానికి కొంచెం ముందు బెల్ నొక్కండి. ఎవరూ నొక్కకపోయినా, ఎవరూ వేచి లేకపోయినా బస్సు ఆగదు.",
+        "Raise your hand when your bus comes, so the driver knows to stop.":
+            "మీ బస్సు వచ్చినప్పుడు చేయి ఎత్తండి. అప్పుడు ఆపాలని డ్రైవర్‌కు తెలుస్తుంది.",
+        "Cross the road at a traffic light or an overhead bridge. You can be fined for crossing somewhere else nearby.":
+            "ట్రాఫిక్ లైట్ వద్ద లేదా రోడ్డు మీదుగా నడిచి వెళ్లే వంతెనపై రోడ్డు దాటండి. దగ్గరలో వేరే చోట దాటితే జరిమానా పడవచ్చు.",
+        "where you wait for the bus": "బస్సు కోసం వేచి ఉండే చోటు",
+        "press it to ask the bus to stop": "బస్సు ఆపమని చెప్పడానికి దీన్ని నొక్కండి",
+        "the side of your left hand": "మీ ఎడమ చేతి వైపు",
+        "the side of your right hand": "మీ కుడి చేతి వైపు",
+        "keep going ahead; do not turn": "ముందుకు వెళ్తూ ఉండండి; తిరగకండి",
+        "the lights that say stop or go": "ఆగాలో వెళ్లాలో చెప్పే లైట్లు",
+        "a bridge for walking over a road": "రోడ్డు మీదుగా నడిచి వెళ్లే వంతెన",
+        "a picture that shows where places are": "ప్రదేశాలు ఎక్కడున్నాయో చూపించే చిత్రం",
+        "Asking which bus to take.": "ఏ బస్సు ఎక్కాలో అడగడం.",
+        "Asking the way to the bus stop.": "బస్సు స్టాప్‌కు దారి అడగడం.",
+        "Telling someone the way.": "ఒకరికి దారి చెప్పడం.",
+        "Saying you do not know where you are.": "మీరు ఎక్కడున్నారో తెలియదని చెప్పడం.",
+        "Asking someone to tell you when to get off.": "ఎప్పుడు దిగాలో చెప్పమని అడగడం.",
+        "You are at a bus stop and want to go to Little India. A woman is waiting next to you.":
+            "మీరు బస్సు స్టాప్‌లో ఉన్నారు. Little India వెళ్లాలి. మీ పక్కన ఒక మహిళ వేచి ఉన్నారు.",
+        "The woman asks if you are waiting for a bus.":
+            "బస్సు కోసం వేచి ఉన్నారా అని ఆ మహిళ అడుగుతున్నారు.",
+        "You do not know this road and your phone has no battery. You see a man walking.":
+            "మీకు ఈ రోడ్డు తెలియదు. మీ ఫోన్‌లో ఛార్జ్ లేదు. నడుస్తున్న ఒక వ్యక్తి కనిపిస్తారు.",
+        "The man asks if he can help you.": "మీకు సహాయం చేయవచ్చా అని ఆ వ్యక్తి అడుగుతున్నారు.",
+        "Please tell me my stop.": "దయచేసి నా స్టాప్ వచ్చినప్పుడు చెప్పండి.",
+        "At the supermarket": "సూపర్‌మార్కెట్‌లో",
+        "Find what you need, check the price and the date, and pay at the counter.":
+            "కావాల్సినవి కనుగొనండి, ధర, తేదీ చూసి, కౌంటర్ వద్ద డబ్బు చెల్లించండి.",
+        "Big supermarkets charge at least 5 cents for each plastic bag. Bring your own bag to save money.":
+            "పెద్ద సూపర్‌మార్కెట్లలో ఒక్కో ప్లాస్టిక్ సంచికి కనీసం 5 సెంట్లు తీసుకుంటారు. డబ్బు ఆదా చేయడానికి మీ సంచి తెచ్చుకోండి.",
+        "Look for the date on food before you buy it. \"Best before\" and \"Use by\" tell you how long it is good.":
+            "ఆహారం కొనే ముందు దాని మీద తేదీ చూడండి. \"Best before\", \"Use by\" అది ఎంతకాలం బాగుంటుందో చెబుతాయి.",
+        "Keep the receipt when you shop for someone else, so you can show what you spent.":
+            "వేరొకరి కోసం కొన్నప్పుడు రసీదు ఉంచుకోండి. ఎంత ఖర్చు చేశారో చూపించవచ్చు.",
+        "The cashier may ask if you have a member card. If you do not have one, just say no.":
+            "సభ్యత్వ కార్డు ఉందా అని డబ్బు తీసుకునే వ్యక్తి అడగవచ్చు. లేకపోతే లేదని చెప్పండి.",
+        "a big basket on wheels": "చక్రాలున్న పెద్ద బుట్ట",
+        "the walkway between shelves": "అరల మధ్య నడిచే దారి",
+        "the person you pay": "మీరు డబ్బు చెల్లించే వ్యక్తి",
+        "the paper that shows what you paid": "మీరు చెల్లించిన డబ్బు వివరాలున్న కాగితం",
+        "a lower price than usual": "మామూలు కంటే తక్కువ ధర",
+        "the last day the food is good": "ఆహారం బాగుండే చివరి రోజు",
+        "a thin bag to carry your shopping": "కొన్న వస్తువులు తీసుకెళ్లే పలుచని సంచి",
+        "plants you cook and eat, like carrots": "క్యారెట్ వంటి వండి తినే మొక్కలు",
+        "Asking where to find something.": "ఒక వస్తువు ఎక్కడ దొరుకుతుందో అడగడం.",
+        "Asking if the price is lower today.": "ఈ రోజు ధర తక్కువగా ఉందా అని అడగడం.",
+        "Asking the cashier for a bag.": "డబ్బు తీసుకునే వ్యక్తిని సంచి అడగడం.",
+        "Asking the cashier for the receipt.": "డబ్బు తీసుకునే వ్యక్తిని రసీదు అడగడం.",
+        "Telling staff that the food is past its date.": "ఆహారం గడువు దాటిందని సిబ్బందికి చెప్పడం.",
+        "You are paying at the counter. You do not have your own bag.":
+            "మీరు కౌంటర్ వద్ద డబ్బు చెల్లిస్తున్నారు. మీ సొంత సంచి లేదు.",
+        "The cashier tells you the price.": "డబ్బు తీసుకునే వ్యక్తి ధర చెబుతున్నారు.",
+        "The milk in your basket is past its date. You show it to a staff member.":
+            "మీ బుట్టలోని పాల గడువు దాటింది. మీరు సిబ్బందికి చూపిస్తున్నారు.",
+        "A staff member asks if they can help you.":
+            "మీకు సహాయం చేయవచ్చా అని సిబ్బంది అడుగుతున్నారు.",
+        "Is this on discount?": "దీనికి ధర తగ్గింపు ఉందా?",
+        "Construction science": "నిర్మాణం వెనుక శాస్త్రం",
+        "Learn the main building materials, why a building stays up, and how to warn others about a problem.":
+            "ముఖ్యమైన నిర్మాణ సామగ్రి, భవనం ఎలా నిలబడుతుందో, సమస్య ఉంటే ఇతరులను ఎలా హెచ్చరించాలో నేర్చుకోండి.",
+        "Concrete is strong when it is pressed, but it cracks when it is pulled. That is why steel bars go inside it.":
+            "కాంక్రీటు ఒత్తిడిని బాగా తట్టుకుంటుంది. కానీ లాగితే పగుళ్లు వస్తాయి. అందుకే దానిలో ఉక్కు కడ్డీలు పెడతారు.",
+        "Too much water makes concrete weak. Use only the amount of water your supervisor tells you.":
+            "ఎక్కువ నీరు కాంక్రీటును బలహీనం చేస్తుంది. మీ సూపర్‌వైజర్ చెప్పినంత నీరు మాత్రమే వాడండి.",
+        "Concrete goes hard slowly. It takes about 28 days to reach full strength, so ask your supervisor before you put weight on it.":
+            "కాంక్రీటు నెమ్మదిగా గట్టిపడుతుంది. పూర్తి బలం రావడానికి సుమారు 28 రోజులు పడుతుంది. దానిపై బరువు పెట్టే ముందు మీ సూపర్‌వైజర్‌ను అడగండి.",
+        "A building carries its weight down: from the floor to the beams, to the columns, then into the ground. Never cut a beam or a column without permission.":
+            "భవనం బరువు కిందికి వెళ్తుంది: నేల నుంచి బీములకు, కాలమ్‌లకు, ఆ తర్వాత భూమిలోకి. అనుమతి లేకుండా బీమ్ లేదా కాలమ్‌ను ఎప్పుడూ కోయకండి.",
+        "Every scaffold has a weight limit. Too much weight can make it fall, so do not add more than you are told.":
+            "ప్రతి పరంజాకు బరువు పరిమితి ఉంటుంది. ఎక్కువ బరువుతో అది పడిపోవచ్చు. చెప్పిన దానికంటే ఎక్కువ పెట్టకండి.",
+        "cement, sand, stones and water mixed; it goes hard":
+            "సిమెంటు, ఇసుక, రాళ్లు, నీటి మిశ్రమం; ఇది గట్టిపడుతుంది",
+        "the grey powder that holds concrete together": "కాంక్రీటును కలిపి ఉంచే బూడిద రంగు పొడి",
+        "a long metal rod inside concrete": "కాంక్రీటు లోపల ఉండే పొడవైన ఉక్కు కడ్డీ",
+        "a strong part that goes across and holds up a floor":
+            "అడ్డంగా ఉండి అంతస్తును మోసే బలమైన భాగం",
+        "a strong part that stands up and carries the weight":
+            "నిలువుగా ఉండి బరువును మోసే బలమైన భాగం",
+        "the weight something must carry": "ఒక వస్తువు మోయాల్సిన బరువు",
+        "a tool that shows if something is flat": "సమంగా ఉందో చూపించే పరికరం",
+        "a metal frame you stand on to work up high": "ఎత్తులో పని చేయడానికి నిలబడే లోహపు చట్రం",
+        "Warning that the concrete is not hard yet.": "కాంక్రీటు ఇంకా గట్టిపడలేదని హెచ్చరించడం.",
+        "Saying that something weighs too much.": "ఏదైనా చాలా బరువుగా ఉందని చెప్పడం.",
+        "Telling someone to stop adding water to the mix.":
+            "మిశ్రమంలో ఇంకా నీరు పోయవద్దని చెప్పడం.",
+        "Reporting a crack to your supervisor.": "పగులు గురించి మీ సూపర్‌వైజర్‌కు చెప్పడం.",
+        "Asking someone to make sure the scaffold is safe.": "పరంజా సురక్షితంగా ఉందో చూడమని అడగడం.",
+        "A worker is about to walk on the floor you poured this morning.":
+            "ఈ ఉదయం మీరు కాంక్రీటు పోసిన నేలపై ఒక కార్మికుడు నడవబోతున్నారు.",
+        "The worker asks if he can walk here.": "ఇక్కడ నడవవచ్చా అని కార్మికుడు అడుగుతున్నారు.",
+        "Your co-worker is mixing concrete and keeps pouring in water.":
+            "మీ తోటి కార్మికుడు కాంక్రీటు కలుపుతూ నీరు పోస్తూనే ఉన్నారు.",
+        "Your co-worker wants to add more water.":
+            "మీ తోటి కార్మికుడు ఇంకా నీరు పోయాలనుకుంటున్నారు.",
+        "There is a crack in this column.": "ఈ కాలమ్‌లో పగులు ఉంది.",
     },
     ml: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -453,6 +657,218 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "Check for a hallucination": "hallucination ഉണ്ടോ എന്ന് പരിശോധിക്കുക",
         "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
             "വസ്തുതകൾ ചോദിക്കുക, പിന്നെ ഉറപ്പാണോ എന്ന് ചോദിക്കുക. chatbot-കൾ ആത്മവിശ്വാസത്തോടെ സംസാരിച്ചാലും തെറ്റാകാം.",
+        "Getting to know someone": "പുതിയ ആളുകളെ പരിചയപ്പെടാം",
+        "Say your name and where you are from, and ask new people about themselves.":
+            "നിങ്ങളുടെ പേരും എവിടെ നിന്നാണ് വന്നതെന്നും പറയുക. പുതിയ ആളുകളോട് അവരെക്കുറിച്ച് ചോദിക്കുക.",
+        "People in Singapore often say \"Have you eaten?\" as a friendly hello. You can say \"Yes, thank you.\"":
+            "സിംഗപ്പൂരിൽ സൗഹൃദത്തോടെ അഭിവാദ്യം ചെയ്യാൻ പലരും \"Have you eaten?\" എന്ന് ചോദിക്കും. നിങ്ങൾക്ക് \"Yes, thank you.\" എന്ന് പറയാം.",
+        "People may call an older woman \"Aunty\" and an older man \"Uncle\". It is polite, even if you are not family.":
+            "പ്രായമുള്ള സ്ത്രീയെ \"Aunty\" എന്നും പുരുഷനെ \"Uncle\" എന്നും വിളിക്കാറുണ്ട്. ബന്ധുക്കളല്ലെങ്കിലും ഇങ്ങനെ വിളിക്കുന്നത് മര്യാദയാണ്.",
+        "You do not have to answer every question. If someone asks about your pay or your family and you do not want to say, you can smile and change the topic.":
+            "എല്ലാ ചോദ്യത്തിനും മറുപടി പറയേണ്ടതില്ല. ശമ്പളമോ കുടുംബമോ കുറിച്ച് ചോദിക്കുമ്പോൾ പറയാൻ താൽപര്യമില്ലെങ്കിൽ ചിരിച്ചുകൊണ്ട് മറ്റൊരു കാര്യം സംസാരിക്കാം.",
+        "The best way to learn is to talk. Say hello to one new person on your day off.":
+            "സംസാരിച്ചാണ് നന്നായി പഠിക്കാൻ കഴിയുക. അവധി ദിവസം പുതിയ ഒരാളെ അഭിവാദ്യം ചെയ്യുക.",
+        "what people call you": "ആളുകൾ നിങ്ങളെ വിളിക്കുന്ന പേര്",
+        "a place like India or Bangladesh": "ഇന്ത്യയോ ബംഗ്ലാദേശോ പോലുള്ള ഒരു രാജ്യം",
+        "your parents, husband or wife, and children":
+            "നിങ്ങളുടെ അച്ഛനമ്മമാർ, ഭർത്താവ് അല്ലെങ്കിൽ ഭാര്യ, മക്കൾ",
+        "young boys and girls; sons and daughters":
+            "ചെറിയ ആൺകുട്ടികളും പെൺകുട്ടികളും; ആൺമക്കളും പെൺമക്കളും",
+        "someone you like and spend time with":
+            "നിങ്ങൾക്ക് ഇഷ്ടമുള്ള, നിങ്ങൾ സമയം ചെലവഴിക്കുന്ന ഒരാൾ",
+        "the work you do for money": "പണം കിട്ടാൻ നിങ്ങൾ ചെയ്യുന്ന ജോലി",
+        "something you like to do in your free time": "ഒഴിവുസമയത്ത് ചെയ്യാൻ ഇഷ്ടമുള്ള കാര്യം",
+        "the day after Saturday; many workers rest":
+            "ശനിയാഴ്ച കഴിഞ്ഞുള്ള ദിവസം; പല തൊഴിലാളികളും വിശ്രമിക്കും",
+        "Asking someone's name.": "ഒരാളുടെ പേര് ചോദിക്കുന്നു.",
+        "Telling someone your name.": "നിങ്ങളുടെ പേര് പറയുന്നു.",
+        "Asking which country someone comes from.":
+            "ഒരാൾ ഏത് രാജ്യത്തുനിന്നാണ് വന്നതെന്ന് ചോദിക്കുന്നു.",
+        "Asking what work someone does.": "ഒരാൾ എന്ത് ജോലി ചെയ്യുന്നുവെന്ന് ചോദിക്കുന്നു.",
+        "Saying you are happy to meet someone new.":
+            "പുതിയ ഒരാളെ കണ്ടതിൽ സന്തോഷമുണ്ടെന്ന് പറയുന്നു.",
+        "Asking about someone's day off.": "ഒരാളുടെ അവധി ദിവസത്തെക്കുറിച്ച് ചോദിക്കുന്നു.",
+        "You meet someone new at the park on your day off.":
+            "അവധി ദിവസം പാർക്കിൽ നിങ്ങൾ പുതിയ ഒരാളെ കാണുന്നു.",
+        "The new person asks your name.": "പുതിയ ആൾ നിങ്ങളുടെ പേര് ചോദിക്കുന്നു.",
+        "Your friend brings a new person to meet you.":
+            "നിങ്ങളുടെ സുഹൃത്ത് പുതിയ ഒരാളെ പരിചയപ്പെടുത്താൻ കൊണ്ടുവരുന്നു.",
+        "The new person tells you her name.": "പുതുതായി പരിചയപ്പെട്ട സ്ത്രീ തന്റെ പേര് പറയുന്നു.",
+        "What is your job?": "നിങ്ങൾ എന്ത് ജോലി ചെയ്യുന്നു?",
+        "Helping at home": "വീട്ടിൽ സഹായിക്കാം",
+        "Understand what to do at home, say what you have finished, and ask when you are not sure.":
+            "വീട്ടിൽ എന്ത് ചെയ്യണമെന്ന് മനസ്സിലാക്കുക. ചെയ്തുതീർത്തത് പറയുക. ഉറപ്പില്ലെങ്കിൽ ചോദിക്കുക.",
+        "Never lean out of a window to clean it or to hang clothes. If someone asks you to, say it is not safe.":
+            "ജനൽ തുടയ്ക്കാനോ തുണി വിരിക്കാനോ പുറത്തേക്ക് ചായരുത്. ആരെങ്കിലും ആവശ്യപ്പെട്ടാൽ അത് സുരക്ഷിതമല്ലെന്ന് പറയുക.",
+        "Never throw anything out of a window. Put rubbish in the rubbish chute or the bin.":
+            "ജനലിലൂടെ ഒന്നും പുറത്തേക്ക് എറിയരുത്. അടുക്കളയിലെ ലോഹവാതിലുള്ള മാലിന്യം ഇടുന്ന കുഴലിലോ ചവറ്റുകുട്ടയിലോ മാലിന്യം ഇടുക.",
+        "Never mix bleach with other cleaning products. The gas can hurt you.":
+            "ബ്ലീച്ച് മറ്റു വൃത്തിയാക്കുന്ന വസ്തുക്കളുമായി കലർത്തരുത്. ഉണ്ടാകുന്ന വാതകം നിങ്ങളെ അപകടത്തിലാക്കാം.",
+        "If you do not know how to use a machine, ask first. It is better to ask than to break it.":
+            "യന്ത്രം ഉപയോഗിക്കാൻ അറിയില്ലെങ്കിൽ ആദ്യം ചോദിക്കുക. കേടുവരുത്തുന്നതിനെക്കാൾ ചോദിക്കുന്നതാണ് നല്ലത്.",
+        "clothes to wash": "അലക്കാനുള്ള വസ്ത്രങ്ങൾ",
+        "a hot tool that makes clothes flat": "വസ്ത്രങ്ങളുടെ ചുളിവ് മാറ്റുന്ന ചൂടുള്ള ഉപകരണം",
+        "a stick with cloth for washing the floor": "തറ കഴുകാൻ തുണി ഘടിപ്പിച്ച വടി",
+        "plates and bowls you eat from": "ഭക്ഷണം കഴിക്കുന്ന പ്ലേറ്റുകളും പാത്രങ്ങളും",
+        "things you throw away": "നിങ്ങൾ കളയുന്ന വസ്തുക്കൾ",
+        "a cold box that keeps food fresh": "ഭക്ഷണം കേടാകാതെ തണുപ്പിച്ച് സൂക്ഷിക്കുന്ന പെട്ടി",
+        "where you cook food with fire": "തീ ഉപയോഗിച്ച് ഭക്ഷണം പാകം ചെയ്യുന്ന സ്ഥലം",
+        "a place with doors to keep things": "സാധനങ്ങൾ സൂക്ഷിക്കാൻ വാതിലുകളുള്ള ഇടം",
+        "Asking what work comes after this.": "ഇതിനുശേഷം എന്ത് ജോലി ചെയ്യണമെന്ന് ചോദിക്കുന്നു.",
+        "Saying the laundry is done.": "തുണി അലക്കിത്തീർന്നെന്ന് പറയുന്നു.",
+        "Asking where something goes.": "ഒരു സാധനം എവിടെ വെക്കണമെന്ന് ചോദിക്കുന്നു.",
+        "Asking someone to show you the way to do it.":
+            "എങ്ങനെ ചെയ്യണമെന്ന് കാണിച്ചുതരാൻ ചോദിക്കുന്നു.",
+        "Saying sorry and telling the truth about a broken plate.":
+            "പ്ലേറ്റ് പൊട്ടിച്ചതിന് ക്ഷമ ചോദിച്ച് സത്യം പറയുന്നു.",
+        "You finished washing the clothes. Your employer comes into the room.":
+            "നിങ്ങൾ തുണി അലക്കിത്തീർത്തു. തൊഴിലുടമ മുറിയിലേക്ക് വരുന്നു.",
+        "Your employer asks if the clothes are washed.":
+            "തുണി അലക്കിയോ എന്ന് തൊഴിലുടമ ചോദിക്കുന്നു.",
+        "There is a new iron at home. You do not know how to use it.":
+            "വീട്ടിൽ പുതിയ ഇസ്തിരിപ്പെട്ടി ഉണ്ട്. അത് ഉപയോഗിക്കാൻ നിങ്ങൾക്ക് അറിയില്ല.",
+        "Your employer asks you to iron the shirts.":
+            "ഷർട്ടുകൾ ഇസ്തിരിയിടാൻ തൊഴിലുടമ ആവശ്യപ്പെടുന്നു.",
+        "Sorry, I broke a plate.": "ക്ഷമിക്കണം, ഞാൻ ഒരു പ്ലേറ്റ് പൊട്ടിച്ചു.",
+        "Reading signs": "ബോർഡുകൾ വായിക്കാം",
+        "Read the signs you see every day, and ask when you do not understand one.":
+            "ദിവസവും കാണുന്ന ബോർഡുകൾ വായിക്കുക. അർത്ഥം മനസ്സിലായില്ലെങ്കിൽ ചോദിക്കുക.",
+        "Red signs usually mean stop or danger. Yellow means be careful. Green usually means safe, or the way out.":
+            "ചുവപ്പ് ബോർഡുകൾ സാധാരണയായി നിൽക്കാനോ അപകടമുണ്ടെന്നോ പറയുന്നു. മഞ്ഞ എന്നാൽ സൂക്ഷിക്കുക. പച്ച സാധാരണയായി സുരക്ഷിതമാണെന്നോ പുറത്തേക്കുള്ള വഴിയെന്നോ പറയുന്നു.",
+        "You can be fined for smoking where it is not allowed. Many places have a yellow box that shows where you can smoke.":
+            "അനുവാദമില്ലാത്തിടത്ത് പുകവലിച്ചാൽ പിഴ കിട്ടാം. പുകവലിക്കാൻ കഴിയുന്ന സ്ഥലം പല ഇടത്തും മഞ്ഞ വരകളുള്ള ചതുരത്തിൽ കാണിക്കും.",
+        "Many signs in Singapore are in English, Chinese, Malay and Tamil. If your language is there, read it first, then look for the English word.":
+            "സിംഗപ്പൂരിലെ പല ബോർഡുകളും ഇംഗ്ലീഷ്, ചൈനീസ്, മലയ്, തമിഴ് ഭാഷകളിലാണ്. നിങ്ങളുടെ ഭാഷ ഉണ്ടെങ്കിൽ ആദ്യം അത് വായിക്കുക. പിന്നെ ഇംഗ്ലീഷ് വാക്ക് നോക്കുക.",
+        "Not sure what a sign means? Take a photo and ask someone. Do not go past a danger sign.":
+            "ബോർഡിന്റെ അർത്ഥം അറിയില്ലേ? ഫോട്ടോ എടുത്ത് ആരോടെങ്കിലും ചോദിക്കുക. അപകടം കാണിക്കുന്ന ബോർഡ് കടന്നുപോകരുത്.",
+        "the floor has water; you can slip": "തറയിൽ വെള്ളമുണ്ട്; തെന്നിവീഴാം",
+        "do not go in": "അകത്തേക്ക് പോകരുത്",
+        "do not smoke here": "ഇവിടെ പുകവലിക്കരുത്",
+        "not open now": "ഇപ്പോൾ തുറന്നിട്ടില്ല",
+        "press the door away from you": "വാതിൽ നിങ്ങളിൽനിന്ന് അകത്തേക്ക് തള്ളുക",
+        "bring the door towards you": "വാതിൽ നിങ്ങളുടെ നേരെ വലിക്കുക",
+        "the room with a toilet, in a public place": "പൊതുസ്ഥലത്തെ കക്കൂസുള്ള മുറി",
+        "something here can hurt you": "ഇവിടെയുള്ള എന്തോ ഒന്ന് നിങ്ങളെ പരിക്കേൽപ്പിക്കാം",
+        "Asking someone to explain a sign.": "ബോർഡിന്റെ അർത്ഥം പറഞ്ഞുതരാൻ ചോദിക്കുന്നു.",
+        "Telling someone to be careful of the wet floor.": "നനഞ്ഞ തറയിൽ സൂക്ഷിക്കാൻ പറയുന്നു.",
+        "Asking the way to the toilet.": "കക്കൂസിലേക്കുള്ള വഴി ചോദിക്കുന്നു.",
+        "Saying a shop is not open.": "കട തുറന്നിട്ടില്ലെന്ന് പറയുന്നു.",
+        "Telling someone they are not allowed to enter.": "അകത്ത് കയറാൻ അനുവാദമില്ലെന്ന് പറയുന്നു.",
+        "You are new in a building and you need the toilet. You see a cleaner.":
+            "നിങ്ങൾ ആദ്യമായി ഈ കെട്ടിടത്തിൽ വന്നതാണ്. കക്കൂസിൽ പോകണം. വൃത്തിയാക്കുന്ന ഒരാളെ കാണുന്നു.",
+        "The cleaner asks if you need help.": "സഹായം വേണോ എന്ന് വൃത്തിയാക്കുന്ന ആൾ ചോദിക്കുന്നു.",
+        "Your friend is walking to a door with a red No Entry sign.":
+            "ചുവന്ന No Entry ബോർഡുള്ള വാതിലിലേക്ക് നിങ്ങളുടെ സുഹൃത്ത് നടക്കുന്നു.",
+        "Your friend asks if they can go in.": "അകത്ത് കയറാമോ എന്ന് സുഹൃത്ത് ചോദിക്കുന്നു.",
+        "The shop is closed.": "കട അടച്ചിരിക്കുന്നു.",
+        "Buses and finding your way": "ബസുകളും വഴി കണ്ടെത്തലും",
+        "Find the right bus, get off at your stop, and ask for directions when you are lost.":
+            "ശരിയായ ബസ് കണ്ടെത്തുക. നിങ്ങളുടെ സ്റ്റോപ്പിൽ ഇറങ്ങുക. വഴി തെറ്റിയാൽ വഴി ചോദിക്കുക.",
+        "Tap your card when you get on the bus and again when you get off. If you forget to tap when you get off, you can pay more.":
+            "ബസിൽ കയറുമ്പോഴും ഇറങ്ങുമ്പോഴും കാർഡ് തൊടിക്കുക. ഇറങ്ങുമ്പോൾ മറന്നാൽ കൂടുതൽ പണം കൊടുക്കേണ്ടിവരാം.",
+        "Press the bell just before your stop. If nobody presses it and nobody is waiting, the bus does not stop.":
+            "നിങ്ങളുടെ സ്റ്റോപ്പ് എത്തുന്നതിന് തൊട്ടുമുമ്പ് ബെൽ അമർത്തുക. ആരും അമർത്താതെയും കാത്തുനിൽക്കാൻ ആരുമില്ലാതെയും വന്നാൽ ബസ് നിർത്തില്ല.",
+        "Raise your hand when your bus comes, so the driver knows to stop.":
+            "നിങ്ങളുടെ ബസ് വരുമ്പോൾ കൈ ഉയർത്തുക. നിർത്തണമെന്ന് ഡ്രൈവർക്ക് അപ്പോൾ മനസ്സിലാകും.",
+        "Cross the road at a traffic light or an overhead bridge. You can be fined for crossing somewhere else nearby.":
+            "ട്രാഫിക് ലൈറ്റുള്ള സ്ഥലത്തോ റോഡിന് മുകളിലെ നടപ്പാലത്തിലൂടെയോ റോഡ് കടക്കുക. സമീപത്ത് മറ്റിടത്ത് കടന്നാൽ പിഴ കിട്ടാം.",
+        "where you wait for the bus": "ബസിന് കാത്തുനിൽക്കുന്ന സ്ഥലം",
+        "press it to ask the bus to stop": "ബസ് നിർത്താൻ ആവശ്യപ്പെടാൻ ഇത് അമർത്തുക",
+        "the side of your left hand": "നിങ്ങളുടെ ഇടതുകൈയുടെ വശം",
+        "the side of your right hand": "നിങ്ങളുടെ വലതുകൈയുടെ വശം",
+        "keep going ahead; do not turn": "മുന്നോട്ട് പോകുക; തിരിയരുത്",
+        "the lights that say stop or go": "നിർത്താനോ പോകാനോ കാണിക്കുന്ന വിളക്കുകൾ",
+        "a bridge for walking over a road": "റോഡിന് മുകളിലൂടെ നടക്കാനുള്ള പാലം",
+        "a picture that shows where places are": "സ്ഥലങ്ങൾ എവിടെയാണെന്ന് കാണിക്കുന്ന ചിത്രം",
+        "Asking which bus to take.": "ഏത് ബസിൽ കയറണമെന്ന് ചോദിക്കുന്നു.",
+        "Asking the way to the bus stop.": "ബസ് സ്റ്റോപ്പിലേക്കുള്ള വഴി ചോദിക്കുന്നു.",
+        "Telling someone the way.": "ഒരാൾക്ക് വഴി പറഞ്ഞുകൊടുക്കുന്നു.",
+        "Saying you do not know where you are.": "നിങ്ങൾ എവിടെയാണെന്ന് അറിയില്ലെന്ന് പറയുന്നു.",
+        "Asking someone to tell you when to get off.":
+            "എപ്പോൾ ഇറങ്ങണമെന്ന് പറഞ്ഞുതരാൻ ചോദിക്കുന്നു.",
+        "You are at a bus stop and want to go to Little India. A woman is waiting next to you.":
+            "നിങ്ങൾ ബസ് സ്റ്റോപ്പിലാണ്. Little India യിലേക്ക് പോകണം. അടുത്ത് ഒരു സ്ത്രീ കാത്തുനിൽക്കുന്നു.",
+        "The woman asks if you are waiting for a bus.":
+            "ബസിന് കാത്തുനിൽക്കുകയാണോ എന്ന് സ്ത്രീ ചോദിക്കുന്നു.",
+        "You do not know this road and your phone has no battery. You see a man walking.":
+            "നിങ്ങൾക്ക് ഈ റോഡ് അറിയില്ല. ഫോണിൽ ചാർജുമില്ല. ഒരാൾ നടന്നുപോകുന്നത് കാണുന്നു.",
+        "The man asks if he can help you.": "സഹായിക്കട്ടെയോ എന്ന് ആ പുരുഷൻ ചോദിക്കുന്നു.",
+        "Please tell me my stop.": "എന്റെ സ്റ്റോപ്പ് എത്തുമ്പോൾ ദയവായി പറയുക.",
+        "At the supermarket": "സൂപ്പർമാർക്കറ്റിൽ",
+        "Find what you need, check the price and the date, and pay at the counter.":
+            "ആവശ്യമുള്ളത് കണ്ടെത്തുക. വിലയും തീയതിയും നോക്കി കൗണ്ടറിൽ പണം കൊടുക്കുക.",
+        "Big supermarkets charge at least 5 cents for each plastic bag. Bring your own bag to save money.":
+            "വലിയ സൂപ്പർമാർക്കറ്റുകളിൽ ഓരോ പ്ലാസ്റ്റിക് സഞ്ചിക്കും കുറഞ്ഞത് 5 സെന്റ് കൊടുക്കണം. പണം ലാഭിക്കാൻ സ്വന്തം സഞ്ചി കൊണ്ടുവരുക.",
+        "Look for the date on food before you buy it. \"Best before\" and \"Use by\" tell you how long it is good.":
+            "ഭക്ഷണം വാങ്ങുന്നതിന് മുമ്പ് അതിലെ തീയതി നോക്കുക. \"Best before\", \"Use by\" എന്നിവ എത്രകാലം അത് നല്ലതായിരിക്കുമെന്ന് പറയുന്നു.",
+        "Keep the receipt when you shop for someone else, so you can show what you spent.":
+            "മറ്റൊരാൾക്കായി സാധനങ്ങൾ വാങ്ങുമ്പോൾ രസീത് സൂക്ഷിക്കുക. എത്ര ചെലവായെന്ന് കാണിക്കാം.",
+        "The cashier may ask if you have a member card. If you do not have one, just say no.":
+            "അംഗത്വ കാർഡ് ഉണ്ടോ എന്ന് പണം വാങ്ങുന്ന ആൾ ചോദിച്ചേക്കാം. ഇല്ലെങ്കിൽ ഇല്ലെന്ന് പറഞ്ഞാൽ മതി.",
+        "a big basket on wheels": "ചക്രങ്ങളുള്ള വലിയ കൊട്ട",
+        "the walkway between shelves": "സാധനങ്ങൾ വെച്ച തട്ടുകൾക്കിടയിലെ നടപ്പാത",
+        "the person you pay": "നിങ്ങൾ പണം കൊടുക്കുന്ന ആൾ",
+        "the paper that shows what you paid": "കൊടുത്ത പണത്തിന്റെ വിവരങ്ങളുള്ള കടലാസ്",
+        "a lower price than usual": "പതിവിലും കുറഞ്ഞ വില",
+        "the last day the food is good": "ഭക്ഷണം കേടാകാതിരിക്കുന്ന അവസാന ദിവസം",
+        "a thin bag to carry your shopping": "വാങ്ങിയ സാധനങ്ങൾ കൊണ്ടുപോകാനുള്ള നേർത്ത സഞ്ചി",
+        "plants you cook and eat, like carrots": "കാരറ്റ് പോലുള്ള പാകം ചെയ്ത് കഴിക്കുന്ന ചെടികൾ",
+        "Asking where to find something.": "ഒരു സാധനം എവിടെ കിട്ടുമെന്ന് ചോദിക്കുന്നു.",
+        "Asking if the price is lower today.": "ഇന്ന് വില കുറവാണോ എന്ന് ചോദിക്കുന്നു.",
+        "Asking the cashier for a bag.": "പണം വാങ്ങുന്ന ആളോട് സഞ്ചി ചോദിക്കുന്നു.",
+        "Asking the cashier for the receipt.": "പണം വാങ്ങുന്ന ആളോട് രസീത് ചോദിക്കുന്നു.",
+        "Telling staff that the food is past its date.":
+            "ഭക്ഷണത്തിന്റെ തീയതി കഴിഞ്ഞെന്ന് ജീവനക്കാരോട് പറയുന്നു.",
+        "You are paying at the counter. You do not have your own bag.":
+            "നിങ്ങൾ കൗണ്ടറിൽ പണം കൊടുക്കുന്നു. സ്വന്തം സഞ്ചി കൊണ്ടുവന്നിട്ടില്ല.",
+        "The cashier tells you the price.": "പണം വാങ്ങുന്ന ആൾ വില പറയുന്നു.",
+        "The milk in your basket is past its date. You show it to a staff member.":
+            "നിങ്ങളുടെ കൊട്ടയിലെ പാലിന്റെ തീയതി കഴിഞ്ഞു. നിങ്ങൾ അത് ഒരു ജീവനക്കാരനെ കാണിക്കുന്നു.",
+        "A staff member asks if they can help you.":
+            "സഹായിക്കട്ടെയോ എന്ന് ഒരു ജീവനക്കാരൻ ചോദിക്കുന്നു.",
+        "Is this on discount?": "ഇതിന് വിലക്കുറവുണ്ടോ?",
+        "Construction science": "കെട്ടിടനിർമാണ ശാസ്ത്രം",
+        "Learn the main building materials, why a building stays up, and how to warn others about a problem.":
+            "പ്രധാന നിർമാണസാധനങ്ങൾ, കെട്ടിടം എങ്ങനെ നിൽക്കുന്നു, പ്രശ്നമുണ്ടെങ്കിൽ മറ്റുള്ളവരെ എങ്ങനെ അറിയിക്കാം എന്നിവ പഠിക്കുക.",
+        "Concrete is strong when it is pressed, but it cracks when it is pulled. That is why steel bars go inside it.":
+            "കോൺക്രീറ്റ് അമർത്തുമ്പോൾ ബലമുള്ളതാണ്. പക്ഷേ വലിക്കുമ്പോൾ പൊട്ടും. അതുകൊണ്ടാണ് ഉള്ളിൽ കമ്പികൾ ഇടുന്നത്.",
+        "Too much water makes concrete weak. Use only the amount of water your supervisor tells you.":
+            "വെള്ളം കൂടിയാൽ കോൺക്രീറ്റിന്റെ ബലം കുറയും. സൂപ്പർവൈസർ പറയുന്നത്ര വെള്ളം മാത്രം ഉപയോഗിക്കുക.",
+        "Concrete goes hard slowly. It takes about 28 days to reach full strength, so ask your supervisor before you put weight on it.":
+            "കോൺക്രീറ്റ് പതുക്കെയാണ് ഉറയ്ക്കുന്നത്. പൂർണ ബലം കിട്ടാൻ ഏകദേശം 28 ദിവസം വേണം. ഭാരം വെക്കുന്നതിന് മുമ്പ് സൂപ്പർവൈസറോട് ചോദിക്കുക.",
+        "A building carries its weight down: from the floor to the beams, to the columns, then into the ground. Never cut a beam or a column without permission.":
+            "കെട്ടിടത്തിന്റെ ഭാരം താഴേക്കാണ് പോകുന്നത്: തറയിൽനിന്ന് ബീമുകളിലേക്ക്, തൂണുകളിലേക്ക്, പിന്നെ മണ്ണിലേക്ക്. അനുവാദമില്ലാതെ ബീമോ തൂണോ മുറിക്കരുത്.",
+        "Every scaffold has a weight limit. Too much weight can make it fall, so do not add more than you are told.":
+            "ഓരോ സ്കാഫോൾഡിങ്ങിനും താങ്ങാവുന്ന ഭാരത്തിന് പരിധിയുണ്ട്. ഭാരം കൂടിയാൽ വീഴാം. പറഞ്ഞതിലും കൂടുതൽ ഭാരം വെക്കരുത്.",
+        "cement, sand, stones and water mixed; it goes hard":
+            "സിമന്റ്, മണൽ, കല്ല്, വെള്ളം എന്നിവയുടെ മിശ്രിതം; അത് ഉറയ്ക്കും",
+        "the grey powder that holds concrete together":
+            "കോൺക്രീറ്റിനെ ചേർത്തുപിടിക്കുന്ന ചാരനിറമുള്ള പൊടി",
+        "a long metal rod inside concrete": "കോൺക്രീറ്റിനുള്ളിലെ നീളമുള്ള ഉരുക്കുകമ്പി",
+        "a strong part that goes across and holds up a floor":
+            "കുറുകെ നിന്ന് നിലത്തെ താങ്ങുന്ന ബലമുള്ള ഭാഗം",
+        "a strong part that stands up and carries the weight":
+            "നിവർന്നുനിന്ന് ഭാരം താങ്ങുന്ന ബലമുള്ള ഭാഗം",
+        "the weight something must carry": "ഒരു വസ്തു താങ്ങേണ്ട ഭാരം",
+        "a tool that shows if something is flat": "നിരപ്പാണോ എന്ന് കാണിക്കുന്ന ഉപകരണം",
+        "a metal frame you stand on to work up high":
+            "ഉയരത്തിൽ ജോലി ചെയ്യാൻ കയറി നിൽക്കുന്ന ലോഹച്ചട്ടക്കൂട്",
+        "Warning that the concrete is not hard yet.":
+            "കോൺക്രീറ്റ് ഇനിയും ഉറച്ചിട്ടില്ലെന്ന് മുന്നറിയിപ്പ് നൽകുന്നു.",
+        "Saying that something weighs too much.": "ഒരു സാധനത്തിന് ഭാരം കൂടുതലാണെന്ന് പറയുന്നു.",
+        "Telling someone to stop adding water to the mix.":
+            "കൂട്ടിലേക്ക് ഇനി വെള്ളം ചേർക്കരുതെന്ന് പറയുന്നു.",
+        "Reporting a crack to your supervisor.": "ഒരു വിള്ളലിനെക്കുറിച്ച് സൂപ്പർവൈസറോട് പറയുന്നു.",
+        "Asking someone to make sure the scaffold is safe.":
+            "സ്കാഫോൾഡിങ് സുരക്ഷിതമാണെന്ന് ഉറപ്പാക്കാൻ ആവശ്യപ്പെടുന്നു.",
+        "A worker is about to walk on the floor you poured this morning.":
+            "ഇന്ന് രാവിലെ നിങ്ങൾ കോൺക്രീറ്റ് ഒഴിച്ച തറയിൽ ഒരു തൊഴിലാളി നടക്കാൻ പോകുന്നു.",
+        "The worker asks if he can walk here.": "ഇവിടെ നടക്കാമോ എന്ന് തൊഴിലാളി ചോദിക്കുന്നു.",
+        "Your co-worker is mixing concrete and keeps pouring in water.":
+            "നിങ്ങളുടെ സഹപ്രവർത്തകൻ കോൺക്രീറ്റ് കൂട്ടുമ്പോൾ വെള്ളം ഒഴിച്ചുകൊണ്ടേയിരിക്കുന്നു.",
+        "Your co-worker wants to add more water.":
+            "നിങ്ങളുടെ സഹപ്രവർത്തകൻ കൂടുതൽ വെള്ളം ചേർക്കാൻ ആഗ്രഹിക്കുന്നു.",
+        "There is a crack in this column.": "ഈ തൂണിൽ ഒരു വിള്ളലുണ്ട്.",
     },
     bu: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -671,6 +1087,208 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "Check for a hallucination": "Hallucination ရှိမရှိ စစ်ဆေးပါ",
         "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
             "အချက်အလက်များကို မေးပါ၊ ပြီးလျှင် သေချာရဲ့လားဟု မေးပါ။ Chatbot များသည် သေချာသကဲ့သို့ ပြောသော်လည်း မှားနိုင်သည်။",
+        "Getting to know someone": "လူသစ်နှင့် မိတ်ဆက်ခြင်း",
+        "Say your name and where you are from, and ask new people about themselves.":
+            "သင့်နာမည်နှင့် ဘယ်ကလာသလဲ ပြောပါ။ လူသစ်များကိုလည်း သူတို့အကြောင်း မေးပါ။",
+        "People in Singapore often say \"Have you eaten?\" as a friendly hello. You can say \"Yes, thank you.\"":
+            "စင်ကာပူတွင် ရင်းရင်းနှီးနှီး နှုတ်ဆက်ရန် \"Have you eaten?\" ဟု မေးလေ့ရှိသည်။ \"Yes, thank you.\" ဟု ပြန်ပြောနိုင်သည်။",
+        "People may call an older woman \"Aunty\" and an older man \"Uncle\". It is polite, even if you are not family.":
+            "အသက်ကြီးသော အမျိုးသမီးကို \"Aunty\"၊ အမျိုးသားကို \"Uncle\" ဟု ခေါ်တတ်သည်။ ဆွေမျိုးမဟုတ်လည်း ယဉ်ကျေးသော အခေါ်အဝေါ်ဖြစ်သည်။",
+        "You do not have to answer every question. If someone asks about your pay or your family and you do not want to say, you can smile and change the topic.":
+            "မေးခွန်းတိုင်းကို ဖြေရန် မလိုပါ။ လစာ သို့မဟုတ် မိသားစုအကြောင်း မပြောချင်လျှင် ပြုံးပြီး အခြားအကြောင်း ပြောနိုင်သည်။",
+        "The best way to learn is to talk. Say hello to one new person on your day off.":
+            "စကားပြောခြင်းက သင်ယူရန် အကောင်းဆုံးနည်းဖြစ်သည်။ နားရက်တွင် လူသစ်တစ်ယောက်ကို နှုတ်ဆက်ပါ။",
+        "what people call you": "လူများက သင့်ကို ခေါ်သောအမည်",
+        "a place like India or Bangladesh": "အိန္ဒိယ သို့မဟုတ် ဘင်္ဂလားဒေ့ရှ်ကဲ့သို့ နိုင်ငံ",
+        "your parents, husband or wife, and children":
+            "သင့်မိဘ၊ ခင်ပွန်း သို့မဟုတ် ဇနီးနှင့် သားသမီးများ",
+        "young boys and girls; sons and daughters":
+            "ယောက်ျားလေး၊ မိန်းကလေးငယ်များ; သားများနှင့် သမီးများ",
+        "someone you like and spend time with": "သင်နှစ်သက်ပြီး အတူအချိန်ကုန်ဆုံးသောသူ",
+        "the work you do for money": "ငွေရရန် သင်လုပ်သောအလုပ်",
+        "something you like to do in your free time": "အားလပ်ချိန်တွင် သင်လုပ်ရတာ နှစ်သက်သောအရာ",
+        "the day after Saturday; many workers rest": "စနေနေ့နောက်တစ်ရက်; အလုပ်သမားများစွာ နားကြသည်",
+        "Asking someone's name.": "တစ်ယောက်ယောက်၏ နာမည်ကို မေးခြင်း။",
+        "Telling someone your name.": "သင့်နာမည်ကို ပြောခြင်း။",
+        "Asking which country someone comes from.": "ဘယ်နိုင်ငံက လာသလဲ မေးခြင်း။",
+        "Asking what work someone does.": "ဘာအလုပ်လုပ်သလဲ မေးခြင်း။",
+        "Saying you are happy to meet someone new.": "လူသစ်နှင့် တွေ့ရတာ ဝမ်းသာကြောင်း ပြောခြင်း။",
+        "Asking about someone's day off.": "တစ်ယောက်ယောက်၏ နားရက်အကြောင်း မေးခြင်း။",
+        "You meet someone new at the park on your day off.":
+            "နားရက်တွင် ပန်းခြံ၌ လူသစ်တစ်ယောက်နှင့် တွေ့သည်။",
+        "The new person asks your name.": "လူသစ်က သင့်နာမည်ကို မေးသည်။",
+        "Your friend brings a new person to meet you.":
+            "သင့်သူငယ်ချင်းက လူသစ်တစ်ယောက်ကို မိတ်ဆက်ပေးရန် ခေါ်လာသည်။",
+        "The new person tells you her name.": "မိတ်ဆက်လာသော အမျိုးသမီးက သူ့နာမည်ကို ပြောသည်။",
+        "What is your job?": "သင် ဘာအလုပ်လုပ်သလဲ။",
+        "Helping at home": "အိမ်တွင် ကူညီခြင်း",
+        "Understand what to do at home, say what you have finished, and ask when you are not sure.":
+            "အိမ်တွင် ဘာလုပ်ရမလဲ နားလည်အောင်လုပ်ပါ။ ပြီးသွားသောအလုပ်ကို ပြောပါ။ မသေချာလျှင် မေးပါ။",
+        "Never lean out of a window to clean it or to hang clothes. If someone asks you to, say it is not safe.":
+            "ပြတင်းပေါက်သန့်ရှင်းရန် သို့မဟုတ် အဝတ်လှန်းရန် အပြင်သို့ ကိုယ်ကို ကိုင်းမထုတ်ပါနှင့်။ တစ်ယောက်ယောက်က ခိုင်းလျှင် မလုံခြုံကြောင်း ပြောပါ။",
+        "Never throw anything out of a window. Put rubbish in the rubbish chute or the bin.":
+            "ပြတင်းပေါက်မှ ဘာမှ ပစ်မချပါနှင့်။ အမှိုက်ကို မီးဖိုချောင်ရှိ သံတံခါးငယ်ပါသော အမှိုက်ချပြွန် သို့မဟုတ် အမှိုက်ပုံးထဲ ထည့်ပါ။",
+        "Never mix bleach with other cleaning products. The gas can hurt you.":
+            "အရောင်ချွတ်ဆေးကို အခြားသန့်ရှင်းရေးဆေးများနှင့် မရောပါနှင့်။ ထွက်လာသောဓာတ်ငွေ့က သင့်ကို ထိခိုက်စေနိုင်သည်။",
+        "If you do not know how to use a machine, ask first. It is better to ask than to break it.":
+            "စက်အသုံးပြုပုံ မသိလျှင် အရင်မေးပါ။ ပျက်စီးစေတာထက် မေးတာက ပိုကောင်းသည်။",
+        "clothes to wash": "လျှော်ရန်အဝတ်များ",
+        "a hot tool that makes clothes flat": "အဝတ်အတွန့်များ ပြေစေသော ပူသည့်ကိရိယာ",
+        "a stick with cloth for washing the floor": "ကြမ်းပြင်ဆေးရန် အဝတ်တပ်ထားသော တုတ်",
+        "plates and bowls you eat from": "စားသောက်ရာတွင် သုံးသော ပန်းကန်ပြားနှင့် ပန်းကန်လုံးများ",
+        "things you throw away": "သင်ပစ်လိုက်သောပစ္စည်းများ",
+        "a cold box that keeps food fresh": "အစားအစာကို လတ်ဆတ်အောင် အေးအေးထားပေးသောပုံး",
+        "where you cook food with fire": "မီးဖြင့် အစားအစာချက်သောနေရာ",
+        "a place with doors to keep things": "ပစ္စည်းသိမ်းရန် တံခါးများပါသောနေရာ",
+        "Asking what work comes after this.": "ဒီနောက် ဘာအလုပ်ဆက်လုပ်ရမလဲ မေးခြင်း။",
+        "Saying the laundry is done.": "အဝတ်လျှော်ပြီးကြောင်း ပြောခြင်း။",
+        "Asking where something goes.": "ပစ္စည်းတစ်ခုကို ဘယ်မှာထားရမလဲ မေးခြင်း။",
+        "Asking someone to show you the way to do it.": "လုပ်ပုံလုပ်နည်း ပြပေးရန် မေးခြင်း။",
+        "Saying sorry and telling the truth about a broken plate.":
+            "ပန်းကန်ကွဲသွားသည့်အကြောင်း အမှန်ပြောပြီး တောင်းပန်ခြင်း။",
+        "You finished washing the clothes. Your employer comes into the room.":
+            "သင်အဝတ်လျှော်ပြီးပြီ။ အလုပ်ရှင်က အခန်းထဲဝင်လာသည်။",
+        "Your employer asks if the clothes are washed.":
+            "အဝတ်လျှော်ပြီးပြီလားဟု အလုပ်ရှင်က မေးသည်။",
+        "There is a new iron at home. You do not know how to use it.":
+            "အိမ်တွင် မီးပူအသစ်ရှိသည်။ အသုံးပြုပုံကို သင်မသိပါ။",
+        "Your employer asks you to iron the shirts.":
+            "အလုပ်ရှင်က ရှပ်အင်္ကျီများကို မီးပူတိုက်ခိုင်းသည်။",
+        "Sorry, I broke a plate.": "တောင်းပန်ပါတယ်၊ ကျွန်တော် ပန်းကန်တစ်ချပ် ခွဲမိပါတယ်။",
+        "Reading signs": "ဆိုင်းဘုတ်များ ဖတ်ခြင်း",
+        "Read the signs you see every day, and ask when you do not understand one.":
+            "နေ့တိုင်းတွေ့သော ဆိုင်းဘုတ်များကို ဖတ်ပါ။ နားမလည်လျှင် မေးပါ။",
+        "Red signs usually mean stop or danger. Yellow means be careful. Green usually means safe, or the way out.":
+            "အနီရောင်ဆိုင်းဘုတ်များသည် များသောအားဖြင့် ရပ်ရန် သို့မဟုတ် အန္တရာယ်ရှိကြောင်း ပြသည်။ အဝါရောင်သည် သတိထားရန်ဖြစ်သည်။ အစိမ်းရောင်သည် များသောအားဖြင့် လုံခြုံကြောင်း သို့မဟုတ် ထွက်ပေါက်ကို ပြသည်။",
+        "You can be fined for smoking where it is not allowed. Many places have a yellow box that shows where you can smoke.":
+            "ခွင့်မပြုသောနေရာတွင် ဆေးလိပ်သောက်လျှင် ဒဏ်ငွေဆောင်ရနိုင်သည်။ နေရာများစွာတွင် ဆေးလိပ်သောက်နိုင်သောနေရာကို အဝါရောင်လေးထောင့် မျဉ်းဖြင့် ပြထားသည်။",
+        "Many signs in Singapore are in English, Chinese, Malay and Tamil. If your language is there, read it first, then look for the English word.":
+            "စင်ကာပူရှိ ဆိုင်းဘုတ်များစွာသည် အင်္ဂလိပ်၊ တရုတ်၊ မလေးနှင့် တမီးလ်ဘာသာတို့ဖြင့် ရေးထားသည်။ သင့်ဘာသာပါလျှင် အရင်ဖတ်ပါ။ ပြီးမှ အင်္ဂလိပ်စကားလုံးကို ရှာပါ။",
+        "Not sure what a sign means? Take a photo and ask someone. Do not go past a danger sign.":
+            "ဆိုင်းဘုတ်၏ အဓိပ္ပာယ် မသေချာဘူးလား။ ဓာတ်ပုံရိုက်ပြီး တစ်ယောက်ယောက်ကို မေးပါ။ အန္တရာယ်ဆိုင်းဘုတ်ကို ကျော်မသွားပါနှင့်။",
+        "the floor has water; you can slip": "ကြမ်းပြင်ပေါ် ရေရှိသည်; ချော်လဲနိုင်သည်",
+        "do not go in": "မဝင်ပါနှင့်",
+        "do not smoke here": "ဒီမှာ ဆေးလိပ်မသောက်ပါနှင့်",
+        "not open now": "ယခု မဖွင့်သေးပါ",
+        "press the door away from you": "တံခါးကို သင့်ထံမှ အဝေးသို့ တွန်းပါ",
+        "bring the door towards you": "တံခါးကို သင့်ဘက်သို့ ဆွဲပါ",
+        "the room with a toilet, in a public place": "အများပြည်သူသုံးနေရာရှိ အိမ်သာပါသောအခန်း",
+        "something here can hurt you": "ဒီနေရာရှိ အရာတစ်ခုက သင့်ကို ထိခိုက်စေနိုင်သည်",
+        "Asking someone to explain a sign.": "ဆိုင်းဘုတ်ကို ရှင်းပြရန် မေးခြင်း။",
+        "Telling someone to be careful of the wet floor.":
+            "ရေစိုနေသော ကြမ်းပြင်ကို သတိထားရန် ပြောခြင်း။",
+        "Asking the way to the toilet.": "အိမ်သာသို့သွားရာလမ်း မေးခြင်း။",
+        "Saying a shop is not open.": "ဆိုင်မဖွင့်ကြောင်း ပြောခြင်း။",
+        "Telling someone they are not allowed to enter.": "ဝင်ခွင့်မရှိကြောင်း ပြောခြင်း။",
+        "You are new in a building and you need the toilet. You see a cleaner.":
+            "သင် ဒီအဆောက်အအုံကို ရောက်ဖူးတာမရှိပါ။ အိမ်သာသွားချင်သည်။ သန့်ရှင်းရေးလုပ်သူကို တွေ့သည်။",
+        "The cleaner asks if you need help.": "သန့်ရှင်းရေးလုပ်သူက အကူအညီလိုသလား မေးသည်။",
+        "Your friend is walking to a door with a red No Entry sign.":
+            "သင့်သူငယ်ချင်းက အနီရောင် No Entry ဆိုင်းဘုတ်ရှိသော တံခါးဆီသို့ လျှောက်နေသည်။",
+        "Your friend asks if they can go in.": "သင့်သူငယ်ချင်းက ဝင်လို့ရသလား မေးသည်။",
+        "The shop is closed.": "ဆိုင်ပိတ်ထားသည်။",
+        "Buses and finding your way": "ဘတ်စ်ကားစီးခြင်းနှင့် လမ်းရှာခြင်း",
+        "Find the right bus, get off at your stop, and ask for directions when you are lost.":
+            "မှန်သောဘတ်စ်ကားကို ရှာပါ။ သင့်မှတ်တိုင်တွင် ဆင်းပါ။ လမ်းပျောက်လျှင် လမ်းမေးပါ။",
+        "Tap your card when you get on the bus and again when you get off. If you forget to tap when you get off, you can pay more.":
+            "ဘတ်စ်ကားပေါ်တက်ချိန်နှင့် ဆင်းချိန်တွင် ကတ်ကို ထိပါ။ ဆင်းချိန်တွင် မထိမိလျှင် ငွေပိုပေးရနိုင်သည်။",
+        "Press the bell just before your stop. If nobody presses it and nobody is waiting, the bus does not stop.":
+            "သင့်မှတ်တိုင် မရောက်ခင်လေးတွင် ခေါင်းလောင်းခလုတ်ကို နှိပ်ပါ။ ဘယ်သူမှ မနှိပ်ဘဲ စောင့်နေသူလည်း မရှိလျှင် ကားမရပ်ပါ။",
+        "Raise your hand when your bus comes, so the driver knows to stop.":
+            "သင့်ဘတ်စ်ကားလာလျှင် လက်မြှောက်ပါ။ ဒါမှ ယာဉ်မောင်းက ရပ်ရမည်ကို သိမည်။",
+        "Cross the road at a traffic light or an overhead bridge. You can be fined for crossing somewhere else nearby.":
+            "မီးပွိုင့် သို့မဟုတ် လမ်းပေါ်ကျော်သော လူကူးတံတားမှ လမ်းကူးပါ။ အနီးအနားရှိ အခြားနေရာမှ ကူးလျှင် ဒဏ်ငွေဆောင်ရနိုင်သည်။",
+        "where you wait for the bus": "ဘတ်စ်ကားစောင့်သောနေရာ",
+        "press it to ask the bus to stop": "ဘတ်စ်ကားရပ်ရန် ဒါကိုနှိပ်ပါ",
+        "the side of your left hand": "သင့်ဘယ်လက်ရှိသောဘက်",
+        "the side of your right hand": "သင့်ညာလက်ရှိသောဘက်",
+        "keep going ahead; do not turn": "ရှေ့သို့တည့်တည့်သွားပါ; မကွေ့ပါနှင့်",
+        "the lights that say stop or go": "ရပ်ရန် သို့မဟုတ် သွားရန် ပြသောမီးများ",
+        "a bridge for walking over a road": "လမ်းပေါ်မှ လမ်းလျှောက်ကူးရန် တံတား",
+        "a picture that shows where places are": "နေရာများ ဘယ်မှာရှိသလဲ ပြသောပုံ",
+        "Asking which bus to take.": "ဘယ်ဘတ်စ်ကားစီးရမလဲ မေးခြင်း။",
+        "Asking the way to the bus stop.": "ဘတ်စ်ကားမှတ်တိုင်သို့သွားရာလမ်း မေးခြင်း။",
+        "Telling someone the way.": "တစ်ယောက်ယောက်ကို လမ်းပြခြင်း။",
+        "Saying you do not know where you are.": "သင်ဘယ်ရောက်နေသလဲ မသိကြောင်း ပြောခြင်း။",
+        "Asking someone to tell you when to get off.": "ဘယ်အချိန်ဆင်းရမလဲ ပြောပေးရန် မေးခြင်း။",
+        "You are at a bus stop and want to go to Little India. A woman is waiting next to you.":
+            "သင်ဘတ်စ်ကားမှတ်တိုင်တွင်ရှိပြီး Little India သို့ သွားချင်သည်။ သင့်ဘေးတွင် အမျိုးသမီးတစ်ယောက် စောင့်နေသည်။",
+        "The woman asks if you are waiting for a bus.": "အမျိုးသမီးက ဘတ်စ်ကားစောင့်နေသလား မေးသည်။",
+        "You do not know this road and your phone has no battery. You see a man walking.":
+            "ဒီလမ်းကို သင်မသိပါ။ ဖုန်းလည်း ဘက်ထရီကုန်နေသည်။ လမ်းလျှောက်နေသော အမျိုးသားတစ်ယောက်ကို တွေ့သည်။",
+        "The man asks if he can help you.": "အမျိုးသားက ကူညီပေးရမလား မေးသည်။",
+        "Please tell me my stop.": "ကျွန်တော်ဆင်းရမယ့် မှတ်တိုင်ရောက်ရင် ပြောပေးပါ။",
+        "At the supermarket": "စူပါမားကတ်တွင်",
+        "Find what you need, check the price and the date, and pay at the counter.":
+            "လိုသောပစ္စည်းကို ရှာပါ။ ဈေးနှုန်းနှင့် ရက်စွဲကို စစ်ပြီး ငွေရှင်းကောင်တာတွင် ပေးချေပါ။",
+        "Big supermarkets charge at least 5 cents for each plastic bag. Bring your own bag to save money.":
+            "စူပါမားကတ်ကြီးများတွင် ပလတ်စတစ်အိတ်တစ်အိတ်လျှင် အနည်းဆုံး 5 ဆင့် ယူသည်။ ငွေချွေတာရန် ကိုယ့်အိတ်ယူလာပါ။",
+        "Look for the date on food before you buy it. \"Best before\" and \"Use by\" tell you how long it is good.":
+            "အစားအစာမဝယ်ခင် ရက်စွဲကို ရှာကြည့်ပါ။ \"Best before\" နှင့် \"Use by\" က ဘယ်အချိန်အထိ ကောင်းသလဲ ပြသည်။",
+        "Keep the receipt when you shop for someone else, so you can show what you spent.":
+            "အခြားသူအတွက် ဈေးဝယ်လျှင် ပြေစာကို သိမ်းထားပါ။ ဘယ်လောက်သုံးခဲ့သလဲ ပြနိုင်သည်။",
+        "The cashier may ask if you have a member card. If you do not have one, just say no.":
+            "အသင်းဝင်ကတ်ရှိသလားဟု ငွေရှင်းဝန်ထမ်းက မေးနိုင်သည်။ မရှိလျှင် မရှိဘူးဟု ပြောရုံပါပဲ။",
+        "a big basket on wheels": "ဘီးများပါသော ခြင်းတောင်းကြီး",
+        "the walkway between shelves": "စင်များကြားက လျှောက်လမ်း",
+        "the person you pay": "သင်ငွေပေးရသောသူ",
+        "the paper that shows what you paid": "သင်ပေးချေခဲ့သည်ကို ပြသောစာရွက်",
+        "a lower price than usual": "ပုံမှန်ထက် နည်းသောဈေးနှုန်း",
+        "the last day the food is good": "အစားအစာကောင်းနေသေးသော နောက်ဆုံးရက်",
+        "a thin bag to carry your shopping": "ဝယ်ထားသောပစ္စည်းများ သယ်ရန် အိတ်ပါး",
+        "plants you cook and eat, like carrots": "မုန်လာဥနီကဲ့သို့ ချက်စားသောအပင်များ",
+        "Asking where to find something.": "ပစ္စည်းတစ်ခုကို ဘယ်မှာရှာရမလဲ မေးခြင်း။",
+        "Asking if the price is lower today.": "ဒီနေ့ ဈေးလျော့သလား မေးခြင်း။",
+        "Asking the cashier for a bag.": "ငွေရှင်းဝန်ထမ်းထံ အိတ်တောင်းခြင်း။",
+        "Asking the cashier for the receipt.": "ငွေရှင်းဝန်ထမ်းထံ ပြေစာတောင်းခြင်း။",
+        "Telling staff that the food is past its date.":
+            "အစားအစာ ရက်လွန်နေကြောင်း ဝန်ထမ်းကို ပြောခြင်း။",
+        "You are paying at the counter. You do not have your own bag.":
+            "သင်ကောင်တာတွင် ငွေရှင်းနေသည်။ ကိုယ်ပိုင်အိတ် မပါပါ။",
+        "The cashier tells you the price.": "ငွေရှင်းဝန်ထမ်းက ဈေးနှုန်းပြောသည်။",
+        "The milk in your basket is past its date. You show it to a staff member.":
+            "သင့်ခြင်းတောင်းထဲက နို့သည် ရက်လွန်နေသည်။ ဝန်ထမ်းတစ်ယောက်ကို ပြသည်။",
+        "A staff member asks if they can help you.": "ဝန်ထမ်းတစ်ယောက်က ကူညီပေးရမလား မေးသည်။",
+        "Is this on discount?": "ဒါ ဈေးလျှော့ထားတာလား။",
+        "Construction science": "ဆောက်လုပ်ရေး သိပ္ပံ",
+        "Learn the main building materials, why a building stays up, and how to warn others about a problem.":
+            "အဓိကဆောက်လုပ်ရေးပစ္စည်းများ၊ အဆောက်အအုံ ဘာကြောင့်မပြိုသလဲ၊ ပြဿနာရှိလျှင် အခြားသူများကို ဘယ်လိုသတိပေးရမလဲ လေ့လာပါ။",
+        "Concrete is strong when it is pressed, but it cracks when it is pulled. That is why steel bars go inside it.":
+            "ကွန်ကရစ်က ဖိအားကို ခံနိုင်သော်လည်း ဆွဲလျှင် အက်ကွဲသည်။ ဒါကြောင့် အထဲမှာ သံချောင်းထည့်သည်။",
+        "Too much water makes concrete weak. Use only the amount of water your supervisor tells you.":
+            "ရေများလွန်းလျှင် ကွန်ကရစ်အားနည်းသည်။ ကြီးကြပ်သူပြောသော ရေပမာဏကိုသာ သုံးပါ။",
+        "Concrete goes hard slowly. It takes about 28 days to reach full strength, so ask your supervisor before you put weight on it.":
+            "ကွန်ကရစ်က ဖြည်းဖြည်းချင်း မာလာသည်။ အပြည့်အဝခိုင်ရန် 28 ရက်ခန့်ကြာသည်။ အလေးမတင်ခင် ကြီးကြပ်သူကို မေးပါ။",
+        "A building carries its weight down: from the floor to the beams, to the columns, then into the ground. Never cut a beam or a column without permission.":
+            "အဆောက်အအုံအလေးချိန်က အောက်သို့ ဆင်းသည်: ကြမ်းခင်းမှ ရက်မများ၊ ထို့နောက် တိုင်များ၊ ပြီးမှ မြေကြီးသို့ ရောက်သည်။ ခွင့်မရှိဘဲ ရက်မ သို့မဟုတ် တိုင်ကို မဖြတ်ပါနှင့်။",
+        "Every scaffold has a weight limit. Too much weight can make it fall, so do not add more than you are told.":
+            "ငြမ်းတိုင်းတွင် ခံနိုင်သောအလေးချိန် ကန့်သတ်ချက်ရှိသည်။ လေးလွန်းလျှင် ပြိုနိုင်သဖြင့် ပြောထားသည်ထက် ပိုမတင်ပါနှင့်။",
+        "cement, sand, stones and water mixed; it goes hard":
+            "ဘိလပ်မြေ၊ သဲ၊ ကျောက်နှင့် ရေကို ရောထားသည်; မာလာသည်",
+        "the grey powder that holds concrete together":
+            "ကွန်ကရစ်ကို ပေါင်းစည်းပေးသော မီးခိုးရောင်အမှုန့်",
+        "a long metal rod inside concrete": "ကွန်ကရစ်ထဲရှိ ရှည်လျားသော သံမဏိချောင်း",
+        "a strong part that goes across and holds up a floor":
+            "အလျားလိုက်ရှိပြီး ကြမ်းခင်းကို ထောက်ထားသော ခိုင်သည့်အပိုင်း",
+        "a strong part that stands up and carries the weight":
+            "မတ်တတ်ရပ်ပြီး အလေးချိန်ကို ထမ်းသော ခိုင်သည့်အပိုင်း",
+        "the weight something must carry": "အရာတစ်ခုက ထမ်းရမည့်အလေးချိန်",
+        "a tool that shows if something is flat": "ညီမညီပြသောကိရိယာ",
+        "a metal frame you stand on to work up high":
+            "အမြင့်တွင် အလုပ်လုပ်ရန် တက်ရပ်သော သတ္တုဘောင်",
+        "Warning that the concrete is not hard yet.": "ကွန်ကရစ်မမာသေးကြောင်း သတိပေးခြင်း။",
+        "Saying that something weighs too much.": "ပစ္စည်းတစ်ခု လေးလွန်းကြောင်း ပြောခြင်း။",
+        "Telling someone to stop adding water to the mix.": "အရောထဲ ရေထပ်မထည့်ရန် ပြောခြင်း။",
+        "Reporting a crack to your supervisor.": "အက်ကွဲရာကို ကြီးကြပ်သူထံ တင်ပြခြင်း။",
+        "Asking someone to make sure the scaffold is safe.":
+            "ငြမ်းလုံခြုံမှု ရှိမရှိ စစ်ဆေးရန် တောင်းဆိုခြင်း။",
+        "A worker is about to walk on the floor you poured this morning.":
+            "ဒီမနက် သင်လောင်းထားသော ကြမ်းခင်းပေါ် အလုပ်သမားတစ်ယောက် လျှောက်တော့မည်။",
+        "The worker asks if he can walk here.": "အလုပ်သမားက ဒီမှာ လျှောက်လို့ရသလား မေးသည်။",
+        "Your co-worker is mixing concrete and keeps pouring in water.":
+            "သင့်လုပ်ဖော်ကိုင်ဖက်က ကွန်ကရစ်ရောနေပြီး ရေကို ဆက်တိုက်လောင်းနေသည်။",
+        "Your co-worker wants to add more water.": "သင့်လုပ်ဖော်ကိုင်ဖက်က ရေထပ်ထည့်ချင်သည်။",
+        "There is a crack in this column.": "ဒီတိုင်မှာ အက်ကွဲရာရှိပါတယ်။",
     },
     fi: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -897,6 +1515,224 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "Check for a hallucination": "Tingnan kung may hallucination",
         "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
             "Magtanong ng impormasyon, saka itanong kung sigurado ito. Puwedeng mukhang sigurado ang mga chatbot pero mali pa rin.",
+        "Getting to know someone": "Pagkilala sa bagong kakilala",
+        "Say your name and where you are from, and ask new people about themselves.":
+            "Sabihin ang pangalan mo at kung taga-saan ka. Tanungin din ang mga bagong kakilala tungkol sa kanila.",
+        "People in Singapore often say \"Have you eaten?\" as a friendly hello. You can say \"Yes, thank you.\"":
+            "Sa Singapore, madalas bumati ang mga tao ng \"Have you eaten?\" Maaari mong sagutin ng \"Yes, thank you.\"",
+        "People may call an older woman \"Aunty\" and an older man \"Uncle\". It is polite, even if you are not family.":
+            "Maaaring tawaging \"Aunty\" ang mas matandang babae at \"Uncle\" ang mas matandang lalaki. Magalang ito kahit hindi kayo magkamag-anak.",
+        "You do not have to answer every question. If someone asks about your pay or your family and you do not want to say, you can smile and change the topic.":
+            "Hindi mo kailangang sagutin ang lahat ng tanong. Kung ayaw mong sabihin ang tungkol sa sahod o pamilya mo, maaari kang ngumiti at mag-iba ng usapan.",
+        "The best way to learn is to talk. Say hello to one new person on your day off.":
+            "Pinakamahusay matuto sa pakikipag-usap. Bumati sa isang bagong kakilala sa araw ng pahinga mo.",
+        "what people call you": "ang tawag sa iyo ng mga tao",
+        "a place like India or Bangladesh": "isang lugar na tulad ng India o Bangladesh",
+        "your parents, husband or wife, and children": "mga magulang, asawa, at mga anak mo",
+        "young boys and girls; sons and daughters": "mga batang lalaki at babae; mga anak",
+        "someone you like and spend time with": "isang taong gusto mo at madalas mong kasama",
+        "the work you do for money": "ang ginagawa mo para kumita",
+        "something you like to do in your free time":
+            "isang bagay na gusto mong gawin sa libreng oras",
+        "the day after Saturday; many workers rest":
+            "ang araw pagkatapos ng Sabado; maraming manggagawa ang nagpapahinga",
+        "Asking someone's name.": "Pagtatanong ng pangalan ng isang tao.",
+        "Telling someone your name.": "Pagsasabi ng pangalan mo.",
+        "Asking which country someone comes from.":
+            "Pagtatanong kung saang bansa galing ang isang tao.",
+        "Asking what work someone does.": "Pagtatanong kung ano ang trabaho ng isang tao.",
+        "Saying you are happy to meet someone new.":
+            "Pagsasabi na masaya kang makilala ang isang tao.",
+        "Asking about someone's day off.": "Pagtatanong tungkol sa araw ng pahinga ng isang tao.",
+        "You meet someone new at the park on your day off.":
+            "May nakilala kang bago sa parke sa araw ng pahinga mo.",
+        "The new person asks your name.": "Tinatanong ng bagong kakilala ang pangalan mo.",
+        "Your friend brings a new person to meet you.":
+            "May dinalang bagong kakilala ang kaibigan mo para ipakilala sa iyo.",
+        "The new person tells you her name.":
+            "Sinasabi ng bagong kakilalang babae ang pangalan niya.",
+        "What is your job?": "Ano ang trabaho mo?",
+        "Helping at home": "Pagtulong sa bahay",
+        "Understand what to do at home, say what you have finished, and ask when you are not sure.":
+            "Unawain ang gagawin sa bahay, sabihin ang natapos mo, at magtanong kapag hindi ka sigurado.",
+        "Never lean out of a window to clean it or to hang clothes. If someone asks you to, say it is not safe.":
+            "Huwag dumungaw palabas ng bintana para maglinis o magsampay. Kung may magpagawa nito, sabihin na hindi ito ligtas.",
+        "Never throw anything out of a window. Put rubbish in the rubbish chute or the bin.":
+            "Huwag magtapon ng kahit ano palabas ng bintana. Ilagay ang basura sa lagusan ng basura na may maliit na pintuang metal sa kusina o sa basurahan.",
+        "Never mix bleach with other cleaning products. The gas can hurt you.":
+            "Huwag ihalo ang pampaputi sa ibang panlinis. Maaaring makasama sa iyo ang gas na lalabas.",
+        "If you do not know how to use a machine, ask first. It is better to ask than to break it.":
+            "Kung hindi mo alam gamitin ang makina, magtanong muna. Mas mabuting magtanong kaysa makasira.",
+        "clothes to wash": "mga damit na lalabhan",
+        "a hot tool that makes clothes flat": "mainit na gamit na nagpapakinis ng damit",
+        "a stick with cloth for washing the floor": "patpat na may tela para maglinis ng sahig",
+        "plates and bowls you eat from": "mga plato at mangkok na ginagamit sa pagkain",
+        "things you throw away": "mga bagay na itinatapon mo",
+        "a cold box that keeps food fresh":
+            "malamig na kahon na nagpapanatiling sariwa ang pagkain",
+        "where you cook food with fire": "kung saan ka nagluluto gamit ang apoy",
+        "a place with doors to keep things": "lagayan ng mga gamit na may mga pinto",
+        "Asking what work comes after this.": "Pagtatanong kung anong trabaho ang susunod.",
+        "Saying the laundry is done.": "Pagsasabi na tapos na ang paglalaba.",
+        "Asking where something goes.": "Pagtatanong kung saan ilalagay ang isang bagay.",
+        "Asking someone to show you the way to do it.":
+            "Paghiling na ipakita kung paano ito gawin.",
+        "Saying sorry and telling the truth about a broken plate.":
+            "Paghingi ng tawad at pagsasabi ng totoo tungkol sa nabasag na plato.",
+        "You finished washing the clothes. Your employer comes into the room.":
+            "Tapos ka nang maglaba. Pumasok ang amo mo sa kuwarto.",
+        "Your employer asks if the clothes are washed.":
+            "Tinatanong ng amo mo kung nalabhan na ang mga damit.",
+        "There is a new iron at home. You do not know how to use it.":
+            "May bagong plantsa sa bahay. Hindi mo alam kung paano ito gamitin.",
+        "Your employer asks you to iron the shirts.":
+            "Pinapaplantsa sa iyo ng amo mo ang mga kamiseta.",
+        "Sorry, I broke a plate.": "Pasensya na po, nakabasag ako ng plato.",
+        "Reading signs": "Pagbasa ng mga karatula",
+        "Read the signs you see every day, and ask when you do not understand one.":
+            "Basahin ang mga karatulang nakikita araw-araw. Magtanong kapag hindi mo naiintindihan.",
+        "Red signs usually mean stop or danger. Yellow means be careful. Green usually means safe, or the way out.":
+            "Ang pulang karatula ay karaniwang nagsasabing huminto o may panganib. Ang dilaw ay mag-ingat. Ang berde ay karaniwang ligtas o daan palabas.",
+        "You can be fined for smoking where it is not allowed. Many places have a yellow box that shows where you can smoke.":
+            "Maaari kang pagmultahin kung maninigarilyo ka sa bawal na lugar. Maraming lugar ang may dilaw na kahon na guhit para ipakita kung saan puwedeng manigarilyo.",
+        "Many signs in Singapore are in English, Chinese, Malay and Tamil. If your language is there, read it first, then look for the English word.":
+            "Maraming karatula sa Singapore ang nasa Ingles, Tsino, Malay at Tamil. Kung naroon ang wika mo, basahin muna iyon, saka hanapin ang salitang Ingles.",
+        "Not sure what a sign means? Take a photo and ask someone. Do not go past a danger sign.":
+            "Hindi sigurado sa ibig sabihin ng karatula? Kunan ng litrato at magtanong. Huwag lumampas sa karatulang may babala ng panganib.",
+        "the floor has water; you can slip": "may tubig sa sahig; maaari kang madulas",
+        "do not go in": "huwag pumasok",
+        "do not smoke here": "huwag manigarilyo rito",
+        "not open now": "hindi bukas ngayon",
+        "press the door away from you": "itulak ang pinto palayo sa iyo",
+        "bring the door towards you": "hilahin ang pinto papunta sa iyo",
+        "the room with a toilet, in a public place":
+            "ang kuwartong may palikuran sa pampublikong lugar",
+        "something here can hurt you": "may bagay dito na maaaring makasakit sa iyo",
+        "Asking someone to explain a sign.": "Paghiling na ipaliwanag ang karatula.",
+        "Telling someone to be careful of the wet floor.":
+            "Pagsasabi na mag-ingat sa basang sahig.",
+        "Asking the way to the toilet.": "Pagtatanong ng daan papunta sa palikuran.",
+        "Saying a shop is not open.": "Pagsasabi na hindi bukas ang tindahan.",
+        "Telling someone they are not allowed to enter.":
+            "Pagsasabi na bawal pumasok ang isang tao.",
+        "You are new in a building and you need the toilet. You see a cleaner.":
+            "Bago ka sa gusali at kailangan mong gumamit ng palikuran. May nakita kang tagalinis.",
+        "The cleaner asks if you need help.":
+            "Tinatanong ng tagalinis kung kailangan mo ng tulong.",
+        "Your friend is walking to a door with a red No Entry sign.":
+            "Papunta ang kaibigan mo sa pintong may pulang karatulang No Entry.",
+        "Your friend asks if they can go in.":
+            "Tinatanong ng kaibigan mo kung puwede siyang pumasok.",
+        "The shop is closed.": "Sarado ang tindahan.",
+        "Buses and finding your way": "Mga bus at paghahanap ng daan",
+        "Find the right bus, get off at your stop, and ask for directions when you are lost.":
+            "Hanapin ang tamang bus, bumaba sa hintuan mo, at magtanong ng daan kapag naligaw.",
+        "Tap your card when you get on the bus and again when you get off. If you forget to tap when you get off, you can pay more.":
+            "Idikit ang kard mo sa pambasa pag-akyat sa bus at muli pagbaba. Kapag nakalimutan mo sa pagbaba, maaari kang magbayad nang mas mahal.",
+        "Press the bell just before your stop. If nobody presses it and nobody is waiting, the bus does not stop.":
+            "Pindutin ang kampanilya bago dumating sa hintuan mo. Kung walang pumindot at walang naghihintay, hindi hihinto ang bus.",
+        "Raise your hand when your bus comes, so the driver knows to stop.":
+            "Itaas ang kamay kapag dumating ang bus mo para malaman ng drayber na dapat siyang huminto.",
+        "Cross the road at a traffic light or an overhead bridge. You can be fined for crossing somewhere else nearby.":
+            "Tumawid sa may ilaw-trapiko o sa tulay na tawiran sa ibabaw ng kalsada. Maaari kang pagmultahin kung tatawid sa ibang lugar sa malapit.",
+        "where you wait for the bus": "kung saan ka naghihintay ng bus",
+        "press it to ask the bus to stop": "pindutin ito para humiling na ihinto ang bus",
+        "the side of your left hand": "ang panig ng kaliwang kamay mo",
+        "the side of your right hand": "ang panig ng kanang kamay mo",
+        "keep going ahead; do not turn": "dumiretso; huwag lumiko",
+        "the lights that say stop or go": "mga ilaw na nagsasabi kung hihinto o tutuloy",
+        "a bridge for walking over a road": "tulay na lakaran sa ibabaw ng kalsada",
+        "a picture that shows where places are": "larawang nagpapakita kung nasaan ang mga lugar",
+        "Asking which bus to take.": "Pagtatanong kung aling bus ang sasakyan.",
+        "Asking the way to the bus stop.": "Pagtatanong ng daan papunta sa hintuan ng bus.",
+        "Telling someone the way.": "Pagtuturo ng daan sa isang tao.",
+        "Saying you do not know where you are.": "Pagsasabi na hindi mo alam kung nasaan ka.",
+        "Asking someone to tell you when to get off.":
+            "Paghiling na sabihan ka kung kailan bababa.",
+        "You are at a bus stop and want to go to Little India. A woman is waiting next to you.":
+            "Nasa hintuan ka ng bus at gusto mong pumunta sa Little India. May babaeng naghihintay sa tabi mo.",
+        "The woman asks if you are waiting for a bus.":
+            "Tinatanong ng babae kung naghihintay ka ng bus.",
+        "You do not know this road and your phone has no battery. You see a man walking.":
+            "Hindi mo alam ang kalsadang ito at ubos ang baterya ng telepono mo. May nakita kang lalaking naglalakad.",
+        "The man asks if he can help you.": "Tinatanong ng lalaki kung maaari ka niyang tulungan.",
+        "Please tell me my stop.": "Pakisabi po kapag nasa hintuan ko na.",
+        "At the supermarket": "Sa supermarket",
+        "Find what you need, check the price and the date, and pay at the counter.":
+            "Hanapin ang kailangan mo, tingnan ang presyo at petsa, at magbayad sa kahera.",
+        "Big supermarkets charge at least 5 cents for each plastic bag. Bring your own bag to save money.":
+            "Naniningil ang malalaking supermarket ng hindi bababa sa 5 sentimo bawat plastik na supot. Magdala ng sariling bag para makatipid.",
+        "Look for the date on food before you buy it. \"Best before\" and \"Use by\" tell you how long it is good.":
+            "Tingnan ang petsa sa pagkain bago bilhin. Sinasabi ng \"Best before\" at \"Use by\" kung hanggang kailan ito mabuti.",
+        "Keep the receipt when you shop for someone else, so you can show what you spent.":
+            "Itago ang resibo kapag namimili para sa ibang tao para maipakita mo ang ginastos.",
+        "The cashier may ask if you have a member card. If you do not have one, just say no.":
+            "Maaaring itanong ng kahera kung may kard ka bilang miyembro. Kung wala, sabihin lang na wala.",
+        "a big basket on wheels": "malaking basket na may gulong",
+        "the walkway between shelves": "ang daanan sa pagitan ng mga estante",
+        "the person you pay": "ang taong binabayaran mo",
+        "the paper that shows what you paid": "ang papel na nagpapakita ng binayaran mo",
+        "a lower price than usual": "mas mababang presyo kaysa karaniwan",
+        "the last day the food is good": "ang huling araw na mabuti pa ang pagkain",
+        "a thin bag to carry your shopping": "manipis na supot para dalhin ang mga pinamili",
+        "plants you cook and eat, like carrots":
+            "mga halamang niluluto at kinakain, tulad ng karot",
+        "Asking where to find something.": "Pagtatanong kung saan makikita ang isang bagay.",
+        "Asking if the price is lower today.": "Pagtatanong kung mas mababa ang presyo ngayon.",
+        "Asking the cashier for a bag.": "Paghingi ng supot sa kahera.",
+        "Asking the cashier for the receipt.": "Paghingi ng resibo sa kahera.",
+        "Telling staff that the food is past its date.":
+            "Pagsasabi sa kawani na lampas na sa petsa ang pagkain.",
+        "You are paying at the counter. You do not have your own bag.":
+            "Nagbabayad ka sa kahera. Wala kang sariling bag.",
+        "The cashier tells you the price.": "Sinasabi ng kahera ang presyo.",
+        "The milk in your basket is past its date. You show it to a staff member.":
+            "Lampas na sa petsa ang gatas sa basket mo. Ipinapakita mo ito sa isang kawani.",
+        "A staff member asks if they can help you.":
+            "Tinatanong ng isang kawani kung matutulungan ka niya.",
+        "Is this on discount?": "May diskuwento ba ito?",
+        "Construction science": "Agham sa pagtatayo",
+        "Learn the main building materials, why a building stays up, and how to warn others about a problem.":
+            "Alamin ang mga pangunahing materyales, kung bakit nakatayo ang gusali, at kung paano magbabala kapag may problema.",
+        "Concrete is strong when it is pressed, but it cracks when it is pulled. That is why steel bars go inside it.":
+            "Matibay ang kongkreto kapag dinidiinan, pero nabibitak kapag hinihila. Kaya nilalagyan ito ng mga bakal sa loob.",
+        "Too much water makes concrete weak. Use only the amount of water your supervisor tells you.":
+            "Humihina ang kongkreto kapag sobra ang tubig. Gamitin lang ang dami ng tubig na sinabi ng supervisor mo.",
+        "Concrete goes hard slowly. It takes about 28 days to reach full strength, so ask your supervisor before you put weight on it.":
+            "Dahan-dahang tumitigas ang kongkreto. Mga 28 araw bago ito lubos na tumibay. Magtanong sa supervisor bago magpatong ng bigat.",
+        "A building carries its weight down: from the floor to the beams, to the columns, then into the ground. Never cut a beam or a column without permission.":
+            "Pababa ang bigat ng gusali: mula sa sahig patungo sa mga biga, sa mga haligi, at sa lupa. Huwag putulin ang biga o haligi nang walang pahintulot.",
+        "Every scaffold has a weight limit. Too much weight can make it fall, so do not add more than you are told.":
+            "May hangganan ang bigat na kaya ng bawat andamyo. Maaari itong bumagsak kapag sobra. Huwag lumampas sa bigat na sinabi sa iyo.",
+        "cement, sand, stones and water mixed; it goes hard":
+            "pinaghalong semento, buhangin, bato at tubig; tumitigas ito",
+        "the grey powder that holds concrete together": "abong pulbos na nagdidikit sa kongkreto",
+        "a long metal rod inside concrete": "mahabang bakal sa loob ng kongkreto",
+        "a strong part that goes across and holds up a floor":
+            "matibay na bahaging pahalang at sumusuporta sa sahig",
+        "a strong part that stands up and carries the weight":
+            "matibay na bahaging patayo at nagdadala ng bigat",
+        "the weight something must carry": "ang bigat na kailangang dalhin ng isang bagay",
+        "a tool that shows if something is flat":
+            "kasangkapang nagpapakita kung pantay ang isang bagay",
+        "a metal frame you stand on to work up high":
+            "balangkas na metal na tinatayuan para magtrabaho sa mataas",
+        "Warning that the concrete is not hard yet.":
+            "Pagbabala na hindi pa matigas ang kongkreto.",
+        "Saying that something weighs too much.": "Pagsasabi na masyadong mabigat ang isang bagay.",
+        "Telling someone to stop adding water to the mix.":
+            "Pagsasabi na huwag nang magdagdag ng tubig sa halo.",
+        "Reporting a crack to your supervisor.": "Pagsasabi sa supervisor tungkol sa bitak.",
+        "Asking someone to make sure the scaffold is safe.":
+            "Paghiling na tiyaking ligtas ang andamyo.",
+        "A worker is about to walk on the floor you poured this morning.":
+            "May manggagawang lalakad sa sahig na binuhusan mo ng kongkreto kaninang umaga.",
+        "The worker asks if he can walk here.":
+            "Tinatanong ng manggagawa kung puwede siyang maglakad dito.",
+        "Your co-worker is mixing concrete and keeps pouring in water.":
+            "Naghahalo ng kongkreto ang katrabaho mo at tuloy-tuloy ang pagbuhos niya ng tubig.",
+        "Your co-worker wants to add more water.": "Gustong magdagdag ng tubig ng katrabaho mo.",
+        "There is a crack in this column.": "May bitak sa haliging ito.",
     },
     in: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -1112,6 +1948,214 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "Check for a hallucination": "Periksa apakah ada hallucination",
         "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
             "Minta fakta, lalu tanyakan apakah ia yakin. Chatbot bisa terdengar yakin tetapi tetap salah.",
+        "Getting to know someone": "Berkenalan",
+        "Say your name and where you are from, and ask new people about themselves.":
+            "Sebutkan nama dan asal Anda. Tanyakan juga tentang orang yang baru Anda kenal.",
+        "People in Singapore often say \"Have you eaten?\" as a friendly hello. You can say \"Yes, thank you.\"":
+            "Orang di Singapura sering menyapa dengan \"Have you eaten?\" Anda bisa menjawab \"Yes, thank you.\"",
+        "People may call an older woman \"Aunty\" and an older man \"Uncle\". It is polite, even if you are not family.":
+            "Orang sering memanggil perempuan yang lebih tua \"Aunty\" dan laki-laki yang lebih tua \"Uncle\". Ini sopan, meski bukan keluarga.",
+        "You do not have to answer every question. If someone asks about your pay or your family and you do not want to say, you can smile and change the topic.":
+            "Anda tidak harus menjawab semua pertanyaan. Kalau tidak ingin bercerita tentang gaji atau keluarga, Anda bisa tersenyum dan mengganti topik.",
+        "The best way to learn is to talk. Say hello to one new person on your day off.":
+            "Cara terbaik untuk belajar adalah berbicara. Sapa satu orang baru pada hari libur Anda.",
+        "what people call you": "sebutan orang untuk Anda",
+        "a place like India or Bangladesh": "tempat seperti India atau Bangladesh",
+        "your parents, husband or wife, and children":
+            "orang tua, suami atau istri, dan anak-anak Anda",
+        "young boys and girls; sons and daughters": "anak laki-laki dan perempuan",
+        "someone you like and spend time with": "orang yang Anda sukai dan sering Anda temui",
+        "the work you do for money": "pekerjaan yang Anda lakukan untuk mendapat uang",
+        "something you like to do in your free time": "kegiatan yang Anda sukai saat waktu luang",
+        "the day after Saturday; many workers rest":
+            "hari setelah Sabtu; banyak pekerja beristirahat",
+        "Asking someone's name.": "Menanyakan nama seseorang.",
+        "Telling someone your name.": "Menyebutkan nama Anda.",
+        "Asking which country someone comes from.":
+            "Menanyakan dari negara mana seseorang berasal.",
+        "Asking what work someone does.": "Menanyakan pekerjaan seseorang.",
+        "Saying you are happy to meet someone new.": "Mengatakan Anda senang berkenalan.",
+        "Asking about someone's day off.": "Menanyakan hari libur seseorang.",
+        "You meet someone new at the park on your day off.":
+            "Anda bertemu orang baru di taman pada hari libur.",
+        "The new person asks your name.": "Orang yang baru Anda kenal menanyakan nama Anda.",
+        "Your friend brings a new person to meet you.":
+            "Teman Anda membawa orang baru untuk berkenalan dengan Anda.",
+        "The new person tells you her name.": "Perempuan yang baru Anda kenal menyebutkan namanya.",
+        "What is your job?": "Apa pekerjaan Anda?",
+        "Helping at home": "Membantu di rumah",
+        "Understand what to do at home, say what you have finished, and ask when you are not sure.":
+            "Pahami tugas di rumah, katakan apa yang sudah selesai, dan bertanyalah jika belum yakin.",
+        "Never lean out of a window to clean it or to hang clothes. If someone asks you to, say it is not safe.":
+            "Jangan menjulurkan badan keluar jendela untuk membersihkan atau menjemur pakaian. Jika diminta, katakan itu tidak aman.",
+        "Never throw anything out of a window. Put rubbish in the rubbish chute or the bin.":
+            "Jangan membuang apa pun keluar jendela. Buang sampah lewat pintu logam kecil saluran sampah di dapur atau ke tempat sampah.",
+        "Never mix bleach with other cleaning products. The gas can hurt you.":
+            "Jangan campur pemutih dengan cairan pembersih lain. Gasnya bisa membahayakan Anda.",
+        "If you do not know how to use a machine, ask first. It is better to ask than to break it.":
+            "Jika belum tahu cara memakai mesin, tanyakan dulu. Lebih baik bertanya daripada merusaknya.",
+        "clothes to wash": "pakaian yang perlu dicuci",
+        "a hot tool that makes clothes flat": "alat panas untuk merapikan pakaian",
+        "a stick with cloth for washing the floor": "tongkat dengan kain untuk mengepel lantai",
+        "plates and bowls you eat from": "piring dan mangkuk untuk makan",
+        "things you throw away": "barang yang Anda buang",
+        "a cold box that keeps food fresh": "lemari dingin yang menjaga makanan tetap segar",
+        "where you cook food with fire": "tempat memasak makanan dengan api",
+        "a place with doors to keep things": "tempat berpintu untuk menyimpan barang",
+        "Asking what work comes after this.": "Menanyakan tugas setelah ini.",
+        "Saying the laundry is done.": "Mengatakan pakaian sudah selesai dicuci.",
+        "Asking where something goes.": "Menanyakan tempat menaruh sesuatu.",
+        "Asking someone to show you the way to do it.": "Meminta seseorang menunjukkan caranya.",
+        "Saying sorry and telling the truth about a broken plate.":
+            "Meminta maaf dan berkata jujur tentang piring yang pecah.",
+        "You finished washing the clothes. Your employer comes into the room.":
+            "Anda sudah selesai mencuci pakaian. Majikan masuk ke ruangan.",
+        "Your employer asks if the clothes are washed.":
+            "Majikan bertanya apakah pakaian sudah dicuci.",
+        "There is a new iron at home. You do not know how to use it.":
+            "Ada setrika baru di rumah. Anda belum tahu cara memakainya.",
+        "Your employer asks you to iron the shirts.": "Majikan meminta Anda menyetrika kemeja.",
+        "Sorry, I broke a plate.": "Maaf, saya memecahkan piring.",
+        "Reading signs": "Membaca papan tanda",
+        "Read the signs you see every day, and ask when you do not understand one.":
+            "Baca papan tanda yang Anda lihat setiap hari. Tanyakan jika belum paham.",
+        "Red signs usually mean stop or danger. Yellow means be careful. Green usually means safe, or the way out.":
+            "Tanda merah biasanya berarti berhenti atau bahaya. Kuning berarti hati-hati. Hijau biasanya berarti aman atau jalan keluar.",
+        "You can be fined for smoking where it is not allowed. Many places have a yellow box that shows where you can smoke.":
+            "Anda bisa didenda jika merokok di tempat terlarang. Banyak tempat memakai garis kotak kuning untuk menunjukkan area merokok.",
+        "Many signs in Singapore are in English, Chinese, Malay and Tamil. If your language is there, read it first, then look for the English word.":
+            "Banyak papan tanda di Singapura memakai bahasa Inggris, Mandarin, Melayu dan Tamil. Jika bahasa Anda ada, baca dulu, lalu cari kata bahasa Inggrisnya.",
+        "Not sure what a sign means? Take a photo and ask someone. Do not go past a danger sign.":
+            "Belum paham arti papan tanda? Ambil foto dan tanyakan kepada seseorang. Jangan melewati tanda bahaya.",
+        "the floor has water; you can slip": "lantainya basah; Anda bisa terpeleset",
+        "do not go in": "jangan masuk",
+        "do not smoke here": "jangan merokok di sini",
+        "not open now": "sekarang tidak buka",
+        "press the door away from you": "dorong pintu menjauh dari Anda",
+        "bring the door towards you": "tarik pintu ke arah Anda",
+        "the room with a toilet, in a public place": "ruangan dengan toilet di tempat umum",
+        "something here can hurt you": "ada sesuatu di sini yang bisa melukai Anda",
+        "Asking someone to explain a sign.": "Meminta seseorang menjelaskan papan tanda.",
+        "Telling someone to be careful of the wet floor.":
+            "Mengingatkan seseorang agar berhati-hati di lantai basah.",
+        "Asking the way to the toilet.": "Menanyakan jalan ke toilet.",
+        "Saying a shop is not open.": "Mengatakan toko tidak buka.",
+        "Telling someone they are not allowed to enter.":
+            "Memberi tahu seseorang bahwa ia tidak boleh masuk.",
+        "You are new in a building and you need the toilet. You see a cleaner.":
+            "Anda baru pertama kali ke gedung ini dan perlu ke toilet. Anda melihat petugas kebersihan.",
+        "The cleaner asks if you need help.":
+            "Petugas kebersihan bertanya apakah Anda perlu bantuan.",
+        "Your friend is walking to a door with a red No Entry sign.":
+            "Teman Anda berjalan ke pintu dengan tanda No Entry berwarna merah.",
+        "Your friend asks if they can go in.": "Teman Anda bertanya apakah boleh masuk.",
+        "The shop is closed.": "Toko tutup.",
+        "Buses and finding your way": "Naik bus dan mencari jalan",
+        "Find the right bus, get off at your stop, and ask for directions when you are lost.":
+            "Cari bus yang benar, turun di halte tujuan, dan tanyakan arah jika tersesat.",
+        "Tap your card when you get on the bus and again when you get off. If you forget to tap when you get off, you can pay more.":
+            "Tempelkan kartu saat naik bus dan saat turun. Jika lupa saat turun, Anda bisa membayar lebih mahal.",
+        "Press the bell just before your stop. If nobody presses it and nobody is waiting, the bus does not stop.":
+            "Tekan bel sesaat sebelum halte tujuan. Jika tidak ada yang menekan bel dan tidak ada yang menunggu, bus tidak berhenti.",
+        "Raise your hand when your bus comes, so the driver knows to stop.":
+            "Angkat tangan saat bus Anda datang agar pengemudi tahu harus berhenti.",
+        "Cross the road at a traffic light or an overhead bridge. You can be fined for crossing somewhere else nearby.":
+            "Seberangi jalan di lampu lalu lintas atau jembatan penyeberangan. Anda bisa didenda jika menyeberang di tempat lain di dekatnya.",
+        "where you wait for the bus": "tempat menunggu bus",
+        "press it to ask the bus to stop": "tekan untuk meminta bus berhenti",
+        "the side of your left hand": "sisi tangan kiri Anda",
+        "the side of your right hand": "sisi tangan kanan Anda",
+        "keep going ahead; do not turn": "terus maju; jangan belok",
+        "the lights that say stop or go": "lampu yang menunjukkan kapan berhenti atau jalan",
+        "a bridge for walking over a road": "jembatan untuk berjalan kaki melintasi jalan",
+        "a picture that shows where places are": "gambar yang menunjukkan letak tempat",
+        "Asking which bus to take.": "Menanyakan bus mana yang harus dinaiki.",
+        "Asking the way to the bus stop.": "Menanyakan jalan ke halte bus.",
+        "Telling someone the way.": "Memberi tahu arah jalan kepada seseorang.",
+        "Saying you do not know where you are.":
+            "Mengatakan Anda tidak tahu sedang berada di mana.",
+        "Asking someone to tell you when to get off.":
+            "Meminta seseorang memberi tahu kapan harus turun.",
+        "You are at a bus stop and want to go to Little India. A woman is waiting next to you.":
+            "Anda di halte bus dan ingin ke Little India. Seorang perempuan menunggu di sebelah Anda.",
+        "The woman asks if you are waiting for a bus.":
+            "Perempuan itu bertanya apakah Anda sedang menunggu bus.",
+        "You do not know this road and your phone has no battery. You see a man walking.":
+            "Anda tidak kenal jalan ini dan baterai ponsel habis. Anda melihat seorang laki-laki berjalan.",
+        "The man asks if he can help you.": "Laki-laki itu bertanya apakah bisa membantu Anda.",
+        "Please tell me my stop.": "Tolong beri tahu saat sampai di halte saya.",
+        "At the supermarket": "Di supermarket",
+        "Find what you need, check the price and the date, and pay at the counter.":
+            "Cari yang Anda perlukan, periksa harga dan tanggalnya, lalu bayar di kasir.",
+        "Big supermarkets charge at least 5 cents for each plastic bag. Bring your own bag to save money.":
+            "Supermarket besar mengenakan biaya minimal 5 sen untuk setiap kantong plastik. Bawa tas sendiri agar hemat.",
+        "Look for the date on food before you buy it. \"Best before\" and \"Use by\" tell you how long it is good.":
+            "Periksa tanggal pada makanan sebelum membeli. \"Best before\" dan \"Use by\" menunjukkan sampai kapan makanan masih baik.",
+        "Keep the receipt when you shop for someone else, so you can show what you spent.":
+            "Simpan struk saat berbelanja untuk orang lain agar bisa menunjukkan pengeluaran Anda.",
+        "The cashier may ask if you have a member card. If you do not have one, just say no.":
+            "Kasir mungkin bertanya apakah Anda punya kartu anggota. Kalau tidak punya, bilang saja tidak.",
+        "a big basket on wheels": "keranjang besar beroda",
+        "the walkway between shelves": "jalan di antara rak",
+        "the person you pay": "orang yang menerima pembayaran Anda",
+        "the paper that shows what you paid": "kertas yang menunjukkan pembayaran Anda",
+        "a lower price than usual": "harga lebih rendah dari biasanya",
+        "the last day the food is good": "hari terakhir makanan masih baik",
+        "a thin bag to carry your shopping": "kantong tipis untuk membawa belanjaan",
+        "plants you cook and eat, like carrots": "tanaman yang dimasak dan dimakan, seperti wortel",
+        "Asking where to find something.": "Menanyakan tempat mencari sesuatu.",
+        "Asking if the price is lower today.": "Menanyakan apakah harganya lebih murah hari ini.",
+        "Asking the cashier for a bag.": "Meminta kantong kepada kasir.",
+        "Asking the cashier for the receipt.": "Meminta struk kepada kasir.",
+        "Telling staff that the food is past its date.":
+            "Memberi tahu petugas bahwa makanan sudah lewat tanggal kedaluwarsa.",
+        "You are paying at the counter. You do not have your own bag.":
+            "Anda sedang membayar di kasir. Anda tidak membawa tas sendiri.",
+        "The cashier tells you the price.": "Kasir menyebutkan harganya.",
+        "The milk in your basket is past its date. You show it to a staff member.":
+            "Susu di keranjang Anda sudah kedaluwarsa. Anda menunjukkannya kepada petugas.",
+        "A staff member asks if they can help you.":
+            "Seorang petugas bertanya apakah bisa membantu Anda.",
+        "Is this on discount?": "Apakah ini sedang diskon?",
+        "Construction science": "Ilmu bangunan",
+        "Learn the main building materials, why a building stays up, and how to warn others about a problem.":
+            "Pelajari bahan bangunan utama, mengapa bangunan bisa berdiri, dan cara memperingatkan orang lain saat ada masalah.",
+        "Concrete is strong when it is pressed, but it cracks when it is pulled. That is why steel bars go inside it.":
+            "Beton kuat saat ditekan, tetapi retak saat ditarik. Karena itu, batang baja dipasang di dalamnya.",
+        "Too much water makes concrete weak. Use only the amount of water your supervisor tells you.":
+            "Terlalu banyak air membuat beton lemah. Gunakan air hanya sebanyak yang diperintahkan supervisor.",
+        "Concrete goes hard slowly. It takes about 28 days to reach full strength, so ask your supervisor before you put weight on it.":
+            "Beton mengeras perlahan. Butuh sekitar 28 hari untuk mencapai kekuatan penuh. Tanyakan kepada supervisor sebelum menaruh beban di atasnya.",
+        "A building carries its weight down: from the floor to the beams, to the columns, then into the ground. Never cut a beam or a column without permission.":
+            "Berat bangunan disalurkan ke bawah: dari lantai ke balok, ke kolom, lalu ke tanah. Jangan pernah memotong balok atau kolom tanpa izin.",
+        "Every scaffold has a weight limit. Too much weight can make it fall, so do not add more than you are told.":
+            "Setiap perancah punya batas beban. Beban berlebih bisa membuatnya roboh. Jangan menaruh beban melebihi yang diperintahkan.",
+        "cement, sand, stones and water mixed; it goes hard":
+            "campuran semen, pasir, batu dan air; akan mengeras",
+        "the grey powder that holds concrete together": "bubuk abu-abu yang merekatkan beton",
+        "a long metal rod inside concrete": "batang baja panjang di dalam beton",
+        "a strong part that goes across and holds up a floor":
+            "bagian kuat yang melintang dan menopang lantai",
+        "a strong part that stands up and carries the weight":
+            "bagian kuat yang berdiri tegak dan menahan beban",
+        "the weight something must carry": "berat yang harus ditahan sesuatu",
+        "a tool that shows if something is flat": "alat untuk melihat apakah permukaan sudah rata",
+        "a metal frame you stand on to work up high":
+            "rangka logam untuk berdiri saat bekerja di ketinggian",
+        "Warning that the concrete is not hard yet.": "Memperingatkan bahwa beton belum keras.",
+        "Saying that something weighs too much.": "Mengatakan sesuatu terlalu berat.",
+        "Telling someone to stop adding water to the mix.":
+            "Menyuruh seseorang berhenti menambahkan air ke campuran.",
+        "Reporting a crack to your supervisor.": "Melaporkan retakan kepada supervisor.",
+        "Asking someone to make sure the scaffold is safe.":
+            "Meminta seseorang memastikan perancah aman.",
+        "A worker is about to walk on the floor you poured this morning.":
+            "Seorang pekerja akan berjalan di lantai yang Anda cor pagi ini.",
+        "The worker asks if he can walk here.": "Pekerja bertanya apakah boleh berjalan di sini.",
+        "Your co-worker is mixing concrete and keeps pouring in water.":
+            "Rekan kerja Anda sedang mencampur beton dan terus menuangkan air.",
+        "Your co-worker wants to add more water.": "Rekan kerja Anda ingin menambah air.",
+        "There is a crack in this column.": "Ada retakan di kolom ini.",
     },
     ms: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -1335,6 +2379,216 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "Check for a hallucination": "Semak jika ada hallucination",
         "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
             "Minta fakta, kemudian tanya sama ada ia pasti. Chatbot boleh kedengaran yakin tetapi masih salah.",
+        "Getting to know someone": "Berkenalan dengan orang baharu",
+        "Say your name and where you are from, and ask new people about themselves.":
+            "Beritahu nama dan asal anda. Tanya orang yang baru dikenali tentang diri mereka.",
+        "People in Singapore often say \"Have you eaten?\" as a friendly hello. You can say \"Yes, thank you.\"":
+            "Orang di Singapura sering menyapa dengan \"Have you eaten?\" Anda boleh jawab \"Yes, thank you.\"",
+        "People may call an older woman \"Aunty\" and an older man \"Uncle\". It is polite, even if you are not family.":
+            "Orang mungkin memanggil wanita lebih tua \"Aunty\" dan lelaki lebih tua \"Uncle\". Ini sopan walaupun bukan ahli keluarga.",
+        "You do not have to answer every question. If someone asks about your pay or your family and you do not want to say, you can smile and change the topic.":
+            "Anda tidak perlu menjawab semua soalan. Jika tidak mahu bercerita tentang gaji atau keluarga, anda boleh senyum dan tukar topik.",
+        "The best way to learn is to talk. Say hello to one new person on your day off.":
+            "Cara terbaik untuk belajar ialah bercakap. Sapa seorang yang baharu pada hari cuti anda.",
+        "what people call you": "nama yang orang panggil anda",
+        "a place like India or Bangladesh": "tempat seperti India atau Bangladesh",
+        "your parents, husband or wife, and children":
+            "ibu bapa, suami atau isteri, dan anak-anak anda",
+        "young boys and girls; sons and daughters":
+            "budak lelaki dan perempuan; anak lelaki dan anak perempuan",
+        "someone you like and spend time with": "orang yang anda suka dan luangkan masa bersama",
+        "the work you do for money": "kerja yang anda lakukan untuk mendapat wang",
+        "something you like to do in your free time":
+            "perkara yang anda suka buat pada masa lapang",
+        "the day after Saturday; many workers rest": "hari selepas Sabtu; ramai pekerja berehat",
+        "Asking someone's name.": "Bertanya nama seseorang.",
+        "Telling someone your name.": "Memberitahu nama anda.",
+        "Asking which country someone comes from.": "Bertanya seseorang berasal dari negara mana.",
+        "Asking what work someone does.": "Bertanya apa pekerjaan seseorang.",
+        "Saying you are happy to meet someone new.": "Mengatakan anda gembira berkenalan.",
+        "Asking about someone's day off.": "Bertanya tentang hari cuti seseorang.",
+        "You meet someone new at the park on your day off.":
+            "Anda bertemu orang baharu di taman pada hari cuti.",
+        "The new person asks your name.": "Orang yang baru dikenali bertanya nama anda.",
+        "Your friend brings a new person to meet you.":
+            "Kawan anda membawa orang baharu untuk berkenalan dengan anda.",
+        "The new person tells you her name.": "Wanita yang baru dikenali memberitahu namanya.",
+        "What is your job?": "Apa pekerjaan anda?",
+        "Helping at home": "Membantu di rumah",
+        "Understand what to do at home, say what you have finished, and ask when you are not sure.":
+            "Fahami tugas di rumah, beritahu kerja yang sudah siap, dan tanya jika kurang pasti.",
+        "Never lean out of a window to clean it or to hang clothes. If someone asks you to, say it is not safe.":
+            "Jangan julurkan badan keluar tingkap untuk membersihkannya atau menyidai pakaian. Jika disuruh, katakan ia tidak selamat.",
+        "Never throw anything out of a window. Put rubbish in the rubbish chute or the bin.":
+            "Jangan buang apa-apa keluar tingkap. Masukkan sampah ke dalam saluran sampah berpintu logam kecil di dapur atau tong sampah.",
+        "Never mix bleach with other cleaning products. The gas can hurt you.":
+            "Jangan campur peluntur dengan bahan pencuci lain. Gasnya boleh membahayakan anda.",
+        "If you do not know how to use a machine, ask first. It is better to ask than to break it.":
+            "Jika tidak tahu cara menggunakan mesin, tanya dahulu. Lebih baik bertanya daripada merosakkannya.",
+        "clothes to wash": "pakaian untuk dibasuh",
+        "a hot tool that makes clothes flat": "alat panas untuk melicinkan pakaian",
+        "a stick with cloth for washing the floor": "batang dengan kain untuk mencuci lantai",
+        "plates and bowls you eat from": "pinggan dan mangkuk yang digunakan untuk makan",
+        "things you throw away": "barang yang anda buang",
+        "a cold box that keeps food fresh": "peti sejuk yang memastikan makanan kekal segar",
+        "where you cook food with fire": "tempat memasak makanan dengan api",
+        "a place with doors to keep things": "tempat berpintu untuk menyimpan barang",
+        "Asking what work comes after this.": "Bertanya kerja apa yang perlu dibuat selepas ini.",
+        "Saying the laundry is done.": "Mengatakan pakaian sudah siap dibasuh.",
+        "Asking where something goes.": "Bertanya tempat untuk meletakkan sesuatu.",
+        "Asking someone to show you the way to do it.":
+            "Meminta seseorang menunjukkan cara melakukannya.",
+        "Saying sorry and telling the truth about a broken plate.":
+            "Meminta maaf dan bercakap benar tentang pinggan yang pecah.",
+        "You finished washing the clothes. Your employer comes into the room.":
+            "Anda sudah selesai membasuh pakaian. Majikan masuk ke bilik.",
+        "Your employer asks if the clothes are washed.":
+            "Majikan bertanya sama ada pakaian sudah dibasuh.",
+        "There is a new iron at home. You do not know how to use it.":
+            "Ada seterika baharu di rumah. Anda tidak tahu cara menggunakannya.",
+        "Your employer asks you to iron the shirts.": "Majikan meminta anda menyeterika kemeja.",
+        "Sorry, I broke a plate.": "Maaf, saya terpecahkan pinggan.",
+        "Reading signs": "Membaca papan tanda",
+        "Read the signs you see every day, and ask when you do not understand one.":
+            "Baca papan tanda yang anda lihat setiap hari. Tanya jika tidak faham.",
+        "Red signs usually mean stop or danger. Yellow means be careful. Green usually means safe, or the way out.":
+            "Tanda merah biasanya bermaksud berhenti atau bahaya. Kuning bermaksud berhati-hati. Hijau biasanya bermaksud selamat atau jalan keluar.",
+        "You can be fined for smoking where it is not allowed. Many places have a yellow box that shows where you can smoke.":
+            "Anda boleh didenda kerana merokok di tempat yang dilarang. Banyak tempat mempunyai kotak bergaris kuning yang menunjukkan kawasan merokok.",
+        "Many signs in Singapore are in English, Chinese, Malay and Tamil. If your language is there, read it first, then look for the English word.":
+            "Banyak papan tanda di Singapura dalam bahasa Inggeris, Cina, Melayu dan Tamil. Jika ada bahasa anda, baca dahulu, kemudian cari perkataan Inggerisnya.",
+        "Not sure what a sign means? Take a photo and ask someone. Do not go past a danger sign.":
+            "Tidak pasti maksud papan tanda? Ambil gambar dan tanya seseorang. Jangan melepasi tanda bahaya.",
+        "the floor has water; you can slip": "lantai ada air; anda boleh tergelincir",
+        "do not go in": "jangan masuk",
+        "do not smoke here": "jangan merokok di sini",
+        "not open now": "tidak buka sekarang",
+        "press the door away from you": "tolak pintu menjauhi anda",
+        "bring the door towards you": "tarik pintu ke arah anda",
+        "the room with a toilet, in a public place": "bilik dengan tandas di tempat awam",
+        "something here can hurt you": "sesuatu di sini boleh mencederakan anda",
+        "Asking someone to explain a sign.": "Meminta seseorang menerangkan papan tanda.",
+        "Telling someone to be careful of the wet floor.":
+            "Mengingatkan seseorang supaya berhati-hati di lantai basah.",
+        "Asking the way to the toilet.": "Bertanya jalan ke tandas.",
+        "Saying a shop is not open.": "Mengatakan kedai tidak buka.",
+        "Telling someone they are not allowed to enter.":
+            "Memberitahu seseorang bahawa dia tidak dibenarkan masuk.",
+        "You are new in a building and you need the toilet. You see a cleaner.":
+            "Anda baru pertama kali ke bangunan ini dan perlu ke tandas. Anda nampak pekerja pembersihan.",
+        "The cleaner asks if you need help.":
+            "Pekerja pembersihan bertanya sama ada anda perlukan bantuan.",
+        "Your friend is walking to a door with a red No Entry sign.":
+            "Kawan anda berjalan ke pintu dengan papan tanda No Entry berwarna merah.",
+        "Your friend asks if they can go in.": "Kawan anda bertanya sama ada boleh masuk.",
+        "The shop is closed.": "Kedai sudah tutup.",
+        "Buses and finding your way": "Bas dan mencari jalan",
+        "Find the right bus, get off at your stop, and ask for directions when you are lost.":
+            "Cari bas yang betul, turun di perhentian anda, dan tanya arah jika sesat.",
+        "Tap your card when you get on the bus and again when you get off. If you forget to tap when you get off, you can pay more.":
+            "Sentuhkan kad apabila naik bas dan sekali lagi apabila turun. Jika terlupa semasa turun, anda mungkin perlu membayar lebih.",
+        "Press the bell just before your stop. If nobody presses it and nobody is waiting, the bus does not stop.":
+            "Tekan loceng sejurus sebelum perhentian anda. Jika tiada sesiapa menekan dan tiada orang menunggu, bas tidak berhenti.",
+        "Raise your hand when your bus comes, so the driver knows to stop.":
+            "Angkat tangan apabila bas anda datang supaya pemandu tahu untuk berhenti.",
+        "Cross the road at a traffic light or an overhead bridge. You can be fined for crossing somewhere else nearby.":
+            "Lintas jalan di lampu isyarat atau jejantas pejalan kaki. Anda boleh didenda jika melintas di tempat lain berdekatan.",
+        "where you wait for the bus": "tempat anda menunggu bas",
+        "press it to ask the bus to stop": "tekan untuk meminta bas berhenti",
+        "the side of your left hand": "sebelah tangan kiri anda",
+        "the side of your right hand": "sebelah tangan kanan anda",
+        "keep going ahead; do not turn": "terus ke hadapan; jangan belok",
+        "the lights that say stop or go": "lampu yang menunjukkan bila perlu berhenti atau jalan",
+        "a bridge for walking over a road": "jambatan untuk berjalan kaki melintasi jalan raya",
+        "a picture that shows where places are": "gambar yang menunjukkan lokasi tempat",
+        "Asking which bus to take.": "Bertanya bas mana yang perlu dinaiki.",
+        "Asking the way to the bus stop.": "Bertanya jalan ke perhentian bas.",
+        "Telling someone the way.": "Memberitahu seseorang arah jalan.",
+        "Saying you do not know where you are.": "Mengatakan anda tidak tahu di mana anda berada.",
+        "Asking someone to tell you when to get off.":
+            "Meminta seseorang memberitahu bila perlu turun.",
+        "You are at a bus stop and want to go to Little India. A woman is waiting next to you.":
+            "Anda di perhentian bas dan mahu ke Little India. Seorang wanita menunggu di sebelah anda.",
+        "The woman asks if you are waiting for a bus.":
+            "Wanita itu bertanya sama ada anda sedang menunggu bas.",
+        "You do not know this road and your phone has no battery. You see a man walking.":
+            "Anda tidak kenal jalan ini dan bateri telefon sudah habis. Anda nampak seorang lelaki berjalan.",
+        "The man asks if he can help you.": "Lelaki itu bertanya sama ada dia boleh membantu anda.",
+        "Please tell me my stop.": "Tolong beritahu apabila sampai di perhentian saya.",
+        "At the supermarket": "Di pasar raya",
+        "Find what you need, check the price and the date, and pay at the counter.":
+            "Cari barang yang diperlukan, semak harga dan tarikh, lalu bayar di kaunter.",
+        "Big supermarkets charge at least 5 cents for each plastic bag. Bring your own bag to save money.":
+            "Pasar raya besar mengenakan sekurang-kurangnya 5 sen untuk setiap beg plastik. Bawa beg sendiri untuk berjimat.",
+        "Look for the date on food before you buy it. \"Best before\" and \"Use by\" tell you how long it is good.":
+            "Lihat tarikh pada makanan sebelum membelinya. \"Best before\" dan \"Use by\" memberitahu berapa lama makanan masih baik.",
+        "Keep the receipt when you shop for someone else, so you can show what you spent.":
+            "Simpan resit apabila membeli barang untuk orang lain supaya anda boleh tunjuk jumlah yang dibelanjakan.",
+        "The cashier may ask if you have a member card. If you do not have one, just say no.":
+            "Juruwang mungkin bertanya sama ada anda ada kad ahli. Jika tiada, katakan sahaja tiada.",
+        "a big basket on wheels": "bakul besar beroda",
+        "the walkway between shelves": "laluan di antara rak",
+        "the person you pay": "orang yang menerima bayaran anda",
+        "the paper that shows what you paid": "kertas yang menunjukkan bayaran anda",
+        "a lower price than usual": "harga lebih rendah daripada biasa",
+        "the last day the food is good": "hari terakhir makanan masih baik",
+        "a thin bag to carry your shopping": "beg nipis untuk membawa barang belian",
+        "plants you cook and eat, like carrots":
+            "tumbuhan yang dimasak dan dimakan, seperti lobak merah",
+        "Asking where to find something.": "Bertanya tempat mencari sesuatu.",
+        "Asking if the price is lower today.": "Bertanya sama ada harga lebih rendah hari ini.",
+        "Asking the cashier for a bag.": "Meminta beg daripada juruwang.",
+        "Asking the cashier for the receipt.": "Meminta resit daripada juruwang.",
+        "Telling staff that the food is past its date.":
+            "Memberitahu pekerja bahawa makanan sudah melepasi tarikh luput.",
+        "You are paying at the counter. You do not have your own bag.":
+            "Anda sedang membayar di kaunter. Anda tidak membawa beg sendiri.",
+        "The cashier tells you the price.": "Juruwang memberitahu harganya.",
+        "The milk in your basket is past its date. You show it to a staff member.":
+            "Susu dalam bakul anda sudah luput. Anda tunjukkan kepada seorang pekerja.",
+        "A staff member asks if they can help you.":
+            "Seorang pekerja bertanya sama ada dia boleh membantu anda.",
+        "Is this on discount?": "Adakah ini ada diskaun?",
+        "Construction science": "Sains pembinaan",
+        "Learn the main building materials, why a building stays up, and how to warn others about a problem.":
+            "Pelajari bahan binaan utama, sebab bangunan boleh berdiri, dan cara memberi amaran apabila ada masalah.",
+        "Concrete is strong when it is pressed, but it cracks when it is pulled. That is why steel bars go inside it.":
+            "Konkrit kuat apabila ditekan, tetapi retak apabila ditarik. Sebab itu bar keluli diletakkan di dalamnya.",
+        "Too much water makes concrete weak. Use only the amount of water your supervisor tells you.":
+            "Terlalu banyak air melemahkan konkrit. Gunakan hanya jumlah air yang diberitahu oleh penyelia.",
+        "Concrete goes hard slowly. It takes about 28 days to reach full strength, so ask your supervisor before you put weight on it.":
+            "Konkrit mengeras perlahan-lahan. Ia mengambil kira-kira 28 hari untuk mencapai kekuatan penuh. Tanya penyelia sebelum meletakkan beban di atasnya.",
+        "A building carries its weight down: from the floor to the beams, to the columns, then into the ground. Never cut a beam or a column without permission.":
+            "Berat bangunan disalurkan ke bawah: dari lantai ke rasuk, ke tiang, kemudian ke tanah. Jangan potong rasuk atau tiang tanpa kebenaran.",
+        "Every scaffold has a weight limit. Too much weight can make it fall, so do not add more than you are told.":
+            "Setiap perancah ada had beban. Berat berlebihan boleh menyebabkannya runtuh. Jangan letak lebih daripada yang diberitahu.",
+        "cement, sand, stones and water mixed; it goes hard":
+            "campuran simen, pasir, batu dan air; ia mengeras",
+        "the grey powder that holds concrete together": "serbuk kelabu yang mengikat konkrit",
+        "a long metal rod inside concrete": "batang keluli panjang di dalam konkrit",
+        "a strong part that goes across and holds up a floor":
+            "bahagian kuat yang melintang dan menyokong lantai",
+        "a strong part that stands up and carries the weight":
+            "bahagian kuat yang tegak dan menanggung berat",
+        "the weight something must carry": "berat yang perlu ditanggung oleh sesuatu",
+        "a tool that shows if something is flat": "alat yang menunjukkan sama ada permukaan rata",
+        "a metal frame you stand on to work up high":
+            "rangka logam untuk berdiri semasa bekerja di tempat tinggi",
+        "Warning that the concrete is not hard yet.": "Memberi amaran bahawa konkrit belum keras.",
+        "Saying that something weighs too much.": "Mengatakan sesuatu terlalu berat.",
+        "Telling someone to stop adding water to the mix.":
+            "Menyuruh seseorang berhenti menambah air ke dalam campuran.",
+        "Reporting a crack to your supervisor.": "Melaporkan retakan kepada penyelia.",
+        "Asking someone to make sure the scaffold is safe.":
+            "Meminta seseorang memastikan perancah selamat.",
+        "A worker is about to walk on the floor you poured this morning.":
+            "Seorang pekerja hendak berjalan di atas lantai yang anda tuang konkrit pagi tadi.",
+        "The worker asks if he can walk here.":
+            "Pekerja bertanya sama ada dia boleh berjalan di sini.",
+        "Your co-worker is mixing concrete and keeps pouring in water.":
+            "Rakan sekerja anda sedang membancuh konkrit dan terus menuangkan air.",
+        "Your co-worker wants to add more water.": "Rakan sekerja anda mahu menambah air.",
+        "There is a crack in this column.": "Ada retakan pada tiang ini.",
     },
     zh: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -1521,6 +2775,186 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "Check for a hallucination": "检查有没有 hallucination",
         "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
             "先问一些事实，再问它是否确定。聊天机器人听起来很有把握，也可能是错的。",
+        "Getting to know someone": "认识新朋友",
+        "Say your name and where you are from, and ask new people about themselves.":
+            "说说你的名字和来自哪里，也问问新朋友的情况。",
+        "People in Singapore often say \"Have you eaten?\" as a friendly hello. You can say \"Yes, thank you.\"":
+            "在新加坡，人们常用 \"Have you eaten?\" 来亲切地打招呼。你可以回答 \"Yes, thank you.\"",
+        "People may call an older woman \"Aunty\" and an older man \"Uncle\". It is polite, even if you are not family.":
+            "人们会把年长的女士叫作 \"Aunty\"，把年长的男士叫作 \"Uncle\"。就算不是亲戚，这样叫也很有礼貌。",
+        "You do not have to answer every question. If someone asks about your pay or your family and you do not want to say, you can smile and change the topic.":
+            "你不用回答每个问题。如果别人问起你的工资或家人，而你不想说，可以笑一笑，换个话题。",
+        "The best way to learn is to talk. Say hello to one new person on your day off.":
+            "多开口说话，学得最好。休息日试着跟一个新认识的人打招呼。",
+        "what people call you": "别人用来称呼你的名字",
+        "a place like India or Bangladesh": "像印度或孟加拉国这样的地方",
+        "your parents, husband or wife, and children": "你的父母、丈夫或妻子，还有孩子",
+        "young boys and girls; sons and daughters": "小男孩和小女孩；儿子和女儿",
+        "someone you like and spend time with": "你喜欢并会一起相处的人",
+        "the work you do for money": "你为了挣钱做的事",
+        "something you like to do in your free time": "你有空时喜欢做的事",
+        "the day after Saturday; many workers rest": "星期六后面的一天；很多工人会休息",
+        "Asking someone's name.": "问对方的名字。",
+        "Telling someone your name.": "告诉对方你的名字。",
+        "Asking which country someone comes from.": "问对方来自哪个国家。",
+        "Asking what work someone does.": "问对方做什么工作。",
+        "Saying you are happy to meet someone new.": "说你很高兴认识对方。",
+        "Asking about someone's day off.": "问对方休息日的情况。",
+        "You meet someone new at the park on your day off.": "休息日，你在公园认识了一个人。",
+        "The new person asks your name.": "新认识的人问你的名字。",
+        "Your friend brings a new person to meet you.": "朋友带了一个人来和你认识。",
+        "The new person tells you her name.": "新认识的女士告诉你她的名字。",
+        "What is your job?": "你做什么工作？",
+        "Helping at home": "帮忙做家务",
+        "Understand what to do at home, say what you have finished, and ask when you are not sure.":
+            "听懂家里的工作安排，说说已经做完什么，不确定时就问。",
+        "Never lean out of a window to clean it or to hang clothes. If someone asks you to, say it is not safe.":
+            "擦窗或晾衣服时，千万不要把身子探出窗外。有人叫你这样做，就说不安全。",
+        "Never throw anything out of a window. Put rubbish in the rubbish chute or the bin.":
+            "千万不要往窗外扔东西。把垃圾丢进厨房里有小金属门的垃圾槽，或丢进垃圾桶。",
+        "Never mix bleach with other cleaning products. The gas can hurt you.":
+            "千万不要把漂白水和其他清洁用品混在一起。产生的气体会伤害你。",
+        "If you do not know how to use a machine, ask first. It is better to ask than to break it.":
+            "不知道怎么用机器，就先问。问清楚总比弄坏好。",
+        "clothes to wash": "要洗的衣服",
+        "a hot tool that makes clothes flat": "用热把衣服弄平的工具",
+        "a stick with cloth for washing the floor": "带着布、用来拖地的长杆",
+        "plates and bowls you eat from": "吃饭用的盘子和碗",
+        "things you throw away": "你要扔掉的东西",
+        "a cold box that keeps food fresh": "让食物保持新鲜的冷藏箱",
+        "where you cook food with fire": "用火煮食物的地方",
+        "a place with doors to keep things": "有门、可以放东西的地方",
+        "Asking what work comes after this.": "问接下来要做什么工作。",
+        "Saying the laundry is done.": "说衣服已经洗好了。",
+        "Asking where something goes.": "问东西要放在哪里。",
+        "Asking someone to show you the way to do it.": "请对方示范怎么做。",
+        "Saying sorry and telling the truth about a broken plate.": "为打破盘子道歉，并说实话。",
+        "You finished washing the clothes. Your employer comes into the room.": "你洗好了衣服。雇主走进房间。",
+        "Your employer asks if the clothes are washed.": "雇主问衣服洗好了没有。",
+        "There is a new iron at home. You do not know how to use it.": "家里有一台新熨斗。你不知道怎么用。",
+        "Your employer asks you to iron the shirts.": "雇主请你熨衬衫。",
+        "Sorry, I broke a plate.": "对不起，我打破了一个盘子。",
+        "Reading signs": "看懂告示牌",
+        "Read the signs you see every day, and ask when you do not understand one.":
+            "读一读每天看到的告示牌，不明白就问。",
+        "Red signs usually mean stop or danger. Yellow means be careful. Green usually means safe, or the way out.":
+            "红色告示通常表示停下或有危险。黄色表示要小心。绿色通常表示安全，或指向出口。",
+        "You can be fined for smoking where it is not allowed. Many places have a yellow box that shows where you can smoke.":
+            "在禁止吸烟的地方吸烟，可能会被罚款。很多地方会用黄色方框标出可以吸烟的区域。",
+        "Many signs in Singapore are in English, Chinese, Malay and Tamil. If your language is there, read it first, then look for the English word.":
+            "新加坡很多告示牌都用英语、华语、马来语和淡米尔语写着。如果有你的语言，先读一读，再找出英语词。",
+        "Not sure what a sign means? Take a photo and ask someone. Do not go past a danger sign.":
+            "不确定告示是什么意思？拍张照，问问别人。不要越过危险警告牌。",
+        "the floor has water; you can slip": "地上有水，可能会滑倒",
+        "do not go in": "不要进去",
+        "do not smoke here": "不要在这里吸烟",
+        "not open now": "现在没有开放",
+        "press the door away from you": "把门往远离你的方向推",
+        "bring the door towards you": "把门往你这边拉",
+        "the room with a toilet, in a public place": "公共场所里有马桶的房间",
+        "something here can hurt you": "这里有东西可能伤害你",
+        "Asking someone to explain a sign.": "请对方解释告示的意思。",
+        "Telling someone to be careful of the wet floor.": "提醒对方地上湿，要小心。",
+        "Asking the way to the toilet.": "问去厕所的路。",
+        "Saying a shop is not open.": "说商店没有营业。",
+        "Telling someone they are not allowed to enter.": "告诉对方不能进去。",
+        "You are new in a building and you need the toilet. You see a cleaner.":
+            "你第一次来这栋楼，需要上厕所。你看见一名清洁工。",
+        "The cleaner asks if you need help.": "清洁工问你需不需要帮忙。",
+        "Your friend is walking to a door with a red No Entry sign.": "朋友正走向一扇贴着红色 No Entry 告示的门。",
+        "Your friend asks if they can go in.": "朋友问可不可以进去。",
+        "The shop is closed.": "商店关门了。",
+        "Buses and finding your way": "搭巴士和找路",
+        "Find the right bus, get off at your stop, and ask for directions when you are lost.":
+            "找到要搭的巴士，在自己的站下车，迷路时开口问路。",
+        "Tap your card when you get on the bus and again when you get off. If you forget to tap when you get off, you can pay more.":
+            "上巴士和下巴士时都要刷卡。下车时忘了刷卡，可能会多付车费。",
+        "Press the bell just before your stop. If nobody presses it and nobody is waiting, the bus does not stop.":
+            "快到你的站时按铃。如果没人按铃，也没人等车，巴士就不会停。",
+        "Raise your hand when your bus comes, so the driver knows to stop.": "巴士来了，举手示意，让司机知道要停车。",
+        "Cross the road at a traffic light or an overhead bridge. You can be fined for crossing somewhere else nearby.":
+            "在交通灯处过马路，或走行人天桥。在附近其他地方过马路，可能会被罚款。",
+        "where you wait for the bus": "等巴士的地方",
+        "press it to ask the bus to stop": "按一下，请司机停车",
+        "the side of your left hand": "你左手的那一边",
+        "the side of your right hand": "你右手的那一边",
+        "keep going ahead; do not turn": "一直往前走，不要转弯",
+        "the lights that say stop or go": "告诉你该停还是该走的灯",
+        "a bridge for walking over a road": "让行人从马路上方走过去的桥",
+        "a picture that shows where places are": "画出各个地方在哪里的图",
+        "Asking which bus to take.": "问要搭哪辆巴士。",
+        "Asking the way to the bus stop.": "问去巴士站的路。",
+        "Telling someone the way.": "给对方指路。",
+        "Saying you do not know where you are.": "说你不知道自己在哪里。",
+        "Asking someone to tell you when to get off.": "请对方告诉你什么时候下车。",
+        "You are at a bus stop and want to go to Little India. A woman is waiting next to you.":
+            "你在巴士站，想去 Little India。旁边有一位女士在等车。",
+        "The woman asks if you are waiting for a bus.": "女士问你是不是在等巴士。",
+        "You do not know this road and your phone has no battery. You see a man walking.":
+            "你不认识这条路，手机也没电了。你看见一位男士走过。",
+        "The man asks if he can help you.": "男士问能不能帮你。",
+        "Please tell me my stop.": "请在我到站时告诉我。",
+        "At the supermarket": "在超市",
+        "Find what you need, check the price and the date, and pay at the counter.":
+            "找到需要的东西，查看价格和日期，再到收银台付款。",
+        "Big supermarkets charge at least 5 cents for each plastic bag. Bring your own bag to save money.":
+            "大型超市每个塑料袋至少收费5分。带自己的袋子可以省钱。",
+        "Look for the date on food before you buy it. \"Best before\" and \"Use by\" tell you how long it is good.":
+            "买食物前，先看上面的日期。\"Best before\" 和 \"Use by\" 告诉你食物可以放到什么时候。",
+        "Keep the receipt when you shop for someone else, so you can show what you spent.":
+            "帮别人买东西时要留好收据，这样就能让对方看你花了多少钱。",
+        "The cashier may ask if you have a member card. If you do not have one, just say no.":
+            "收银员可能会问你有没有会员卡。如果没有，就说没有。",
+        "a big basket on wheels": "有轮子的大篮子",
+        "the walkway between shelves": "货架之间走路的地方",
+        "the person you pay": "收你钱的人",
+        "the paper that shows what you paid": "记着你付了多少钱的纸",
+        "a lower price than usual": "比平时低的价格",
+        "the last day the food is good": "食物还可以吃的最后一天",
+        "a thin bag to carry your shopping": "装买来的东西的薄袋子",
+        "plants you cook and eat, like carrots": "煮来吃的植物，比如胡萝卜",
+        "Asking where to find something.": "问在哪里能找到东西。",
+        "Asking if the price is lower today.": "问今天价格有没有便宜一些。",
+        "Asking the cashier for a bag.": "向收银员要袋子。",
+        "Asking the cashier for the receipt.": "向收银员要收据。",
+        "Telling staff that the food is past its date.": "告诉工作人员食物已经过期了。",
+        "You are paying at the counter. You do not have your own bag.": "你在收银台付款，没有带自己的袋子。",
+        "The cashier tells you the price.": "收银员告诉你价格。",
+        "The milk in your basket is past its date. You show it to a staff member.":
+            "你篮子里的牛奶过期了。你拿给一名工作人员看。",
+        "A staff member asks if they can help you.": "一名工作人员问能不能帮你。",
+        "Is this on discount?": "这个有打折吗？",
+        "Construction science": "建筑科学",
+        "Learn the main building materials, why a building stays up, and how to warn others about a problem.":
+            "认识主要的建筑材料，了解建筑物为什么能站稳，以及有问题时怎样提醒别人。",
+        "Concrete is strong when it is pressed, but it cracks when it is pulled. That is why steel bars go inside it.":
+            "混凝土受压时很结实，但受拉时会开裂。所以里面要放钢筋。",
+        "Too much water makes concrete weak. Use only the amount of water your supervisor tells you.":
+            "水太多会让混凝土不够结实。只加主管说的水量。",
+        "Concrete goes hard slowly. It takes about 28 days to reach full strength, so ask your supervisor before you put weight on it.":
+            "混凝土会慢慢变硬，大约需要28天才达到全部强度。放重物之前，先问主管。",
+        "A building carries its weight down: from the floor to the beams, to the columns, then into the ground. Never cut a beam or a column without permission.":
+            "建筑物的重量向下传：从楼面到梁，再到柱子，最后传到地面。没有许可，千万不要切断梁或柱子。",
+        "Every scaffold has a weight limit. Too much weight can make it fall, so do not add more than you are told.":
+            "每个脚手架都有承重上限。放得太重会倒塌，不要超过别人交代的重量。",
+        "cement, sand, stones and water mixed; it goes hard": "水泥、沙、石头和水混合在一起，会变硬",
+        "the grey powder that holds concrete together": "把混凝土粘在一起的灰色粉末",
+        "a long metal rod inside concrete": "混凝土里的长钢条",
+        "a strong part that goes across and holds up a floor": "横着放、撑住楼面的坚固部分",
+        "a strong part that stands up and carries the weight": "竖着立、承担重量的坚固部分",
+        "the weight something must carry": "一个东西需要承受的重量",
+        "a tool that shows if something is flat": "用来看东西是否水平的工具",
+        "a metal frame you stand on to work up high": "在高处工作时站上去的金属架子",
+        "Warning that the concrete is not hard yet.": "提醒对方混凝土还没有变硬。",
+        "Saying that something weighs too much.": "说东西太重了。",
+        "Telling someone to stop adding water to the mix.": "叫对方不要再往混合料里加水。",
+        "Reporting a crack to your supervisor.": "向主管报告裂缝。",
+        "Asking someone to make sure the scaffold is safe.": "请对方检查脚手架是否安全。",
+        "A worker is about to walk on the floor you poured this morning.": "一名工人正要走上你今天早上浇好的混凝土地面。",
+        "The worker asks if he can walk here.": "工人问能不能走这里。",
+        "Your co-worker is mixing concrete and keeps pouring in water.": "同事正在拌混凝土，一直往里面倒水。",
+        "Your co-worker wants to add more water.": "同事想再加水。",
+        "There is a crack in this column.": "这根柱子有裂缝。",
     },
     th: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -1727,6 +3161,196 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "Check for a hallucination": "ตรวจหา hallucination",
         "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
             "ถามข้อเท็จจริง แล้วถามว่ามันแน่ใจไหม chatbot อาจฟังดูมั่นใจแต่ก็ยังผิดได้",
+        "Getting to know someone": "ทำความรู้จักคนใหม่",
+        "Say your name and where you are from, and ask new people about themselves.":
+            "บอกชื่อและบอกว่าคุณมาจากไหน แล้วถามเรื่องของคนที่เพิ่งรู้จัก",
+        "People in Singapore often say \"Have you eaten?\" as a friendly hello. You can say \"Yes, thank you.\"":
+            "คนในสิงคโปร์มักทักทายอย่างเป็นกันเองว่า \"Have you eaten?\" คุณตอบได้ว่า \"Yes, thank you.\"",
+        "People may call an older woman \"Aunty\" and an older man \"Uncle\". It is polite, even if you are not family.":
+            "คนอาจเรียกผู้หญิงที่อายุมากกว่าว่า \"Aunty\" และผู้ชายที่อายุมากกว่าว่า \"Uncle\" เป็นคำเรียกที่สุภาพ แม้ไม่ได้เป็นญาติกัน",
+        "You do not have to answer every question. If someone asks about your pay or your family and you do not want to say, you can smile and change the topic.":
+            "คุณไม่ต้องตอบทุกคำถาม ถ้ามีคนถามเรื่องค่าจ้างหรือครอบครัวแล้วคุณไม่อยากบอก คุณยิ้มและเปลี่ยนเรื่องคุยได้",
+        "The best way to learn is to talk. Say hello to one new person on your day off.":
+            "วิธีเรียนที่ดีที่สุดคือพูด ลองทักทายคนใหม่สักคนในวันหยุด",
+        "what people call you": "ชื่อที่คนใช้เรียกคุณ",
+        "a place like India or Bangladesh": "สถานที่อย่างประเทศอินเดียหรือบังกลาเทศ",
+        "your parents, husband or wife, and children": "พ่อแม่ สามีหรือภรรยา และลูกของคุณ",
+        "young boys and girls; sons and daughters": "เด็กผู้ชายและเด็กผู้หญิง ลูกชายและลูกสาว",
+        "someone you like and spend time with": "คนที่คุณชอบและใช้เวลาด้วยกัน",
+        "the work you do for money": "งานที่คุณทำเพื่อได้เงิน",
+        "something you like to do in your free time": "สิ่งที่คุณชอบทำในเวลาว่าง",
+        "the day after Saturday; many workers rest": "วันถัดจากวันเสาร์ คนทำงานหลายคนได้พัก",
+        "Asking someone's name.": "ถามชื่อของอีกคน",
+        "Telling someone your name.": "บอกชื่อของคุณ",
+        "Asking which country someone comes from.": "ถามว่าอีกคนมาจากประเทศไหน",
+        "Asking what work someone does.": "ถามว่าอีกคนทำงานอะไร",
+        "Saying you are happy to meet someone new.": "บอกว่าดีใจที่ได้รู้จักคนใหม่",
+        "Asking about someone's day off.": "ถามเรื่องวันหยุดของอีกคน",
+        "You meet someone new at the park on your day off.": "คุณเจอคนใหม่ที่สวนสาธารณะในวันหยุด",
+        "The new person asks your name.": "คนที่เพิ่งรู้จักถามชื่อคุณ",
+        "Your friend brings a new person to meet you.": "เพื่อนพาคนใหม่มาให้คุณรู้จัก",
+        "The new person tells you her name.": "ผู้หญิงที่เพิ่งรู้จักบอกชื่อของเธอ",
+        "What is your job?": "คุณทำงานอะไร?",
+        "Helping at home": "ช่วยงานที่บ้าน",
+        "Understand what to do at home, say what you have finished, and ask when you are not sure.":
+            "เข้าใจงานที่ต้องทำที่บ้าน บอกว่างานไหนเสร็จแล้ว และถามเมื่อไม่แน่ใจ",
+        "Never lean out of a window to clean it or to hang clothes. If someone asks you to, say it is not safe.":
+            "อย่าโน้มตัวออกนอกหน้าต่างเพื่อเช็ดหน้าต่างหรือตากผ้า ถ้ามีคนสั่งให้ทำ ให้บอกว่าไม่ปลอดภัย",
+        "Never throw anything out of a window. Put rubbish in the rubbish chute or the bin.":
+            "อย่าทิ้งอะไรออกนอกหน้าต่าง ให้ทิ้งขยะในช่องทิ้งขยะที่มีฝาโลหะในครัว หรือในถังขยะ",
+        "Never mix bleach with other cleaning products. The gas can hurt you.":
+            "อย่าผสมน้ำยาฟอกขาวกับน้ำยาทำความสะอาดอื่น ก๊าซที่เกิดขึ้นอาจเป็นอันตรายต่อคุณ",
+        "If you do not know how to use a machine, ask first. It is better to ask than to break it.":
+            "ถ้าไม่รู้วิธีใช้เครื่อง ให้ถามก่อน ถามดีกว่าทำเครื่องพัง",
+        "clothes to wash": "เสื้อผ้าที่ต้องซัก",
+        "a hot tool that makes clothes flat": "เครื่องมือร้อนที่ทำให้เสื้อผ้าเรียบ",
+        "a stick with cloth for washing the floor": "ไม้ที่มีผ้าติดไว้สำหรับถูพื้น",
+        "plates and bowls you eat from": "จานและชามที่ใช้กินอาหาร",
+        "things you throw away": "สิ่งของที่คุณทิ้ง",
+        "a cold box that keeps food fresh": "ตู้เย็นที่ช่วยให้อาหารสด",
+        "where you cook food with fire": "ที่ทำอาหารด้วยไฟ",
+        "a place with doors to keep things": "ที่เก็บของซึ่งมีบานประตู",
+        "Asking what work comes after this.": "ถามว่าต้องทำงานอะไรต่อ",
+        "Saying the laundry is done.": "บอกว่าซักผ้าเสร็จแล้ว",
+        "Asking where something goes.": "ถามว่าต้องวางของไว้ที่ไหน",
+        "Asking someone to show you the way to do it.": "ขอให้อีกคนแสดงวิธีทำ",
+        "Saying sorry and telling the truth about a broken plate.":
+            "ขอโทษและบอกความจริงเรื่องจานที่แตก",
+        "You finished washing the clothes. Your employer comes into the room.":
+            "คุณซักผ้าเสร็จแล้ว นายจ้างเดินเข้ามาในห้อง",
+        "Your employer asks if the clothes are washed.": "นายจ้างถามว่าซักผ้าแล้วหรือยัง",
+        "There is a new iron at home. You do not know how to use it.":
+            "มีเตารีดใหม่ที่บ้าน คุณไม่รู้วิธีใช้",
+        "Your employer asks you to iron the shirts.": "นายจ้างขอให้คุณรีดเสื้อเชิ้ต",
+        "Sorry, I broke a plate.": "ขอโทษด้วย ฉันทำจานแตก",
+        "Reading signs": "อ่านป้าย",
+        "Read the signs you see every day, and ask when you do not understand one.":
+            "อ่านป้ายที่เห็นทุกวัน ถ้าไม่เข้าใจให้ถาม",
+        "Red signs usually mean stop or danger. Yellow means be careful. Green usually means safe, or the way out.":
+            "ป้ายสีแดงมักหมายถึงให้หยุดหรือมีอันตราย สีเหลืองหมายถึงให้ระวัง สีเขียวมักหมายถึงปลอดภัยหรือทางออก",
+        "You can be fined for smoking where it is not allowed. Many places have a yellow box that shows where you can smoke.":
+            "คุณอาจถูกปรับถ้าสูบบุหรี่ในที่ห้ามสูบ หลายแห่งมีกรอบสีเหลืองบอกบริเวณที่สูบบุหรี่ได้",
+        "Many signs in Singapore are in English, Chinese, Malay and Tamil. If your language is there, read it first, then look for the English word.":
+            "ป้ายหลายแห่งในสิงคโปร์มีภาษาอังกฤษ จีน มาเลย์ และทมิฬ ถ้ามีภาษาของคุณ ให้อ่านก่อน แล้วหาคำภาษาอังกฤษ",
+        "Not sure what a sign means? Take a photo and ask someone. Do not go past a danger sign.":
+            "ไม่แน่ใจว่าป้ายหมายถึงอะไร? ถ่ายรูปแล้วถามใครสักคน อย่าเดินเลยป้ายเตือนอันตรายเข้าไป",
+        "the floor has water; you can slip": "มีน้ำบนพื้น คุณอาจลื่น",
+        "do not go in": "อย่าเข้าไป",
+        "do not smoke here": "อย่าสูบบุหรี่ที่นี่",
+        "not open now": "ตอนนี้ยังไม่เปิด",
+        "press the door away from you": "ดันประตูออกห่างจากตัว",
+        "bring the door towards you": "ดึงประตูเข้าหาตัว",
+        "the room with a toilet, in a public place": "ห้องที่มีส้วมในที่สาธารณะ",
+        "something here can hurt you": "มีบางอย่างที่นี่ทำให้คุณบาดเจ็บได้",
+        "Asking someone to explain a sign.": "ขอให้อีกคนอธิบายป้าย",
+        "Telling someone to be careful of the wet floor.": "เตือนให้ระวังพื้นเปียก",
+        "Asking the way to the toilet.": "ถามทางไปห้องน้ำ",
+        "Saying a shop is not open.": "บอกว่าร้านยังไม่เปิด",
+        "Telling someone they are not allowed to enter.": "บอกอีกคนว่าเข้าไปไม่ได้",
+        "You are new in a building and you need the toilet. You see a cleaner.":
+            "คุณเพิ่งมาอาคารนี้และต้องการเข้าห้องน้ำ คุณเห็นพนักงานทำความสะอาด",
+        "The cleaner asks if you need help.": "พนักงานทำความสะอาดถามว่าต้องการความช่วยเหลือไหม",
+        "Your friend is walking to a door with a red No Entry sign.":
+            "เพื่อนกำลังเดินไปที่ประตูซึ่งมีป้าย No Entry สีแดง",
+        "Your friend asks if they can go in.": "เพื่อนถามว่าเข้าไปได้ไหม",
+        "The shop is closed.": "ร้านปิดแล้ว",
+        "Buses and finding your way": "รถเมล์และการหาทาง",
+        "Find the right bus, get off at your stop, and ask for directions when you are lost.":
+            "หารถเมล์ที่ถูกสาย ลงป้ายของคุณ และถามทางเมื่อหลง",
+        "Tap your card when you get on the bus and again when you get off. If you forget to tap when you get off, you can pay more.":
+            "แตะบัตรตอนขึ้นรถเมล์และแตะอีกครั้งตอนลง ถ้าลืมแตะตอนลง คุณอาจเสียค่าโดยสารมากขึ้น",
+        "Press the bell just before your stop. If nobody presses it and nobody is waiting, the bus does not stop.":
+            "กดกริ่งก่อนถึงป้ายของคุณเล็กน้อย ถ้าไม่มีใครกดและไม่มีคนรอ รถเมล์จะไม่จอด",
+        "Raise your hand when your bus comes, so the driver knows to stop.":
+            "ยกมือเมื่อรถเมล์ของคุณมา คนขับจะได้รู้ว่าต้องจอด",
+        "Cross the road at a traffic light or an overhead bridge. You can be fined for crossing somewhere else nearby.":
+            "ข้ามถนนตรงสัญญาณไฟจราจรหรือใช้สะพานลอยคนข้าม คุณอาจถูกปรับถ้าข้ามตรงจุดอื่นใกล้ ๆ",
+        "where you wait for the bus": "ที่ที่คุณรอรถเมล์",
+        "press it to ask the bus to stop": "กดเพื่อขอให้รถเมล์จอด",
+        "the side of your left hand": "ด้านเดียวกับมือซ้ายของคุณ",
+        "the side of your right hand": "ด้านเดียวกับมือขวาของคุณ",
+        "keep going ahead; do not turn": "ตรงไปเรื่อย ๆ อย่าเลี้ยว",
+        "the lights that say stop or go": "ไฟที่บอกให้หยุดหรือไป",
+        "a bridge for walking over a road": "สะพานสำหรับเดินข้ามถนน",
+        "a picture that shows where places are": "รูปที่แสดงว่าสถานที่ต่าง ๆ อยู่ตรงไหน",
+        "Asking which bus to take.": "ถามว่าต้องขึ้นรถเมล์สายไหน",
+        "Asking the way to the bus stop.": "ถามทางไปป้ายรถเมล์",
+        "Telling someone the way.": "บอกทางให้อีกคน",
+        "Saying you do not know where you are.": "บอกว่าคุณไม่รู้ว่าตัวเองอยู่ที่ไหน",
+        "Asking someone to tell you when to get off.": "ขอให้อีกคนบอกเมื่อถึงเวลาลง",
+        "You are at a bus stop and want to go to Little India. A woman is waiting next to you.":
+            "คุณอยู่ที่ป้ายรถเมล์และอยากไป Little India มีผู้หญิงรออยู่ข้างคุณ",
+        "The woman asks if you are waiting for a bus.": "ผู้หญิงถามว่าคุณกำลังรอรถเมล์หรือ",
+        "You do not know this road and your phone has no battery. You see a man walking.":
+            "คุณไม่รู้จักถนนนี้และแบตเตอรี่โทรศัพท์หมด คุณเห็นผู้ชายกำลังเดิน",
+        "The man asks if he can help you.": "ผู้ชายถามว่าให้ช่วยไหม",
+        "Please tell me my stop.": "ช่วยบอกเมื่อถึงป้ายที่ฉันต้องลงด้วย",
+        "At the supermarket": "ที่ซูเปอร์มาร์เก็ต",
+        "Find what you need, check the price and the date, and pay at the counter.":
+            "หาของที่ต้องการ ดูราคาและวันที่ แล้วจ่ายเงินที่เคาน์เตอร์",
+        "Big supermarkets charge at least 5 cents for each plastic bag. Bring your own bag to save money.":
+            "ซูเปอร์มาร์เก็ตใหญ่คิดค่าถุงพลาสติกอย่างน้อยถุงละ 5 เซนต์ นำถุงมาเองเพื่อประหยัดเงิน",
+        "Look for the date on food before you buy it. \"Best before\" and \"Use by\" tell you how long it is good.":
+            "ดูวันที่บนอาหารก่อนซื้อ \"Best before\" และ \"Use by\" บอกว่าอาหารยังดีถึงเมื่อไร",
+        "Keep the receipt when you shop for someone else, so you can show what you spent.":
+            "เก็บใบเสร็จไว้เมื่อซื้อของให้คนอื่น เพื่อแสดงว่าใช้เงินไปเท่าไร",
+        "The cashier may ask if you have a member card. If you do not have one, just say no.":
+            "พนักงานเก็บเงินอาจถามว่ามีบัตรสมาชิกไหม ถ้าไม่มี ก็บอกว่าไม่มี",
+        "a big basket on wheels": "ตะกร้าใบใหญ่ที่มีล้อ",
+        "the walkway between shelves": "ทางเดินระหว่างชั้นวางของ",
+        "the person you pay": "คนที่คุณจ่ายเงินให้",
+        "the paper that shows what you paid": "กระดาษที่แสดงว่าคุณจ่ายเงินอะไรไป",
+        "a lower price than usual": "ราคาที่ถูกกว่าปกติ",
+        "the last day the food is good": "วันสุดท้ายที่อาหารยังดีอยู่",
+        "a thin bag to carry your shopping": "ถุงบางสำหรับใส่ของที่ซื้อ",
+        "plants you cook and eat, like carrots": "พืชที่นำมาทำอาหารและกิน เช่น แครอต",
+        "Asking where to find something.": "ถามว่าหาของได้ที่ไหน",
+        "Asking if the price is lower today.": "ถามว่าวันนี้ราคาถูกลงไหม",
+        "Asking the cashier for a bag.": "ขอถุงจากพนักงานเก็บเงิน",
+        "Asking the cashier for the receipt.": "ขอใบเสร็จจากพนักงานเก็บเงิน",
+        "Telling staff that the food is past its date.": "บอกพนักงานว่าอาหารเลยวันที่กำหนดแล้ว",
+        "You are paying at the counter. You do not have your own bag.":
+            "คุณกำลังจ่ายเงินที่เคาน์เตอร์ คุณไม่ได้เอาถุงมาเอง",
+        "The cashier tells you the price.": "พนักงานเก็บเงินบอกราคา",
+        "The milk in your basket is past its date. You show it to a staff member.":
+            "นมในตะกร้าของคุณหมดอายุแล้ว คุณเอาให้พนักงานดู",
+        "A staff member asks if they can help you.": "พนักงานคนหนึ่งถามว่าให้ช่วยไหม",
+        "Is this on discount?": "อันนี้ลดราคาไหม?",
+        "Construction science": "วิทยาศาสตร์งานก่อสร้าง",
+        "Learn the main building materials, why a building stays up, and how to warn others about a problem.":
+            "เรียนรู้วัสดุก่อสร้างหลัก เหตุผลที่อาคารตั้งอยู่ได้ และวิธีเตือนคนอื่นเมื่อมีปัญหา",
+        "Concrete is strong when it is pressed, but it cracks when it is pulled. That is why steel bars go inside it.":
+            "คอนกรีตรับแรงกดได้ดี แต่จะแตกร้าวเมื่อถูกดึง จึงต้องใส่เหล็กเส้นไว้ข้างใน",
+        "Too much water makes concrete weak. Use only the amount of water your supervisor tells you.":
+            "น้ำมากเกินไปทำให้คอนกรีตไม่แข็งแรง ใช้น้ำตามปริมาณที่หัวหน้างานบอกเท่านั้น",
+        "Concrete goes hard slowly. It takes about 28 days to reach full strength, so ask your supervisor before you put weight on it.":
+            "คอนกรีตค่อย ๆ แข็งตัว ใช้เวลาประมาณ 28 วันจึงแข็งแรงเต็มที่ ถามหัวหน้างานก่อนวางของหนักลงไป",
+        "A building carries its weight down: from the floor to the beams, to the columns, then into the ground. Never cut a beam or a column without permission.":
+            "น้ำหนักอาคารถ่ายลงด้านล่าง จากพื้นไปคาน ไปเสา แล้วลงดิน อย่าตัดคานหรือเสาโดยไม่ได้รับอนุญาต",
+        "Every scaffold has a weight limit. Too much weight can make it fall, so do not add more than you are told.":
+            "นั่งร้านทุกชุดมีขีดจำกัดน้ำหนัก น้ำหนักมากเกินไปทำให้พังได้ อย่าวางน้ำหนักเกินที่บอก",
+        "cement, sand, stones and water mixed; it goes hard":
+            "ปูนซีเมนต์ ทราย หิน และน้ำผสมกัน แล้วจะแข็งตัว",
+        "the grey powder that holds concrete together": "ผงสีเทาที่ช่วยยึดคอนกรีตเข้าด้วยกัน",
+        "a long metal rod inside concrete": "เหล็กเส้นยาวที่อยู่ในคอนกรีต",
+        "a strong part that goes across and holds up a floor":
+            "ส่วนแข็งแรงที่พาดแนวนอนและรองรับพื้น",
+        "a strong part that stands up and carries the weight": "ส่วนแข็งแรงที่ตั้งตรงและรับน้ำหนัก",
+        "the weight something must carry": "น้ำหนักที่สิ่งหนึ่งต้องรับ",
+        "a tool that shows if something is flat": "เครื่องมือที่บอกว่าพื้นผิวได้ระดับหรือไม่",
+        "a metal frame you stand on to work up high": "โครงโลหะที่ใช้ยืนทำงานบนที่สูง",
+        "Warning that the concrete is not hard yet.": "เตือนว่าคอนกรีตยังไม่แข็ง",
+        "Saying that something weighs too much.": "บอกว่าของหนักเกินไป",
+        "Telling someone to stop adding water to the mix.": "บอกให้หยุดเติมน้ำลงในส่วนผสม",
+        "Reporting a crack to your supervisor.": "รายงานรอยร้าวให้หัวหน้างานทราบ",
+        "Asking someone to make sure the scaffold is safe.": "ขอให้ตรวจดูว่านั่งร้านปลอดภัย",
+        "A worker is about to walk on the floor you poured this morning.":
+            "คนงานกำลังจะเดินบนพื้นที่คุณเทคอนกรีตเมื่อเช้า",
+        "The worker asks if he can walk here.": "คนงานถามว่าเดินตรงนี้ได้ไหม",
+        "Your co-worker is mixing concrete and keeps pouring in water.":
+            "เพื่อนร่วมงานกำลังผสมคอนกรีตและเทน้ำลงไปเรื่อย ๆ",
+        "Your co-worker wants to add more water.": "เพื่อนร่วมงานอยากเติมน้ำอีก",
+        "There is a crack in this column.": "เสาต้นนี้มีรอยร้าว",
     },
     vi: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -1937,6 +3561,202 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "Check for a hallucination": "Kiểm tra xem có hallucination không",
         "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
             "Hỏi một vài thông tin thực tế, rồi hỏi xem nó có chắc không. Chatbot có thể nói rất tự tin mà vẫn sai.",
+        "Getting to know someone": "Làm quen với người mới",
+        "Say your name and where you are from, and ask new people about themselves.":
+            "Nói tên và quê của bạn, rồi hỏi người mới gặp về bản thân họ.",
+        "People in Singapore often say \"Have you eaten?\" as a friendly hello. You can say \"Yes, thank you.\"":
+            "Ở Singapore, mọi người thường chào thân thiện bằng câu \"Have you eaten?\" Bạn có thể đáp \"Yes, thank you.\"",
+        "People may call an older woman \"Aunty\" and an older man \"Uncle\". It is polite, even if you are not family.":
+            "Mọi người có thể gọi phụ nữ lớn tuổi là \"Aunty\" và đàn ông lớn tuổi là \"Uncle\". Cách gọi này lịch sự, dù không phải người nhà.",
+        "You do not have to answer every question. If someone asks about your pay or your family and you do not want to say, you can smile and change the topic.":
+            "Bạn không cần trả lời mọi câu hỏi. Nếu ai hỏi về lương hay gia đình mà bạn không muốn nói, bạn có thể mỉm cười rồi đổi chuyện.",
+        "The best way to learn is to talk. Say hello to one new person on your day off.":
+            "Cách học tốt nhất là nói chuyện. Hãy chào một người mới vào ngày nghỉ.",
+        "what people call you": "tên mọi người dùng để gọi bạn",
+        "a place like India or Bangladesh": "một nơi như Ấn Độ hay Bangladesh",
+        "your parents, husband or wife, and children": "bố mẹ, chồng hoặc vợ, và các con của bạn",
+        "young boys and girls; sons and daughters": "các bé trai và bé gái; con trai và con gái",
+        "someone you like and spend time with": "người bạn quý mến và dành thời gian ở cùng",
+        "the work you do for money": "việc bạn làm để kiếm tiền",
+        "something you like to do in your free time": "việc bạn thích làm khi rảnh",
+        "the day after Saturday; many workers rest":
+            "ngày sau thứ Bảy; nhiều người lao động nghỉ vào ngày này",
+        "Asking someone's name.": "Hỏi tên một người.",
+        "Telling someone your name.": "Nói tên của bạn.",
+        "Asking which country someone comes from.": "Hỏi một người đến từ nước nào.",
+        "Asking what work someone does.": "Hỏi một người làm nghề gì.",
+        "Saying you are happy to meet someone new.": "Nói bạn vui khi được làm quen.",
+        "Asking about someone's day off.": "Hỏi về ngày nghỉ của một người.",
+        "You meet someone new at the park on your day off.":
+            "Bạn gặp một người mới ở công viên vào ngày nghỉ.",
+        "The new person asks your name.": "Người mới gặp hỏi tên bạn.",
+        "Your friend brings a new person to meet you.":
+            "Bạn của bạn dẫn một người mới đến làm quen với bạn.",
+        "The new person tells you her name.": "Người phụ nữ mới gặp nói tên của mình.",
+        "What is your job?": "Bạn làm nghề gì?",
+        "Helping at home": "Giúp việc nhà",
+        "Understand what to do at home, say what you have finished, and ask when you are not sure.":
+            "Hiểu việc cần làm ở nhà, nói việc đã làm xong và hỏi khi chưa chắc.",
+        "Never lean out of a window to clean it or to hang clothes. If someone asks you to, say it is not safe.":
+            "Đừng bao giờ nhoài người ra ngoài cửa sổ để lau hay phơi quần áo. Nếu ai bảo làm vậy, hãy nói là không an toàn.",
+        "Never throw anything out of a window. Put rubbish in the rubbish chute or the bin.":
+            "Đừng ném bất cứ thứ gì ra ngoài cửa sổ. Bỏ rác vào cửa kim loại nhỏ của ống đổ rác trong bếp hoặc vào thùng rác.",
+        "Never mix bleach with other cleaning products. The gas can hurt you.":
+            "Đừng pha nước tẩy với các chất lau rửa khác. Khí sinh ra có thể gây hại cho bạn.",
+        "If you do not know how to use a machine, ask first. It is better to ask than to break it.":
+            "Nếu không biết dùng máy, hãy hỏi trước. Hỏi vẫn tốt hơn làm hỏng máy.",
+        "clothes to wash": "quần áo cần giặt",
+        "a hot tool that makes clothes flat": "dụng cụ nóng làm phẳng quần áo",
+        "a stick with cloth for washing the floor": "cây có gắn vải để lau sàn",
+        "plates and bowls you eat from": "đĩa và bát dùng để ăn",
+        "things you throw away": "những thứ bạn vứt đi",
+        "a cold box that keeps food fresh": "tủ lạnh giúp giữ thực phẩm tươi",
+        "where you cook food with fire": "nơi dùng lửa để nấu ăn",
+        "a place with doors to keep things": "chỗ có cửa để cất đồ",
+        "Asking what work comes after this.": "Hỏi sau việc này cần làm việc gì.",
+        "Saying the laundry is done.": "Nói đã giặt xong quần áo.",
+        "Asking where something goes.": "Hỏi cần để đồ ở đâu.",
+        "Asking someone to show you the way to do it.": "Nhờ ai đó chỉ cách làm.",
+        "Saying sorry and telling the truth about a broken plate.":
+            "Xin lỗi và nói thật về chiếc đĩa bị vỡ.",
+        "You finished washing the clothes. Your employer comes into the room.":
+            "Bạn đã giặt xong quần áo. Chủ đi vào phòng.",
+        "Your employer asks if the clothes are washed.": "Chủ hỏi đã giặt quần áo chưa.",
+        "There is a new iron at home. You do not know how to use it.":
+            "Nhà có bàn ủi mới. Bạn chưa biết cách dùng.",
+        "Your employer asks you to iron the shirts.": "Chủ nhờ bạn ủi áo sơ mi.",
+        "Sorry, I broke a plate.": "Xin lỗi, tôi làm vỡ một chiếc đĩa.",
+        "Reading signs": "Đọc biển báo",
+        "Read the signs you see every day, and ask when you do not understand one.":
+            "Đọc các biển báo bạn thấy hằng ngày và hỏi khi không hiểu.",
+        "Red signs usually mean stop or danger. Yellow means be careful. Green usually means safe, or the way out.":
+            "Biển màu đỏ thường có nghĩa là dừng lại hoặc nguy hiểm. Màu vàng là cẩn thận. Màu xanh lá thường là an toàn hoặc lối ra.",
+        "You can be fined for smoking where it is not allowed. Many places have a yellow box that shows where you can smoke.":
+            "Bạn có thể bị phạt tiền nếu hút thuốc ở nơi cấm. Nhiều nơi có ô kẻ màu vàng chỉ chỗ được hút thuốc.",
+        "Many signs in Singapore are in English, Chinese, Malay and Tamil. If your language is there, read it first, then look for the English word.":
+            "Nhiều biển báo ở Singapore có tiếng Anh, tiếng Trung, tiếng Mã Lai và tiếng Tamil. Nếu có tiếng của bạn, hãy đọc trước, rồi tìm từ tiếng Anh.",
+        "Not sure what a sign means? Take a photo and ask someone. Do not go past a danger sign.":
+            "Chưa rõ biển báo có nghĩa gì? Chụp ảnh và hỏi ai đó. Đừng đi qua biển cảnh báo nguy hiểm.",
+        "the floor has water; you can slip": "sàn có nước; bạn có thể trượt ngã",
+        "do not go in": "đừng đi vào",
+        "do not smoke here": "đừng hút thuốc ở đây",
+        "not open now": "hiện không mở cửa",
+        "press the door away from you": "đẩy cửa ra xa bạn",
+        "bring the door towards you": "kéo cửa về phía bạn",
+        "the room with a toilet, in a public place": "phòng có bồn cầu ở nơi công cộng",
+        "something here can hurt you": "có thứ ở đây có thể làm bạn bị thương",
+        "Asking someone to explain a sign.": "Nhờ ai đó giải thích biển báo.",
+        "Telling someone to be careful of the wet floor.": "Nhắc ai đó cẩn thận vì sàn ướt.",
+        "Asking the way to the toilet.": "Hỏi đường đến nhà vệ sinh.",
+        "Saying a shop is not open.": "Nói cửa hàng không mở cửa.",
+        "Telling someone they are not allowed to enter.": "Nói với ai đó rằng họ không được vào.",
+        "You are new in a building and you need the toilet. You see a cleaner.":
+            "Bạn mới đến tòa nhà này và cần đi vệ sinh. Bạn thấy một người dọn vệ sinh.",
+        "The cleaner asks if you need help.": "Người dọn vệ sinh hỏi bạn có cần giúp không.",
+        "Your friend is walking to a door with a red No Entry sign.":
+            "Bạn của bạn đang đi tới cửa có biển No Entry màu đỏ.",
+        "Your friend asks if they can go in.": "Bạn của bạn hỏi có được vào không.",
+        "The shop is closed.": "Cửa hàng đóng cửa rồi.",
+        "Buses and finding your way": "Đi xe buýt và tìm đường",
+        "Find the right bus, get off at your stop, and ask for directions when you are lost.":
+            "Tìm đúng xe buýt, xuống đúng trạm và hỏi đường khi bị lạc.",
+        "Tap your card when you get on the bus and again when you get off. If you forget to tap when you get off, you can pay more.":
+            "Chạm thẻ khi lên xe buýt và chạm lần nữa khi xuống. Nếu quên chạm lúc xuống, bạn có thể phải trả thêm tiền.",
+        "Press the bell just before your stop. If nobody presses it and nobody is waiting, the bus does not stop.":
+            "Bấm chuông ngay trước khi tới trạm của bạn. Nếu không ai bấm và không ai đợi, xe sẽ không dừng.",
+        "Raise your hand when your bus comes, so the driver knows to stop.":
+            "Giơ tay khi xe buýt của bạn đến để tài xế biết cần dừng.",
+        "Cross the road at a traffic light or an overhead bridge. You can be fined for crossing somewhere else nearby.":
+            "Qua đường ở chỗ có đèn giao thông hoặc đi cầu vượt dành cho người đi bộ. Bạn có thể bị phạt nếu qua ở chỗ khác gần đó.",
+        "where you wait for the bus": "nơi bạn đợi xe buýt",
+        "press it to ask the bus to stop": "bấm để xin xe buýt dừng",
+        "the side of your left hand": "phía tay trái của bạn",
+        "the side of your right hand": "phía tay phải của bạn",
+        "keep going ahead; do not turn": "cứ đi thẳng; đừng rẽ",
+        "the lights that say stop or go": "đèn báo khi nào dừng hoặc đi",
+        "a bridge for walking over a road": "cầu để người đi bộ qua phía trên đường",
+        "a picture that shows where places are": "hình vẽ cho biết các nơi nằm ở đâu",
+        "Asking which bus to take.": "Hỏi cần đi xe buýt nào.",
+        "Asking the way to the bus stop.": "Hỏi đường đến trạm xe buýt.",
+        "Telling someone the way.": "Chỉ đường cho ai đó.",
+        "Saying you do not know where you are.": "Nói bạn không biết mình đang ở đâu.",
+        "Asking someone to tell you when to get off.": "Nhờ ai đó báo khi cần xuống xe.",
+        "You are at a bus stop and want to go to Little India. A woman is waiting next to you.":
+            "Bạn đang ở trạm xe buýt và muốn đến Little India. Một phụ nữ đang đợi cạnh bạn.",
+        "The woman asks if you are waiting for a bus.":
+            "Người phụ nữ hỏi bạn có đang đợi xe buýt không.",
+        "You do not know this road and your phone has no battery. You see a man walking.":
+            "Bạn không biết đường này và điện thoại đã hết pin. Bạn thấy một người đàn ông đang đi bộ.",
+        "The man asks if he can help you.": "Người đàn ông hỏi có thể giúp bạn không.",
+        "Please tell me my stop.": "Làm ơn báo cho tôi khi đến trạm của tôi.",
+        "At the supermarket": "Ở siêu thị",
+        "Find what you need, check the price and the date, and pay at the counter.":
+            "Tìm đồ cần mua, xem giá và ngày ghi trên hàng, rồi trả tiền ở quầy.",
+        "Big supermarkets charge at least 5 cents for each plastic bag. Bring your own bag to save money.":
+            "Siêu thị lớn thu ít nhất 5 xu cho mỗi túi nhựa. Mang túi riêng để tiết kiệm tiền.",
+        "Look for the date on food before you buy it. \"Best before\" and \"Use by\" tell you how long it is good.":
+            "Xem ngày ghi trên thực phẩm trước khi mua. \"Best before\" và \"Use by\" cho biết thực phẩm còn tốt đến khi nào.",
+        "Keep the receipt when you shop for someone else, so you can show what you spent.":
+            "Giữ hóa đơn khi mua đồ cho người khác để cho họ xem bạn đã tiêu bao nhiêu.",
+        "The cashier may ask if you have a member card. If you do not have one, just say no.":
+            "Thu ngân có thể hỏi bạn có thẻ thành viên không. Nếu không có, chỉ cần nói không.",
+        "a big basket on wheels": "giỏ lớn có bánh xe",
+        "the walkway between shelves": "lối đi giữa các kệ",
+        "the person you pay": "người bạn trả tiền cho",
+        "the paper that shows what you paid": "tờ giấy ghi những khoản bạn đã trả",
+        "a lower price than usual": "giá thấp hơn bình thường",
+        "the last day the food is good": "ngày cuối thực phẩm còn tốt",
+        "a thin bag to carry your shopping": "túi mỏng để đựng đồ đã mua",
+        "plants you cook and eat, like carrots": "cây dùng để nấu và ăn, như cà rốt",
+        "Asking where to find something.": "Hỏi tìm đồ ở đâu.",
+        "Asking if the price is lower today.": "Hỏi hôm nay giá có thấp hơn không.",
+        "Asking the cashier for a bag.": "Xin thu ngân một chiếc túi.",
+        "Asking the cashier for the receipt.": "Xin thu ngân hóa đơn.",
+        "Telling staff that the food is past its date.": "Báo nhân viên rằng thực phẩm đã quá hạn.",
+        "You are paying at the counter. You do not have your own bag.":
+            "Bạn đang trả tiền ở quầy. Bạn không có túi riêng.",
+        "The cashier tells you the price.": "Thu ngân nói giá tiền.",
+        "The milk in your basket is past its date. You show it to a staff member.":
+            "Sữa trong giỏ của bạn đã quá hạn. Bạn đưa cho một nhân viên xem.",
+        "A staff member asks if they can help you.": "Một nhân viên hỏi có thể giúp bạn không.",
+        "Is this on discount?": "Món này có giảm giá không?",
+        "Construction science": "Khoa học xây dựng",
+        "Learn the main building materials, why a building stays up, and how to warn others about a problem.":
+            "Tìm hiểu vật liệu xây dựng chính, vì sao tòa nhà đứng vững và cách báo cho người khác khi có vấn đề.",
+        "Concrete is strong when it is pressed, but it cracks when it is pulled. That is why steel bars go inside it.":
+            "Bê tông chịu nén tốt, nhưng bị nứt khi bị kéo. Vì vậy người ta đặt thanh thép bên trong.",
+        "Too much water makes concrete weak. Use only the amount of water your supervisor tells you.":
+            "Quá nhiều nước làm bê tông yếu đi. Chỉ dùng lượng nước mà quản lý dặn.",
+        "Concrete goes hard slowly. It takes about 28 days to reach full strength, so ask your supervisor before you put weight on it.":
+            "Bê tông cứng dần. Cần khoảng 28 ngày để đạt đủ độ bền, nên hãy hỏi quản lý trước khi đặt vật nặng lên.",
+        "A building carries its weight down: from the floor to the beams, to the columns, then into the ground. Never cut a beam or a column without permission.":
+            "Trọng lượng tòa nhà truyền xuống: từ sàn tới dầm, tới cột, rồi xuống đất. Không được cắt dầm hay cột khi chưa được phép.",
+        "Every scaffold has a weight limit. Too much weight can make it fall, so do not add more than you are told.":
+            "Mỗi giàn giáo đều có giới hạn tải trọng. Quá nặng có thể làm sập, nên đừng chất quá mức được dặn.",
+        "cement, sand, stones and water mixed; it goes hard":
+            "xi măng, cát, đá và nước trộn với nhau; sẽ cứng lại",
+        "the grey powder that holds concrete together": "bột màu xám kết dính bê tông",
+        "a long metal rod inside concrete": "thanh thép dài bên trong bê tông",
+        "a strong part that goes across and holds up a floor": "bộ phận chắc nằm ngang đỡ sàn",
+        "a strong part that stands up and carries the weight":
+            "bộ phận chắc đứng thẳng chịu trọng lượng",
+        "the weight something must carry": "trọng lượng mà một vật phải chịu",
+        "a tool that shows if something is flat": "dụng cụ cho biết bề mặt có cân bằng không",
+        "a metal frame you stand on to work up high": "khung kim loại để đứng làm việc trên cao",
+        "Warning that the concrete is not hard yet.": "Cảnh báo bê tông chưa cứng.",
+        "Saying that something weighs too much.": "Nói một vật quá nặng.",
+        "Telling someone to stop adding water to the mix.":
+            "Bảo ai đó ngừng thêm nước vào hỗn hợp.",
+        "Reporting a crack to your supervisor.": "Báo vết nứt cho quản lý.",
+        "Asking someone to make sure the scaffold is safe.":
+            "Nhờ ai đó kiểm tra giàn giáo có an toàn không.",
+        "A worker is about to walk on the floor you poured this morning.":
+            "Một công nhân sắp bước lên sàn bạn vừa đổ bê tông sáng nay.",
+        "The worker asks if he can walk here.": "Công nhân hỏi có thể đi ở đây không.",
+        "Your co-worker is mixing concrete and keeps pouring in water.":
+            "Đồng nghiệp đang trộn bê tông và cứ đổ thêm nước.",
+        "Your co-worker wants to add more water.": "Đồng nghiệp muốn thêm nước.",
+        "There is a crack in this column.": "Cột này có vết nứt.",
     },
     fr: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -2158,6 +3978,222 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "Check for a hallucination": "Vérifiez s'il y a une hallucination",
         "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
             "Demandez des faits, puis demandez s'il en est sûr. Les chatbots peuvent avoir l'air sûrs d'eux et pourtant se tromper.",
+        "Getting to know someone": "Faire connaissance",
+        "Say your name and where you are from, and ask new people about themselves.":
+            "Dites votre nom et d'où vous venez. Posez aussi des questions aux personnes que vous rencontrez.",
+        "People in Singapore often say \"Have you eaten?\" as a friendly hello. You can say \"Yes, thank you.\"":
+            "À Singapour, on dit souvent \"Have you eaten?\" pour dire bonjour gentiment. Vous pouvez répondre \"Yes, thank you.\"",
+        "People may call an older woman \"Aunty\" and an older man \"Uncle\". It is polite, even if you are not family.":
+            "On peut appeler une femme plus âgée \"Aunty\" et un homme plus âgé \"Uncle\". C'est poli, même si vous n'êtes pas de la même famille.",
+        "You do not have to answer every question. If someone asks about your pay or your family and you do not want to say, you can smile and change the topic.":
+            "Vous n'êtes pas obligé de répondre à toutes les questions. Si vous ne voulez pas parler de votre salaire ou de votre famille, vous pouvez sourire et changer de sujet.",
+        "The best way to learn is to talk. Say hello to one new person on your day off.":
+            "Le meilleur moyen d'apprendre est de parler. Dites bonjour à une nouvelle personne pendant votre jour de congé.",
+        "what people call you": "le nom que les gens utilisent pour vous appeler",
+        "a place like India or Bangladesh": "un pays comme l'Inde ou le Bangladesh",
+        "your parents, husband or wife, and children":
+            "vos parents, votre mari ou votre femme, et vos enfants",
+        "young boys and girls; sons and daughters":
+            "les jeunes garçons et filles ; les fils et les filles",
+        "someone you like and spend time with":
+            "une personne que vous aimez bien et avec qui vous passez du temps",
+        "the work you do for money": "le travail que vous faites pour gagner de l'argent",
+        "something you like to do in your free time":
+            "une activité que vous aimez faire pendant votre temps libre",
+        "the day after Saturday; many workers rest":
+            "le jour après le samedi ; beaucoup de travailleurs se reposent",
+        "Asking someone's name.": "Demander le nom de quelqu'un.",
+        "Telling someone your name.": "Dire votre nom.",
+        "Asking which country someone comes from.": "Demander de quel pays vient quelqu'un.",
+        "Asking what work someone does.": "Demander quel travail fait quelqu'un.",
+        "Saying you are happy to meet someone new.":
+            "Dire que vous êtes heureux de faire connaissance.",
+        "Asking about someone's day off.": "Poser une question sur le jour de congé de quelqu'un.",
+        "You meet someone new at the park on your day off.":
+            "Vous rencontrez une nouvelle personne au parc pendant votre jour de congé.",
+        "The new person asks your name.":
+            "La personne que vous venez de rencontrer demande votre nom.",
+        "Your friend brings a new person to meet you.":
+            "Votre ami vous présente une nouvelle personne.",
+        "The new person tells you her name.": "La femme que vous venez de rencontrer dit son nom.",
+        "What is your job?": "Quel est votre travail ?",
+        "Helping at home": "Aider à la maison",
+        "Understand what to do at home, say what you have finished, and ask when you are not sure.":
+            "Comprenez les tâches à faire à la maison, dites ce que vous avez terminé et posez des questions en cas de doute.",
+        "Never lean out of a window to clean it or to hang clothes. If someone asks you to, say it is not safe.":
+            "Ne vous penchez jamais dehors pour nettoyer une fenêtre ou étendre du linge. Si on vous le demande, dites que c'est dangereux.",
+        "Never throw anything out of a window. Put rubbish in the rubbish chute or the bin.":
+            "Ne jetez jamais rien par la fenêtre. Mettez les déchets dans le vide-ordures, par la petite porte en métal de la cuisine, ou dans la poubelle.",
+        "Never mix bleach with other cleaning products. The gas can hurt you.":
+            "Ne mélangez jamais l'eau de Javel avec d'autres produits de nettoyage. Le gaz peut vous faire du mal.",
+        "If you do not know how to use a machine, ask first. It is better to ask than to break it.":
+            "Si vous ne savez pas utiliser une machine, demandez d'abord. Il vaut mieux demander que la casser.",
+        "clothes to wash": "les vêtements à laver",
+        "a hot tool that makes clothes flat": "un outil chaud qui enlève les plis des vêtements",
+        "a stick with cloth for washing the floor": "un manche avec un tissu pour laver le sol",
+        "plates and bowls you eat from": "les assiettes et les bols pour manger",
+        "things you throw away": "les choses que vous jetez",
+        "a cold box that keeps food fresh": "une armoire froide qui garde les aliments frais",
+        "where you cook food with fire": "l'endroit où l'on fait cuire les aliments avec du feu",
+        "a place with doors to keep things":
+            "un rangement avec des portes pour mettre des affaires",
+        "Asking what work comes after this.": "Demander quelle tâche faire ensuite.",
+        "Saying the laundry is done.": "Dire que le linge est lavé.",
+        "Asking where something goes.": "Demander où mettre quelque chose.",
+        "Asking someone to show you the way to do it.":
+            "Demander à quelqu'un de montrer comment faire.",
+        "Saying sorry and telling the truth about a broken plate.":
+            "S'excuser et dire la vérité sur une assiette cassée.",
+        "You finished washing the clothes. Your employer comes into the room.":
+            "Vous avez fini de laver les vêtements. Votre employeur entre dans la pièce.",
+        "Your employer asks if the clothes are washed.":
+            "Votre employeur demande si les vêtements sont lavés.",
+        "There is a new iron at home. You do not know how to use it.":
+            "Il y a un nouveau fer à repasser à la maison. Vous ne savez pas l'utiliser.",
+        "Your employer asks you to iron the shirts.":
+            "Votre employeur vous demande de repasser les chemises.",
+        "Sorry, I broke a plate.": "Pardon, j'ai cassé une assiette.",
+        "Reading signs": "Lire les panneaux",
+        "Read the signs you see every day, and ask when you do not understand one.":
+            "Lisez les panneaux que vous voyez chaque jour et demandez quand vous ne comprenez pas.",
+        "Red signs usually mean stop or danger. Yellow means be careful. Green usually means safe, or the way out.":
+            "Les panneaux rouges veulent souvent dire arrêt ou danger. Le jaune veut dire attention. Le vert indique souvent un endroit sûr ou la sortie.",
+        "You can be fined for smoking where it is not allowed. Many places have a yellow box that shows where you can smoke.":
+            "Vous risquez une amende si vous fumez dans un endroit interdit. Beaucoup d'endroits ont un cadre jaune qui montre où fumer.",
+        "Many signs in Singapore are in English, Chinese, Malay and Tamil. If your language is there, read it first, then look for the English word.":
+            "À Singapour, beaucoup de panneaux sont en anglais, chinois, malais et tamoul. Si votre langue y est, lisez-la d'abord, puis cherchez le mot anglais.",
+        "Not sure what a sign means? Take a photo and ask someone. Do not go past a danger sign.":
+            "Vous ne comprenez pas un panneau ? Prenez une photo et demandez à quelqu'un. Ne passez pas au-delà d'un panneau de danger.",
+        "the floor has water; you can slip": "il y a de l'eau au sol ; vous pouvez glisser",
+        "do not go in": "n'entrez pas",
+        "do not smoke here": "ne fumez pas ici",
+        "not open now": "ce n'est pas ouvert maintenant",
+        "press the door away from you": "poussez la porte en l'éloignant de vous",
+        "bring the door towards you": "tirez la porte vers vous",
+        "the room with a toilet, in a public place":
+            "la pièce avec des toilettes dans un lieu public",
+        "something here can hurt you": "quelque chose ici peut vous blesser",
+        "Asking someone to explain a sign.": "Demander à quelqu'un d'expliquer un panneau.",
+        "Telling someone to be careful of the wet floor.":
+            "Dire à quelqu'un de faire attention au sol mouillé.",
+        "Asking the way to the toilet.": "Demander le chemin des toilettes.",
+        "Saying a shop is not open.": "Dire qu'un magasin n'est pas ouvert.",
+        "Telling someone they are not allowed to enter.":
+            "Dire à quelqu'un qu'il n'a pas le droit d'entrer.",
+        "You are new in a building and you need the toilet. You see a cleaner.":
+            "Vous venez pour la première fois dans ce bâtiment et vous cherchez les toilettes. Vous voyez une personne qui fait le ménage.",
+        "The cleaner asks if you need help.":
+            "La personne qui fait le ménage demande si vous avez besoin d'aide.",
+        "Your friend is walking to a door with a red No Entry sign.":
+            "Votre ami se dirige vers une porte avec un panneau rouge No Entry.",
+        "Your friend asks if they can go in.": "Votre ami demande s'il peut entrer.",
+        "The shop is closed.": "Le magasin est fermé.",
+        "Buses and finding your way": "Prendre le bus et trouver son chemin",
+        "Find the right bus, get off at your stop, and ask for directions when you are lost.":
+            "Trouvez le bon bus, descendez à votre arrêt et demandez votre chemin si vous êtes perdu.",
+        "Tap your card when you get on the bus and again when you get off. If you forget to tap when you get off, you can pay more.":
+            "Passez votre carte en montant dans le bus et encore en descendant. Si vous oubliez en descendant, vous risquez de payer plus.",
+        "Press the bell just before your stop. If nobody presses it and nobody is waiting, the bus does not stop.":
+            "Appuyez sur le bouton juste avant votre arrêt. Si personne n'appuie et que personne n'attend, le bus ne s'arrête pas.",
+        "Raise your hand when your bus comes, so the driver knows to stop.":
+            "Levez la main quand votre bus arrive pour que le conducteur sache qu'il doit s'arrêter.",
+        "Cross the road at a traffic light or an overhead bridge. You can be fined for crossing somewhere else nearby.":
+            "Traversez au feu ou sur une passerelle au-dessus de la route. Vous risquez une amende si vous traversez ailleurs à proximité.",
+        "where you wait for the bus": "l'endroit où vous attendez le bus",
+        "press it to ask the bus to stop": "appuyez pour demander au bus de s'arrêter",
+        "the side of your left hand": "le côté de votre main gauche",
+        "the side of your right hand": "le côté de votre main droite",
+        "keep going ahead; do not turn": "continuez tout droit ; ne tournez pas",
+        "the lights that say stop or go": "les feux qui disent de s'arrêter ou d'avancer",
+        "a bridge for walking over a road": "un pont pour traverser la route à pied par-dessus",
+        "a picture that shows where places are": "un dessin qui montre où sont les lieux",
+        "Asking which bus to take.": "Demander quel bus prendre.",
+        "Asking the way to the bus stop.": "Demander le chemin de l'arrêt de bus.",
+        "Telling someone the way.": "Indiquer le chemin à quelqu'un.",
+        "Saying you do not know where you are.": "Dire que vous ne savez pas où vous êtes.",
+        "Asking someone to tell you when to get off.":
+            "Demander à quelqu'un de vous dire quand descendre.",
+        "You are at a bus stop and want to go to Little India. A woman is waiting next to you.":
+            "Vous êtes à un arrêt de bus et voulez aller à Little India. Une femme attend à côté de vous.",
+        "The woman asks if you are waiting for a bus.": "La femme demande si vous attendez un bus.",
+        "You do not know this road and your phone has no battery. You see a man walking.":
+            "Vous ne connaissez pas cette route et votre téléphone n'a plus de batterie. Vous voyez un homme qui marche.",
+        "The man asks if he can help you.": "L'homme demande s'il peut vous aider.",
+        "Please tell me my stop.": "Prévenez-moi à mon arrêt, s'il vous plaît.",
+        "At the supermarket": "Au supermarché",
+        "Find what you need, check the price and the date, and pay at the counter.":
+            "Trouvez ce qu'il vous faut, vérifiez le prix et la date, puis payez à la caisse.",
+        "Big supermarkets charge at least 5 cents for each plastic bag. Bring your own bag to save money.":
+            "Les grands supermarchés font payer au moins 5 centimes par sac plastique. Apportez votre sac pour économiser.",
+        "Look for the date on food before you buy it. \"Best before\" and \"Use by\" tell you how long it is good.":
+            "Regardez la date sur les aliments avant d'acheter. \"Best before\" et \"Use by\" indiquent jusqu'à quand ils restent bons.",
+        "Keep the receipt when you shop for someone else, so you can show what you spent.":
+            "Gardez le reçu quand vous faites les courses pour quelqu'un, pour montrer ce que vous avez dépensé.",
+        "The cashier may ask if you have a member card. If you do not have one, just say no.":
+            "La personne à la caisse peut demander si vous avez une carte de membre. Si vous n'en avez pas, dites simplement non.",
+        "a big basket on wheels": "un grand panier à roulettes",
+        "the walkway between shelves": "le passage entre les étagères",
+        "the person you pay": "la personne à qui vous payez",
+        "the paper that shows what you paid": "le papier qui montre ce que vous avez payé",
+        "a lower price than usual": "un prix plus bas que d'habitude",
+        "the last day the food is good": "le dernier jour où l'aliment est encore bon",
+        "a thin bag to carry your shopping": "un sac fin pour porter vos courses",
+        "plants you cook and eat, like carrots":
+            "des plantes que l'on cuisine et mange, comme les carottes",
+        "Asking where to find something.": "Demander où trouver quelque chose.",
+        "Asking if the price is lower today.": "Demander si le prix est plus bas aujourd'hui.",
+        "Asking the cashier for a bag.": "Demander un sac à la caisse.",
+        "Asking the cashier for the receipt.": "Demander le reçu à la caisse.",
+        "Telling staff that the food is past its date.":
+            "Dire au personnel que la date de l'aliment est dépassée.",
+        "You are paying at the counter. You do not have your own bag.":
+            "Vous payez à la caisse. Vous n'avez pas votre propre sac.",
+        "The cashier tells you the price.": "La personne à la caisse vous dit le prix.",
+        "The milk in your basket is past its date. You show it to a staff member.":
+            "La date du lait dans votre panier est dépassée. Vous le montrez à un membre du personnel.",
+        "A staff member asks if they can help you.":
+            "Un membre du personnel demande s'il peut vous aider.",
+        "Is this on discount?": "Est-ce que cet article est en réduction ?",
+        "Construction science": "Comprendre la construction",
+        "Learn the main building materials, why a building stays up, and how to warn others about a problem.":
+            "Découvrez les principaux matériaux, pourquoi un bâtiment tient debout et comment prévenir les autres en cas de problème.",
+        "Concrete is strong when it is pressed, but it cracks when it is pulled. That is why steel bars go inside it.":
+            "Le béton résiste bien quand on le comprime, mais il se fissure quand on tire dessus. C'est pourquoi on met des barres d'acier dedans.",
+        "Too much water makes concrete weak. Use only the amount of water your supervisor tells you.":
+            "Trop d'eau rend le béton moins solide. Utilisez seulement la quantité d'eau indiquée par votre superviseur.",
+        "Concrete goes hard slowly. It takes about 28 days to reach full strength, so ask your supervisor before you put weight on it.":
+            "Le béton durcit lentement. Il met environ 28 jours à devenir complètement solide. Demandez à votre superviseur avant de poser du poids dessus.",
+        "A building carries its weight down: from the floor to the beams, to the columns, then into the ground. Never cut a beam or a column without permission.":
+            "Le poids d'un bâtiment descend : du plancher aux poutres, puis aux poteaux et enfin au sol. Ne coupez jamais une poutre ou un poteau sans autorisation.",
+        "Every scaffold has a weight limit. Too much weight can make it fall, so do not add more than you are told.":
+            "Chaque échafaudage a une limite de poids. Trop de poids peut le faire tomber. Ne dépassez pas le poids qu'on vous a indiqué.",
+        "cement, sand, stones and water mixed; it goes hard":
+            "un mélange de ciment, de sable, de pierres et d'eau qui durcit",
+        "the grey powder that holds concrete together": "la poudre grise qui lie le béton",
+        "a long metal rod inside concrete": "une longue barre d'acier dans le béton",
+        "a strong part that goes across and holds up a floor":
+            "une partie solide placée en travers qui soutient un plancher",
+        "a strong part that stands up and carries the weight":
+            "une partie solide verticale qui porte le poids",
+        "the weight something must carry": "le poids que quelque chose doit porter",
+        "a tool that shows if something is flat":
+            "un outil qui montre si une surface est bien horizontale",
+        "a metal frame you stand on to work up high":
+            "une structure en métal sur laquelle on se tient pour travailler en hauteur",
+        "Warning that the concrete is not hard yet.": "Prévenir que le béton n'a pas encore durci.",
+        "Saying that something weighs too much.": "Dire que quelque chose est trop lourd.",
+        "Telling someone to stop adding water to the mix.":
+            "Dire à quelqu'un d'arrêter d'ajouter de l'eau au mélange.",
+        "Reporting a crack to your supervisor.": "Signaler une fissure à votre superviseur.",
+        "Asking someone to make sure the scaffold is safe.":
+            "Demander à quelqu'un de vérifier que l'échafaudage est sûr.",
+        "A worker is about to walk on the floor you poured this morning.":
+            "Un ouvrier va marcher sur le sol où vous avez coulé du béton ce matin.",
+        "The worker asks if he can walk here.": "L'ouvrier demande s'il peut marcher ici.",
+        "Your co-worker is mixing concrete and keeps pouring in water.":
+            "Votre collègue mélange du béton et continue à verser de l'eau.",
+        "Your co-worker wants to add more water.": "Votre collègue veut ajouter de l'eau.",
+        "There is a crack in this column.": "Il y a une fissure dans ce poteau.",
     },
     es: {
         'Signs and announcements say "alight". It means get off the train.':
@@ -2376,6 +4412,215 @@ export const LESSON_CONTENT_COPY: Record<ContentLanguage, Record<string, string>
         "Check for a hallucination": "Comprueba si hay una alucinación",
         "Ask for facts, then ask if it is sure. Chatbots can sound confident and still be wrong.":
             "Pide datos y luego pregunta si está seguro. Los chatbots pueden sonar muy seguros y aun así equivocarse.",
+        "Getting to know someone": "Conocer a alguien",
+        "Say your name and where you are from, and ask new people about themselves.":
+            "Di tu nombre y de dónde eres, y pregunta a las personas nuevas sobre ellas.",
+        "People in Singapore often say \"Have you eaten?\" as a friendly hello. You can say \"Yes, thank you.\"":
+            "En Singapur, la gente suele decir \"Have you eaten?\" como saludo amistoso. Puedes responder \"Yes, thank you.\"",
+        "People may call an older woman \"Aunty\" and an older man \"Uncle\". It is polite, even if you are not family.":
+            "A una mujer mayor la pueden llamar \"Aunty\" y a un hombre mayor, \"Uncle\". Es una forma educada de hablar, aunque no sean familia.",
+        "You do not have to answer every question. If someone asks about your pay or your family and you do not want to say, you can smile and change the topic.":
+            "No tienes que responder a todas las preguntas. Si alguien pregunta por tu sueldo o tu familia y no quieres hablar de eso, puedes sonreír y cambiar de tema.",
+        "The best way to learn is to talk. Say hello to one new person on your day off.":
+            "La mejor forma de aprender es hablar. Saluda a una persona nueva en tu día libre.",
+        "what people call you": "el nombre que usa la gente para llamarte",
+        "a place like India or Bangladesh": "un lugar como India o Bangladés",
+        "your parents, husband or wife, and children":
+            "tus padres, tu marido o tu mujer, y tus hijos",
+        "young boys and girls; sons and daughters": "niños y niñas; hijos e hijas",
+        "someone you like and spend time with": "alguien que te cae bien y con quien pasas tiempo",
+        "the work you do for money": "el trabajo que haces para ganar dinero",
+        "something you like to do in your free time": "algo que te gusta hacer en tu tiempo libre",
+        "the day after Saturday; many workers rest":
+            "el día después del sábado; muchos trabajadores descansan",
+        "Asking someone's name.": "Preguntar el nombre de alguien.",
+        "Telling someone your name.": "Decir tu nombre.",
+        "Asking which country someone comes from.": "Preguntar de qué país viene alguien.",
+        "Asking what work someone does.": "Preguntar en qué trabaja alguien.",
+        "Saying you are happy to meet someone new.": "Decir que te alegra conocer a alguien.",
+        "Asking about someone's day off.": "Preguntar por el día libre de alguien.",
+        "You meet someone new at the park on your day off.":
+            "Conoces a alguien en el parque durante tu día libre.",
+        "The new person asks your name.": "La persona que acabas de conocer pregunta tu nombre.",
+        "Your friend brings a new person to meet you.":
+            "Tu amigo trae a alguien para presentártelo.",
+        "The new person tells you her name.": "La mujer que acabas de conocer dice su nombre.",
+        "What is your job?": "¿En qué trabajas?",
+        "Helping at home": "Ayudar en casa",
+        "Understand what to do at home, say what you have finished, and ask when you are not sure.":
+            "Entiende qué hacer en casa, di lo que has terminado y pregunta cuando tengas dudas.",
+        "Never lean out of a window to clean it or to hang clothes. If someone asks you to, say it is not safe.":
+            "Nunca saques el cuerpo por una ventana para limpiarla o tender ropa. Si alguien te lo pide, di que no es seguro.",
+        "Never throw anything out of a window. Put rubbish in the rubbish chute or the bin.":
+            "Nunca tires nada por la ventana. Pon la basura en el conducto con una pequeña puerta de metal en la cocina o en el cubo de basura.",
+        "Never mix bleach with other cleaning products. The gas can hurt you.":
+            "Nunca mezcles lejía con otros productos de limpieza. El gas puede hacerte daño.",
+        "If you do not know how to use a machine, ask first. It is better to ask than to break it.":
+            "Si no sabes usar una máquina, pregunta primero. Es mejor preguntar que romperla.",
+        "clothes to wash": "ropa para lavar",
+        "a hot tool that makes clothes flat":
+            "una herramienta caliente que quita las arrugas de la ropa",
+        "a stick with cloth for washing the floor": "un palo con tela para lavar el suelo",
+        "plates and bowls you eat from": "platos y cuencos que usas para comer",
+        "things you throw away": "cosas que tiras",
+        "a cold box that keeps food fresh": "un armario frío que mantiene los alimentos frescos",
+        "where you cook food with fire": "donde cocinas los alimentos con fuego",
+        "a place with doors to keep things": "un lugar con puertas para guardar cosas",
+        "Asking what work comes after this.": "Preguntar qué trabajo viene después.",
+        "Saying the laundry is done.": "Decir que has terminado de lavar la ropa.",
+        "Asking where something goes.": "Preguntar dónde poner algo.",
+        "Asking someone to show you the way to do it.":
+            "Pedir a alguien que te enseñe cómo hacerlo.",
+        "Saying sorry and telling the truth about a broken plate.":
+            "Pedir perdón y decir la verdad sobre un plato roto.",
+        "You finished washing the clothes. Your employer comes into the room.":
+            "Has terminado de lavar la ropa. Tu empleador entra en la habitación.",
+        "Your employer asks if the clothes are washed.":
+            "Tu empleador pregunta si la ropa está lavada.",
+        "There is a new iron at home. You do not know how to use it.":
+            "Hay una plancha nueva en casa. No sabes cómo usarla.",
+        "Your employer asks you to iron the shirts.":
+            "Tu empleador te pide que planches las camisas.",
+        "Sorry, I broke a plate.": "Perdón, he roto un plato.",
+        "Reading signs": "Leer los letreros",
+        "Read the signs you see every day, and ask when you do not understand one.":
+            "Lee los letreros que ves cada día y pregunta cuando no entiendas alguno.",
+        "Red signs usually mean stop or danger. Yellow means be careful. Green usually means safe, or the way out.":
+            "Los letreros rojos suelen indicar que pares o que hay peligro. El amarillo indica precaución. El verde suele indicar que es seguro o mostrar la salida.",
+        "You can be fined for smoking where it is not allowed. Many places have a yellow box that shows where you can smoke.":
+            "Te pueden multar por fumar donde está prohibido. En muchos lugares, un recuadro amarillo marca dónde puedes fumar.",
+        "Many signs in Singapore are in English, Chinese, Malay and Tamil. If your language is there, read it first, then look for the English word.":
+            "Muchos letreros en Singapur están en inglés, chino, malayo y tamil. Si aparece tu idioma, léelo primero y luego busca la palabra en inglés.",
+        "Not sure what a sign means? Take a photo and ask someone. Do not go past a danger sign.":
+            "¿No sabes qué significa un letrero? Haz una foto y pregunta a alguien. No pases más allá de un letrero de peligro.",
+        "the floor has water; you can slip": "hay agua en el suelo; puedes resbalar",
+        "do not go in": "no entres",
+        "do not smoke here": "no fumes aquí",
+        "not open now": "ahora no está abierto",
+        "press the door away from you": "empuja la puerta alejándola de ti",
+        "bring the door towards you": "tira de la puerta hacia ti",
+        "the room with a toilet, in a public place":
+            "la habitación con un inodoro en un lugar público",
+        "something here can hurt you": "algo aquí puede hacerte daño",
+        "Asking someone to explain a sign.": "Pedir a alguien que explique un letrero.",
+        "Telling someone to be careful of the wet floor.":
+            "Decir a alguien que tenga cuidado con el suelo mojado.",
+        "Asking the way to the toilet.": "Preguntar el camino al baño.",
+        "Saying a shop is not open.": "Decir que una tienda no está abierta.",
+        "Telling someone they are not allowed to enter.":
+            "Decir a alguien que no tiene permiso para entrar.",
+        "You are new in a building and you need the toilet. You see a cleaner.":
+            "Es la primera vez que estás en este edificio y necesitas ir al baño. Ves a alguien del personal de limpieza.",
+        "The cleaner asks if you need help.": "La persona de limpieza pregunta si necesitas ayuda.",
+        "Your friend is walking to a door with a red No Entry sign.":
+            "Tu amigo camina hacia una puerta con un letrero rojo de No Entry.",
+        "Your friend asks if they can go in.": "Tu amigo pregunta si puede entrar.",
+        "The shop is closed.": "La tienda está cerrada.",
+        "Buses and finding your way": "Autobuses y cómo encontrar el camino",
+        "Find the right bus, get off at your stop, and ask for directions when you are lost.":
+            "Busca el autobús correcto, baja en tu parada y pregunta el camino si te pierdes.",
+        "Tap your card when you get on the bus and again when you get off. If you forget to tap when you get off, you can pay more.":
+            "Pasa la tarjeta por el lector al subir al autobús y otra vez al bajar. Si olvidas hacerlo al bajar, puedes pagar más.",
+        "Press the bell just before your stop. If nobody presses it and nobody is waiting, the bus does not stop.":
+            "Pulsa el timbre justo antes de tu parada. Si nadie lo pulsa y nadie espera, el autobús no para.",
+        "Raise your hand when your bus comes, so the driver knows to stop.":
+            "Levanta la mano cuando llegue tu autobús para que el conductor sepa que debe parar.",
+        "Cross the road at a traffic light or an overhead bridge. You can be fined for crossing somewhere else nearby.":
+            "Cruza por un semáforo o por un puente peatonal sobre la calle. Te pueden multar por cruzar en otro sitio cercano.",
+        "where you wait for the bus": "donde esperas el autobús",
+        "press it to ask the bus to stop": "púlsalo para pedir que pare el autobús",
+        "the side of your left hand": "el lado de tu mano izquierda",
+        "the side of your right hand": "el lado de tu mano derecha",
+        "keep going ahead; do not turn": "sigue recto; no gires",
+        "the lights that say stop or go": "las luces que indican cuándo parar o avanzar",
+        "a bridge for walking over a road": "un puente para cruzar a pie por encima de una calle",
+        "a picture that shows where places are": "un dibujo que muestra dónde están los lugares",
+        "Asking which bus to take.": "Preguntar qué autobús tomar.",
+        "Asking the way to the bus stop.": "Preguntar el camino a la parada de autobús.",
+        "Telling someone the way.": "Indicar el camino a alguien.",
+        "Saying you do not know where you are.": "Decir que no sabes dónde estás.",
+        "Asking someone to tell you when to get off.": "Pedir a alguien que te avise cuándo bajar.",
+        "You are at a bus stop and want to go to Little India. A woman is waiting next to you.":
+            "Estás en una parada de autobús y quieres ir a Little India. Una mujer espera a tu lado.",
+        "The woman asks if you are waiting for a bus.":
+            "La mujer pregunta si estás esperando un autobús.",
+        "You do not know this road and your phone has no battery. You see a man walking.":
+            "No conoces esta calle y tu teléfono no tiene batería. Ves a un hombre caminando.",
+        "The man asks if he can help you.": "El hombre pregunta si puede ayudarte.",
+        "Please tell me my stop.": "Avísame en mi parada, por favor.",
+        "At the supermarket": "En el supermercado",
+        "Find what you need, check the price and the date, and pay at the counter.":
+            "Busca lo que necesitas, comprueba el precio y la fecha, y paga en la caja.",
+        "Big supermarkets charge at least 5 cents for each plastic bag. Bring your own bag to save money.":
+            "Los supermercados grandes cobran al menos 5 céntimos por cada bolsa de plástico. Lleva tu propia bolsa para ahorrar.",
+        "Look for the date on food before you buy it. \"Best before\" and \"Use by\" tell you how long it is good.":
+            "Mira la fecha de los alimentos antes de comprarlos. \"Best before\" y \"Use by\" indican hasta cuándo están en buen estado.",
+        "Keep the receipt when you shop for someone else, so you can show what you spent.":
+            "Guarda el recibo cuando compres para otra persona, para poder mostrar lo que has gastado.",
+        "The cashier may ask if you have a member card. If you do not have one, just say no.":
+            "La persona de la caja puede preguntar si tienes tarjeta de socio. Si no tienes, basta con decir que no.",
+        "a big basket on wheels": "una cesta grande con ruedas",
+        "the walkway between shelves": "el pasillo entre las estanterías",
+        "the person you pay": "la persona a la que pagas",
+        "the paper that shows what you paid": "el papel que muestra lo que has pagado",
+        "a lower price than usual": "un precio más bajo de lo normal",
+        "the last day the food is good": "el último día en que el alimento está en buen estado",
+        "a thin bag to carry your shopping": "una bolsa fina para llevar la compra",
+        "plants you cook and eat, like carrots": "plantas que cocinas y comes, como las zanahorias",
+        "Asking where to find something.": "Preguntar dónde encontrar algo.",
+        "Asking if the price is lower today.": "Preguntar si el precio es más bajo hoy.",
+        "Asking the cashier for a bag.": "Pedir una bolsa en la caja.",
+        "Asking the cashier for the receipt.": "Pedir el recibo en la caja.",
+        "Telling staff that the food is past its date.":
+            "Decir al personal que el alimento ha pasado su fecha de caducidad.",
+        "You are paying at the counter. You do not have your own bag.":
+            "Estás pagando en la caja. No tienes tu propia bolsa.",
+        "The cashier tells you the price.": "La persona de la caja te dice el precio.",
+        "The milk in your basket is past its date. You show it to a staff member.":
+            "La leche de tu cesta ha pasado su fecha de caducidad. Se la muestras a alguien del personal.",
+        "A staff member asks if they can help you.":
+            "Una persona del personal pregunta si puede ayudarte.",
+        "Is this on discount?": "¿Esto tiene descuento?",
+        "Construction science": "La ciencia de la construcción",
+        "Learn the main building materials, why a building stays up, and how to warn others about a problem.":
+            "Conoce los principales materiales de construcción, por qué un edificio se mantiene en pie y cómo avisar a los demás si hay un problema.",
+        "Concrete is strong when it is pressed, but it cracks when it is pulled. That is why steel bars go inside it.":
+            "El hormigón resiste bien cuando se comprime, pero se agrieta cuando se tira de él. Por eso lleva barras de acero dentro.",
+        "Too much water makes concrete weak. Use only the amount of water your supervisor tells you.":
+            "Demasiada agua debilita el hormigón. Usa solo la cantidad de agua que te indique tu supervisor.",
+        "Concrete goes hard slowly. It takes about 28 days to reach full strength, so ask your supervisor before you put weight on it.":
+            "El hormigón se endurece poco a poco. Tarda unos 28 días en alcanzar toda su resistencia. Pregunta a tu supervisor antes de poner peso encima.",
+        "A building carries its weight down: from the floor to the beams, to the columns, then into the ground. Never cut a beam or a column without permission.":
+            "El peso del edificio baja desde el suelo de cada planta a las vigas, luego a los pilares y por último al terreno. Nunca cortes una viga o un pilar sin permiso.",
+        "Every scaffold has a weight limit. Too much weight can make it fall, so do not add more than you are told.":
+            "Cada andamio tiene un límite de peso. Demasiado peso puede hacerlo caer. No pongas más del que te han indicado.",
+        "cement, sand, stones and water mixed; it goes hard":
+            "mezcla de cemento, arena, piedras y agua que se endurece",
+        "the grey powder that holds concrete together": "el polvo gris que une el hormigón",
+        "a long metal rod inside concrete": "una barra larga de acero dentro del hormigón",
+        "a strong part that goes across and holds up a floor":
+            "una parte resistente que va en horizontal y sostiene el suelo de una planta",
+        "a strong part that stands up and carries the weight":
+            "una parte resistente que está de pie y soporta el peso",
+        "the weight something must carry": "el peso que algo debe soportar",
+        "a tool that shows if something is flat":
+            "una herramienta que indica si una superficie está nivelada",
+        "a metal frame you stand on to work up high":
+            "una estructura de metal donde te subes para trabajar en altura",
+        "Warning that the concrete is not hard yet.": "Avisar de que el hormigón aún no está duro.",
+        "Saying that something weighs too much.": "Decir que algo pesa demasiado.",
+        "Telling someone to stop adding water to the mix.":
+            "Decir a alguien que deje de añadir agua a la mezcla.",
+        "Reporting a crack to your supervisor.": "Informar a tu supervisor de una grieta.",
+        "Asking someone to make sure the scaffold is safe.":
+            "Pedir a alguien que compruebe que el andamio es seguro.",
+        "A worker is about to walk on the floor you poured this morning.":
+            "Un trabajador va a caminar sobre el suelo donde vertiste hormigón esta mañana.",
+        "The worker asks if he can walk here.": "El trabajador pregunta si puede caminar por aquí.",
+        "Your co-worker is mixing concrete and keeps pouring in water.":
+            "Tu compañero está mezclando hormigón y no deja de echar agua.",
+        "Your co-worker wants to add more water.": "Tu compañero quiere añadir más agua.",
+        "There is a crack in this column.": "Hay una grieta en este pilar.",
     },
 };
 

@@ -47,6 +47,60 @@ export const PICTURE_KEYS = [
     "person",
     "salary",
     "repeat",
+    // Helping at home
+    "laundry",
+    "iron",
+    "mop",
+    "dishes",
+    "rubbish",
+    "fridge",
+    "stove",
+    "cupboard",
+    // Getting to know someone
+    "nameTag",
+    "country",
+    "family",
+    "children",
+    "friend",
+    "job",
+    "hobby",
+    "sunday",
+    // Reading signs
+    "wetFloor",
+    "noEntry",
+    "noSmoking",
+    "closed",
+    "push",
+    "pull",
+    "toilet",
+    "danger",
+    // Buses and finding your way
+    "busStop",
+    "bell",
+    "left",
+    "right",
+    "straight",
+    "trafficLight",
+    "overheadBridge",
+    "map",
+    // At the supermarket
+    "trolley",
+    "aisle",
+    "cashier",
+    "receipt",
+    "discount",
+    "expiryDate",
+    "plasticBag",
+    "vegetables",
+    // Construction science
+    "concrete",
+    "cement",
+    "steelBar",
+    "beam",
+    "column",
+    "load",
+    "level",
+    "scaffold",
     // Talking about AI
     "artificialIntelligence",
     "machineLearning",
@@ -62,6 +116,19 @@ export const PICTURE_KEYS = [
 export type PictureKey = (typeof PICTURE_KEYS)[number];
 
 /** What a whole lesson is about, drawn on its card on Home. */
-export const LESSON_ICONS = ["train", "clinic", "food", "work", "ai", "mix"] as const;
+export const LESSON_ICONS = [
+    "train",
+    "clinic",
+    "food",
+    "work",
+    "home",
+    "chat",
+    "sign",
+    "bus",
+    "cart",
+    "build",
+    "ai",
+    "mix",
+] as const;
 
 export type LessonIcon = (typeof LESSON_ICONS)[number];

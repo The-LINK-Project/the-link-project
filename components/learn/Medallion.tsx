@@ -1,6 +1,21 @@
 "use client";
 
-import { Check, HardHat, Shuffle, Sparkles, Stethoscope, TrainFront, Utensils, type LucideIcon } from "lucide-react";
+import {
+    Building2,
+    Bus,
+    Check,
+    HardHat,
+    House,
+    MessagesSquare,
+    Shuffle,
+    ShoppingCart,
+    Signpost,
+    Sparkles,
+    Stethoscope,
+    TrainFront,
+    Utensils,
+    type LucideIcon,
+} from "lucide-react";
 import type { ReactNode } from "react";
 
 import type { LessonIcon } from "@/lib/lessons/icons";
@@ -12,19 +27,31 @@ export const LESSON_ICONS: Record<LessonIcon, LucideIcon> = {
     clinic: Stethoscope,
     food: Utensils,
     work: HardHat,
+    home: House,
+    chat: MessagesSquare,
+    sign: Signpost,
+    bus: Bus,
+    cart: ShoppingCart,
+    build: Building2,
     ai: Sparkles,
     mix: Shuffle,
 };
 
 /**
- * One colour per lesson, taken from the MRT lines, so each lesson is known by
- * its colour as well as its picture. `dark` is the coin's lower edge.
+ * One colour per lesson, the first ones taken from the MRT lines, so each lesson
+ * is known by its colour as well as its picture. `dark` is the coin's lower edge.
  */
 export const LESSON_HUES: Record<LessonIcon, { base: string; dark: string }> = {
     train: { base: "#009645", dark: "#006b31" },
     food: { base: "#fa9e0d", dark: "#b86e00" },
     clinic: { base: "#005ec4", dark: "#003f85" },
     work: { base: "#9900aa", dark: "#6a0076" },
+    home: { base: "#d63f77", dark: "#982a53" },
+    chat: { base: "#0d9488", dark: "#096a61" },
+    sign: { base: "#c99700", dark: "#8c6900" },
+    bus: { base: "#4f5fd9", dark: "#35409a" },
+    cart: { base: "#6a9e14", dark: "#4a6f0e" },
+    build: { base: "#5f6b7a", dark: "#414a55" },
     ai: { base: "#9d5b25", dark: "#6e3f1a" },
     mix: { base: "#d42e12", dark: "#98200c" },
 };
