@@ -65,7 +65,8 @@
         "subtitle": "THE SOLUTION",
         "title": "Learn English the way you'll use it",
         "altExercise": "A lesson on a laptop asking which photo shows a platform, with the right photo marked Correct",
-        "altSpeaking": "A learner says Which platform for Jurong East in English, and the AI tutor replies in Bengali with the next task"
+        "altSpeaking": "A learner says Which platform for Jurong East in English, and the AI tutor replies in Bengali with the next task",
+        "altAssistant": "LINK Assistant correcting an English sentence"
     },
     "mobileapp": {
         "title": "Download the <tape>mobile app</tape>",
@@ -78,6 +79,31 @@
         "altHome": "The app's home screen with the lesson Taking the MRT in progress",
         "altLesson": "A lesson screen with a photo of an MRT platform and the words platform, fare and top up explained in Tamil",
         "altTutor": "The AI tutor explaining top up in Tamil, with a microphone button to answer in English"
+    },
+    "team": {
+        "title": "Made by <tape>four students</tape> in Singapore",
+        "description": "We run workshops with migrant and domestic workers, and what they tell us decides what we build next.",
+        "names": "From left: Ruhan, Alexandre, Adrish and Videep",
+        "altGroup": "Ruhan, Alexandre, Adrish and Videep, the team behind The LINK Project",
+        "altWalking": "The team walking and talking together"
+    },
+    "assistant": {
+        "open": "Open LINK Assistant",
+        "close": "Close",
+        "tagline": "Ask me about English",
+        "greeting": "Hi! I'm LINK Assistant. Ask me anything about English. You can write in your own language too.",
+        "suggestCheck": "Is this sentence correct?",
+        "suggestMeaning": "What does this word mean?",
+        "suggestSay": "How do I say this in English?",
+        "placeholder": "Ask about English…",
+        "send": "Send",
+        "thinking": "Thinking…",
+        "newChat": "New chat",
+        "errorLimit": "That's a lot of messages in one minute. Wait a moment, then try again.",
+        "errorAuth": "Please sign in to use LINK Assistant.",
+        "error": "Sorry, something went wrong. Please try again.",
+        "signInPrompt": "Sign in to ask LINK Assistant your English questions.",
+        "signIn": "Sign in"
     },
     "aboutUs": {
         "headerCall": "Meet the team",

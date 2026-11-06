@@ -96,6 +96,7 @@ const CLIENT_MESSAGE_NAMESPACES = [
     "lessons",
     "speaking",
     "ethics",
+    "assistant",
 ];
 
 export default async function RootLayout({

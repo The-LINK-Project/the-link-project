@@ -65,7 +65,8 @@
         "subtitle": "ANG SOLUSYON",
         "title": "Matuto ng Ingles sa paraang gagamitin mo ito",
         "altExercise": "Aralin sa laptop na nagtatanong kung aling larawan ang platform, at may markang Correct ang tamang larawan",
-        "altSpeaking": "Sinasabi ng nag-aaral ang Which platform for Jurong East sa Ingles, at sumasagot ang AI tutor sa Bengali gamit ang susunod na gawain"
+        "altSpeaking": "Sinasabi ng nag-aaral ang Which platform for Jurong East sa Ingles, at sumasagot ang AI tutor sa Bengali gamit ang susunod na gawain",
+        "altAssistant": "Itinatama ni LINK Assistant ang isang pangungusap sa English"
     },
     "mobileapp": {
         "title": "I-download ang <tape>mobile app</tape>",
@@ -78,6 +79,31 @@
         "altHome": "Home screen ng app, kasalukuyang ginagawa ang araling Taking the MRT",
         "altLesson": "Screen ng aralin na may larawan ng platform ng MRT at mga salitang platform, fare at top up na ipinaliwanag sa Tamil",
         "altTutor": "Ipinapaliwanag ng AI tutor ang top up sa Tamil, may button ng mikropono para sumagot sa Ingles"
+    },
+    "team": {
+        "title": "Gawa ng <tape>apat na estudyante</tape> sa Singapore",
+        "description": "Nagdaraos kami ng mga workshop kasama ang mga migrant worker at domestic worker, at ang sinasabi nila ang nagpapasya kung ano ang susunod naming gagawin.",
+        "names": "Mula sa kaliwa: Ruhan, Alexandre, Adrish at Videep",
+        "altGroup": "Sina Ruhan, Alexandre, Adrish at Videep, ang team sa likod ng The LINK Project",
+        "altWalking": "Ang team na naglalakad at nag-uusap"
+    },
+    "assistant": {
+        "open": "Buksan si LINK Assistant",
+        "close": "Isara",
+        "tagline": "Magtanong tungkol sa English",
+        "greeting": "Hi! Ako si LINK Assistant. Magtanong ka ng kahit ano tungkol sa English. Puwede ka ring sumulat sa sarili mong wika.",
+        "suggestCheck": "Tama ba ang pangungusap na ito?",
+        "suggestMeaning": "Ano ang ibig sabihin ng salitang ito?",
+        "suggestSay": "Paano ko ito sasabihin sa English?",
+        "placeholder": "Magtanong tungkol sa English…",
+        "send": "Ipadala",
+        "thinking": "Nag-iisip…",
+        "newChat": "Bagong chat",
+        "errorLimit": "Ang dami mong mensahe sa loob ng isang minuto. Maghintay sandali, saka subukan ulit.",
+        "errorAuth": "Mag-sign in para magamit si LINK Assistant.",
+        "error": "Pasensya na, may nagkaproblema. Pakisubukan ulit.",
+        "signInPrompt": "Mag-sign in para makapagtanong kay LINK Assistant tungkol sa English.",
+        "signIn": "Mag-sign in"
     },
     "aboutUs": {
         "headerCall": "Kilalanin ang Koponan",

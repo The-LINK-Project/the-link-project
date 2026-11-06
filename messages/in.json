@@ -65,7 +65,8 @@
         "subtitle": "SOLUSINYA",
         "title": "Belajar bahasa Inggris seperti yang akan Anda gunakan",
         "altExercise": "Pelajaran di laptop yang menanyakan foto mana yang menunjukkan platform, dengan foto yang benar ditandai Correct",
-        "altSpeaking": "Pelajar mengucapkan Which platform for Jurong East dalam bahasa Inggris, dan tutor AI membalas dalam bahasa Bengali dengan tugas berikutnya"
+        "altSpeaking": "Pelajar mengucapkan Which platform for Jurong East dalam bahasa Inggris, dan tutor AI membalas dalam bahasa Bengali dengan tugas berikutnya",
+        "altAssistant": "LINK Assistant membetulkan sebuah kalimat bahasa Inggris"
     },
     "mobileapp": {
         "title": "Unduh <tape>aplikasi seluler</tape>",
@@ -78,6 +79,31 @@
         "altHome": "Layar beranda aplikasi dengan pelajaran Taking the MRT yang sedang berjalan",
         "altLesson": "Layar pelajaran dengan foto peron MRT serta kata platform, fare, dan top up yang dijelaskan dalam bahasa Tamil",
         "altTutor": "Tutor AI menjelaskan top up dalam bahasa Tamil, dengan tombol mikrofon untuk menjawab dalam bahasa Inggris"
+    },
+    "team": {
+        "title": "Dibuat oleh <tape>empat pelajar</tape> di Singapura",
+        "description": "Kami mengadakan lokakarya bersama pekerja migran dan pekerja rumah tangga, dan apa yang mereka sampaikan menentukan apa yang kami buat selanjutnya.",
+        "names": "Dari kiri: Ruhan, Alexandre, Adrish, dan Videep",
+        "altGroup": "Ruhan, Alexandre, Adrish, dan Videep, tim di balik The LINK Project",
+        "altWalking": "Tim berjalan sambil mengobrol bersama"
+    },
+    "assistant": {
+        "open": "Buka LINK Assistant",
+        "close": "Tutup",
+        "tagline": "Tanya saya soal bahasa Inggris",
+        "greeting": "Hai! Saya LINK Assistant. Tanyakan apa saja tentang bahasa Inggris. Anda juga boleh menulis dalam bahasa Anda sendiri.",
+        "suggestCheck": "Apakah kalimat ini benar?",
+        "suggestMeaning": "Apa arti kata ini?",
+        "suggestSay": "Bagaimana mengatakan ini dalam bahasa Inggris?",
+        "placeholder": "Tanya soal bahasa Inggris…",
+        "send": "Kirim",
+        "thinking": "Sedang berpikir…",
+        "newChat": "Obrolan baru",
+        "errorLimit": "Terlalu banyak pesan dalam satu menit. Tunggu sebentar, lalu coba lagi.",
+        "errorAuth": "Silakan masuk untuk menggunakan LINK Assistant.",
+        "error": "Maaf, ada yang salah. Silakan coba lagi.",
+        "signInPrompt": "Masuk untuk bertanya soal bahasa Inggris kepada LINK Assistant.",
+        "signIn": "Masuk"
     },
     "aboutUs": {
         "headerCall": "Kenali tim kami",

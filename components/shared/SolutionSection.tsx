@@ -52,10 +52,10 @@ const SolutionSection = () => {
                             </div>
                             <div className="flex items-center rounded-2xl border border-[#e7e5dd] bg-surface p-2.5 shadow-[0_18px_44px_rgba(30,39,35,0.1)]">
                                 <Image
-                                    src="/assets/Chatbot.png"
-                                    alt="AI Chatbot"
-                                    width={594}
-                                    height={996}
+                                    src="/assets/assistant.webp"
+                                    alt={t("altAssistant")}
+                                    width={768}
+                                    height={1280}
                                     sizes="(min-width: 1024px) 25vw, 60vw"
                                     className="block w-full rounded-lg object-contain"
                                 />

@@ -318,6 +318,34 @@ html[data-survey] [data-chat-launcher] {
     display: none;
 }
 
+/* LINK Assistant fills a phone's screen while it is open, and the page behind
+   it stays where it was rather than scrolling under the conversation. */
+@media not all and (min-width: 40rem) and (min-height: 36rem) {
+    html:has([data-assistant-open]) {
+        overflow: hidden;
+    }
+}
+
+/* LINK Assistant's reply on its way: three dots rising in turn. Still dots
+   for anyone who asks for less motion. */
+@keyframes assistant-thinking {
+    0%,
+    70%,
+    100% {
+        opacity: 0.35;
+        translate: 0 0;
+    }
+    35% {
+        opacity: 1;
+        translate: 0 -4px;
+    }
+}
+@media (prefers-reduced-motion: no-preference) {
+    [data-thinking-dot] {
+        animation: assistant-thinking 1.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    }
+}
+
 /* Infinite image marquee — used by the image auto-slider (e.g. the
      International Migrants Day gallery on the landing page). */
 @keyframes marquee {
@@ -459,6 +487,30 @@ html[data-survey] [data-chat-launcher] {
 
         [data-app-phone="right"] {
             animation-name: app-phone-fan-right;
+        }
+    }
+}
+
+/* The home page's team section: the small print of the four of them walking
+   drops onto the corner of the group photo as it comes into view, turning as
+   it lands. Its resting place is the class's own, so without scroll-driven
+   animations, or with less motion asked for, it is simply there. */
+@keyframes team-print-drop {
+    from {
+        translate: 8% 26%;
+        rotate: -3deg;
+    }
+}
+
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        [data-team-print="small"] {
+            animation-name: team-print-drop;
+            animation-duration: auto;
+            animation-fill-mode: both;
+            animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+            animation-timeline: view();
+            animation-range: entry 10% cover 40%;
         }
     }
 }
