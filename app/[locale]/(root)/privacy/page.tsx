@@ -53,7 +53,7 @@ export default function PrivacyPage() {
                 Privacy Policy: The LINK Project app
             </h1>
             <p>
-                <strong>Effective date:</strong> 20 September 2026
+                <strong>Effective date:</strong> 7 November 2026
             </p>
             <p>
                 This privacy policy explains what information The LINK Project app
@@ -69,8 +69,7 @@ export default function PrivacyPage() {
             <p>
                 The LINK Project is a student-led initiative in Singapore that helps
                 migrant workers learn English. We make The LINK Project app (&quot;the app&quot;). The app is
-                published on Google Play by Ruhan Gupta on behalf of The LINK
-                Project.
+                published on Google Play by The LINK Project.
             </p>
             <p>
                 In this policy, &quot;we&quot;, &quot;us&quot; and &quot;our&quot;
@@ -91,9 +90,18 @@ export default function PrivacyPage() {
 
             <H2>3. Your account</H2>
             <p>
-                You need an account to use the app. Your LINK app account is only for
-                this app. It is separate from any account on The LINK Project
-                website.
+                You need an account to use the app. Your LINK account is the same
+                account you use on The LINK Project website: you sign in to both with
+                the same email and password, and your profile is the same on both.
+            </p>
+            <p>
+                Your learning in the app is kept separately from the website. Lessons
+                you finish in the app are not shown on the website, and lessons you
+                finish on the website are not shown in the app.
+            </p>
+            <p>
+                Because it is one account, deleting your account in the app also
+                deletes your account on the website.
             </p>
             <p>When you make an account, we collect:</p>
             <ul>
