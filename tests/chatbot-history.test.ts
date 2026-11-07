@@ -14,7 +14,23 @@ vi.mock("@google/genai", () => ({
         models = {
             generateContent: async ({ contents }: { contents: Turn[] }) => {
                 sent.contents = contents;
-                return { text: "A reply" };
+                // As Gemini 3 sends it: the answer split across text parts,
+                // plus a part that carries only a thought signature
+                return {
+                    candidates: [
+                        {
+                            content: {
+                                role: "model",
+                                parts: [
+                                    { text: "A ", thoughtSignature: "sig" },
+                                    { text: "hidden plan", thought: true },
+                                    { text: "reply" },
+                                    { thoughtSignature: "sig" },
+                                ],
+                            },
+                        },
+                    ],
+                };
             },
         };
     },

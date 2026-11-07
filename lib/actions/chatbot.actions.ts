@@ -105,10 +105,14 @@ export async function getChatbotResponse(
             },
         });
 
-        return {
-            success: true,
-            text: response.text ?? "",
-        };
+        // Not response.text: Gemini 3 replies carry a thoughtSignature part,
+        // and that getter logs a warning about it on every single reply
+        const text = (response.candidates?.[0]?.content?.parts ?? [])
+            .filter((part) => typeof part.text === "string" && !part.thought)
+            .map((part) => part.text)
+            .join("");
+
+        return { success: true, text };
     } catch (error) {
         console.error("Error generating chatbot response:", error);
         return { success: false, error: "unknown" };
