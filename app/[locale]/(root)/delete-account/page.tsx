@@ -30,8 +30,9 @@ export default function DeleteAccountPage() {
             </h1>
             <p>
                 This page explains how to delete your account in The LINK Project
-                app. It is only about the app. Accounts on The LINK Project website
-                are separate and are not changed.
+                app. Your app account is the same account you use on The LINK
+                Project website, so deleting it also deletes your account on the
+                website.
             </p>
 
             <H2>In the app</H2>
