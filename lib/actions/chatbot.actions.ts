@@ -1,13 +1,16 @@
 "use server";
-import OpenAI from "openai";
+import { GoogleGenAI } from "@google/genai";
 import { checkRateLimit } from "../RateLimiter";
 import { auth } from "@clerk/nextjs/server";
 import { chatbotInstructions, promptPracticeInstructions } from "@/utils/conversation_config";
 
 // Module-level lazy singleton so requests reuse one client and its
-// keep-alive connection pool
-let openaiClient: OpenAI | null = null;
-const getOpenAIClient = () => (openaiClient ??= new OpenAI());
+// keep-alive connection pool. Same key as the speaking tutor (GEMINI_KEY is
+// only for the older conversation lessons) and the same text model as those lessons.
+let geminiClient: GoogleGenAI | null = null;
+const getGeminiClient = () =>
+    (geminiClient ??= new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY?.trim() }));
+const CHATBOT_MODEL = "gemini-3.1-flash-lite";
 
 // Returned instead of thrown: Next.js redacts server-action error messages
 // in production, so the client can only branch on a structured result
@@ -84,31 +87,32 @@ export async function getChatbotResponse(
             return { success: false, error: "invalid" };
         }
 
-        const client = getOpenAIClient();
+        const ai = getGeminiClient();
 
         // The instruction prompt lives server-side so it is neither shipped in
         // the client bundle nor round-tripped with every message
-        const openAIMessages = [
-            { role: "system" as const, content: settings.instructions },
-            ...safeHistory.map((message) => ({
-                role:
-                    message.role === "model"
-                        ? ("assistant" as const)
-                        : ("user" as const),
-                content: message.text.slice(0, MAX_MESSAGE_CHARS),
-            })),
-        ];
+        const contents = safeHistory.map((message) => ({
+            role: message.role === "model" ? "model" : "user",
+            parts: [{ text: message.text.slice(0, MAX_MESSAGE_CHARS) }],
+        }));
 
-        const response = await client.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: openAIMessages,
-            max_tokens: settings.maxTokens,
+        const response = await ai.models.generateContent({
+            model: CHATBOT_MODEL,
+            contents,
+            config: {
+                systemInstruction: settings.instructions,
+                maxOutputTokens: settings.maxTokens,
+            },
         });
 
-        return {
-            success: true,
-            text: response.choices[0].message.content ?? "",
-        };
+        // Not response.text: Gemini 3 replies carry a thoughtSignature part,
+        // and that getter logs a warning about it on every single reply
+        const text = (response.candidates?.[0]?.content?.parts ?? [])
+            .filter((part) => typeof part.text === "string" && !part.thought)
+            .map((part) => part.text)
+            .join("");
+
+        return { success: true, text };
     } catch (error) {
         console.error("Error generating chatbot response:", error);
         return { success: false, error: "unknown" };
