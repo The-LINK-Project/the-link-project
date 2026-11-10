@@ -49,14 +49,13 @@
         "dismiss": "Dismiss"
     },
     "problemsection": {
-        "part1body": "Despite understanding some English, speaking clearly in daily life or at work can still feel stressful or uncertain.",
-        "part1title": "Confidence in Speaking",
-        "part2body": "With busy working hours and changing schedules, finding time to attend classes or stay consistent with learning can be difficult.",
-        "part2title": "Finding Time",
-        "part3body": "Many learning tools focus on exams or formal English, making it hard to apply what’s learned to real conversations and everyday situations.",
-        "part3title": "Lessons Aren't Practical",
-        "subtitle": "THE CHALLENGE",
-        "title": "Learning English takes time and support."
+        "part1body": "You may know the words, but saying them at work or in daily life can still feel stressful.",
+        "part1title": "Speaking is harder than understanding",
+        "part2body": "Long hours and changing schedules make it hard to attend a class or keep learning every week.",
+        "part2title": "Work leaves little time for classes",
+        "part3body": "Many tools focus on exams and formal English, not the conversations you have every day.",
+        "part3title": "Most lessons don't teach daily English",
+        "title": "Learning English takes <key>time and support.</key>"
     },
     "solutionsection": {
         "part1": "Practise with short lessons and real photos",

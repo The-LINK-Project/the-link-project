@@ -49,14 +49,13 @@
         "dismiss": "Tutup"
     },
     "problemsection": {
-        "part1body": "Meskipun sudah memahami sebagian Bahasa Inggris, berbicara dengan jelas dalam kehidupan sehari-hari atau di tempat kerja sering kali terasa sulit atau membuat gugup.",
-        "part1title": "Percaya Diri dalam Berbicara",
-        "part2body": "Dengan jadwal kerja yang padat dan sering berubah, sulit untuk menemukan waktu mengikuti kelas atau belajar secara konsisten.",
-        "part2title": "Menemukan Waktu",
-        "part3body": "Banyak alat belajar berfokus pada ujian atau Bahasa Inggris formal, sehingga sulit diterapkan dalam percakapan nyata dan situasi sehari-hari.",
-        "part3title": "Pelajaran Kurang Praktis",
-        "subtitle": "TANTANGANNYA",
-        "title": "Belajar Bahasa Inggris membutuhkan waktu dan dukungan."
+        "part1body": "Anda mungkin tahu kata-katanya, tetapi mengucapkannya di tempat kerja atau dalam kehidupan sehari-hari masih bisa membuat gugup.",
+        "part1title": "Berbicara lebih sulit daripada memahami",
+        "part2body": "Jam kerja yang panjang dan jadwal yang sering berubah membuat sulit untuk ikut kelas atau terus belajar setiap minggu.",
+        "part2title": "Pekerjaan menyisakan sedikit waktu untuk kelas",
+        "part3body": "Banyak alat belajar berfokus pada ujian dan bahasa Inggris formal, bukan percakapan yang Anda lakukan setiap hari.",
+        "part3title": "Kebanyakan pelajaran tidak mengajarkan bahasa Inggris sehari-hari",
+        "title": "Belajar bahasa Inggris membutuhkan <key>waktu dan dukungan.</key>"
     },
     "solutionsection": {
         "part1": "Berlatih dengan pelajaran singkat dan foto nyata",

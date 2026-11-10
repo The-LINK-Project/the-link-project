@@ -49,14 +49,13 @@
         "dismiss": "Isara"
     },
     "problemsection": {
-        "part1body": "Kahit na may ilang pagkaintindi sa Ingles, ang pagsasalita ng malinaw sa pang-araw-araw na buhay o sa trabaho ay maaaring magdulot pa rin ng stress o hindi katiyakan.",
-        "part1title": "Kumpiyansa sa Pagsasalita",
-        "part2body": "Dahil sa abalang oras ng trabaho at pabago-bagong iskedyul, mahirap maghanap ng oras para dumalo sa mga klase o manatiling consistent sa pagkatuto.",
-        "part2title": "Paghanap ng Oras",
-        "part3body": "Maraming mga kasangkapan sa pagkatuto ang nakatuon sa mga pagsusulit o pormal na Ingles, na nagpapahirap mag-apply ng natutunan sa mga tunay na pag-uusap at mga pang-araw-araw na sitwasyon.",
-        "part3title": "Hindi Praktikal ang mga Aralin",
-        "subtitle": "ANG HAMON",
-        "title": "Ang Pagkatuto ng Ingles ay Nangangailangan ng Oras at Suporta."
+        "part1body": "Maaaring alam mo ang mga salita, pero nakaka-stress pa rin itong sabihin sa trabaho o sa araw-araw na buhay.",
+        "part1title": "Mas mahirap magsalita kaysa umintindi",
+        "part2body": "Dahil sa mahabang oras ng trabaho at pabago-bagong iskedyul, mahirap pumasok sa klase o mag-aral linggo-linggo.",
+        "part2title": "Kaunti ang oras para sa klase dahil sa trabaho",
+        "part3body": "Maraming tool ang nakatuon sa mga pagsusulit at pormal na Ingles, hindi sa mga usapan mo araw-araw.",
+        "part3title": "Karamihan ng aralin ay hindi nagtuturo ng pang-araw-araw na Ingles",
+        "title": "Ang pag-aaral ng Ingles ay nangangailangan ng <key>oras at suporta.</key>"
     },
     "solutionsection": {
         "part1": "Magsanay sa maiikling aralin at totoong larawan",
