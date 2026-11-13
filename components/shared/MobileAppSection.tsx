@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { playStoreBadge, playStoreUrl } from "@/lib/playStore";
 
 type PhoneProps = {
     src: string;
@@ -48,6 +49,7 @@ const Phone = ({ src, alt, sizes, className, fan }: PhoneProps) => (
 
 const MobileAppSection = () => {
     const t = useTranslations("mobileapp");
+    const locale = useLocale();
 
     const lessons = [
         t("lessonMrt"),
@@ -111,6 +113,41 @@ const MobileAppSection = () => {
                     <p className="mt-6 text-base text-[#2c4a3a]">
                         {t("lessonNote")}
                     </p>
+
+                    {/* Google's badge as Google draws it, with at least a
+                        quarter of its height clear around it. The app can't
+                        be installed on a computer, so big screens also get a
+                        QR code to scan with a phone. The same tab, not a new
+                        one: on Android the link opens the Play Store app, and
+                        a new tab would be left behind empty. */}
+                    <div className="mt-10 flex items-start gap-6">
+                        <div>
+                            <a
+                                href={playStoreUrl(locale, "home")}
+                                className="inline-block rounded-[9px] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1b7a50]"
+                            >
+                                <Image
+                                    src={playStoreBadge(locale)}
+                                    alt={t("googlePlay")}
+                                    width={239}
+                                    height={71}
+                                    unoptimized
+                                    className="block h-14 w-auto"
+                                />
+                            </a>
+                            <p className="mt-3 hidden max-w-[13rem] text-sm leading-snug text-[#2c4a3a] lg:block">
+                                {t("scanQr")}
+                            </p>
+                        </div>
+                        <Image
+                            src="/assets/mobile-app/google-play/qr.svg"
+                            alt=""
+                            width={41}
+                            height={41}
+                            unoptimized
+                            className="hidden size-28 shrink-0 rounded-xl bg-white p-2.5 shadow-[0_10px_24px_-12px_rgba(11,61,39,0.35)] lg:block"
+                        />
+                    </div>
                 </div>
 
                 {/* The phones stand on the section's bottom edge and run off
