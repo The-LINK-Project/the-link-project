@@ -75,6 +75,8 @@
         "lessonDoctor": "Seeing a doctor",
         "lessonWork": "At work",
         "lessonNote": "Each lesson takes about 5 minutes.",
+        "googlePlay": "Get it on Google Play",
+        "scanQr": "Or scan the QR code with your phone camera.",
         "altHome": "The app's home screen with the lesson Taking the MRT in progress",
         "altLesson": "A lesson screen with a photo of an MRT platform and the words platform, fare and top up explained in Tamil",
         "altTutor": "The AI tutor explaining top up in Tamil, with a microphone button to answer in English"
