@@ -1,3 +1,9 @@
+<p align="center">
+  <img src="docs/tutor.gif" width="300" alt="A learner records two answers on the speaking screen. The tutor replies in Bengali, then gives a hint after a miss.">
+  <br>
+  <sub>Demo with scripted tutor lines.</sub>
+</p>
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
